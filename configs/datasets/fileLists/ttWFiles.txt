@@ -1,0 +1,5 @@
+/nfs/data/tZqSkims/ttW/skimFile0.root
+/nfs/data/tZqSkims/ttW/skimFile1.root
+/nfs/data/tZqSkims/ttW/skimFile2.root
+/nfs/data/tZqSkims/ttW/skimFile3.root
+/nfs/data/tZqSkims/ttW/skimFile4.root

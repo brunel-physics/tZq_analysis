@@ -1,0 +1,232 @@
+[tZq]
+fileName = configs/datasets/fileLists/tZqFiles.txt
+totalEvents = 1038665
+crossSection = 0.00783
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
+plotType = f
+
+[tZq4Flavour3Lepton]
+fileName = configs/datasets/fileLists/tZq4Flavour3Lepton.txt
+totalEvents = 1490700
+crossSection = 0.00783
+runType = mc
+histoName = tZq4f3l
+colour = kYellow
+label = tZq4f3l
+plotType = f
+
+[ttW]
+fileName = configs/datasets/fileLists/ttWFiles.txt
+crossSection = 0.232 
+totalEvents = 196046
+runType = mc
+histoName = ttW
+colour = kGreen - 4
+label = ttW
+plotType = f
+
+[ttZ]
+fileName = configs/datasets/fileLists/ttZFiles.txt
+crossSection = 0.2057
+runType = mc
+histoName = ttZ
+totalEvents = 229952
+colour = kGreen
+label = ttZ
+plotType = f
+
+[zPlusJetsTuneZ2Star]
+crossSection = 3532.8
+totalEvents = 28109436
+runType = mc
+fileName = configs/datasets/fileLists/zPlusJetsTuneZ2StarFiles.txt
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[ttbarDilepton]
+fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
+totalEvents = 12119013
+crossSection = 17.2
+runType = mc
+histoName = ttbar
+colour = kRed
+label = ttbar
+plotType = f
+
+[WZ3l1nu]
+crossSection = 1.09
+totalEvents = 1286770
+fileName = configs/datasets/fileLists/WZ3l1nuFiles1.txt
+runType = mc
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[WZ2l2nu]
+fileName = configs/datasets/fileLists/WZ2l2nuFiles.txt
+runType = mc
+crossSection = 0.0
+totalEvents = 3215990
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[ZZ4l]
+fileName = configs/datasets/fileLists/ZZ4lFiles.txt
+runType = mc
+crossSection = 0.02
+totalEvents = 4807893
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+[ZZ2l2q]
+fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
+runType = mc
+crossSection = 0.0
+totalEvents = 1936727
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+[sChannel]
+fileName = configs/datasets/fileLists/sChannelFiles.txt
+totalEvents = 259961
+crossSection =  3.79
+runType = mc
+histoName = sChannel
+colour = kTeal
+label = s-channel
+plotType = f
+
+[sbarChannel]
+fileName = configs/datasets/fileLists/sbarChannelFiles.txt
+totalEvents = 139974
+crossSection = 1.76
+runType = mc
+histoName = sChannel
+colour = kTeal
+label = s-channel
+plotType = f
+
+[tChannel]
+fileName = configs/datasets/fileLists/tChannelFiles.txt
+totalEvents = 3758227
+crossSection = 56.4
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = t-channel
+plotType = f
+
+[tbarChannel]
+fileName = configs/datasets/fileLists/tbarChannelFiles.txt
+runType = mc
+crossSection = 30.7
+totalEvents = 1935072
+histoName = tChannel
+colour = kMagenta
+label = t-channel
+plotType = f
+
+[tWInclusive]
+fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
+totalEvents = 497658
+crossSection = 11.1
+runType = mc
+histoName = tW
+colour = kCyan
+label = tW
+plotType = f
+
+[tbarWInclusive]
+fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
+totalEvents = 493460
+crossSection = 11.1
+runType = mc
+histoName = tW
+colour = kCyan
+label = tW
+plotType = f
+
+[wPlusJets]
+fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
+runType = mc
+totalEvents = 577099051
+crossSection = 36257.2
+histoName = wJets
+colour = kSpring
+label = w+jets
+plotType = f
+
+[WW2l2nu]
+crossSection = 4.93
+totalEvents = 1933120
+fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
+runType = mc
+histoName = WW
+colour = kRed1
+label = WW
+plotType = f
+
+[eeRun2012A]
+fileName = configs/datasets/fileLists/eeRun2012AFiles.txt
+luminosity = 876.225
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = et
+
+[eeRun2012B]
+fileName = configs/datasets/fileLists/eeRun2012BFiles.txt
+luminosity = 4412.
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = et
+
+[eeRun2012C]
+fileName = configs/datasets/fileLists/eeRun2012CFiles.txt
+luminosity = 7055.
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[eeRun2012D]
+fileName = configs/datasets/fileLists/eeRun2012DFiles.txt
+luminosity = 7369.
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eDt
+
+[zPlusJets10To50Filter] # This is low mass
+fileName = configs/datasets/fileLists/zPlusJets10To50FilterFiles.txt
+runType = mc
+crossSection = 860.5
+totalEvents = 7132223
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[]
+
