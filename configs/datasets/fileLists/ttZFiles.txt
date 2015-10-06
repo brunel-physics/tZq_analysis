@@ -1,6 +1,0 @@
-/nfs/data/tZqSkims/ttZ/skimFile0.root
-/nfs/data/tZqSkims/ttZ/skimFile1.root
-/nfs/data/tZqSkims/ttZ/skimFile2.root
-/nfs/data/tZqSkims/ttZ/skimFile3.root
-/nfs/data/tZqSkims/ttZ/skimFile4.root
-/nfs/data/tZqSkims/ttZ/skimFile5.root

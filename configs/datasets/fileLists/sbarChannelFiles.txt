@@ -1,3 +1,0 @@
-/nfs/data/tZqSkims/sbarChannel/skimFile0.root
-/nfs/data/tZqSkims/sbarChannel/skimFile1.root
-/nfs/data/tZqSkims/sbarChannel/skimFile2.root
