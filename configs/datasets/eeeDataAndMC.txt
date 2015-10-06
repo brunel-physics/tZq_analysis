@@ -1,6 +1,6 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
-totalEvents = 
+totalEvents = 2934491
 crossSection = 
 runType = mc
 histoName = tZq
@@ -10,8 +10,8 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 
-crossSection = 
+totalEvents = 4972773
+crossSection = 831.76
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -20,8 +20,8 @@ plotType = f
 
 [sChannel]
 fileName = configs/datasets/fileLists/sChannelFiles.txt
-totalEvents = 
-crossSection = 
+totalEvents = 984400
+crossSection = 11.36
 runType = mc
 histoName = sChannel
 colour = kTeal
@@ -30,8 +30,8 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 
-crossSection = 
+totalEvents = 19854408
+crossSection = 216.99
 runType = mc
 histoName = tChannel
 colour = kMagenta
