@@ -1,4 +1,4 @@
-datasets = "configs/datasets/eemuData.txt";
+datasets = "configs/datasets/muEGData.txt";
 cuts = "configs/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/eemu/";
