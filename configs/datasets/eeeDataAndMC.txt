@@ -1,7 +1,7 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
-totalEvents = 1038665
-crossSection = 0.00783
+totalEvents = 
+crossSection = 
 runType = mc
 histoName = tZq
 colour = kYellow
@@ -10,8 +10,8 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 12119013
-crossSection = 17.2
+totalEvents = 
+crossSection = 
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -20,8 +20,8 @@ plotType = f
 
 [sChannel]
 fileName = configs/datasets/fileLists/sChannelFiles.txt
-totalEvents = 259961
-crossSection =  3.79
+totalEvents = 
+crossSection = 
 runType = mc
 histoName = sChannel
 colour = kTeal
@@ -30,8 +30,8 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 3758227
-crossSection = 56.4
+totalEvents = 
+crossSection = 
 runType = mc
 histoName = tChannel
 colour = kMagenta
@@ -40,23 +40,13 @@ plotType = f
 
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
-luminosity = 7055.
+luminosity = 222.57
 runType = data
 histoName = data
 label = Data
 plotType = p
 colour = kBlack
 triggerFlag = eCt
-
-[eeRun2015D]
-fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
-luminosity = 7369.
-runType = data
-histoName = data
-label = Data
-plotType = p
-colour = kBlack
-triggerFlag = eDt
 
 []
 
