@@ -58,6 +58,66 @@ colour = kCyan
 label = tW
 plotType = f
 
+[WZinclusive]
+crossSection =
+totalEvents = 12568760
+fileName = configs/datasets/fileLists/WZinclusive.txt
+runType = mc
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[ZZ4l]
+fileName = configs/datasets/fileLists/ZZ4lFiles.txt
+runType = mc
+crossSection =
+totalEvents = 6652512
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+[ZZ2l2q]
+fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
+runType = mc
+crossSection =
+totalEvents =
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+[ZZ2l2nu]
+fileName = configs/datasets/fileLists/ZZ2l2nuFiles.txt
+runType = mc
+crossSection =
+totalEvents = 8768775
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+[WW2l2nu]
+crossSection = 
+totalEvents = 1930000
+fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
+runType = mc
+histoName = WW
+colour = kRed1
+label = WW
+plotType = f
+
+[WWinclusive]
+crossSection =
+totalEvents = 994416
+fileName = configs/datasets/fileLists/WWinclusive.txt
+runType = mc
+histoName = WW
+colour = kRed1
+label = WW
+plotType = f
+
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
 luminosity = 222.57

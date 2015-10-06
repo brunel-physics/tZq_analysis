@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TLorentzVector.h"
 
+
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
   bool invertIsoCut(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
@@ -112,10 +113,10 @@ class Cuts{
   TH1I* synchNumMus_;
   TH1I* synchMuonCutFlow_;
   bool makeEventDump_;
-  ofstream step0EventDump_;
-  ofstream step2EventDump_;
-  ofstream step4EventDump_;
-  ofstream step6EventDump_;
+  std::ofstream step0EventDump_;
+  std::ofstream step2EventDump_;
+  std::ofstream step4EventDump_;
+  std::ofstream step6EventDump_;
   //Sets whether to do MC or data cuts. Set every time a new dataset is processed in the main loop.
   bool isMC_;
   std::string triggerFlag_;

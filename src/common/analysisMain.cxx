@@ -17,6 +17,7 @@
 #include <math.h>
 #include <LHAPDF/LHAPDF.h>
 
+
 double zptSF(TString channel, float zpt){
 
   double param1 = 0;
@@ -532,7 +533,6 @@ int main(int argc, char* argv[]){
     }
   }
 
-
   //Make pileupReweighting stuff here
   TFile * dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
   TH1F* dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
@@ -545,17 +545,19 @@ int main(int argc, char* argv[]){
   TFile * systDownFile = new TFile("pileup/truePileupDown.root","READ");
   TH1F* pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
 
+
   TH1F* puReweight = (TH1F*)dataPU->Clone();
   puReweight->Scale(1.0/puReweight->Integral());
-  mcPU->Scale(1.0/mcPU->Integral());
-  puReweight->Divide(mcPU);
-  puReweight->SetDirectory(0);
+  mcPU->Scale(1.0/mcPU->Integral()); 
+  puReweight->Divide(mcPU); 
+  puReweight->SetDirectory(0); ;
 
-  /// And do the same for systematic sampl
+  /// And do the same for systematic sample
   TH1F* puSystUp = (TH1F*)pileupUpHist->Clone();
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
   puSystUp->SetDirectory(0);
+
   TH1F* puSystDown = (TH1F*)pileupDownHist->Clone();
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
@@ -575,7 +577,7 @@ int main(int argc, char* argv[]){
   //    LHAPDF::initPDFSet(1, "CT10nnlo.LHgrid");
 
   //Do a little initialisation for the plots here. Will later on be done in a config file.
-  
+
   //Initialise plot stage names.
   std::vector<std::string> stageNames (4);
   stageNames = {"lepSel","zMass","jetSel","bTag"};
