@@ -8,6 +8,27 @@ colour = kYellow
 label = tZq
 plotType = f
 
+[ttW]
+fileName = configs/datasets/fileLists/ttWFiles.txt
+totalEvents = 252908
+crossSection = 
+runType = mc
+histoName = ttW
+colour = kGreen - 4
+label = ttW
+plotType = f
+
+[ttZ]
+fileName = configs/datasets/fileLists/ttZFiles.txt
+totalEvents = 398000
+crossSection = 
+runType = mc
+histoName = ttZ
+colour = kGreen
+label = ttZ
+plotType = f
+
+
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
 totalEvents = 4972773
@@ -59,9 +80,9 @@ label = tW
 plotType = f
 
 [WZinclusive]
-crossSection =
-totalEvents = 12568760
 fileName = configs/datasets/fileLists/WZinclusive.txt
+totalEvents = 12568760
+crossSection =
 runType = mc
 histoName = wz
 colour = kOrange
@@ -70,9 +91,9 @@ plotType = f
 
 [ZZ4l]
 fileName = configs/datasets/fileLists/ZZ4lFiles.txt
-runType = mc
-crossSection =
 totalEvents = 6652512
+crossSection =
+runType = mc
 histoName = zz
 colour = kPink
 label = zz
@@ -80,9 +101,9 @@ plotType = f
 
 [ZZ2l2q]
 fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
-runType = mc
+totalEvents = 18898680
 crossSection =
-totalEvents =
+runType = mc
 histoName = zz
 colour = kPink
 label = zz
@@ -90,18 +111,17 @@ plotType = f
 
 [ZZ2l2nu]
 fileName = configs/datasets/fileLists/ZZ2l2nuFiles.txt
-runType = mc
-crossSection =
 totalEvents = 8768775
+crossSection =
 histoName = zz
 colour = kPink
 label = zz
 plotType = f
 
 [WW2l2nu]
-crossSection = 
-totalEvents = 1930000
 fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
+totalEvents = 1930000
+crossSection = 
 runType = mc
 histoName = WW
 colour = kRed1
@@ -109,9 +129,9 @@ label = WW
 plotType = f
 
 [WWinclusive]
-crossSection =
-totalEvents = 994416
 fileName = configs/datasets/fileLists/WWinclusive.txt
+totalEvents = 994416
+crossSection =
 runType = mc
 histoName = WW
 colour = kRed1
@@ -120,9 +140,9 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-runType = mc
-crossSection = 
 totalEvents = 9052671
+crossSection = 
+runType = mc
 histoName = zPlusJets
 colour = kBlue
 label = zPlusJets
