@@ -118,6 +118,16 @@ colour = kRed1
 label = WW
 plotType = f
 
+[DYJetsToLL_MM-50]
+fileName = configs/datasets/fileLists/DYJets10To50Files.txt
+runType = mc
+crossSection = 
+totalEvents = 9052671
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
 luminosity = 222.57
