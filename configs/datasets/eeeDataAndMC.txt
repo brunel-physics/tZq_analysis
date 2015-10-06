@@ -1,7 +1,7 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2934491
-crossSection = 
+crossSection = 0.02349
 runType = mc
 histoName = tZq
 colour = kYellow
