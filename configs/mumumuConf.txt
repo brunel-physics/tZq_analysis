@@ -1,4 +1,4 @@
-datasets = "configs/datasets/mumumuData.txt";
+datasets = "configs/datasets/mumuData.txt";
 cuts = "configs/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/mumumu/";
