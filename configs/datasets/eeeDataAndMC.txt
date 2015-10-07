@@ -11,7 +11,7 @@ plotType = f
 [ttW]
 fileName = configs/datasets/fileLists/ttWFiles.txt
 totalEvents = 252908
-crossSection = 
+crossSection = 0.464
 runType = mc
 histoName = ttW
 colour = kGreen - 4
@@ -21,7 +21,7 @@ plotType = f
 [ttZ]
 fileName = configs/datasets/fileLists/ttZFiles.txt
 totalEvents = 398000
-crossSection = 
+crossSection = 0.410
 runType = mc
 histoName = ttZ
 colour = kGreen
@@ -82,7 +82,7 @@ plotType = f
 [WZinclusive]
 fileName = configs/datasets/fileLists/WZinclusive.txt
 totalEvents = 12568760
-crossSection =
+crossSection = 66.5
 runType = mc
 histoName = wz
 colour = kOrange
@@ -102,7 +102,7 @@ plotType = f
 [ZZ2l2q]
 fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
 totalEvents = 18898680
-crossSection = 
+crossSection = 0.0
 runType = mc
 histoName = zz
 colour = kPink
