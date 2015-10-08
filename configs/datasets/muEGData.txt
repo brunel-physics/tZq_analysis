@@ -8,5 +8,16 @@ plotType = p
 colour = kBlack
 triggerFlag = eCt
 
+[emuRun2015D]
+fileName = configs/datasets/fileLists/emuRun2015DFiles.txt
+luminosity = 222.57
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+
 []
 
