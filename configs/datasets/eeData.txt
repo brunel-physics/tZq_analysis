@@ -1,0 +1,23 @@
+[eeRun2015C]
+fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
+luminosity = 222.57
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[eeRun2015D]
+fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
+luminosity = 225.57
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+
+[]
+
