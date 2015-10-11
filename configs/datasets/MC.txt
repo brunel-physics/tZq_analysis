@@ -31,8 +31,8 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 4972773
-crossSection = 831.76
+totalEvents = 24501877
+crossSection = 35.2
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -136,6 +136,16 @@ runType = mc
 histoName = WW
 colour = kRed1
 label = WW
+plotType = f
+
+[wPlusJets]
+fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
+runType = mc
+totalEvents = 72121586
+crossSection = 36257.2
+histoName = wJets
+colour = kSpring
+label = w+jets
 plotType = f
 
 [DYJetsToLL_MM-50]
