@@ -78,4 +78,3 @@
 /nfs/data/tZqSkimsRun2/eeRun2015C/skimFile7.root
 /nfs/data/tZqSkimsRun2/eeRun2015C/skimFile8.root
 /nfs/data/tZqSkimsRun2/eeRun2015C/skimFile9.root
-

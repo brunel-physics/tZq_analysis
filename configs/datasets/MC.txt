@@ -82,7 +82,7 @@ plotType = f
 [WZinclusive]
 fileName = configs/datasets/fileLists/WZinclusive.txt
 totalEvents = 12568760
-crossSection = 66.5
+crossSection = 2.5
 runType = mc
 histoName = wz
 colour = kOrange
@@ -140,7 +140,7 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 9052671
+totalEvents = 28825132
 crossSection = 2008.4
 runType = mc
 histoName = zPlusJets
