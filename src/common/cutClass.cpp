@@ -510,22 +510,24 @@ void Cuts::setTightEle(float,float,float)
 
 //This is only called if the thing is data. There's also a little clause to run over certain triggers if they exist. Because I failed miserably to get them all first time through processing...
 bool Cuts::triggerCuts(AnalysisEvent* event){
-  //MuEG triggers 
+
   if (skipTrigger_) return true;
+
+  //MuEG triggers
   bool muEGTrig = false;
-  if (event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v1 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v2 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v3 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v4 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v5 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v6 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v7 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v8 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v9 > 0  || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v1 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v2 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v3 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v4 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v5 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v6 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v7 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v8 > 0 || event->HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v9 > 0) muEGTrig = true;
-  //if (event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v4 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v5 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v6 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v7 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v8 > 0 || event->HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v9 > 0) muEGTrig = true;
-  //else if (cutConfTrigLabel_.find("d") != std::string::npos) muEGTrig = true;
+  if (!isMC_) {if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;}
+  else if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 ) muEGTrig = true;
+
   //double electron triggers
   bool eeTrig = false;
-  if (event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v15 > 0 || event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v16 > 0 || event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v17 > 0 || event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v18 ==1 || event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v19 > 0) eeTrig = true;
-  //  else if (event->HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v11 > 0) eeTrig = true;
+  if (!isMC_) {if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;}
+  else if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) eeTrig = true;
 
   //double muon triggers
   bool mumuTrig = false;
-  if (!isMC_) {if (event->HLT_Mu17_TkMu8_v6 > 0 || event->HLT_Mu17_TkMu8_v7 > 0 || event->HLT_Mu17_TkMu8_v8 > 0 || event->HLT_Mu17_TkMu8_v9 > 0 || event->HLT_Mu17_TkMu8_v10 > 0 || event->HLT_Mu17_TkMu8_v11 > 0 || event->HLT_Mu17_TkMu8_v12 > 0 || event->HLT_Mu17_TkMu8_v13 > 0 || event->HLT_Mu17_TkMu8_v14 > 0 || event->HLT_Mu17_Mu8_v13 > 0 || event->HLT_Mu17_Mu8_v14 > 0 || event->HLT_Mu17_Mu8_v15 > 0 || event->HLT_Mu17_Mu8_v16 > 0 || event->HLT_Mu17_Mu8_v17 > 0 || event->HLT_Mu17_Mu8_v18 > 0 || event->HLT_Mu17_Mu8_v19 > 0 || event->HLT_Mu17_Mu8_v20 > 0 || event->HLT_Mu17_Mu8_v21 > 0 || event->HLT_Mu17_Mu8_v22 > 0) mumuTrig = true;}
-  //if (!isMC_) {if (event->HLT_Mu17_TkMu8_v14 > 0 || event->HLT_Mu17_Mu8_v13 > 0 || event->HLT_Mu17_Mu8_v14 > 0 || event->HLT_Mu17_Mu8_v15 > 0 || event->HLT_Mu17_Mu8_v16 > 0 || event->HLT_Mu17_Mu8_v17 > 0 || event->HLT_Mu17_Mu8_v18 > 0 || event->HLT_Mu17_Mu8_v19 > 0 || event->HLT_Mu17_Mu8_v20 > 0 || event->HLT_Mu17_Mu8_v21 > 0 || event->HLT_Mu17_Mu8_v22 > 0) mumuTrig = true;}
-  else if (event->HLT_Mu17_Mu8_v12 > 0 || event->HLT_Mu17_TkMu8_v5 > 0) mumuTrig = true;
+  if (!isMC_) {if ( event->HLT_IsoMu20_v2  > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu18_v1 > 0 ) mumuTrig = true;}
+
+  else if (event->HLT_IsoMu20_v1 > 0 || event->HLT_IsoMu20_eta2p1_v1 > 0) mumuTrig = true;
   
   if (cutConfTrigLabel_.find("d") != std::string::npos){if (muEGTrig) return true;}
   if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
