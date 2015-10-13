@@ -120,7 +120,7 @@ plotType = f
 
 [WW2l2nu]
 fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
-totalEvents = 1930000
+totalEvents = 1965200
 crossSection = 1.2804
 runType = mc
 histoName = WW
