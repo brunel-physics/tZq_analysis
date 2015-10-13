@@ -71,7 +71,7 @@ plotType = f
 
 [tbarWInclusive]
 fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 1000000
+totalEvents = 988500
 crossSection = 35.6
 runType = mc
 histoName = tW
