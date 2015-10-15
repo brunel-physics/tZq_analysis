@@ -1,6 +1,6 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
-totalEvents = 2934491
+totalEvents = 2984613
 crossSection = 0.02349
 runType = mc
 histoName = tZq
@@ -31,7 +31,7 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 24501877
+totalEvents = 30498962
 crossSection = 35.2
 runType = mc
 histoName = ttbar
@@ -42,7 +42,7 @@ plotType = f
 [sChannel]
 fileName = configs/datasets/fileLists/sChannelFiles.txt
 totalEvents = 984400
-crossSection = 11.36
+crossSection = 10.32
 runType = mc
 histoName = sChannel
 colour = kTeal
@@ -51,7 +51,7 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 19854408
+totalEvents = 29954054
 crossSection = 216.99
 runType = mc
 histoName = tChannel
@@ -81,7 +81,7 @@ plotType = f
 
 [WZinclusive]
 fileName = configs/datasets/fileLists/WZinclusive.txt
-totalEvents = 12568760
+totalEvents = 12560069
 crossSection = 2.5
 runType = mc
 histoName = wz
@@ -141,7 +141,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 72121586
+totalEvents = 24184766
 crossSection = 36257.2
 histoName = wJets
 colour = kSpring
