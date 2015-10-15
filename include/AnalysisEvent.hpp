@@ -336,7 +336,7 @@ public :
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
    Int_t           HLT_IsoMu20_v1;
    Int_t           HLT_IsoMu20_eta2p1_v1;
-   Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 ;
+   Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
 
    //Gen info
@@ -658,7 +658,7 @@ public :
    TBranch        *b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
    TBranch        *b_HLT_IsoMu20_v1;
    TBranch        *b_HLT_IsoMu20_eta2p1_v1;
-   TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 ;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_nGenPar;   //!
    TBranch        *b_genParEta;   //!
@@ -1227,7 +1227,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1", &HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1, &b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1);
    fChain->SetBranchAddress("HLT_IsoMu20_v1", &HLT_IsoMu20_v1, &b_HLT_IsoMu20_v1);
    fChain->SetBranchAddress("HLT_IsoMu20_eta2p1_v1", &HLT_IsoMu20_eta2p1_v1, &b_HLT_IsoMu20_eta2p1_v1);
-   fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 ", &HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 , &b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 );
+   fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1);
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1);
    if (isMC) {
      fChain->SetBranchAddress("nGenPar", &nGenPar, &b_nGenPar);
