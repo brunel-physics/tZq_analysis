@@ -196,18 +196,24 @@ void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
   chain->SetBranchStatus("eventLumiblock",1);
 
   if (!isMC){
-    chain->SetBranchStatus("HLT_Mu17_Mu8_v*",1);
-    chain->SetBranchStatus("HLT_Mu17_TkMu8_v*",1);
-    chain->SetBranchStatus("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_*",1);
-    chain->SetBranchStatus("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_*",1);
-    chain->SetBranchStatus("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*",1);
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_IsoMu20_v2",1);
+    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
   }
   else{
-    chain->SetBranchStatus("HLT_Mu17_Mu8_v12",1);
-    chain->SetBranchStatus("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v9",1);
-    chain->SetBranchStatus("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v9",1);
-    chain->SetBranchStatus("HLT_Mu17_TkMu8_v5",1);
-    chain->SetBranchStatus("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v11",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_IsoMu20_v1",1);
+    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
   }
 }
 
