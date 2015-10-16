@@ -525,7 +525,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 
   //double muon triggers
   bool mumuTrig = false;
-  if (!isMC_) {if ( event->HLT_IsoMu20_v2  > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu18_v1 > 0 ) mumuTrig = true;}
+  if (!isMC_) {if ( event->HLT_IsoMu20_v2  > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu18_v1 > 0 ) mumuTrig = true;}
 
   else if (event->HLT_IsoMu20_v1 > 0 || event->HLT_IsoMu20_eta2p1_v1 > 0) mumuTrig = true;
   
