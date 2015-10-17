@@ -51,7 +51,7 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 29954054
+totalEvents = 49366429
 crossSection = 216.99
 runType = mc
 histoName = tChannel
