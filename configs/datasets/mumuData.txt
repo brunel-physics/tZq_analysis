@@ -1,12 +1,23 @@
 [mumuRun2015C]
 fileName = configs/datasets/fileLists/mumuRun2015CFiles.txt
-luminosity = 222.57
+luminosity = 16.345
 runType = data
 histoName = data
 label = Data
 plotType = p
 colour = kBlack
 triggerFlag = eCt
+
+[mumuRun2015D]
+fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
+luminosity = 837.874
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
 
 []
 

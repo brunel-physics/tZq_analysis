@@ -20,7 +20,7 @@ plotType = f
 
 [ttZ]
 fileName = configs/datasets/fileLists/ttZFiles.txt
-totalEvents = 398000
+totalEvents = 400000
 crossSection = 0.410
 runType = mc
 histoName = ttZ
