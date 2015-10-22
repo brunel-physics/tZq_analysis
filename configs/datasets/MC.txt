@@ -130,7 +130,7 @@ plotType = f
 
 [WWinclusive]
 fileName = configs/datasets/fileLists/WWinclusive.txt
-totalEvents = 994416
+totalEvents = 993640
 crossSection = 118.7
 runType = mc
 histoName = WW

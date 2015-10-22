@@ -1,4 +1,4 @@
-datasets = "configs/datasets/MC.txt";
+datasets = "configs/datasets/eeeMC.txt";
 cuts = "configs/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/eee/";
