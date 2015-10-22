@@ -33,7 +33,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numLooseMu_(0),
   looseMuonPt_(10),
   looseMuonEta_(2.4),
-  looseMuonRelIso_(0.2),
+  looseMuonRelIso_(0.12),
   //zMass cuts
   invZMassCut_(15.),
   //Jet initialisation
