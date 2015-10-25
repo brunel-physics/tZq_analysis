@@ -17,7 +17,6 @@
 #include <math.h>
 #include <LHAPDF/LHAPDF.h>
 
-
 double zptSF(TString channel, float zpt){
 
   double param1 = 0;
@@ -196,25 +195,20 @@ void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
   chain->SetBranchStatus("eventLumiblock",1);
 
   if (!isMC){
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_IsoMu20_v2",1);
-    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_Mu8_v*",1);
+    chain->SetBranchStatus("HLT_Mu17_TkMu8_v*",1);
+    chain->SetBranchStatus("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_*",1);
+    chain->SetBranchStatus("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_*",1);
+    chain->SetBranchStatus("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*",1);
   }
   else{
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
-    chain->SetBranchStatus("HLT_IsoMu20_v1",1);
-    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_Mu8_v12",1);
+    chain->SetBranchStatus("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v9",1);
+    chain->SetBranchStatus("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v9",1);
+    chain->SetBranchStatus("HLT_Mu17_TkMu8_v5",1);
+    chain->SetBranchStatus("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v11",1);
   }
+
 }
 
 static void show_usage(std::string name){
@@ -539,6 +533,7 @@ int main(int argc, char* argv[]){
     }
   }
 
+
   //Make pileupReweighting stuff here
   TFile * dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
   TH1F* dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
@@ -551,19 +546,17 @@ int main(int argc, char* argv[]){
   TFile * systDownFile = new TFile("pileup/truePileupDown.root","READ");
   TH1F* pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
 
-
   TH1F* puReweight = (TH1F*)dataPU->Clone();
   puReweight->Scale(1.0/puReweight->Integral());
-  mcPU->Scale(1.0/mcPU->Integral()); 
-  puReweight->Divide(mcPU); 
-  puReweight->SetDirectory(0); ;
+  mcPU->Scale(1.0/mcPU->Integral());
+  puReweight->Divide(mcPU);
+  puReweight->SetDirectory(0);
 
-  /// And do the same for systematic sample
+  /// And do the same for systematic sampl
   TH1F* puSystUp = (TH1F*)pileupUpHist->Clone();
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
   puSystUp->SetDirectory(0);
-
   TH1F* puSystDown = (TH1F*)pileupDownHist->Clone();
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
@@ -583,7 +576,7 @@ int main(int argc, char* argv[]){
   //    LHAPDF::initPDFSet(1, "CT10nnlo.LHgrid");
 
   //Do a little initialisation for the plots here. Will later on be done in a config file.
-
+  
   //Initialise plot stage names.
   std::vector<std::string> stageNames (4);
   stageNames = {"lepSel","zMass","jetSel","bTag"};
@@ -894,8 +887,7 @@ int main(int argc, char* argv[]){
 	      LHAPDF::usePDFMember(1,i);
 	      double xpdf1_new = LHAPDF::xfx(1, x1, q, id1);
 	      double xpdf2_new = LHAPDF::xfx(1, x2, q, id2);
-	    //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
-	    //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
+	      //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
 	      double weight = 1.;
 	      if( (xpdf1 * xpdf2) > 0.00001)
 		weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
@@ -1093,3 +1085,4 @@ int main(int argc, char* argv[]){
   
   std::cerr  << "But not past it" << std::endl;
 }
+
