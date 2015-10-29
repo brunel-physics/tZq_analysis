@@ -16,7 +16,7 @@ cuts =
 	      pt   = 20.;
 	      eta  = 2.5;
 	      relIso = 0.113254;
-	      MVA    = 0.5;
+	      MVA    = 0.;
 	      number = 3;
 	      },
 	looseElectrons = {
