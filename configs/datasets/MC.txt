@@ -1,7 +1,7 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2984613
-crossSection = 0.02349
+crossSection = 8.188
 runType = mc
 histoName = tZq
 colour = kYellow
@@ -52,7 +52,7 @@ plotType = f
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
 totalEvents = 49366429
-crossSection = 216.99
+crossSection = 137.60
 runType = mc
 histoName = tChannel
 colour = kMagenta
@@ -62,7 +62,7 @@ plotType = f
 [tWInclusive]
 fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 995600
-crossSection = 35.6
+crossSection = 71.7
 runType = mc
 histoName = tW
 colour = kCyan
@@ -72,7 +72,7 @@ plotType = f
 [tbarWInclusive]
 fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 988500
-crossSection = 35.6
+crossSection = 71.7
 runType = mc
 histoName = tW
 colour = kCyan
@@ -92,7 +92,7 @@ plotType = f
 [ZZ4l]
 fileName = configs/datasets/fileLists/ZZ4lFiles.txt
 totalEvents = 6652512
-crossSection = 0.0719
+crossSection = 0.0374
 runType = mc
 histoName = zz
 colour = kPink
@@ -142,7 +142,7 @@ plotType = f
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
 totalEvents = 24184766
-crossSection = 36257.2
+crossSection = 20508.9
 histoName = wJets
 colour = kSpring
 label = w+jets

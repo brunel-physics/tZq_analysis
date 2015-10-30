@@ -13,7 +13,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numTightEle_(3),
   tightElePt_(20.),
   tightEleEta_(2.5),
-  tightEled0_(0.04),
+  tightEled0_(0.011811),
   tightEleMissLayers_(0),
   tightEleCheckPhotonVeto_(true),
   tightEleMVA_(0.5),
@@ -26,12 +26,12 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
-  tightMuonPt_(20),
+  tightMuonPt_(20.),
   tightMuonEta_(2.4),
   tightMuonRelIso_(0.2),
   //Loose muons
   numLooseMu_(0),
-  looseMuonPt_(10),
+  looseMuonPt_(10.),
   looseMuonEta_(2.4),
   looseMuonRelIso_(0.12),
   //zMass cuts
@@ -73,7 +73,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   getBTagWeight_(false),
   //MET and mTW cuts go here.
   metCut_(0.),
-  mTWCut_(0.)
+  mTWCut_(20.)
 {
   //Space here in case other stuff needs to be done.
   //If doing synchronisation., initialise that here.
@@ -305,18 +305,18 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //Do a little test of muon id stuff here.
     if (event->muonPF2PATChi2[i] < 0.) continue;
     if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-    //    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
+    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
     //if (event->muonPF2PATNChambers[i] < 2) continue;
     //if (i == 0) std::cout << "gets to tighter ";
     //if (i == 0) std::cout << "First muon ";
     //if (i > 0) std::cout << "Checking second muon";
     
-    if (event->muonPF2PATTkLysWithMeasurements[i] < 6) continue;
+    if (event->muonPF2PATTkLysWithMeasurements[i] < 5) continue;
     if (fabs(event->muonPF2PATDBPV[i]) >= 0.02) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
-    if (event->muonPF2PATMuonNHits[i] < 1) continue;
-    if (event->muonPF2PATVldPixHits[i] < 1) continue;
-    if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    if (event->muonPF2PATMuonNHits[i] <= 1) continue;
+    if (event->muonPF2PATVldPixHits[i] < 0) continue;
+    if (event->muonPF2PATMatchedStations[i] < 1) continue;
     if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     //if(i == 0) std::cout << "does first ";
     //if (i > 0) std::cout << "allows second muon";
@@ -796,17 +796,17 @@ std::vector<int> Cuts::synchTightMuons(AnalysisEvent* event){
     //if (i == 0) std::cout << "First muon ";
     //if (i > 0) std::cout << "Checking second muon";
     //      std::cout << event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
-    if (event->muonPF2PATTkLysWithMeasurements[i] < 6) continue;
+    if (event->muonPF2PATTkLysWithMeasurements[i] < 5 ) continue;
     synchMuonCutFlow_->Fill(4.5);
     if (event->muonPF2PATDBPV[i] > 0.02) continue;
     synchMuonCutFlow_->Fill(5.5);
     if (event->muonPF2PATTrackNHits[i] < 11) continue;
     synchMuonCutFlow_->Fill(6.5);
-    if (event->muonPF2PATMuonNHits[i] < 1) continue;
+    if (event->muonPF2PATMuonNHits[i] <= 1) continue;
     synchMuonCutFlow_->Fill(7.5);
-    if (event->muonPF2PATVldPixHits[i] < 1) continue;
+    if (event->muonPF2PATVldPixHits[i] < 0) continue;
     synchMuonCutFlow_->Fill(8.5);
-    if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    if (event->muonPF2PATMatchedStations[i] < 1) continue;
     synchMuonCutFlow_->Fill(9.5);
     if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     synchMuonCutFlow_->Fill(10.5);
