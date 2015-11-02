@@ -10,7 +10,7 @@ triggerFlag = eCt
 
 [mumuRun2015D]
 fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
-luminosity = 837.874
+luminosity = 1554.329
 runType = data
 histoName = data
 label = Data
