@@ -1,0 +1,12 @@
+[tZq_synch]
+fileName = configs/datasets/fileLists/synchFiles.txt
+totalEvents = 41974
+crossSection = 8.188
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq_synch
+plotType = f
+
+[]
+
