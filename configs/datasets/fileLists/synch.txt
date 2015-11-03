@@ -1,1 +1,0 @@
-/nfs/data/tZqSkimsRun2/tZq_synchTest/skimFile0.root
