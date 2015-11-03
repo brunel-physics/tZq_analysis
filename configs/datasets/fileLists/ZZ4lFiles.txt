@@ -183,6 +183,7 @@
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile264.root
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile265.root
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile266.root
+/nfs/data/tZqSkimsRun2/ZZ4l/skimFile267.root
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile26.root
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile27.root
 /nfs/data/tZqSkimsRun2/ZZ4l/skimFile28.root

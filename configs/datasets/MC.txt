@@ -32,7 +32,7 @@ plotType = f
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
 totalEvents = 30498962
-crossSection = 35.2
+crossSection = 831.76
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -51,8 +51,18 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 49366429
+totalEvents = 3299800
 crossSection = 137.60
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = t-channel
+plotType = f
+
+[tbarChannel]
+fileName = configs/datasets/fileLists/tbarChannelFiles.txt
+totalEvents = 1680200
+crossSection = 82.6669
 runType = mc
 histoName = tChannel
 colour = kMagenta
@@ -99,16 +109,6 @@ colour = kPink
 label = zz
 plotType = f
 
-[ZZ2l2q]
-fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
-totalEvents = 18898680
-crossSection = 0.0
-runType = mc
-histoName = zz
-colour = kPink
-label = zz
-plotType = f
-
 [ZZ2l2nu]
 fileName = configs/datasets/fileLists/ZZ2l2nuFiles.txt
 totalEvents = 8768775
@@ -149,7 +149,7 @@ label = w+jets
 plotType = f
 
 [DYJetsToLL_MM-50]
-fileName = configs/datasets/fileLists/DYJets10To50Files.txt
+fileName = configs/datasets/fileLists/DYJets50Files.txt
 totalEvents = 28825132
 crossSection = 2008.4
 runType = mc
@@ -157,6 +157,17 @@ histoName = zPlusJets
 colour = kBlue
 label = zPlusJets
 plotType = f
+
+[DYJetsToLL_MM-10To50]
+fileName = configs/datasets/fileLists/DYJets10To50Files.txt
+totalEvents = 30021559
+crossSection = 2008.4
+runType = mc
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
 
 []
 
