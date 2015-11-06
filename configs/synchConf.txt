@@ -1,6 +1,6 @@
 datasets = "configs/datasets/synch.txt";
 cuts = "configs/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/eee/";
-outputPostfix = "eee";
-channelName = "eee";
+outputFolder = "plots/emumu_synch/";
+outputPostfix = "emumu";
+channelName = "emumu";
