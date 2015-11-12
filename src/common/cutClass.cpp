@@ -73,12 +73,14 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   getBTagWeight_(false),
   //MET and mTW cuts go here.
   metCut_(0.),
-  mTWCut_(20.)
+  mTWCut_(20.),
+  TopMassCutLower_(91.),
+  TopMassCutUpper_(155.)
 {
   //Space here in case other stuff needs to be done.
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
-    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",7,0,7);
+    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",9,0,9);
     synchNumEles_ = new TH1I("synchNumEles","synchNumEles",10,0,10);
     synchNumMus_ = new TH1I("synchNumMuos","synchNumMuos",10,0,10);
     synchMuonCutFlow_ = new TH1I("synchMuonCutFlow","synchMuonCutFlow",11,0,11);
@@ -412,6 +414,32 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
   return closestMass;
 }
 
+float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex){
+ 
+  float topMass = ((event->wLepton).M() + getLeadingBjetMass( event, bTagIndex ) + event->metPF2PATPt);
+
+  return topMass;
+}
+
+float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets){
+    
+    float leadingBjetPt = 9999.0;
+    int tempIt = 9999.0;
+    float leadingBJetMass = 9999.0;
+
+    for (std::vector<int>::const_iterator lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
+      if ( event->jetPF2PATPtRaw[bJets[*lIt]] < leadingBjetPt ){
+	leadingBjetPt = event->jetPF2PATPtRaw[bJets[*lIt]];
+	tempIt = *lIt;
+      }
+    }
+    
+    if ( TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M() < leadingBJetMass){
+      leadingBJetMass = TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M();
+    }
+    return leadingBJetMass;
+}
+
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
   
   std::vector<int> jets;
@@ -600,12 +628,18 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   //  std::cout << event->jetIndex.size() << std::endl;
   synchCutFlowHist_->Fill(4.5);
   event->bTagIndex = makeBCuts(event,event->jetIndex);
-  if (singleEventInfoDump_) std::cout << "Number of bJets: " << event->bTagIndex.size() << std::endl;
-  if (event->bTagIndex.size() < 1) return false;
+  if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
+  if (!event->bTagIndex.size() == 1) return false;
   synchCutFlowHist_->Fill(5.5);
   if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
-  if (event->metPF2PATPt < 20.) return false;
+  if (event->metPF2PATPt < metCut_) return false;
   synchCutFlowHist_->Fill(6.5);
+  if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
+  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) < mTWCut_) return false;
+  synchCutFlowHist_->Fill(7.5);
+  if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex)  << std::endl;
+  if (getTopMass(event, event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->jetIndex) < TopMassCutLower_) return false;
+  synchCutFlowHist_->Fill(8.5);
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_){
     dumpToFile(event,6);
@@ -616,8 +650,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
 TH1F* Cuts::getSynchCutFlow(){
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
-  char const *names[] = {"Trigger","Lep Pair", "3 Leptons", "zMass","1 jet","b-tag","MET"};
-  for (unsigned int i = 1; i < 8; ++i){
+  char const *names[] = {"Trigger","Lep Pair", "3 Leptons", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
+  for (unsigned int i = 1; i < 10; ++i){
     std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
   }
   std::cout << "The number of leptons in the passing trigger events:" << std::endl;
