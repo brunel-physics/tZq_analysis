@@ -10,7 +10,7 @@ triggerFlag = eCt
 
 [eeRun2015D]
 fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
-luminosity = 1554.329
+luminosity = 2120.016
 runType = data
 histoName = data
 label = Data
