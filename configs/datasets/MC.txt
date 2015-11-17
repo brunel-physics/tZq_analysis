@@ -1,4 +1,4 @@
-[tZq]
+y[tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2984613
 crossSection = 8.188
@@ -102,7 +102,7 @@ plotType = f
 [ZZ4l]
 fileName = configs/datasets/fileLists/ZZ4lFiles.txt
 totalEvents = 6652512
-crossSection = 0.0374
+crossSection = 0.3366
 runType = mc
 histoName = zz
 colour = kPink
@@ -118,10 +118,21 @@ colour = kPink
 label = zz
 plotType = f
 
+[ZZ2l2q]
+fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
+runType = mc
+crossSection = 0.0
+totalEvents = 18790122
+histoName = zz
+colour = kPink
+label = zz
+plotType = f
+
+
 [WW2l2nu]
 fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
 totalEvents = 1965200
-crossSection = 1.2804
+crossSection = 3.8412
 runType = mc
 histoName = WW
 colour = kRed1
@@ -142,7 +153,7 @@ plotType = f
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
 totalEvents = 24184766
-crossSection = 20508.9
+crossSection = 61526.7
 histoName = wJets
 colour = kSpring
 label = w+jets
@@ -151,7 +162,7 @@ plotType = f
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50Files.txt
 totalEvents = 28825132
-crossSection = 2008.4
+crossSection = 6025.2
 runType = mc
 histoName = zPlusJets
 colour = kBlue
@@ -161,7 +172,7 @@ plotType = f
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 30021559
-crossSection = 2008.4
+crossSection = 1500.0
 runType = mc
 histoName = zPlusJets
 colour = kBlue
