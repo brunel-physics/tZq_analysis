@@ -1,4 +1,4 @@
-y[tZq]
+[tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2984613
 crossSection = 8.188
