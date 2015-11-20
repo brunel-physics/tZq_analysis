@@ -642,7 +642,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
   if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) < mTWCut_) return false;
   synchCutFlowHist_->Fill(7.5);
-  /*if (singleEventInfoDump_)*/ std::cout << "top mass cut: " << getTopMass(event, event->jetIndex)  << std::endl;
+  if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex)  << std::endl;
   if (getTopMass(event, event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->jetIndex) < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(8.5);
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
