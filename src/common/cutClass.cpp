@@ -549,19 +549,29 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
   //MuEG triggers
   bool muEGTrig = false;
   if (!isMC_) {if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;}
-  else if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 ) muEGTrig = true;
+  else if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 ){
+    muEGTrig = true;
+    //    std::cout << "muEGTrig for MC fired." << std::endl;
+  }
 
   //double electron triggers
   bool eeTrig = false;
+  //  std::cout << "event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 : " << event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 << std::endl;
   if (!isMC_) {if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;}
-  else if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) eeTrig = true;
+  else if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) {
+    eeTrig = true;
+    //    std::cout << "eeTrig for MC fired." << std::endl;   
+  }
 
   //double muon triggers
   bool mumuTrig = false;
   if (!isMC_) {if ( event->HLT_IsoMu20_v2  > 0 || event->HLT_IsoMu20_eta2p1_v2 > 0 || event->HLT_IsoMu18_v1 > 0 ) mumuTrig = true;}
 
-  else if (event->HLT_IsoMu20_v1 > 0 || event->HLT_IsoMu20_eta2p1_v1 > 0) mumuTrig = true;
-  
+  else if (event->HLT_IsoMu20_v1 > 0 || event->HLT_IsoMu20_eta2p1_v1 > 0){
+    mumuTrig = true;
+    //    std::cout << "mumuTrig for MC fired." << std::endl;  
+  }
+
   if (cutConfTrigLabel_.find("d") != std::string::npos){if (muEGTrig) return true;}
   if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
   if (cutConfTrigLabel_.find("m") != std::string::npos){if (mumuTrig && !(eeTrig || muEGTrig)) return true;}
@@ -579,7 +589,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   int looseLeps = getLooseLepsNum(event);
   if (isMC_ && looseLeps < 2) return false;
   if (!isMC_ && looseLeps < 3) return false;
-  if (!isMC_ && !triggerCuts(event)) return false;
+  if (/*!isMC_ &&*/ !triggerCuts(event)) return false; // Commented out this so that it runs on both MC and data.
   synchCutFlowHist_->Fill(0.5);
   if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
   

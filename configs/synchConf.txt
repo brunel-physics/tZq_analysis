@@ -1,6 +1,6 @@
 datasets = "configs/datasets/synch.txt";
 cuts = "configs/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/eemu_synch/";
-outputPostfix = "eemu";
-channelName = "eemu";
+outputFolder = "plots/eee_synch/";
+outputPostfix = "eee";
+channelName = "eee";
