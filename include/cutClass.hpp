@@ -114,6 +114,8 @@ class Cuts{
   TH1I* synchNumEles_;
   TH1I* synchNumMus_;
   TH1I* synchMuonCutFlow_;
+  TH1F* synchCutTopMassHist_;
+
   bool makeEventDump_;
   std::ofstream step0EventDump_;
   std::ofstream step2EventDump_;

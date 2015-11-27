@@ -84,6 +84,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
     synchNumEles_ = new TH1I("synchNumEles","synchNumEles",10,0,10);
     synchNumMus_ = new TH1I("synchNumMuos","synchNumMuos",10,0,10);
     synchMuonCutFlow_ = new TH1I("synchMuonCutFlow","synchMuonCutFlow",11,0,11);
+    synchCutTopMassHist_ = new TH1F("synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.);
   }
   std::cout << "Initialises fine" << std::endl;
   initialiseJECCors();
@@ -99,6 +100,7 @@ Cuts::~Cuts(){
     delete synchNumEles_;
     delete synchNumMus_;
     delete synchMuonCutFlow_;
+    delete synchCutTopMassHist_;
     if (makeEventDump_){ step0EventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
@@ -643,6 +645,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   //  std::cout << event->jetIndex.size() << std::endl;
   synchCutFlowHist_->Fill(4.5);
   event->bTagIndex = makeBCuts(event,event->jetIndex);
+  synchCutTopMassHist_->Fill(getTopMass(event, event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (!event->bTagIndex.size() == 1) return false;
   synchCutFlowHist_->Fill(5.5);
@@ -678,6 +681,10 @@ TH1F* Cuts::getSynchCutFlow(){
   for (unsigned int i = 1; i < 12; ++i){
     std::cout << labels[i-1] << ": \t" << synchMuonCutFlow_->GetBinContent(i) << std::endl;
   }
+
+  synchCutFlowHist_->SaveAs("plots/synch/synchCutFlowHist.root");
+  synchCutTopMassHist_->SaveAs("plots/synch/synchCutTopMassHist.root");
+
   return synchCutFlowHist_;
 }
 
