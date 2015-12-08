@@ -73,7 +73,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   getBTagWeight_(false),
   //MET and mTW cuts go here.
   metCut_(0.),
-  mTWCut_(20.),
+  mTWCut_(0.),
   TopMassCutLower_(91.),
   TopMassCutUpper_(155.)
 {

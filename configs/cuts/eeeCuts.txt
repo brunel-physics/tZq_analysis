@@ -15,8 +15,8 @@ cuts =
 	tightElectrons = {
 	      pt   = 20.;
 	      eta  = 2.5;
-	      relIso = 0.;
-	      MVA    = 0.107587;
+	      relIso = 0.107587;
+	      MVA    = 0.;
 	      number = 3;
 	      },
 	looseElectrons = {
