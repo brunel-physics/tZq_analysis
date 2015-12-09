@@ -1215,40 +1215,40 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   float oldSmearValue = 1.0;
   if (isMC_ && event->genJetPF2PATPT[index] > -990.) oldSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * oldSmearCorr)/event->jetPF2PATPtRaw[index];
   float newJECCorr = 0.;
-  if (fabs(event->jetPF2PATEta[index]) <= 0.5) {
-    newJECCorr = 1.079;
-    if (syst == 16) newJECCorr = 1.105;
-    else if (syst == 32) newJECCorr = 1.053;
+  if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
+    newJECCorr = 1.061;
+    if (syst == 16) newJECCorr = 1.084;
+    else if (syst == 32) newJECCorr = 1.038;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.1) {
-    newJECCorr = 1.099;
-    if (syst == 16) newJECCorr = 1.127;
-    else if (syst == 32) newJECCorr = 1.071;
+  else if (fabs(event->jetPF2PATEta[index]) <= 1.3) {
+    newJECCorr = 1.088;
+    if (syst == 16) newJECCorr = 1.117;
+    else if (syst == 32) newJECCorr = 1.059;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.7) {
-    newJECCorr = 1.121;
-    if (syst == 16) newJECCorr = 1.150;
-    else if (syst == 32) newJECCorr = 1.092;
+  else if (fabs(event->jetPF2PATEta[index]) <= 1.9) {
+    newJECCorr = 1.106;
+    if (syst == 16) newJECCorr = 1.136;
+    else if (syst == 32) newJECCorr = 1.076;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.3) {
-    newJECCorr = 1.208;
-    if (syst == 16) newJECCorr = 1.254;
-    else if (syst == 32) newJECCorr = 1.162;
+  else if (fabs(event->jetPF2PATEta[index]) <= 2.5) {
+    newJECCorr = 1.126;
+    if (syst == 16) newJECCorr = 1.22;
+    else if (syst == 32) newJECCorr = 1.032;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.8){
-    newJECCorr = 1.254;
-    if (syst == 16) newJECCorr = 1.316;
-    else if (syst == 32) newJECCorr = 1.192;
+  else if (fabs(event->jetPF2PATEta[index]) <= 3.0){
+    newJECCorr = 1.343;
+    if (syst == 16) newJECCorr = 1.466;
+    else if (syst == 32) newJECCorr = 1.22;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 3.2){
-    newJECCorr = 1.395;
-    if (syst == 16) newJECCorr = 1.458;
-    else if (syst == 32) newJECCorr = 1.332;
+    newJECCorr = 1.303;
+    if (syst == 16) newJECCorr = 1.414;
+    else if (syst == 32) newJECCorr = 1.192;
   } 
   else {
-    newJECCorr = 1.056;
-    if (syst == 16) newJECCorr = 1.247;
-    else if (syst == 32) newJECCorr = 0.865;
+    newJECCorr = 1.320;
+    if (syst == 16) newJECCorr = 1.606;
+    else if (syst == 32) newJECCorr = 1.304;
   }
   float newSmearValue = 1.0;
   if (isMC_ && event->genJetPF2PATPT[index] > -990.) newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * newJECCorr)/event->jetPF2PATPtRaw[index];
