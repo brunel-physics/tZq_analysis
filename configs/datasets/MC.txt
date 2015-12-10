@@ -20,7 +20,7 @@ plotType = f
 
 [ttZ]
 fileName = configs/datasets/fileLists/ttZFiles.txt
-totalEvents = 400000
+totalEvents = 398000
 crossSection = 0.2529
 runType = mc
 histoName = ttZ
@@ -32,7 +32,7 @@ plotType = f
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
 totalEvents = 30498962
-crossSection = 831.76
+crossSection = 87.31
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -72,7 +72,7 @@ plotType = f
 [tWInclusive]
 fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 995600
-crossSection = 71.7
+crossSection = 35.85
 runType = mc
 histoName = tW
 colour = kCyan
@@ -82,7 +82,7 @@ plotType = f
 [tbarWInclusive]
 fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 988500
-crossSection = 71.7
+crossSection = 35.85
 runType = mc
 histoName = tW
 colour = kCyan
