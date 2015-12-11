@@ -221,6 +221,7 @@ static void show_usage(std::string name){
   std::cerr << "Usage: " << name << " <options>"
 	    << "Options:\n"
 	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over\n"
+            << "\t--dilepton \t The dilepton channel is set to be run over instead of the default trilepton channel."
 	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
             << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
             << "\t-l\t\t\t\tIf this option is set, scale MC plots to a fixed lumi. Default is lumi from data samples.\n"
@@ -294,6 +295,7 @@ int main(int argc, char* argv[]){
   bool customJetRegion = false;
   float metCut = 0.;
   float mtwCut = 0.;
+  bool trileptonChannel = true;
 
   // variables for plotting. 
   std::vector<std::string> plotNames;
@@ -320,6 +322,9 @@ int main(int argc, char* argv[]){
 	std::cerr << "--config requires an argument!";
 	return 0;
       }
+    }
+    else if (arg=="--dilepton"){ // Sets whether trilepton or dilepton channel is to be analysed.
+      trileptonChannel = false;
     }
     else if (arg=="-n") { // using this option sets the number of entries to run over.
       if (i+1 < argc){
@@ -514,7 +519,7 @@ int main(int argc, char* argv[]){
   cutObj->setMetCut(metCut);
   cutObj->setMTWCut(mtwCut);
 
-  if (channelsToRun){
+  if (channelsToRun && trileptonChannel){
     std::cout << "Running over the channels: " << std::endl;
     for (unsigned int channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -539,6 +544,27 @@ int main(int argc, char* argv[]){
     }
   }
 
+  if (channelsToRun && !trileptonChannel){
+    std::cout << "Running over the channels: " << std::endl;
+    for (unsigned int channelInd = 1; channelInd != 64; channelInd = channelInd << 1){
+      if (!(channelInd & channelsToRun) && channelsToRun) continue;
+      if (channelInd & 9){
+	std::cout << "ee ";
+      }
+      if (channelInd & 18){ //emu channels
+	std::cout << "emu ";
+      }
+      if (channelInd & 40){ // mumu channels
+	std::cout << "mumu ";
+      }
+      if (channelInd & 7){ //nominal samples
+	std::cout << "nominal" << std::endl;
+      }
+      if (channelInd & 56){ //inv iso samples
+	std::cout << "inverted" << std::endl;
+      }
+    }
+  }
 
   //Make pileupReweighting stuff here
   TFile * dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
@@ -605,10 +631,12 @@ int main(int argc, char* argv[]){
   for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
-    for (unsigned int channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
+    uint channelIndMax = 256;
+    if ( !trileptonChannel ){ channelIndMax = 64; }
+    for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelsToRun){
+      if (channelsToRun && trileptonChannel){
 	if (channelInd & 17){ // eee channels
 	  cutObj->setNumLeps(0,0,3,3);
 	  cutObj->setCutConfTrigLabel("e");
@@ -643,6 +671,39 @@ int main(int argc, char* argv[]){
 	  chanName += "nom";
 	}
 	if (channelInd & 240){ //inv iso samples
+	  cutObj->setInvIsoCut(true);
+	  invertIsoCut = true;
+	  chanName += "inv";
+	}
+     } 
+      if (channelsToRun && !trileptonChannel){
+	if (channelInd & 9){ // ee channels
+	  cutObj->setNumLeps(0,0,2,2);
+	  cutObj->setCutConfTrigLabel("e");
+	  channel = "ee";
+	  postfix = "ee";
+	  chanName += "ee";
+	}
+	if (channelInd & 18){ //emu channels
+	  cutObj->setNumLeps(1,1,1,1);
+	  cutObj->setCutConfTrigLabel("d");
+	  channel = "emu";
+	  postfix = "emu";
+	  chanName += "emu";
+	}
+	if (channelInd & 36){ // mumu channels
+	  cutObj->setNumLeps(2,2,0,0);
+	  cutObj->setCutConfTrigLabel("d");
+	  channel = "mumu";
+	  postfix = "mumu";
+	  chanName += "mumu";
+	}
+	if (channelInd & 7){ //nominal samples
+	  cutObj->setInvIsoCut(false);
+	  invertIsoCut = false;
+	  chanName += "nom";
+	}
+	if (channelInd & 56){ //inv iso samples
 	  cutObj->setInvIsoCut(true);
 	  invertIsoCut = true;
 	  chanName += "inv";
