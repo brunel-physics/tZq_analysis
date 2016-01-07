@@ -693,7 +693,7 @@ int main(int argc, char* argv[]){
 	}
 	if (channelInd & 36){ // mumu channels
 	  cutObj->setNumLeps(2,2,0,0);
-	  cutObj->setCutConfTrigLabel("d");
+	  cutObj->setCutConfTrigLabel("m");
 	  channel = "mumu";
 	  postfix = "mumu";
 	  chanName += "mumu";
@@ -884,6 +884,7 @@ int main(int argc, char* argv[]){
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
+	    // trilepton stuff
 	    if (channel == "eee"){
 	      float twgt = 0.987;
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
@@ -906,6 +907,25 @@ int main(int argc, char* argv[]){
 	      float twgt = 0.9871;
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.0242;
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.0212;
+	      eventWeight *= twgt;
+	    }
+	    // dilepton stuff, placeholder for now
+	    if (channel == "ee"){
+	      float twgt = 0.987;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
+	      eventWeight *= twgt;
+	    }
+	    else if (channel == "emu"){
+	      float twgt = 0.987;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.035;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.035;
+	      eventWeight *= twgt;
+	    }
+	    if (channel == "mumu"){
+	      float twgt = 0.886;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.042;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.042;
 	      eventWeight *= twgt;
 	    }
 	  }
