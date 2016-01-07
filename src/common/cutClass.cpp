@@ -363,8 +363,11 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 	  closestMass = invMass;
 	  //Now set up W lepton.
-	  if (electrons.size() ==2) {
+	  std::cout << __LINE__ << "/" << __FILE__ << std::endl;
+	  if (electrons.size() == 2) {
+	  std::cout << __LINE__ << "/" << __FILE__ << std::endl;
 	    event->wLepton = TLorentzVector(event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]);
+	  std::cout << __LINE__ << "/" << __FILE__ << std::endl;
 	    event->wLeptonRelIso = event->muonPF2PATComRelIsodBeta[muons[0]];
 	    event->wLepIndex = muons[0];
 	  }

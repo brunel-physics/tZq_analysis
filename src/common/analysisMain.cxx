@@ -87,6 +87,24 @@ double zptSF(TString channel, float zpt){
     param3 = 1.64031e-01;
   }
 
+  // placeholder dilepton values
+  if (channel == "mumu"){
+    param1 = 9.12190e-01;
+    param2 =-2.12648e-02;
+    param3 = 2.32868e-01;
+  }
+
+  if (channel == "emu"){
+    param1 = 1.03732e+00;
+    param2 =-2.11550e-02;
+    param3 = 1.52830e-01;
+  }
+
+  if (channel == "ee"){
+    param1 = 8.23251e-01;
+    param2 = -1.74036e-02;
+    param3 = 1.64031e-01;
+  }
 
   return  (exp(param1+param2*zpt) +param3 );
 }
