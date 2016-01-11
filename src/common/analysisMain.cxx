@@ -1,24 +1,13 @@
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
 #include <stdlib.h> 
-#include "TH1.h"
-#include "TH2.h"
-#include "TCanvas.h"
-#include "TPad.h"
 
 #include "analysisAlgo.hpp"
-#include <libconfig.h++>
 
 #include <iomanip>
-#include <map>
-#include <math.h>
-#include <LHAPDF/LHAPDF.h>
 
 int main(int argc, char* argv[]){
 
-  analysisAlgo analysisMain;
+  AnalysisAlgo analysisMain;
 
   gErrorIgnoreLevel = kInfo;
   //Set up environment a little.
@@ -39,4 +28,3 @@ int main(int argc, char* argv[]){
   analysisMain.runMainAnalysis();
   analysisMain.savePlots();
 }
-

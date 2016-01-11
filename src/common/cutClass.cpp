@@ -48,16 +48,6 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   maxbJets_(5),
   bDiscCut_(0.679), // Medium level
   //bDiscCut_(0.244), // Loose cut
-  //Do plots?
-  doPlots_(doPlots),
-  fillCutFlow_(fillCutFlows),
-  //background estimation. May not be possible
-  invertIsoCut_(invertIsoCut),
-  //Synchronisation cut flow.
-  synchCutFlow_(lepCutFlow),
-  //Dump event numbers?
-  singleEventInfoDump_(false),
-  makeEventDump_(dumpEventNumber),
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
   //Same for trigger flag.
