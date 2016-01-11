@@ -576,7 +576,10 @@ void AnalysisAlgo::setupPlots()
 {
   //Do a little initialisation for the plots here. Will later on be done in a config file.  
   //Initialise plot stage names.
-  stageNames.insert("lepSel","zMass","jetSel","bTag");
+  stageNames.push_back("lepSel");
+  stageNames.push_back("zMass");
+  stageNames.push_back("jetSel");
+  stageNames.push_back("bTag");
 }
 
 void AnalysisAlgo::runMainAnalysis(){
