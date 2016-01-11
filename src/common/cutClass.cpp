@@ -8,7 +8,19 @@
 #include <iomanip>
 #include <fstream>
 
-Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber):
+Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel):
+
+  //Do plots?
+  doPlots_(doPlots),
+  fillCutFlow_(fillCutFlows),
+  //background estimation. May not be possible
+  invertIsoCut_(invertIsoCut),
+  //Synchronisation cut flow.
+  synchCutFlow_(lepCutFlow),
+  //Synchronisation cut flow.
+  singleEventInfoDump_(dumpEventNumber),
+  trileptonChannel_(trileptonChannel),
+
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_(3),
   tightElePt_(20.),
@@ -353,7 +365,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 	  closestMass = invMass;
 	  //Now set up W lepton for trilepton channel if two electrons ...
-	  if (electrons.size() == 2 && mTrileptonChannel == true) {
+	  if (electrons.size() == 2 && trileptonChannel_ == true) {
 	    event->wLepton = TLorentzVector(event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]);
 	    event->wLeptonRelIso = event->muonPF2PATComRelIsodBeta[muons[0]];
 	    event->wLepIndex = muons[0];
@@ -387,7 +399,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
 	  closestMass = invMass;
 	  //Now set up W lepton for trilepton channel if two muons ...
-	  if (muons.size() ==2 && mTrileptonChannel == true){
+	  if (muons.size() ==2 && trileptonChannel_ == true){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
 	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
 	    event->wLepIndex = electrons[0];

@@ -152,20 +152,10 @@ class Cuts{
   //Sets trigger from config file
   std::string cutConfTrigLabel_;
 
+  bool trileptonChannel_;
+
  public:
-  Cuts(bool doPlots, bool fillCutFlows, bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool aTrileptonChannel)
-  {
-	//Do plots?
-	doPlots_ = doPlots;
-	fillCutFlow_ = fillCutFlows;
-	//background estimation. May not be possible
-	invertIsoCut_ = invertIsoCut;
-	//Synchronisation cut flow.
-	synchCutFlow_ = lepCutFlow;
-	//Synchronisation cut flow.
-	singleEventInfoDump_= dumpEventNumber;
-	mTrileptonChannel = aTrileptonChannel;
-  }
+  Cuts(bool, bool, bool, bool, bool, const bool);
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
@@ -189,8 +179,6 @@ class Cuts{
 
   private:
   
-  bool mTrileptonChannel;
-
 };
 
 #endif
