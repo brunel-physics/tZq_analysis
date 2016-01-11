@@ -7,11 +7,14 @@
 #include "TH2.h"
 #include "TCanvas.h"
 #include "TPad.h"
+
+#include "analysisMain.hpp"
 #include "config_parser.hpp"
 #include "AnalysisEvent.hpp"
 #include "cutClass.hpp"
 #include <libconfig.h++>
 #include "histogramPlotter.hpp"
+
 #include <iomanip>
 #include <map>
 #include <math.h>
