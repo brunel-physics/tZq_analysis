@@ -44,6 +44,14 @@ class Cuts{
   float eleSF(float, float);
   float muonSF(float, float);
 
+  //set to true to fill in histograms.
+  bool doPlots_;
+  bool fillCutFlow_; // Fill cut flows
+  bool invertIsoCut_; // For background estimation
+  bool synchCutFlow_; //For synch
+  bool singleEventInfoDump_; //For dropping info on event for synching.
+  bool trileptonChannel_;
+
   // Tight electron cuts
   unsigned int numTightEle_;
   float tightElePt_;
@@ -89,13 +97,6 @@ class Cuts{
   unsigned int maxbJets_;
   float bDiscCut_;
   
-  //set to true to fill in histograms.
-  bool doPlots_;
-  bool fillCutFlow_; // Fill cut flows
-  bool invertIsoCut_; // For background estimation
-  bool synchCutFlow_; //For synch
-  bool singleEventInfoDump_; //For dropping info on event for synching.
-
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
   std::vector<float> ptMaxJEC_;
@@ -151,8 +152,6 @@ class Cuts{
 
   //Sets trigger from config file
   std::string cutConfTrigLabel_;
-
-  bool trileptonChannel_;
 
  public:
   Cuts(bool, bool, bool, bool, bool, const bool);
