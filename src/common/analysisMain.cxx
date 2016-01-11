@@ -287,46 +287,36 @@ int main(int argc, char* argv[]){
     return 1;
   }
   //Various variables that will be used in the analysis. These should really be in a .h file but... I'm lazy. Sorry.
-  std::string config = "";
-  bool plots = false;
-  double usePreLumi = 19700.;
-  long nEvents = 0.;
-  std::string outFolder = "plots/";
-  std::string postfix = "default";
-  std::string channel = "";
-  bool infoDump = false;
-  bool invertIsoCut = false; //For z+jets background estimation
-  bool synchCutFlow = false; // For synch
-  bool skipData = false; //utility stuff. True if flags are set and will skip either data or mc.
-  bool skipMC = false;
-  std::string* cutConfName = new std::string("");
-  std::string* plotConfName = new std::string("");
-  int numFiles = -1;
-  bool readEventList = false;
-  bool dumpEventNumbers = false;
-  bool makePostLepTree = false;
-  bool makeMVATree = false;
-  bool usePostLepTree = false;
-  bool usebTagWeight = false;
-  int systToRun = 0;
-  bool makeBTagEffPlots = false;
-  int channelsToRun = 0; //0 makes it run the one in the config, I guess.
-  bool skipTrig = false;
-  std::string mvaDir = "mvaTest/";
-  bool customJetRegion = false;
-  float metCut = 0.;
-  float mtwCut = 0.;
-  bool trileptonChannel = true;
-
-  // variables for plotting. 
-  std::vector<std::string> plotNames;
-  std::vector<float> xMin;
-  std::vector<float> xMax;
-  std::vector<int> nBins,cutStage;
-  std::vector<std::string> fillExp;
-  std::vector<std::string> xAxisLabels;
-  std::vector<int> eventNumbers;
-  std::vector<unsigned int> jetRegVars;
+  config = "";
+  plots = false;
+  usePreLumi = 19700.;
+  nEvents = 0.;
+  outFolder = "plots/";
+  postfix = "default";
+  channel = "";
+  infoDump = false;
+  invertIsoCut = false; //For z+jets background estimation
+  synchCutFlow = false; // For synch
+  skipData = false; //utility stuff. True if flags are set and will skip either data or mc.
+  skipMC = false;
+  cutConfName = new std::string("");
+  plotConfName = new std::string("");
+  numFiles = -1;
+  readEventList = false;
+  dumpEventNumbers = false;
+  makePostLepTree = false;
+  makeMVATree = false;
+  usePostLepTree = false;
+  usebTagWeight = false;
+  systToRun = 0;
+  makeBTagEffPlots = false;
+  channelsToRun = 0; //0 makes it run the one in the config, I guess.
+  skipTrig = false;
+  mvaDir = "mvaTest/";
+  customJetRegion = false;
+  metCut = 0.;
+  mtwCut = 0.;
+  trileptonChannel = true;
 
 
   // Loop for parsing command line arguments.
