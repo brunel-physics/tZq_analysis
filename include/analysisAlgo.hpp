@@ -19,9 +19,9 @@
 class AnalysisAlgo{
 
 	public:
-	// Constructor
-//	AnalysisAlgo();
-//	~AnalysisAlgo();
+        // Constructor
+        AnalysisAlgo();
+        ~AnalysisAlgo();
 
 	double zptSF(TString channel, float zpt);
 	void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag);
@@ -111,8 +111,6 @@ class AnalysisAlgo{
 	TH1F* puReweight;
 	TH1F* puSystUp;
 	TH1F* puSystDown;
-
-	// Main Analysis variables
 	
 };
 

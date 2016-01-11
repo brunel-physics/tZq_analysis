@@ -11,6 +11,40 @@
 #include <iomanip>
 #include <math.h>
 
+AnalysisAlgo::AnalysisAlgo():
+  config(""),
+  plots(false),
+  usePreLumi(19700.),
+  nEvents(0.),
+  outFolder("plots/"),
+  postfix("default"),
+  channel(""),
+  infoDump(false),
+  invertIsoCut(false), //For z+jets background estimation
+  synchCutFlow(false), // For synch
+  skipData(false), //utility stuff. True if flags are set and will skip either data or mc
+  skipMC(false),
+  cutConfName(new std::string("")),
+  plotConfName(new std::string("")),
+  numFiles(-1),
+  readEventList(false),
+  dumpEventNumbers(false),
+  makePostLepTree(false),
+  makeMVATree(false),
+  usePostLepTree(false),
+  usebTagWeight(false),
+  systToRun(0),
+  makeBTagEffPlots(false),
+  channelsToRun(0), //0 makes it run the one in the config, I guess.
+  skipTrig(false),
+  mvaDir("mvaTest/"),
+  customJetRegion(false),
+  metCut(0.),
+  mtwCut(0.)
+{}
+
+AnalysisAlgo::~AnalysisAlgo(){}
+
 double AnalysisAlgo::zptSF(TString channel, float zpt){
 
   double param1 = 0;
