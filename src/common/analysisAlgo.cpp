@@ -10,7 +10,6 @@
 
 #include <iomanip>
 #include <math.h>
-#include <LHAPDF/LHAPDF.h>
 
 double AnalysisAlgo::zptSF(TString channel, float zpt){
 
@@ -269,11 +268,22 @@ void AnalysisAlgo::show_usage(std::string name){
 
 void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 {
+  gErrorIgnoreLevel = kInfo;
+  //Set up environment a little.
+  std::cerr << std::setprecision(1) << std::fixed;
+  std::cout << std::setprecision(1) << std::fixed;
+  // "This is the main function. It basically just loads a load of other stuff.";
+  //Parse command line arguments - looking for config file.
+  if (argc < 3){
+    AnalysisAlgo::show_usage(argv[0]);
+    exit(1);
+  }
+
   // Loop for parsing command line arguments.
   for (int i = 1; i < argc; ++i){
     std::string arg = argv[i];
     if ((arg=="-h") || (arg == "--help")){ // Display help stuff
-      show_usage(argv[0]);
+      AnalysisAlgo::show_usage(argv[0]);
       exit(0);
     }
     else if ((arg=="-c")||(arg=="--config")){ // Sets configuration file - Required!

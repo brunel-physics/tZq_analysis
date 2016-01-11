@@ -12,6 +12,7 @@
 #include "dataset.hpp"
 
 #include <libconfig.h++>
+#include <LHAPDF/LHAPDF.h>
 
 #include <map>
 
@@ -19,8 +20,8 @@ class AnalysisAlgo{
 
 	public:
 	// Constructor
-	AnalysisAlgo();
-	~AnalysisAlgo();
+//	AnalysisAlgo();
+//	~AnalysisAlgo();
 
 	double zptSF(TString channel, float zpt);
 	void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag);
