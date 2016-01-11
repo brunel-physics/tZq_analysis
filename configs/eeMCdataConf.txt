@@ -1,5 +1,5 @@
 datasets = "configs/datasets/eeDataMC.txt";
-cuts = "configs/cuts/eeeCuts.txt";
+cuts = "configs/cuts/eeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/ee/";
 outputPostfix = "ee";

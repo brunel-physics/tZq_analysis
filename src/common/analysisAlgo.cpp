@@ -40,7 +40,8 @@ AnalysisAlgo::AnalysisAlgo():
   mvaDir("mvaTest/"),
   customJetRegion(false),
   metCut(0.),
-  mtwCut(0.)
+  mtwCut(0.),
+  trileptonChannel(true)
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
