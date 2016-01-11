@@ -7,6 +7,7 @@
 #include "TCanvas.h"
 #include "TPad.h"
 
+#include "cutClass.hpp"
 #include "histogramPlotter.hpp"
 #include "dataset.hpp"
 
@@ -23,9 +24,9 @@ class AnalysisAlgo{
 
 	double zptSF(TString channel, float zpt);
 	void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag);
-	static void show_usage(std::string name);
+	void show_usage(std::string name);
 
-	void parseCommandLineArguements (int argc, char* argv);
+	void parseCommandLineArguements (int argc, char* argv[]);
 	void setupSystematics();
 	void setupCuts();
 	void setupPlots();
@@ -68,6 +69,9 @@ class AnalysisAlgo{
 	std::vector<Dataset> datasets;
 	double totalLumi;
 	double* lumiPtr;
+
+        // Cuts stuff
+        Cuts * cutObj;
 
 	// Plotting stuff
 	std::map<std::string, std::map<std::string, std::map<std::string, Plots*> > > plotsMap;

@@ -7,7 +7,6 @@
 #include "analysisAlgo.hpp"
 #include "config_parser.hpp"
 #include "AnalysisEvent.hpp"
-#include "cutClass.hpp"
 
 #include <iomanip>
 #include <math.h>
@@ -231,7 +230,7 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
 
 }
 
-static void AnalysisAlgo::show_usage(std::string name){
+void AnalysisAlgo::show_usage(std::string name){
   std::cerr << "Usage: " << name << " <options>"
 	    << "Options:\n"
 	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over\n"
@@ -275,14 +274,14 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     std::string arg = argv[i];
     if ((arg=="-h") || (arg == "--help")){ // Display help stuff
       show_usage(argv[0]);
-      return 0;
+      exit(0);
     }
     else if ((arg=="-c")||(arg=="--config")){ // Sets configuration file - Required!
       if (i + 1 < argc) {
       config = argv[++i];
       } else{
 	std::cerr << "--config requires an argument!";
-	return 0;
+	exit(0);
       }
     }
     else if (arg=="--dilepton"){ // Sets whether trilepton or dilepton channel is to be analysed.
@@ -317,7 +316,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 	usePreLumi = atof(argv[++i]);
       }else{
 	std::cerr << "-l requries a float!";
-	return 0;
+	exit(0);
       }
     }
     else if (arg == "-d"){//Option for dumping event information about selected events.
@@ -328,7 +327,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 	*cutConfName = argv[++i];
       }else{
 	std::cerr <<" -x requires an argument";
-	return 0;
+	exit(0);
       }
     }
     else if (arg == "--plotConf"){
@@ -337,7 +336,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 	plots = true;
       }else{
 	std::cerr <<" --plotConf requires an argument";
-	return 0;
+	exit(0);
       }
     }
     else if (arg == "-i"){ //Set up anti-isolation cut for 
@@ -363,7 +362,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 	numFiles = atoi(argv[++i]);
       }else{
 	 std::cerr << "-f requires an int";
-	 return 0;
+	 exit(0);
       }
     }
     else if (arg == "-e"){
@@ -389,7 +388,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       }
       else{
 	std::cerr << "-v requires an int";
-	return 0;
+	exit(0);
       }
     }
     else if (arg == "-j"){
@@ -401,7 +400,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       }
       else{
 	std::cerr << "-k needs a config file!";
-	return 0;
+	exit(0);
       }
     }
     else if (arg == "--skipTrig"){
@@ -433,15 +432,15 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   } // End command line arguments loop.
   if (config == ""){
     std::cerr << "We need a configuration file! Type -h for usage. Error";
-    return 0;
+    exit(0);
   }
   if (usebTagWeight && !usePostLepTree){
     std::cerr << "At the moment only getting btag weights from post lep-sel trees is supported. Sorry everyone.";
-    return 0;
+    exit(0);
   }
   if (usebTagWeight && makeBTagEffPlots){
     std::cerr << "I doubt that set of options is a good idea, so I'm going to just quietly exit here. Don't generate and use b-tag efficiency numbers at the same time...";
-    return 0;
+    exit(0);
   }
 
   //Some vectors that will be filled in the parsing.
@@ -449,7 +448,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   lumiPtr = &totalLumi;
   if (!Parser::parse_config(config,&datasets,lumiPtr,&plotNames,&xMin,&xMax,&nBins,&fillExp,&xAxisLabels,&cutStage,cutConfName,plotConfName,&outFolder,&postfix,&channel)){
     std::cerr << "There was an error parsing the config file.\n";
-    return 0;
+    exit(0);
   }
   
   if (channelsToRun && trileptonChannel){
@@ -558,14 +557,14 @@ void AnalysisAlgo::setupSystematics()
   //    LHAPDF::initPDFSet(1, "CT10nnlo.LHgrid");
 }
 
-void analysisAlgo::setupCuts()
+void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  Cuts * cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers);
+  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel);
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
-    return 0;
-  };
+    exit(0);
+  }
   //For studying some trigger things. Default is false.
   cutObj->setSkipTrig(skipTrig);
   if (customJetRegion) cutObj->setJetRegion(jetRegVars[0],jetRegVars[1],jetRegVars[2],jetRegVars[3]);
@@ -573,12 +572,11 @@ void analysisAlgo::setupCuts()
   cutObj->setMTWCut(mtwCut);
 }
 
-void AnalysisAlgo::setupPlots();
+void AnalysisAlgo::setupPlots()
 {
-  //Do a little initialisation for the plots here. Will later on be done in a config file.
-  
+  //Do a little initialisation for the plots here. Will later on be done in a config file.  
   //Initialise plot stage names.
-  stageNames = {"lepSel","zMass","jetSel","bTag"};
+  stageNames.insert("lepSel","zMass","jetSel","bTag");
 }
 
 void AnalysisAlgo::runMainAnalysis(){
@@ -1069,7 +1067,7 @@ void AnalysisAlgo::runMainAnalysis(){
   } //end dataset loop
 }
   
-void AnalysisAlgo::savePlots();
+void AnalysisAlgo::savePlots()
 {
   //Save all plot objects. For testing purposes.
 
