@@ -20,6 +20,260 @@
 #include <math.h>
 #include <LHAPDF/LHAPDF.h>
 
+double analysisAlgo::zptSF(TString channel, float zpt){
+
+  double param1 = 0;
+  double param2 = 0;
+  double param3 = 0;
+
+  if(channel == "mumumu"){
+    //mumumu
+    //1  p0           1.64891e+00   9.46744e-02   8.94955e-05 5.38436e-04
+    //2  p1          -3.18363e-02   1.83020e-03   1.43202e-06 2.28732e-02
+    //3  p2           1.96813e-01   1.80560e-02   2.59898e-05 7.20918e-03
+
+    //1  p0           9.12190e-01   6.16931e-02   8.40864e-05 3.40620e-05
+    //2  p1          -2.12648e-02   1.47982e-03   1.38426e-06 2.38949e-01
+    //3  p2           2.32868e-01   2.61906e-02   3.56068e-05 8.38502e-03
+
+
+    param1 = 9.12190e-01;
+    param2 =-2.12648e-02;
+    param3 = 2.32868e-01;
+
+  }
+
+  if(channel == "emumu"){
+    //mumue
+    //1  p0           1.08009e+00   2.20412e-01   1.81954e-04 -2.77029e-04
+    //2  p1          -1.83319e-02   2.98128e-03   1.46500e-06 -2.16667e-02
+    //3  p2          -3.79236e-03   2.77700e-02   1.94305e-05 -8.63841e-05
+
+    //1  p0           5.88293e-01   5.43378e-02   6.56657e-05 -2.55726e-03
+    //2  p1          -9.58817e-03   1.49703e-03   6.91871e-07 1.64841e-01
+    //3  p2          -3.15588e-02   7.50287e-02   3.63099e-05 1.24242e-03
+
+
+    param1 =  5.88293e-01;
+    param2 = -9.58817e-03;
+    param3 = -3.15588e-02;
+  }
+
+  if(channel == "eemu"){
+    //eemu
+    //1  p0           1.81997e+00   1.09691e-01   1.27075e-04 2.67625e-03
+    //2  p1          -3.53330e-02   2.11348e-03   2.01050e-06 2.95414e-01
+    //3  p2           2.00004e-01   1.93575e-02   3.33897e-05 1.34863e-02
+
+    //1  p0           1.03732e+00   6.79924e-02   1.10651e-04 -4.52533e-02
+    //2  p1          -2.11550e-02   1.34032e-03   1.62803e-06 -2.88549e+00
+    //3  p2           1.52830e-01   2.17467e-02   4.20291e-05 -5.57304e-02
+
+
+    param1 = 1.03732e+00;
+    param2 =-2.11550e-02;
+    param3 = 1.52830e-01;
+  }
+
+
+  if(channel == "eee"){
+    //eee
+    //1  p0           1.66655e+00   2.04856e-01   1.22417e-04 -8.87600e-06
+    // 2  p1          -2.90064e-02   3.37196e-03   1.67677e-06 1.94266e-05
+    //3  p2           1.12276e-01   2.87604e-02   2.89272e-05 -1.94049e-07
+
+    //1  p0           8.23251e-01   8.60477e-02   6.95364e-05 3.23597e-03
+    //2  p1          -1.74036e-02   2.04299e-03   1.02005e-06 2.12854e-01
+    //3  p2           1.64031e-01   4.57851e-02   3.12269e-05 7.55832e-03
+    param1 = 8.23251e-01;
+    param2 = -1.74036e-02;
+    param3 = 1.64031e-01;
+  }
+
+  // placeholder dilepton values
+  if (channel == "mumu"){
+    param1 = 9.12190e-01;
+    param2 =-2.12648e-02;
+    param3 = 2.32868e-01;
+  }
+
+  if (channel == "emu"){
+    param1 = 1.03732e+00;
+    param2 =-2.11550e-02;
+    param3 = 1.52830e-01;
+  }
+
+  if (channel == "ee"){
+    param1 = 8.23251e-01;
+    param2 = -1.74036e-02;
+    param3 = 1.64031e-01;
+  }
+
+  return  (exp(param1+param2*zpt) +param3 );
+}
+
+
+
+
+
+//This method is here to set up a load of branches in the TTrees that I will be analysing. Because it's vastly quicker to not load the whole damned thing.
+void analysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
+  //Get electron branches
+  chain->SetBranchStatus("numElePF2PAT",1);  
+  chain->SetBranchStatus("elePF2PATPT",1);
+  chain->SetBranchStatus("elePF2PATPX",1);
+  chain->SetBranchStatus("elePF2PATPY",1);
+  chain->SetBranchStatus("elePF2PATPZ",1);
+  chain->SetBranchStatus("elePF2PATE",1);
+  chain->SetBranchStatus("elePF2PATIsGsf",1);
+  chain->SetBranchStatus("elePF2PATGsfPx",1);
+  chain->SetBranchStatus("elePF2PATGsfPy",1);
+  chain->SetBranchStatus("elePF2PATGsfPz",1);
+  chain->SetBranchStatus("elePF2PATGsfE",1);
+  chain->SetBranchStatus("elePF2PATEta",1);
+  chain->SetBranchStatus("elePF2PATPhi",1);
+  chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
+  chain->SetBranchStatus("elePF2PATMissingInnerLayers",1);
+  chain->SetBranchStatus("elePF2PATPhotonConversionVeto",1);
+  chain->SetBranchStatus("elePF2PATMVA",1);
+  chain->SetBranchStatus("elePF2PATComRelIsoRho",1);
+  chain->SetBranchStatus("elePF2PATComRelIsodBeta",1);
+  chain->SetBranchStatus("elePF2PATComRelIso",1);
+  chain->SetBranchStatus("elePF2PATChHadIso",1);
+  chain->SetBranchStatus("elePF2PATNtHadIso",1);
+  chain->SetBranchStatus("elePF2PATGammaIso",1);
+  chain->SetBranchStatus("elePF2PATRhoIso",1);
+  chain->SetBranchStatus("elePF2PATAEff03",1);
+  chain->SetBranchStatus("elePF2PATCharge",1);
+  chain->SetBranchStatus("elePF2PATTrackD0",1);
+  chain->SetBranchStatus("elePF2PATTrackDBD0",1);
+  chain->SetBranchStatus("elePF2PATD0PV",1);
+  chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
+  chain->SetBranchStatus("elePF2PATSCEta",1);
+  //get muon branches
+  chain->SetBranchStatus("muonPF2PATIsPFMuon",1);
+  chain->SetBranchStatus("muonPF2PATGlobalID",1);
+  chain->SetBranchStatus("muonPF2PATTrackID",1);
+  chain->SetBranchStatus("numMuonPF2PAT",1);
+  chain->SetBranchStatus("muonPF2PATPt",1);
+  chain->SetBranchStatus("muonPF2PATPX",1);
+  chain->SetBranchStatus("muonPF2PATPY",1);
+  chain->SetBranchStatus("muonPF2PATPZ",1);
+  chain->SetBranchStatus("muonPF2PATE",1);  
+  chain->SetBranchStatus("muonPF2PATEta",1);
+  chain->SetBranchStatus("muonPF2PATPhi",1);
+  chain->SetBranchStatus("muonPF2PATCharge",1);  
+  chain->SetBranchStatus("muonPF2PATComRelIsodBeta",1);
+  chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
+  chain->SetBranchStatus("muonPF2PATD0",1);
+  chain->SetBranchStatus("muonPF2PATDBInnerTrackD0",1);
+  chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
+  chain->SetBranchStatus("muonPF2PATBeamSpotCorrectedD0",1);
+  chain->SetBranchStatus("muonPF2PATD0",1);
+  chain->SetBranchStatus("muonPF2PATChi2",1);
+  chain->SetBranchStatus("muonPF2PATNDOF",1);
+  chain->SetBranchStatus("muonPF2PATVertX",1);
+  chain->SetBranchStatus("muonPF2PATVertY",1);
+  chain->SetBranchStatus("muonPF2PATVertZ",1);
+  chain->SetBranchStatus("muonPF2PATNChambers",1);
+  chain->SetBranchStatus("muonPF2PATTrackNHits",1);
+  chain->SetBranchStatus("muonPF2PATMuonNHits",1);
+  chain->SetBranchStatus("muonPF2PATTkLysWithMeasurements",1);
+  chain->SetBranchStatus("muonPF2PATGlbTkNormChi2",1);
+  chain->SetBranchStatus("muonPF2PATDBPV",1);
+  chain->SetBranchStatus("muonPF2PATDZPV",1);
+  chain->SetBranchStatus("muonPF2PATVldPixHits",1);
+  chain->SetBranchStatus("muonPF2PATMatchedStations",1);
+    //Jet variables
+  chain->SetBranchStatus("numJetPF2PAT",1);
+  chain->SetBranchStatus("jetPF2PATPx",1);
+  chain->SetBranchStatus("jetPF2PATPy",1);
+  chain->SetBranchStatus("jetPF2PATPz",1);
+  chain->SetBranchStatus("jetPF2PATE",1);
+  chain->SetBranchStatus("jetPF2PATEt",1);
+  chain->SetBranchStatus("jetPF2PATPt",1);
+  chain->SetBranchStatus("jetPF2PATPtRaw",1);
+  chain->SetBranchStatus("jetPF2PATUnCorPt",1);
+  chain->SetBranchStatus("jetPF2PATEta",1);
+  chain->SetBranchStatus("jetPF2PATPhi",1);
+  chain->SetBranchStatus("jetPF2PATNConstituents",1);
+  chain->SetBranchStatus("jetPF2PAT*EnergyFractionCorr",1);
+  chain->SetBranchStatus("jetPF2PAT*EnergyFraction",1);
+  chain->SetBranchStatus("jetPF2PATChargedMultiplicity",1);
+  chain->SetBranchStatus("jetPF2PATdRClosestLepton",1);
+  //BTag
+  chain->SetBranchStatus("jetPF2PATBDiscriminator",1);
+  //MET variables - for plotting (no cuts on these)
+  chain->SetBranchStatus("metPF2PATEt",1);
+  chain->SetBranchStatus("metPF2PATPt",1);
+  //primary vertex info. For muon cut
+  chain->SetBranchStatus("pvX",1);
+  chain->SetBranchStatus("pvY",1);
+  chain->SetBranchStatus("pvZ",1);
+  //Event info
+  chain->SetBranchStatus("eventNum",1);
+  chain->SetBranchStatus("eventRun",1);
+  chain->SetBranchStatus("eventLumiblock",1);
+
+  if (!isMC){
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_IsoMu20_v2",1);
+    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_IsoMu18_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
+  }
+  else{
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_IsoMu20_v1",1);
+    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+  }
+
+}
+
+static void analysisAlgo::show_usage(std::string name){
+  std::cerr << "Usage: " << name << " <options>"
+	    << "Options:\n"
+	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over\n"
+            << "\t--dilepton \t The dilepton channel is set to be run over instead of the default trilepton channel."
+	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
+            << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
+            << "\t-l\t\t\t\tIf this option is set, scale MC plots to a fixed lumi. Default is lumi from data samples.\n"
+	    << "\t-o  --outFolder\tOUTFOLDER\tOutput folder for plots. If set overwrites what may be in the config file.\n"
+	    << "\t-s  --postfix\tPOSTFIX\t\tPostfix for produced plots. Over-rides anything set in a configuration file.\n"
+	    << "\t-d\t\t\t\tDump event info. For now this is the yield at each stage. May also include event lists later on. \n\t\t\t\t\tIf this flag is set all event weights are 1.\n"
+	    << "\t-x  --cutConf\tCUTCONF\t\tOverrides the cut configuration given in the usual configuration file.\n\t\t\t\t\tThis is mostly so that MC can be run on different cuts without having to make wqhole new confs.\n"
+	    << "\t    --plotConf\tPLOTCONF\tOverrides the plot configuration file in the usual configuration file. \n\t\t\t\t\tFor various reasons I guess. Also sets -p flag automatically. If you don't want plots, DON'T USE THIS OPTION.\n"
+	    << "\t-i\t\t\t\tInvert the isolation cut of the third lepton. This is for background estimation purposes. \n\t\t\t\t\tWho knows how I am supposed to use that though.\n"
+	    << "\t-a  --synch\t\t\tMakes cutflows for synch exercise i.e. detailed lepSel cutflows. Doesn't do full event selection.\n"
+	    << "\t-e\t\t\t\tGive a comma separated list of events to run on. This is for synch, but might be useful later?\n"
+	    << "\t-f  --nFiles \tNFILES\t\tUses a specific number of files to run over. \n\t\t\t\t\tThis is useful if testing stuff so that it doesn't have to access the T2 a lot etc.\n"
+	    << "\t-m\t\t\t\tMonte carlo only mode. Will not run over any data in the configuration.\n"
+	    << "\t-b\t\t\t\tData only mode. Only runs over data, skips all MC.\n"
+	    << "\t-t\t\t\t\tUse b-tagging efficiencies to reweight MC\n"
+	    << "\t-y\t\t\t\tProduces a file of event dumps for stages of the synch.\n"
+	    << "\t-g\t\t\t\tMakes post-lepSel tree\n"
+	    << "\t-u\t\t\t\tUses post-lepSel trees\n"
+	    << "\t-z  --makeMVATree\t\tProduce a tree after event selection for MVA purposes\n"
+	    << "\t-v  --syst  \tSYST\t\tDo the desired systematic. Brief workaround here, not final yet\n"
+	    << "\t-j\t\t\t\tMake b-tagging efficiency histograms. Probably doesn't need to be run too many times.\n"
+	    << "\t-k          \tCHANS\t\tBit mask dealy for the channels. 1 - eee 2 - eemu 4 - emumu 8 - mumumu 16 through 128 are same but for inverted third lep iso.\n"
+	    << "\t    --skipTrig\t\t\tSkip running triggers. Used for trigger studies or something.\n"
+	    << "\t    --mvaDir \tDIR\t\tChange the name of the folder the mva outputs go to. mvaTest/ by default. Include the /.\n"
+	    << "\t    --jetRegion \t\tSet the jet region that the analysis will look at. Takes arguments NJETS,NBJETS,MAXJETS,MAXBJETS.\n"
+	    << "\t    --metCut \tCUT\t\tAlter the MET cut of the analysis. 0 by default.\n"
+	    << "\t    --mtwCut \tCUT\t\tAlter the mTW cut of the analysis. 0 by default.\n"
+	    << "\t-h  --help\t\t\tShow this help message\n"
+	    << std::endl;
+}
+		       
 int main(int argc, char* argv[]){
 
   gErrorIgnoreLevel = kInfo;
@@ -32,6 +286,38 @@ int main(int argc, char* argv[]){
     show_usage(argv[0]);
     return 1;
   }
+  //Various variables that will be used in the analysis. These should really be in a .h file but... I'm lazy. Sorry.
+  config = "";
+  plots = false;
+  usePreLumi = 19700.;
+  nEvents = 0.;
+  outFolder = "plots/";
+  postfix = "default";
+  channel = "";
+  infoDump = false;
+  invertIsoCut = false; //For z+jets background estimation
+  synchCutFlow = false; // For synch
+  skipData = false; //utility stuff. True if flags are set and will skip either data or mc.
+  skipMC = false;
+  cutConfName = new std::string("");
+  plotConfName = new std::string("");
+  numFiles = -1;
+  readEventList = false;
+  dumpEventNumbers = false;
+  makePostLepTree = false;
+  makeMVATree = false;
+  usePostLepTree = false;
+  usebTagWeight = false;
+  systToRun = 0;
+  makeBTagEffPlots = false;
+  channelsToRun = 0; //0 makes it run the one in the config, I guess.
+  skipTrig = false;
+  mvaDir = "mvaTest/";
+  customJetRegion = false;
+  metCut = 0.;
+  mtwCut = 0.;
+  trileptonChannel = true;
+
 
   // Loop for parsing command line arguments.
   for (int i = 1; i < argc; ++i){
