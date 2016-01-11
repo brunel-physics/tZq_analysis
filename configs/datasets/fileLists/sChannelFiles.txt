@@ -13,7 +13,16 @@
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile20.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile21.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile22.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile23.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile24.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile25.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile26.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile27.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile28.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile29.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile2.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile30.root
+/nfs/data/tZqSkimsRun2/sChannel_4f/skimFile31.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile3.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile4.root
 /nfs/data/tZqSkimsRun2/sChannel_4f/skimFile5.root

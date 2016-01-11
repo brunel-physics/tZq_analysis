@@ -38,7 +38,15 @@
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile43.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile44.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile45.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile46.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile47.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile48.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile49.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile4.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile50.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile51.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile52.root
+/nfs/data/tZqSkimsRun2/WW2l2nu/skimFile53.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile5.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile6.root
 /nfs/data/tZqSkimsRun2/WW2l2nu/skimFile7.root

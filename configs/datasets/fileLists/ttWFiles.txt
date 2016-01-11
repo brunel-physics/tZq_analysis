@@ -1,7 +1,12 @@
 /nfs/data/tZqSkimsRun2/ttW/skimFile0.root
+/nfs/data/tZqSkimsRun2/ttW/skimFile10.root
+/nfs/data/tZqSkimsRun2/ttW/skimFile11.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile1.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile2.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile3.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile4.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile5.root
 /nfs/data/tZqSkimsRun2/ttW/skimFile6.root
+/nfs/data/tZqSkimsRun2/ttW/skimFile7.root
+/nfs/data/tZqSkimsRun2/ttW/skimFile8.root
+/nfs/data/tZqSkimsRun2/ttW/skimFile9.root

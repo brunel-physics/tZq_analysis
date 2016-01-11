@@ -18,7 +18,6 @@
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile25.root
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile26.root
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile27.root
-/nfs/data/tZqSkimsRun2/WWinclusive/skimFile28.root
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile2.root
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile3.root
 /nfs/data/tZqSkimsRun2/WWinclusive/skimFile4.root
