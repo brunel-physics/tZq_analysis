@@ -153,7 +153,8 @@ class Cuts{
   std::string cutConfTrigLabel_;
 
  public:
-  Cuts(bool,bool,bool,bool,bool);
+  Cuts(bool doPlots,bool fillCutFlows,bool invertIsoCut,bool lepCutFlow, bool dumpEventNumber, const bool aTrileptonChannel) :
+	mTrileptonChannel = aTrileptonChannel;
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
@@ -174,6 +175,11 @@ class Cuts{
   TH1F* getSynchCutFlow();
   int numFound(){return synchCutFlowHist_->GetBinContent(4);};
   void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;};
+
+  private:
+  
+  bool mTrileptonChannel;
+
 };
 
 #endif

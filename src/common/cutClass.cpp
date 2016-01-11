@@ -362,13 +362,14 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
 	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 	  closestMass = invMass;
-	  //Now set up W lepton.
-	  if (electrons.size() == 2) {
+	  //Now set up W lepton for trilepton channel if two electrons ...
+	  if (electrons.size() == 2 && mTrileptonChannel == true) {
 	    event->wLepton = TLorentzVector(event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]);
 	    event->wLeptonRelIso = event->muonPF2PATComRelIsodBeta[muons[0]];
 	    event->wLepIndex = muons[0];
 	  }
-	  else {
+	  //Else for other trilepton electron channels and dilepton channels
+	  else { 
 	    for (unsigned int k = 0; k < electrons.size(); k++){
 	      if (k == i || k == j) continue;
 	      event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[k]],event->elePF2PATGsfPy[electrons[k]],event->elePF2PATGsfPz[electrons[k]],event->elePF2PATGsfE[electrons[k]]);
@@ -395,12 +396,13 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
 	  event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
 	  closestMass = invMass;
-	  //Now set up W lepton.
-	  if (muons.size() ==2){
+	  //Now set up W lepton for trilepton channel if two muons ...
+	  if (muons.size() ==2 && mTrileptonChannel == true){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
 	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
 	    event->wLepIndex = electrons[0];
 	  }
+	  //Else for other trilepton muon channels and dilepton channels
 	  else {
 	    for (unsigned int k = 0; k < muons.size(); k++){
 	      if (k == i || k == j) continue;
