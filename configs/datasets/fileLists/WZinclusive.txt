@@ -1,4 +1,6 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile0.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile1.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile10.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile100.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile101.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile102.root
@@ -9,7 +11,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile107.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile108.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile109.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile10.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile11.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile110.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile111.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile112.root
@@ -20,7 +22,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile117.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile118.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile119.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile11.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile12.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile120.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile121.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile122.root
@@ -31,7 +33,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile127.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile128.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile129.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile12.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile13.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile130.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile131.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile132.root
@@ -42,7 +44,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile137.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile138.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile139.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile13.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile14.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile140.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile141.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile142.root
@@ -53,7 +55,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile147.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile148.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile149.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile14.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile15.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile150.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile151.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile152.root
@@ -64,7 +66,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile157.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile158.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile159.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile15.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile16.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile160.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile161.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile162.root
@@ -75,7 +77,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile167.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile168.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile169.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile16.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile17.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile170.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile171.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile172.root
@@ -86,7 +88,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile177.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile178.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile179.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile17.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile18.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile180.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile181.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile182.root
@@ -97,7 +99,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile187.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile188.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile189.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile18.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile19.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile190.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile191.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile192.root
@@ -108,8 +110,8 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile197.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile198.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile199.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile19.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile1.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile2.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile20.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile200.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile201.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile202.root
@@ -120,7 +122,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile207.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile208.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile209.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile20.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile21.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile210.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile211.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile212.root
@@ -131,7 +133,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile217.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile218.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile219.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile21.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile22.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile220.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile221.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile222.root
@@ -142,7 +144,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile227.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile228.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile229.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile22.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile23.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile230.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile231.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile232.root
@@ -153,7 +155,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile237.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile238.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile239.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile23.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile24.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile240.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile241.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile242.root
@@ -164,7 +166,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile247.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile248.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile249.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile24.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile25.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile250.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile251.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile252.root
@@ -175,7 +177,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile257.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile258.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile259.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile25.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile26.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile260.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile261.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile262.root
@@ -186,7 +188,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile267.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile268.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile269.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile26.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile27.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile270.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile271.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile272.root
@@ -197,7 +199,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile277.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile278.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile279.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile27.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile28.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile280.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile281.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile282.root
@@ -208,7 +210,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile287.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile288.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile289.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile28.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile29.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile290.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile291.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile292.root
@@ -219,38 +221,12 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile297.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile298.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile299.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile29.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile2.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile3.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile30.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile300.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile301.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile302.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile303.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile304.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile305.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile306.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile307.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile308.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile309.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile30.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile310.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile311.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile312.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile313.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile314.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile315.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile316.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile317.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile318.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile319.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile31.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile320.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile321.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile322.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile323.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile324.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile325.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile326.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile327.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile32.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile33.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile34.root
@@ -259,7 +235,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile37.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile38.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile39.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile3.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile4.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile40.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile41.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile42.root
@@ -270,7 +246,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile47.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile48.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile49.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile4.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile5.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile50.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile51.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile52.root
@@ -281,7 +257,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile57.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile58.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile59.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile5.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile6.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile60.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile61.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile62.root
@@ -292,7 +268,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile67.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile68.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile69.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile6.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile7.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile70.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile71.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile72.root
@@ -303,7 +279,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile77.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile78.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile79.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile7.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile8.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile80.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile81.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile82.root
@@ -314,7 +290,7 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile87.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile88.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile89.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile8.root
+/nfs/data/tZqSkimsRun2/WZJets/skimFile9.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile90.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile91.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile92.root
@@ -325,4 +301,3 @@
 /nfs/data/tZqSkimsRun2/WZJets/skimFile97.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile98.root
 /nfs/data/tZqSkimsRun2/WZJets/skimFile99.root
-/nfs/data/tZqSkimsRun2/WZJets/skimFile9.root
