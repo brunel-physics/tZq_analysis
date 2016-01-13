@@ -1272,10 +1272,10 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
     leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
     leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
   }
-  if (numTightEle_ == 3 || numTightEle_ == 1){
+  if (trileptonChannel_ == true && (numTightEle_ == 3 || numTightEle_ == 1)){
     leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
   }
-  else{
+  else if (trileptonChannel_ == true){
     leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
   }
   return leptonWeight;
