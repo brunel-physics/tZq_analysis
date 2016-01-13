@@ -689,11 +689,6 @@ public :
    int wLepIndex;
    float wLeptonRelIso;
 
-   TLorentzVector wUpQuark;
-   int wUpIndex;
-   TLorentzVector wDownQuark;
-   int wDownIndex;
-
    Int_t numVert;
    TBranch * b_numVert;
 
