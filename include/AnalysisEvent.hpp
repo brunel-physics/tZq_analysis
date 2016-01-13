@@ -683,7 +683,6 @@ public :
    std::pair<int,int> zPairIndex;
 
    std::pair<TLorentzVector,TLorentzVector> wPairQuarks;
-   std::pair<float,float> wPairRelIso;
    std::pair<int,int> wPairIndex;
 
    TLorentzVector wLepton;
