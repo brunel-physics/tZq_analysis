@@ -677,16 +677,24 @@ public :
    std::vector<int> muonIndexLoose;
    std::vector<int> jetIndex;
    std::vector<int> bTagIndex; 
+
    std::pair<TLorentzVector,TLorentzVector> zPairLeptons;
    std::pair<float,float> zPairRelIso;
-   std::pair<int,int> zPairIndex; 
+   std::pair<int,int> zPairIndex;
+
+   std::pair<TLorentzVector,TLorentzVector> wPairQuarks;
+   std::pair<float,float> wPairRelIso;
+   std::pair<int,int> wPairIndex;
+
    TLorentzVector wLepton;
    int wLepIndex;
    float wLeptonRelIso;
+
    TLorentzVector wUpQuark;
    int wUpIndex;
    TLorentzVector wDownQuark;
    int wDownIndex;
+
    Int_t numVert;
    TBranch * b_numVert;
 
