@@ -895,6 +895,11 @@ int Cuts::getLooseMus(AnalysisEvent* event){
 
 //First tentative attempt at doing the background isolation. 
 bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow){
+
+  if (trileptonChannel_ == false){
+    std::cout << "Invert Iso Cut is not avaliable for the dilepton channel." << std::endl;
+    return false;
+  }
   //Check there are exactly 2 tight leptons with the correct isolation cut.
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
@@ -913,7 +918,7 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::st
     event->zPairIndex.first = lep1.Pt() > lep2.Pt() ? event->electronIndexTight[0] : event->electronIndexTight[1];
     event->zPairLeptons.second = lep1.Pt() > lep2.Pt() ? lep2:lep1;
     event->zPairIndex.second = lep1.Pt() > lep2.Pt() ? event->electronIndexTight[1] : event->electronIndexTight[0];
-    invMass = (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.;
+    invMass = (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1;
   }
   else{
     if (event->muonIndexTight.size() < 2) return false;
@@ -922,7 +927,7 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::st
     event->zPairIndex.first = event->muonIndexTight[0];
     event->zPairLeptons.second = TLorentzVector(event->muonPF2PATPX[event->muonIndexTight[1]],event->muonPF2PATPY[event->muonIndexTight[1]],event->muonPF2PATPZ[event->muonIndexTight[1]],event->muonPF2PATE[event->muonIndexTight[1]]);
     event->zPairIndex.second = event->muonIndexTight[1];
-    invMass = (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.;
+    invMass = (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1;
   }
   
   //Get rev iso candidates.

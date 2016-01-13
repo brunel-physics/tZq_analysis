@@ -708,11 +708,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	  invertIsoCut = false;
 	  chanName += "nom";
 	}
-	if (channelInd & 56){ //inv iso samples
-	  cutObj->setInvIsoCut(true);
-	  invertIsoCut = true;
-	  chanName += "inv";
-	}
       } 
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
