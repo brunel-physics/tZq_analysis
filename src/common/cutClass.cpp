@@ -238,7 +238,19 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
 
   //Should I make it return which leptons are the zMass candidate? Probably.
-  float invMass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
+  float invMass (9999);
+  if (trileptonChannel_ == true){
+    invMass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
+  }
+  else if (trileptonChannel_ == false){
+    invMass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
+  }
+  else{
+    std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
+    std::cout << "HOW?! Well done for breaking this ..." << std::endl;
+    exit(0);
+  }
+
   * eventWeight *= getLeptonWeight(event);
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_){
@@ -348,7 +360,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
 float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
   float closestMass = 9999.;
   //Use electrons if there are at least 2. Otherwise use muons.
-  if (electrons.size() > 1){
+  if (electrons.size() > 1){ // electrons.size() == number of electrons for selected channel
     for (unsigned int i = 0; i < electrons.size(); i++){
       for (unsigned int j = i + 1; j < electrons.size(); j++) {
 	if (event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] > 0) continue;
@@ -416,6 +428,33 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
     }
   }
   return closestMass;
+}
+
+float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
+  float invMass (9999.);
+  //Check if there are at least two electrons first. Otherwise use muons.
+  if (electrons.size() == 2){  // electrons.size() == number of electrons for selected channel
+    if (event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] > 0) return invMass; // check electrons have charge.
+    TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
+    TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[1]],event->elePF2PATGsfPy[electrons[1]],event->elePF2PATGsfPz[electrons[1]],event->elePF2PATGsfE[electrons[1]]);
+    invMass = (lepton1 + lepton2).M() -91;
+    // Now to set up the W up type quark and down type quark
+  } 
+  else if (muons.size() == 2){
+    if (event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return invMass;
+    TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]);
+    TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[1]],event->muonPF2PATPY[muons[1]],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]);
+    float invMass = (lepton1 + lepton2).M() -91;
+    // set up the tlorentz vectors in the event. For plotting and jazz.
+    event->zPairLeptons.first = lepton1;
+    event->zPairIndex.first = muons[0];
+    event->zPairLeptons.second = lepton2;
+    event->zPairIndex.second = muons[1];
+    event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[0]];
+    event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[1]];
+    //Now set up W up type quark and down type quark
+  }
+  return invMass;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex){
