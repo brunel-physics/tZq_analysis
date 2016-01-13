@@ -1164,7 +1164,7 @@ double Cuts::deltaR(float eta1, float phi1, float eta2, float phi2){
 //For dumping contents of step 4. Bit more complicated than old, so doing it elsewhere.
 void Cuts::dumpToFile(AnalysisEvent* event, int step){
   std::vector<TLorentzVector> tempLepVec;
-  if (step > 2){
+  if (step > 2 && trileptonChannel_ == true){
     if (event->zPairLeptons.first.Pt() < event->wLepton.Pt()){
       tempLepVec.push_back(event->wLepton);
       tempLepVec.push_back(event->zPairLeptons.first);
@@ -1181,7 +1181,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       tempLepVec.push_back(event->wLepton);
     }
   }
-  if (step==2){
+  if (step==2 && trileptonChannel_ == true){
     int muUsed = 0;
     for (int i = 0; i < event->numElePF2PAT; i++){
       TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
