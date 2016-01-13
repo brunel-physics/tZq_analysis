@@ -52,7 +52,7 @@ class Cuts{
   bool invertIsoCut_; // For background estimation
   bool synchCutFlow_; //For synch
   bool singleEventInfoDump_; //For dropping info on event for synching.
-  bool trileptonChannel_;
+  const bool trileptonChannel_;
 
   // Tight electron cuts
   unsigned int numTightEle_;

@@ -479,7 +479,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 		    (event->jetPF2PATPID[jets[j]] == -5 && (event->jetPF2PATPID[jets[i]] == 2 || event->jetPF2PATPID[jets[i]] == 4 )) ){
 	    // Check b jet isn't leading bjet!
 	    event->bTagIndex = makeBCuts(event,event->jetIndex);
-	    if( fabs(event->jetPF2PATPID[jets[i]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]] || fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]]) continue;
+	    if( (fabs(event->jetPF2PATPID[jets[i]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]]) || (fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]]) ) continue;
 	    TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[i]],event->jetPF2PATPy[jets[i]],event->jetPF2PATPz[jets[i]],event->jetPF2PATE[jets[i]]);
 	    TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[j]],event->jetPF2PATPy[jets[j]],event->jetPF2PATPz[jets[1]],event->jetPF2PATE[jets[j]]);
 	    float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
@@ -539,7 +539,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 		    (event->jetPF2PATPID[jets[j]] == -5 && (event->jetPF2PATPID[jets[i]] == 2 || event->jetPF2PATPID[jets[i]] == 4 )) ){
 	    // Check b jet isn't leading bjet!
 	    event->bTagIndex = makeBCuts(event,event->jetIndex);
-	    if( fabs(event->jetPF2PATPID[jets[i]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]] || fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]]) continue;
+	    if( (fabs(event->jetPF2PATPID[jets[i]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]]) || (fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]])) continue;
 	    TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[i]],event->jetPF2PATPy[jets[i]],event->jetPF2PATPz[jets[i]],event->jetPF2PATE[jets[i]]);
 	    TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[j]],event->jetPF2PATPy[jets[j]],event->jetPF2PATPz[jets[1]],event->jetPF2PATE[jets[j]]);
 	    float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
@@ -744,6 +744,11 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 //Does the cuts required for the synchronisation.
 bool Cuts::synchCuts(AnalysisEvent* event){
   //Trigger stuff would go first, but in MC at least (what I'm starting with) I don't have that saved. Idiot.
+
+  if ( trileptonChannel_ == false ){
+    std::cout << "Not setup for dilepton synch cuts yet. Exiting program!" << std::endl;
+    exit(2);
+  }
   
   if (singleEventInfoDump_){
     std::cout << std::setprecision(6) << std::fixed;
