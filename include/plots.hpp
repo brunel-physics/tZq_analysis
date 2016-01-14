@@ -80,9 +80,10 @@ class Plots{
   float fillzLepDelPhi(AnalysisEvent*);
   float filllbDelR(AnalysisEvent*);
   float filllbDelPhi(AnalysisEvent*);
+  const bool trileptonChannel_;
 
  public:
-  Plots(std::vector<std::string>,std::vector<float>,std::vector<float>,std::vector<int>,std::vector<std::string>, std::vector<std::string>, std::vector<int>, unsigned int, std::string postfixName="");
+  Plots(std::vector<std::string>,std::vector<float>,std::vector<float>,std::vector<int>,std::vector<std::string>, std::vector<std::string>, std::vector<int>, unsigned int, std::string postfixName="", const bool trileptonChannel = true);
   ~Plots();
   void fillAllPlots(AnalysisEvent*, float);
   void saveAllPlots();

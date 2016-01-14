@@ -4,7 +4,11 @@
 #include <iomanip>
 #include "TLorentzVector.h"
 
-Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned int thisCutStage, std::string postfixName){
+Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned int thisCutStage, std::string postfixName, const bool trileptonChannel):
+
+  trileptonChannel_(trileptonChannel)
+
+{
   //Get the function pointer map for later custopmisation. This is gonna be great, I promise.
   std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap = getFncPtrMap();
   plotPoint = std::vector<plot>(names.size());
