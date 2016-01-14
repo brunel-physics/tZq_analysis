@@ -267,8 +267,8 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
 void AnalysisAlgo::show_usage(std::string name){
   std::cerr << "Usage: " << name << " <options>"
 	    << "Options:\n"
-	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over\n"
-            << "\t--dilepton \t The dilepton channel is set to be run over instead of the default trilepton channel."
+	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over.\n"
+            << "\t--dilepton \t Look for dilepto final state instead of the default trilepton channel.\n"
 	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
             << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
             << "\t-l\t\t\t\tIf this option is set, scale MC plots to a fixed lumi. Default is lumi from data samples.\n"

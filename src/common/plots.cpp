@@ -49,7 +49,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3RelIso",&Plots::fillLepton3RelIso));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3MVA",&Plots::fillLepton3MVA));
   }
-  else{
+  else if (!trileptonChannel_){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Pt",&Plots::fillWbosonQuark1Pt));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Eta",&Plots::fillWbosonQuark1Eta));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Phi",&Plots::fillWbosonQuark1Phi));
