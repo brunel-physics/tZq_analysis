@@ -18,9 +18,15 @@ class Plots{
   float fillLepton2Eta(AnalysisEvent*);
   float fillLepton3Pt(AnalysisEvent*);
   float fillLepton3Eta(AnalysisEvent*);
+  float fillWbosonQuark1Pt(AnalysisEvent*);
+  float fillWbosonQuark1Eta(AnalysisEvent*);
+  float fillWbosonQuark2Pt(AnalysisEvent*);
+  float fillWbosonQuark2Eta(AnalysisEvent*);
   float fillLepton1Phi(AnalysisEvent*);
   float fillLepton2Phi(AnalysisEvent*);
   float fillLepton3Phi(AnalysisEvent*);
+  float fillWbosonQuark1Phi(AnalysisEvent*);
+  float fillWbosonQuark2Phi(AnalysisEvent*);
   float fillLepton1RelIso(AnalysisEvent*);
   float fillLepton2RelIso(AnalysisEvent*);
   float fillLepton3RelIso(AnalysisEvent*);
@@ -97,3 +103,4 @@ struct plot{
 };
 
 #endif // _plots_hpp_ endif
+
