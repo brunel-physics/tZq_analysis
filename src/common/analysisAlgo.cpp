@@ -735,7 +735,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()] = std::map<std::string,Plots*>();
 	      for (unsigned int j = 0; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel);
+		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel);
 	      }
 	    }
 	  }//end cutFlow find loop

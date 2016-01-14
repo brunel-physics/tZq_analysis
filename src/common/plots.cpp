@@ -35,17 +35,29 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1Eta",&Plots::fillLepton1Eta));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2Pt",&Plots::fillLepton2Pt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2Eta",&Plots::fillLepton2Eta));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Pt",&Plots::fillLepton3Pt));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Eta",&Plots::fillLepton3Eta));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1RelIso",&Plots::fillLepton1RelIso));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2RelIso",&Plots::fillLepton2RelIso));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3RelIso",&Plots::fillLepton3RelIso));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1Phi",&Plots::fillLepton1Phi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2Phi",&Plots::fillLepton2Phi));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Phi",&Plots::fillLepton3Phi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1MVA",&Plots::fillLepton1MVA));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2MVA",&Plots::fillLepton2MVA));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3MVA",&Plots::fillLepton3MVA));
+
+  if (trileptonChannel_){
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Pt",&Plots::fillLepton3Pt));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Eta",&Plots::fillLepton3Eta));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Phi",&Plots::fillLepton3Phi));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3RelIso",&Plots::fillLepton3RelIso));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3MVA",&Plots::fillLepton3MVA));
+  }
+  else{
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Pt",&Plots::fillWbosonQuark1Pt));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Eta",&Plots::fillWbosonQuark1Eta));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Phi",&Plots::fillWbosonQuark1Phi));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Pt",&Plots::fillWbosonQuark2Pt));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Eta",&Plots::fillWbosonQuark2Eta));
+    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Phi",&Plots::fillWbosonQuark2Phi));
+  }
+
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("met",&Plots::fillMetPlot));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("numbJets",&Plots::getNumberOfJets));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("leadingJetPt",&Plots::fillLeadingJetPt));
@@ -74,16 +86,16 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lepMass",&Plots::fillLeptonMass));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1D0",&Plots::fillLepton1D0));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2D0",&Plots::fillLepton2D0));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3D0",&Plots::fillLepton3D0));  
+  if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3D0",&Plots::fillLepton3D0));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1DBD0",&Plots::fillLepton1DBD0));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2DBD0",&Plots::fillLepton2DBD0));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3DBD0",&Plots::fillLepton3DBD0));  
+  if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3DBD0",&Plots::fillLepton3DBD0));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1BeamSpotCorrectedD0",&Plots::fillLepton1BeamSpotCorrectedD0));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2BeamSpotCorrectedD0",&Plots::fillLepton2BeamSpotCorrectedD0));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3BeamSpotCorrectedD0",&Plots::fillLepton3BeamSpotCorrectedD0));  
+  if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3BeamSpotCorrectedD0",&Plots::fillLepton3BeamSpotCorrectedD0));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1InnerTrackD0",&Plots::fillLepton1InnerTrackD0));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2InnerTrackD0",&Plots::fillLepton2InnerTrackD0));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3InnerTrackD0",&Plots::fillLepton3InnerTrackD0));  
+  if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3InnerTrackD0",&Plots::fillLepton3InnerTrackD0));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wTransverseMass",&Plots::fillwTransverseMass));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("jjDelR",&Plots::filljjDelR));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepDelR",&Plots::fillzLepDelR));  
