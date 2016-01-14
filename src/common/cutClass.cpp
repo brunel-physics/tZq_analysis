@@ -195,6 +195,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     else {
       if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
       else postLepSelTree3_->Fill();
+
     }
   }
 
@@ -236,7 +237,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->muonIndexLoose = getLooseMuons(event);
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
-
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invMass (9999);
   if (trileptonChannel_ == true){
@@ -250,10 +250,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     std::cout << "HOW?! Well done for breaking this ..." << std::endl;
     exit(0);
   }
+
   * eventWeight *= getLeptonWeight(event);
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_){
     cutFlow->Fill(0.5,*eventWeight);
+
   }
 
   if (fabs(invMass) > invZMassCut_) return false;
@@ -433,68 +435,72 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
   float invZbosonMass (9999.);
   float closestWmass (9999.);
   //Check if there are at least two electrons first. Otherwise use muons.
-  if (electrons.size() == 2){  // electrons.size() == number of electrons for selected channel
-    if (event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] > 0) return invZbosonMass; // check electrons have charge.
-    TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
-    TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[1]],event->elePF2PATGsfPy[electrons[1]],event->elePF2PATGsfPz[electrons[1]],event->elePF2PATGsfE[electrons[1]]);
-    invZbosonMass = (lepton1 + lepton2).M() -91.1;
-    event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-    event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[0]:electrons[1];
-    event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[0]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[1]]/lepton2.Pt();
-    event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[1]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[0]]/lepton1.Pt();
-    event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-    event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[1]:electrons[0];
-
-    // Now to set up the W up type quark and down type quark
-    if ( jets.size() > 3 )
-      for ( uint i = 0; i < jets.size(); i++ ){
-	for ( uint j = i + 1; j < jets.size(); j++ ){
-	  // check that one of the two compared jets aren't neutral.
-	  if ( event->jetPF2PATJetCharge[jets[i]] * event->jetPF2PATJetCharge[jets[j]] != 0 ) continue;
-	  // Now ensure that the jet flavours are compatible with a W+ decay eg. W+ -> up type quark and down type antiquark.
-	  if ( (event->jetPF2PATPID[jets[i]] == 2 && (event->jetPF2PATPID[jets[j]] == -1 || event->jetPF2PATPID[jets[j]] == -3)) || 
-	       (event->jetPF2PATPID[jets[i]] == 4 && (event->jetPF2PATPID[jets[j]] == -1 || event->jetPF2PATPID[jets[j]] == -3)) || 
-	       (event->jetPF2PATPID[jets[i]] == 1 && (event->jetPF2PATPID[jets[j]] == -2 || event->jetPF2PATPID[jets[j]] == -4)) || 
-	       (event->jetPF2PATPID[jets[i]] == 3 && (event->jetPF2PATPID[jets[j]] == -2 || event->jetPF2PATPID[jets[j]] == -4)) ||
-	       (event->jetPF2PATPID[jets[i]] == -2 && (event->jetPF2PATPID[jets[j]] == 1 || event->jetPF2PATPID[jets[j]] == 3)) || 
-	       (event->jetPF2PATPID[jets[i]] == -4 && (event->jetPF2PATPID[jets[j]] == 1 || event->jetPF2PATPID[jets[j]] == 3)) || 
-	       (event->jetPF2PATPID[jets[i]] == -1 && (event->jetPF2PATPID[jets[j]] == 2 || event->jetPF2PATPID[jets[j]] == 4)) || 
-	       (event->jetPF2PATPID[jets[i]] == -3 && (event->jetPF2PATPID[jets[j]] == 2 || event->jetPF2PATPID[jets[j]] == 4)) ){
-	    TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[i]],event->jetPF2PATPy[jets[i]],event->jetPF2PATPz[jets[i]],event->jetPF2PATE[jets[i]]);
-	    TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[j]],event->jetPF2PATPy[jets[j]],event->jetPF2PATPz[jets[j]],event->jetPF2PATE[jets[j]]);
-	    float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
-	    if( fabs(invWbosonMass) < fabs(closestWmass) ){
-	      event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
-	      event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[i]:jets[j];
-	      event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
-	      event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[j]:jets[i];
-	      closestWmass = invWbosonMass;
+  
+  if (electrons.size() > 1){
+    for ( uint i = 0; i < electrons.size(); i++ ){
+      for ( uint j = i+1; j < electrons.size(); j++ ){
+        if (event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) continue; // check electron pair have correct charge.
+        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
+        TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]);
+        invZbosonMass = (lepton1 + lepton2).M() -91.1;
+        event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+        event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
+        event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
+        event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+        event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+        event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
+  
+        // Now to set up the W up type quark and down type quark
+        if ( jets.size() > 3 )
+          for ( uint k = 0; k < jets.size(); k++ ){
+  	    for ( uint l = k + 1; l < jets.size(); l++ ){
+	      // check that one of the two compared jets aren't neutral.
+	      if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] != 0 ) continue;
+	      // Now ensure that the jet flavours are compatible with a W+ decay eg. W+ -> up type quark and down type antiquark.
+	      if ( (event->jetPF2PATPID[jets[k]] == 2 && (event->jetPF2PATPID[jets[l]] == -1 || event->jetPF2PATPID[jets[l]] == -3)) || 
+	           (event->jetPF2PATPID[jets[k]] == 4 && (event->jetPF2PATPID[jets[l]] == -1 || event->jetPF2PATPID[jets[l]] == -3)) || 
+	           (event->jetPF2PATPID[jets[k]] == 1 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4)) || 
+	           (event->jetPF2PATPID[jets[k]] == 3 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4)) ||
+	           (event->jetPF2PATPID[jets[k]] == -2 && (event->jetPF2PATPID[jets[l]] == 1 || event->jetPF2PATPID[jets[l]] == 3)) || 
+	           (event->jetPF2PATPID[jets[k]] == -4 && (event->jetPF2PATPID[jets[l]] == 1 || event->jetPF2PATPID[jets[l]] == 3)) || 
+	           (event->jetPF2PATPID[jets[k]] == -1 && (event->jetPF2PATPID[jets[l]] == 2 || event->jetPF2PATPID[jets[l]] == 4)) || 
+	           (event->jetPF2PATPID[jets[k]] == -3 && (event->jetPF2PATPID[jets[l]] == 2 || event->jetPF2PATPID[jets[l]] == 4)) ){
+	           TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]);
+	           TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
+	           float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
+	           if( fabs(invWbosonMass) < fabs(closestWmass) ){
+	             event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
+	             event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];
+	             event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
+	             event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[l]:jets[k];
+	             closestWmass = invWbosonMass;
+	          }
+	    }
+	    // Separate check for b quarks to ensure we aren't using the leading bjet - that would be the b from the top decay!.
+	    else if ( (event->jetPF2PATPID[jets[k]] == 5 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4 )) || 
+	  	    (event->jetPF2PATPID[jets[k]] == 5 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4 )) || 
+	  	    (event->jetPF2PATPID[jets[l]] == -5 && (event->jetPF2PATPID[jets[k]] == 2 || event->jetPF2PATPID[jets[k]] == 4 )) ||
+	  	    (event->jetPF2PATPID[jets[l]] == -5 && (event->jetPF2PATPID[jets[k]] == 2 || event->jetPF2PATPID[jets[k]] == 4 )) ){
+	      // Check b jet isn't leading bjet!
+	      event->bTagIndex = makeBCuts(event,event->jetIndex);
+//	      if( (fabs(event->jetPF2PATPID[jets[]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]]) || (fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]]) ) continue;
+	      LorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[i]],event->jetPF2PATPy[jets[i]],event->jetPF2PATPz[jets[i]],event->jetPF2PATE[jets[i]]);
+	      TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[j]],event->jetPF2PATPy[jets[j]],event->jetPF2PATPz[jets[1]],event->jetPF2PATE[jets[j]]);
+	      float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
+	      if( fabs(invWbosonMass) < fabs(closestWmass) ){
+	        event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
+	        event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[i]:jets[j];
+	        event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
+	        event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[j]:jets[i];
+	        closestWmass = invWbosonMass;
+	      }
 	    }
 	  }
-	  // Separate check for b quarks to ensure we aren't using the leading bjet - that would be the b from the top decay!.
-	  else if ( (event->jetPF2PATPID[jets[i]] == 5 && (event->jetPF2PATPID[jets[j]] == -2 || event->jetPF2PATPID[jets[j]] == -4 )) || 
-		    (event->jetPF2PATPID[jets[i]] == 5 && (event->jetPF2PATPID[jets[j]] == -2 || event->jetPF2PATPID[jets[j]] == -4 )) || 
-		    (event->jetPF2PATPID[jets[j]] == -5 && (event->jetPF2PATPID[jets[i]] == 2 || event->jetPF2PATPID[jets[i]] == 4 )) ||
-		    (event->jetPF2PATPID[jets[j]] == -5 && (event->jetPF2PATPID[jets[i]] == 2 || event->jetPF2PATPID[jets[i]] == 4 )) ){
-	    // Check b jet isn't leading bjet!
-	    event->bTagIndex = makeBCuts(event,event->jetIndex);
-	    if( (fabs(event->jetPF2PATPID[jets[i]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[i]]) || (fabs(event->jetPF2PATPID[jets[j]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[j]]) ) continue;
-	    TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[i]],event->jetPF2PATPy[jets[i]],event->jetPF2PATPz[jets[i]],event->jetPF2PATE[jets[i]]);
-	    TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[j]],event->jetPF2PATPy[jets[j]],event->jetPF2PATPz[jets[1]],event->jetPF2PATE[jets[j]]);
-	    float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
-	    if( fabs(invWbosonMass) < fabs(closestWmass) ){
-	      event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
-	      event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[i]:jets[j];
-	      event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
-	      event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[j]:jets[i];
-	      closestWmass = invWbosonMass;
-	    }
-	  }
-	}
-      }
+        }
+     }
   } 
   else if (muons.size() == 2){
-    if (event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return invZbosonMass;
+    if (event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] >= 0) return invZbosonMass;
     TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]);
     TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[1]],event->muonPF2PATPY[muons[1]],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]);
     invZbosonMass = (lepton1 + lepton2).M() -91.1;
@@ -1270,23 +1276,43 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 }
 
 float Cuts::getLeptonWeight(AnalysisEvent * event){
-  //If numbm of electrons is > 1  then both z pair are electrons, so get their weight
+  //If number of electrons is > 1  then both z pair are electrons, so get their weight
   if (!isMC_) return 1.;
   float leptonWeight = 1.;
-  if (numTightEle_ > 1){
-    leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-    leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+  if (trileptonChannel_ == true){
+    if (numTightEle_ > 1){
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+    }
+    else{
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+    }
+    if (numTightEle_ == 3 || numTightEle_ == 1){
+      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+    }
+    else{
+      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+    }
   }
+
+  else if(trileptonChannel_ == false){
+    if (numTightEle_ == 2 && ){
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+    }
+    else if (numTightMu_ == 2){
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+    }
+  }
+
   else{
-    leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-    leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+    std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
+    std::cout << "HOW?! Well done for breaking this ..." << std::endl;
+    exit(0);
   }
-  if (trileptonChannel_ == true && (numTightEle_ == 3 || numTightEle_ == 1)){
-    leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
-  }
-  else if (trileptonChannel_ == true){
-    leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
-  }
+
   return leptonWeight;
   
 }
