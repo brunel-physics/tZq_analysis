@@ -622,7 +622,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     //std::cerr << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99)) << "\t" << std::abs(event->jetPF2PATEta[i]) << "\t" <<  (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99) <<  "\t" << (event->jetPF2PATChargedHadronEnergyFraction[i] > 0.) << "\t" << (event->jetPF2PATChargedMultiplicity[i] > 0.)  << "\t" << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.))) << std::endl;
     if (jetIDDo_ && !((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.)))) continue;
     double deltaLep = 10000.;
-/*    double deltaQuark = 10000.;*/
+//    double deltaQuark = 10000.;
     //Testing out if electron only cleaning works.
     /*    if (event->electronIndexTight.size() > 1){
       if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]))
@@ -636,23 +636,26 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
 	deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]);
 	}*/
     //    else { deltaLep = 10000.;}
+
     if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi());
     if (deltaLep > deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),jetVec.Eta(),jetVec.Phi());
 
-    if (trileptonChannel_ && deltaLep > deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi()))
+    if (trileptonChannel_ == true && deltaLep > deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi());
-    /*
+
+/*
     if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaQuark = deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi());
 	
     if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaQuark = deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi());
 */
+
     //std::cout << event->jetPF2PATPtRaw[i] << " " << deltaLep << std::endl;
     if (deltaLep < 0.5) continue;
-/*    if (deltaQuark < 1.0 && !trileptonChannel_) continue;*/
+//    if (deltaQuark < 1.0 && !trileptonChannel_) continue;
     //    if (event->jetPF2PATdRClosestLepton[i] < 0.5) continue;
     if (isMC_ && makeBTagEffPlots_){
       //Fill eff info here if needed.
