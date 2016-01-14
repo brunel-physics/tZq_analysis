@@ -568,8 +568,10 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 }
 
 float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex){
- 
-  float topMass = ((event->wLepton).M() + getLeadingBjetMass( event, bTagIndex ) + event->metPF2PATPt);
+
+  float leadingBjetMass = getLeadingBjetMass( event, bTagIndex );
+  if (leadingBjetMass == -1.0) return -1.0;
+  float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATPt);
 
   return topMass;
 }
@@ -583,8 +585,8 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets){
 
     for (std::vector<int>::const_iterator lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
 
-      if (bJets[*lIt] < int(numJets_)) return 9999.;
-      if (bJets[*lIt] > int(maxJets_)) return 9999.;
+      if (bJets[*lIt] < int(numJets_)) return -1.0;
+      if (bJets[*lIt] > int(maxJets_)) return -1.0;
 
       if ( event->jetPF2PATPtRaw[bJets[*lIt]] > leadingBjetPt ){
 	leadingBjetPt = event->jetPF2PATPtRaw[bJets[*lIt]];
