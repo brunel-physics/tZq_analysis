@@ -1,1 +1,1 @@
-/nfs/data/tZqSkimsRun2/tZq_synchTest/skimFile0.root
+/scratch/data/tZqSkimsRun2/tZq_synchTest/skimFile0.root
