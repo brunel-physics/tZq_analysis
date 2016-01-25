@@ -26,6 +26,7 @@ class Cuts{
   std::vector<int> getLooseMuons(AnalysisEvent* event);
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>, std::vector<int>);
+  void setupWbosonQuarks(AnalysisEvent*, std::vector<int>);
   float getTopMass(AnalysisEvent*, std::vector<int>);
   float getLeadingBjetMass(AnalysisEvent*, std::vector<int>);
   float getLeadingBjetPt(AnalysisEvent*, std::vector<int>);
