@@ -161,27 +161,27 @@ float Plots::fillLepton3Eta(AnalysisEvent* event){
 }
 
 float Plots::fillWbosonQuark1Pt(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.first.Pt();
 }
 
 float Plots::fillWbosonQuark1Eta(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.first.Eta();
 }
 
 float Plots::fillWbosonQuark1Phi(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.first.Phi();
 }
 
 float Plots::fillWbosonQuark2Pt(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.second.Pt();
 }
 
 float Plots::fillWbosonQuark2Eta(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.second.Eta();
 }
 
 float Plots::fillWbosonQuark2Phi(AnalysisEvent* event){
-  return -10;
+  return event->wPairQuarks.second.Phi();
 }
 
 float Plots::fillLepton1RelIso(AnalysisEvent* event){
