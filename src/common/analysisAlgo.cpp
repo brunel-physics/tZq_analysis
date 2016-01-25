@@ -945,6 +945,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	
 	  }
 	  eventWeight*=datasetWeight;
+	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
 	    if (systInd) systMask = systMask << 1;
 	    continue;

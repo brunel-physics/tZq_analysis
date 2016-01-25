@@ -80,6 +80,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   TopMassCutUpper_(155.)
 {
   //Space here in case other stuff needs to be done.
+
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
     synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",9,0,9);
