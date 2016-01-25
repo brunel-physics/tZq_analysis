@@ -199,20 +199,25 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
     }
   }
-
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
-  
+
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
 
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
@@ -253,7 +258,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   }
 
   * eventWeight *= getLeptonWeight(event);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
+  std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   if(doPlots_||fillCutFlow_){
     cutFlow->Fill(0.5,*eventWeight);
 
@@ -263,8 +270,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   //  plotMap["zMass"]->fillAllPlots(event,eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
-
-  
   return true;
 }
 
