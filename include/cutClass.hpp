@@ -25,8 +25,8 @@ class Cuts{
   std::vector<int> getInvIsoMuons(AnalysisEvent* event);
   std::vector<int> getLooseMuons(AnalysisEvent* event);
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>, std::vector<int>);
-  void setupWbosonQuarks(AnalysisEvent*, std::vector<int>);
+  std::pair<float,float> getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>, std::vector<int>);
+  float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>);
   float getTopMass(AnalysisEvent*, std::vector<int>);
   float getLeadingBjetMass(AnalysisEvent*, std::vector<int>);
   float getLeadingBjetPt(AnalysisEvent*, std::vector<int>);
@@ -84,8 +84,9 @@ class Cuts{
   float looseMuonEta_;
   float looseMuonRelIso_;
   
-  //z cuts
+  //z and w inv cuts
   float invZMassCut_;
+  float invWMassCut_;
 
   //Tight jet cuts
   unsigned int numJets_;
