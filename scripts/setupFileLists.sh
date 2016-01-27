@@ -53,9 +53,9 @@ ls /nfs/data/tZqSkims/tZq4Flavour3Lepton/* -1d >> $TQZ_TOOLS_PATH/configs/datase
 ls /scratch/data/tZqSkimsRun2/tZq_ll_4Flavour3Lepton/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tZqFiles.txt
 ls /scratch/data/tZqSkimsRun2/wPlusJets/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/wPlusJetsFiles.txt
 ls /scratch/data/tZqSkimsRun2/WW2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WW2l2nuFiles.txt
-ls /scratch/data/tZqSkimsRun2/WWinclusive* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WWinclusive.txt
-ls /scratch/data/tZqSkimsRun2/WZJets* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WZinclusive.txt
-ls /scratch/data/tZqSkimsRun2/ZZ2l2nu* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ZZ2l2nuFiles.txt
+ls /scratch/data/tZqSkimsRun2/WWinclusive/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WWinclusive.txt
+ls /scratch/data/tZqSkimsRun2/WZJets/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WZinclusive.txt
+ls /scratch/data/tZqSkimsRun2/ZZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ZZ2l2nuFiles.txt
 ls /scratch/data/tZqSkimsRun2/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ZZ2l2qFiles.txt
 ls /scratch/data/tZqSkimsRun2/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ZZ4lFiles.txt
 
