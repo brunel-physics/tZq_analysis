@@ -206,7 +206,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
-  if ( getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
 
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
 
