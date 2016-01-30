@@ -189,7 +189,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   
   if (!isMC_) if (!triggerCuts(event)) return false;
   //Make lepton cuts. Does the inverted iso cuts if necessary.
-  if( !trileptonChannel_ ) event->jetIndex = makeJetCuts(event, systToRun, eventWeight); // dilepton needs jet cuts before lepton cuts
 
   if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight, plotMap,cutFlow))) return false;
   //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
@@ -203,7 +202,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     }
   }
 
-  if( trileptonChannel_ ) event->jetIndex = makeJetCuts(event, systToRun, eventWeight); // trilepton doesn't need jet cuts until after lepton cuts
+  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
@@ -242,13 +241,13 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //Should I make it return which leptons are the zMass candidate? Probably.
-  std::pair<float,float>invBosonMass = {9999.,9999.}; // zMass and wMass in that order.
+  float invZmass (9999.);
 	
   if (trileptonChannel_ == true){
-    invBosonMass.first = getZCand(event, event->electronIndexTight, event->muonIndexTight);
+    invZmass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
   else if (trileptonChannel_ == false){
-    invBosonMass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight, event->jetIndex);
+    invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
   else{
     std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
@@ -263,8 +262,8 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   }
 
-  if (fabs(invBosonMass.first) > invZMassCut_) return false;
-  if (!trileptonChannel_ && (fabs(invBosonMass.second) > invWMassCut_)) return false;
+  if (fabs(invZmass) > invZMassCut_) return false;
+//  if (!trileptonChannel_ && (fabs(invBosonMass.second) > invWMassCut_)) return false;
 
   //  plotMap["zMass"]->fillAllPlots(event,eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -435,9 +434,9 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
   return closestMass;
 }
 
-std::pair<float,float> Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons, std::vector<int> jets){
+float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
 
-  std::pair<float,float> invBosonMass = {9999.,9999.}; 
+  float closestMass (9999.); 
 
   //Check if there are at least two electrons first. Otherwise use muons.
   
@@ -447,17 +446,20 @@ std::pair<float,float> Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<
         if (event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) continue; // check electron pair have correct charge.
         TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
         TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]);
-        invBosonMass.first = (lepton1 + lepton2).M() -91.1;
-        event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-        event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-        event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
-        event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
-        event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-        event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
+        float invMass  = (lepton1 + lepton2).M() -91.1;
+	if (fabs(invMass) < fabs(closestMass)){
+        	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+        	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
+        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
+        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+        	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+        	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
+		closestMass = invMass;
 	// Now to set up the W up type quark and down type quark
 //	std::cout << "jets.size(): " << jets.size() << std::endl;
-	invBosonMass.second = getWbosonQuarksCand(event, jets);
-      }
+//	invBosonMass.second = getWbosonQuarksCand(event, jets);
+      		}
+	}
     } 
   }
 
@@ -467,21 +469,23 @@ std::pair<float,float> Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<
 	if (event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) continue;
 	TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
-	invBosonMass.first = (lepton1 + lepton2).M() -91.1;
-	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[i]:muons[j];
-	event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
-	event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
-	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[j]:muons[i];
-	
+	float invMass = (lepton1 + lepton2).M() -91.1;
+	if (fabs(invMass) < fabs(closestMass)){
+		event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+		event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[i]:muons[j];
+		event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
+		event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
+		event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+		event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[j]:muons[i];
+		closestMass = invMass;
+		}
 	// Now to set up the W up type quark and down type quark
-	invBosonMass.second = getWbosonQuarksCand(event, jets);
+//	invBosonMass.second = getWbosonQuarksCand(event, jets);
       }
     }
   }
 
-  return invBosonMass;
+  return closestMass;
 }
 
 float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
