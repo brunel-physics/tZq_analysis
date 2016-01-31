@@ -625,6 +625,7 @@ void AnalysisAlgo::setupPlots()
   stageNames.push_back("zMass");
   stageNames.push_back("jetSel");
   stageNames.push_back("bTag");
+  if ( !trileptonChannel ) {stageNames.push_back("wMass");}
 }
 
 void AnalysisAlgo::runMainAnalysis(){
@@ -1130,9 +1131,11 @@ void AnalysisAlgo::savePlots()
 	plotObj.plotHistos(plotsMap[plotsVec[i]]);
     }
     
-    std::vector<std::string> cutFlowLabels (4);
-    cutFlowLabels = {"lepSel","zMass","jetSel","bTag"};
-    //std::cout << cutFlowMap << std::endl;
+    std::vector<std::string> cutFlowLabels;
+    for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
+    	cutFlowLabels.push_back(*lIt);
+    }
+
     plotObj.makePlot(cutFlowMap,"cutFlow",cutFlowLabels);
   }
   if (synchCutFlow){

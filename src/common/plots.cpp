@@ -12,6 +12,7 @@ Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vect
   //Get the function pointer map for later custopmisation. This is gonna be great, I promise.
   std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap = getFncPtrMap();
   plotPoint = std::vector<plot>(names.size());
+  std::cout << "plotPoint.size(): " << plotPoint.size() << std::endl;
   for (unsigned int i = 0; i < names.size(); i++){
     std::string plotName = names[i] + "_" + postfixName;
     plotPoint[i].name = plotName;
@@ -474,7 +475,8 @@ float Plots::fillwTransverseMass(AnalysisEvent* event){
   else if ( !trileptonChannel_ ) {
   return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
   }
-
+  else
+    return -10;
 }
 
 float Plots::filljjDelR(AnalysisEvent* event){

@@ -206,7 +206,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
-  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+//  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
 
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
 
@@ -217,6 +217,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
+
+  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+  if ( doPlots_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+  if ( doPlots_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (event->metPF2PATPt < metCut_) return false;
@@ -264,7 +268,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   }
 
   if (fabs(invZmass) > invZMassCut_) return false;
-//  if (!trileptonChannel_ && (fabs(invBosonMass.second) > invWMassCut_)) return false;
 
   //  plotMap["zMass"]->fillAllPlots(event,eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -456,9 +459,6 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
         	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 		closestMass = invMass;
-	// Now to set up the W up type quark and down type quark
-//	std::cout << "jets.size(): " << jets.size() << std::endl;
-//	invBosonMass.second = getWbosonQuarksCand(event, jets);
       		}
 	}
     } 
@@ -480,8 +480,6 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 		event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[j]:muons[i];
 		closestMass = invMass;
 		}
-	// Now to set up the W up type quark and down type quark
-//	invBosonMass.second = getWbosonQuarksCand(event, jets);
       }
     }
   }
