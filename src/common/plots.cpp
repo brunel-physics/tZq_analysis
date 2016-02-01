@@ -12,7 +12,6 @@ Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vect
   //Get the function pointer map for later custopmisation. This is gonna be great, I promise.
   std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap = getFncPtrMap();
   plotPoint = std::vector<plot>(names.size());
-  std::cout << "plotPoint.size(): " << plotPoint.size() << std::endl;
   for (unsigned int i = 0; i < names.size(); i++){
     std::string plotName = names[i] + "_" + postfixName;
     plotPoint[i].name = plotName;
@@ -73,7 +72,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepton2Pt",&Plots::fillZLep2Pt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepton2Eta",&Plots::fillZLep2Eta));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wLeptonPt",&Plots::fillWLepPt));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wLeptonEta",&Plots::fillWLepEta));
+  if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wLeptonEta",&Plots::fillWLepEta));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepton1RelIso",&Plots::fillZLep1RelIso));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepton2RelIso",&Plots::fillZLep2RelIso));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wLeptonRelIso",&Plots::fillWLepRelIso));
