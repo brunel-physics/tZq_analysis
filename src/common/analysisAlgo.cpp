@@ -720,7 +720,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    continue;
 	  } 
 	  if (cutFlowMap.find(dataset->getFillHisto()+systNames[systInd]) == cutFlowMap.end()){
-	    cutFlowMap[dataset->getFillHisto()] = new TH1F((dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),4,0,4); //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
+	    const uint numCutFlowBins (stageNames.size());
+	    cutFlowMap[dataset->getFillHisto()] = new TH1F((dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),numCutFlowBins,0,numCutFlowBins); //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
 	    if (systInd == 0 && datasetInfos.find(dataset->getFillHisto()) == datasetInfos.end()){
 	      legOrder.push_back(dataset->getFillHisto());
 	      plotOrder.push_back(dataset->getFillHisto());
