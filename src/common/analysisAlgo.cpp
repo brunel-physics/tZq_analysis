@@ -730,7 +730,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      datasetInfos[dataset->getFillHisto()].legType = dataset->getPlotType();
 	    }
 	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under" << (dataset->getFillHisto()+systNames[systInd]+channel).c_str() << std::endl; 
+	      std::cout << "Made plots under " << (dataset->getFillHisto()).c_str() << " : " << (systNames[systInd]+channel).c_str() << std::endl; 
 	      if (plotsMap.find(channel) == plotsMap.end()){
 		plotsVec.push_back(systNames[systInd]+channel);
 	      }
