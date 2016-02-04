@@ -48,7 +48,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   looseMuonRelIso_(0.12),
   //zMass cuts
   invZMassCut_(15.),
-  invWMassCut_(60.),
+  invWMassCut_(15.),
   //Jet initialisation
   numJets_(2),
   maxJets_(10),
@@ -219,11 +219,11 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if ( doPlots_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
-  if (event->metPF2PATPt < metCut_) return false;
+  if (trileptonChannel_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
   float mtw = std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
-  if (mtw < mTWCut_) return false;
+  if (trileptonChannel_ && mtw < mTWCut_) return false;
 
   return true;
 }
@@ -491,60 +491,35 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	// check that one of the two compared jets aren't neutral.
 //	std::cout << "jet charge: " << event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] << std::endl;
 	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] == 0 ) continue;
-	// Now ensure that the jet flavours are compatible with a W+ decay eg. W+ -> up type quark and down type antiquark.
-//	std::cout << "event->jetPF2PATPID[jets[k]]: " << event->jetPF2PATPID[jets[k]] << std::endl;
-//	std::cout << "event->jetPF2PATPID[jets[l]]: " << event->jetPF2PATPID[jets[l]] << std::endl;
-/*	if ( (event->jetPF2PATPID[jets[k]] == 2 && (event->jetPF2PATPID[jets[l]] == -1 || event->jetPF2PATPID[jets[l]] == -3)) || 
-	     (event->jetPF2PATPID[jets[k]] == 4 && (event->jetPF2PATPID[jets[l]] == -1 || event->jetPF2PATPID[jets[l]] == -3)) || 
-	     (event->jetPF2PATPID[jets[k]] == 1 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4)) || 
-	     (event->jetPF2PATPID[jets[k]] == 3 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4)) ||
-	     (event->jetPF2PATPID[jets[k]] == -2 && (event->jetPF2PATPID[jets[l]] == 1 || event->jetPF2PATPID[jets[l]] == 3)) || 
-	     (event->jetPF2PATPID[jets[k]] == -4 && (event->jetPF2PATPID[jets[l]] == 1 || event->jetPF2PATPID[jets[l]] == 3)) || 
-	     (event->jetPF2PATPID[jets[k]] == -1 && (event->jetPF2PATPID[jets[l]] == 2 || event->jetPF2PATPID[jets[l]] == 4)) || 
-	     (event->jetPF2PATPID[jets[k]] == -3 && (event->jetPF2PATPID[jets[l]] == 2 || event->jetPF2PATPID[jets[l]] == 4)) ){*/
-	  TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]);
-	  TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
-	  float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
-	  if( fabs(invWbosonMass) < fabs(closestWmass) ){
-	    event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
-	    event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];
-	    event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
-	    event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[l]:jets[k];
-// 	    std::cout << "wQuarks pT: " << event->wPairQuarks.first.Pt() << "/" << event->wPairQuarks.second.Pt() << std::endl; 
-//	    std::cout << "closestMass/invWmass: " << closestWmass << "/" << invWbosonMass << std::endl; 
-	    closestWmass = invWbosonMass;
-	  }
-      }
-      // Separate check for b quarks to ensure we aren't using the leading bjet - that would be the b from the top decay!.
-      /*else if ( (event->jetPF2PATPID[jets[k]] == 5 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4 )) || 
-	(event->jetPF2PATPID[jets[k]] == 5 && (event->jetPF2PATPID[jets[l]] == -2 || event->jetPF2PATPID[jets[l]] == -4 )) || 
-	(event->jetPF2PATPID[jets[l]] == -5 && (event->jetPF2PATPID[jets[k]] == 2 || event->jetPF2PATPID[jets[k]] == 4 )) ||
-	(event->jetPF2PATPID[jets[l]] == -5 && (event->jetPF2PATPID[jets[k]] == 2 || event->jetPF2PATPID[jets[k]] == 4 )) ){	  
-	// Check b jet isn't leading bjet!
-	event->bTagIndex = makeBCuts(event,event->jetIndex);
-	if( (fabs(event->jetPF2PATPID[jets[k]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[k]]) || (fabs(event->jetPF2PATPID[jets[l]] == 5) && getLeadingBjetPt(event,event->bTagIndex) <= event->jetPF2PATPt[jets[l]]) ) continue;
+	// Now ensure that the leading b jet isn't one of these!
+	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
+	  if( getLeadingBjetPt(event,event->bTagIndex) == event->jetPF2PATPt[jets[k]]) continue;
+	}
+	else if ( event->jetPF2PATBDiscriminator[l] > bDiscCut_ ){
+	  if( getLeadingBjetPt(event,event->bTagIndex) == event->jetPF2PATPt[jets[l]]) continue;
+	}
 	TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]);
-	  TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
-	  float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
-	  if( fabs(invWbosonMass) < fabs(closestWmass) ){
+	TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
+	float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
+	if( fabs(invWbosonMass) < fabs(closestWmass) ){
 	  event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
 	  event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];
 	  event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
 	  event->wPairIndex.second = wQuark1.Pt() > wQuark2.Pt() ? jets[l]:jets[k];
-	  std::cout << "closestMass/invWmass: " << closestWmass << "/" << invWbosonMass << std::endl; 
+	  // 	    std::cout << "wQuarks pT: " << event->wPairQuarks.first.Pt() << "/" << event->wPairQuarks.second.Pt() << std::endl; 
+	  //	    std::cout << "closestMass/invWmass: " << closestWmass << "/" << invWbosonMass << std::endl; 
 	  closestWmass = invWbosonMass;
-	  }
-	  }*/
+	}
+      }
     }
   return closestWmass;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex){
-
+  
   float leadingBjetMass = getLeadingBjetMass( event, bTagIndex );
   if (leadingBjetMass == -1.0) return -1.0;
   float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATPt);
-
   return topMass;
 }
 
@@ -591,6 +566,7 @@ float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets){
     
     return leadingBjetPt;
 }
+
 
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
   
