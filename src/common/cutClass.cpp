@@ -51,16 +51,17 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   invWMassCut_(15.),
   //Jet initialisation
   numJets_(2),
-  maxJets_(10),
+  maxJets_(4),
   jetPt_(30.),
   jetEta_(2.5),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
   numbJets_(1),
-  maxbJets_(5),
-  bDiscCut_(0.679), // Medium level
-  //bDiscCut_(0.244), // Loose cut
+  maxbJets_(2),
+  //bDiscCut_(0.935), // Tight cut
+  bDiscCut_(0.80), // Medium level
+  //bDiscCut_(0.460), // Loose cut
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
   //Same for trigger flag.
