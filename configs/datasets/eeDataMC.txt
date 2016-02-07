@@ -1,6 +1,6 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
-totalEvents = 2984613
+totalEvents = 2996000
 crossSection = 0.008188
 runType = mc
 histoName = tZq
@@ -10,7 +10,7 @@ plotType = f
 
 [ttW]
 fileName = configs/datasets/fileLists/ttWFiles.txt
-totalEvents = 252908
+totalEvents = 250307
 crossSection = 0.2043
 runType = mc
 histoName = ttW
@@ -31,7 +31,7 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 5977821
+totalEvents = 6102376
 crossSection = 87.31
 runType = mc
 histoName = ttbar
@@ -41,7 +41,7 @@ plotType = f
 
 [sChannel]
 fileName = configs/datasets/fileLists/sChannelFiles.txt
-totalEvents = 984400
+totalEvents = 998400
 crossSection = 10.32
 runType = mc
 histoName = sChannel
@@ -51,7 +51,7 @@ plotType = f
 
 [tChannel]
 fileName = configs/datasets/fileLists/tChannelFiles.txt
-totalEvents = 3299800
+totalEvents = 3299200
 crossSection = 137.60
 runType = mc
 histoName = tChannel
@@ -61,7 +61,7 @@ plotType = f
 
 [tbarChannel]
 fileName = configs/datasets/fileLists/tbarChannelFiles.txt
-totalEvents = 1680200
+totalEvents = 1630900
 crossSection = 82.6669
 runType = mc
 histoName = tChannel
@@ -71,7 +71,7 @@ plotType = f
 
 [tWInclusive]
 fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
-totalEvents = 995600
+totalEvents = 1000000
 crossSection = 35.85
 runType = mc
 histoName = tW
@@ -81,7 +81,7 @@ plotType = f
 
 [tbarWInclusive]
 fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 988500
+totalEvents = 999400
 crossSection = 35.85
 runType = mc
 histoName = tW
@@ -91,7 +91,7 @@ plotType = f
 
 [WZinclusive]
 fileName = configs/datasets/fileLists/WZinclusive.txt
-totalEvents = 12560069
+totalEvents = 12542004
 crossSection = 5.26
 runType = mc
 histoName = wz
@@ -101,7 +101,7 @@ plotType = f
 
 [ZZ4l]
 fileName = configs/datasets/fileLists/ZZ4lFiles.txt
-totalEvents = 6652512
+totalEvents = 10747136
 crossSection = 1.212
 runType = mc
 histoName = zz
@@ -111,7 +111,7 @@ plotType = f
 
 [ZZ2l2nu]
 fileName = configs/datasets/fileLists/ZZ2l2nuFiles.txt
-totalEvents = 8719200
+totalEvents = 8785050
 crossSection = 0.564
 histoName = zz
 colour = kPink
@@ -130,7 +130,7 @@ plotType = f
 
 [WW2l2nu]
 fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
-totalEvents = 1965200
+totalEvents = 1979988
 crossSection = 12.178
 runType = mc
 histoName = WW
@@ -141,7 +141,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 24184766
+totalEvents = 24156124
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring
@@ -150,8 +150,8 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50Files.txt
-totalEvents = 28825132
-crossSection = 6025.2
+totalEvents = 29193937
+crossSection = 2008.4
 runType = mc
 histoName = zPlusJets
 colour = kBlue
@@ -160,7 +160,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 29980490
+totalEvents = 30899063
 crossSection = 1861.0
 runType = mc
 histoName = zPlusJets
@@ -189,3 +189,4 @@ colour = kBlack
 triggerFlag = eCt
 
 []
+
