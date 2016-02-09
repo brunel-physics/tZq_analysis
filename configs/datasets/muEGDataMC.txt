@@ -122,7 +122,7 @@ plotType = f
 fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
 runType = mc
 crossSection = 3.22
-totalEvents = 18790122
+totalEvents = 15301695
 histoName = zz
 colour = kPink
 label = zz
@@ -168,8 +168,8 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[mumuRun2015C]
-fileName = configs/datasets/fileLists/mumuRun2015CFiles.txt
+[emuRun2015C]
+fileName = configs/datasets/fileLists/emuRun2015CFiles.txt
 luminosity = 16.345
 runType = data
 histoName = data
@@ -178,8 +178,8 @@ plotType = p
 colour = kBlack
 triggerFlag = dCt
 
-[mumuRun2015D]
-fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
+[emuRun2015D]
+fileName = configs/datasets/fileLists/emuRun2015DFiles.txt
 luminosity = 2120.016
 runType = data
 histoName = data
