@@ -40,15 +40,15 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numTightMu_(0),
   tightMuonPt_(20.),
   tightMuonEta_(2.4),
-  tightMuonRelIso_(0.2),
+  tightMuonRelIso_(0.15),
   //Loose muons
   numLooseMu_(0),
   looseMuonPt_(10.),
   looseMuonEta_(2.4),
-  looseMuonRelIso_(0.12),
+  looseMuonRelIso_(0.25),
   //zMass cuts
   invZMassCut_(15.),
-  invWMassCut_(15.),
+  invWMassCut_(5.),
   //Jet initialisation
   numJets_(2),
   maxJets_(4),
