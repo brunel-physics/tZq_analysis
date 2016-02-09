@@ -1123,7 +1123,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("jetPF2PATSVDY", jetPF2PATSVDY, &b_jetPF2PATSVDY);
    fChain->SetBranchAddress("jetPF2PATSVDZ", jetPF2PATSVDZ, &b_jetPF2PATSVDZ);
    fChain->SetBranchAddress("jetPF2PATBDiscriminator", jetPF2PATBDiscriminator, &b_jetPF2PATBDiscriminator);
-   fChain->SetBranchAddress("jetPF2PATCDiscriminator", jetPF2PATCDiscriminator, &b_jetPF2PATCDiscriminator);
+//   fChain->SetBranchAddress("jetPF2PATCDiscriminator", jetPF2PATCDiscriminator, &b_jetPF2PATCDiscriminator);
    fChain->SetBranchAddress("jetPF2PATNConstituents", jetPF2PATNConstituents, &b_jetPF2PATNConstituents);
    fChain->SetBranchAddress("jetPF2PATPID", jetPF2PATPID, &b_jetPF2PATPID);
    fChain->SetBranchAddress("jetPF2PATClosestBPartonDeltaR", jetPF2PATClosestBPartonDeltaR, &b_jetPF2PATClosestBPartonDeltaR);
@@ -1144,7 +1144,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("looseJetPF2PATPt", looseJetPF2PATPt, &b_looseJetPF2PATPt);
    fChain->SetBranchAddress("looseJetPF2PATEta", looseJetPF2PATEta, &b_looseJetPF2PATEta);
    fChain->SetBranchAddress("looseJetPF2PATBDisc", looseJetPF2PATBDisc, &b_looseJetPF2PATBDisc);
-   fChain->SetBranchAddress("looseJetPF2PATCDisc", looseJetPF2PATCDisc, &b_looseJetPF2PATCDisc);
+//   fChain->SetBranchAddress("looseJetPF2PATCDisc", looseJetPF2PATCDisc, &b_looseJetPF2PATCDisc);
    fChain->SetBranchAddress("jetPF2PATBtagDisc_trackCountingHighPurBJetTags", jetPF2PATBtagDisc_trackCountingHighPurBJetTags, &b_jetPF2PATBtagDisc_trackCountingHighPurBJetTags);
    fChain->SetBranchAddress("jetPF2PATBtagDisc_trackCountingHighEffBJetTags", jetPF2PATBtagDisc_trackCountingHighEffBJetTags, &b_jetPF2PATBtagDisc_trackCountingHighEffBJetTags);
    fChain->SetBranchAddress("jetPF2PATBtagDisc_jetProbabilityBJetTags", jetPF2PATBtagDisc_jetProbabilityBJetTags, &b_jetPF2PATBtagDisc_jetProbabilityBJetTags);
@@ -1233,11 +1233,13 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("PileUpWeightRunA", &PileUpWeightRunA, &b_pileUpWeight);
    fChain->SetBranchAddress("PileUpWeightRunB", &PileUpWeightRunB, &b_pileUpWeight);
    fChain->SetBranchAddress("PileUpWeightRunC", &PileUpWeightRunC, &b_pileUpWeight);
-   fChain->SetBranchAddress("weight_muF0p5", &weight_muF0p5, &b_weight_muF0p5);
-   fChain->SetBranchAddress("weight_muF2", &weight_muF2, &b_weight_muF2);
-   fChain->SetBranchAddress("weight_muR0p5", &weight_muR0p5, &b_weight_muR0p5);
-   fChain->SetBranchAddress("weight_muR2", &weight_muR2, &b_weight_muR2);
-   fChain->SetBranchAddress("origWeightForNorm", &origWeightForNorm, &b_origWeightForNorm);
+   /*if (isMC) {
+     fChain->SetBranchAddress("weight_muF0p5", &weight_muF0p5, &b_weight_muF0p5);
+     fChain->SetBranchAddress("weight_muF2", &weight_muF2, &b_weight_muF2);
+     fChain->SetBranchAddress("weight_muR0p5", &weight_muR0p5, &b_weight_muR0p5);
+     fChain->SetBranchAddress("weight_muR2", &weight_muR2, &b_weight_muR2);
+     fChain->SetBranchAddress("origWeightForNorm", &origWeightForNorm, &b_origWeightForNorm);
+   }*/
    //Data trigger branches
    fChain->SetBranchAddress("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2", &HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2, &b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2);
    fChain->SetBranchAddress("HLT_IsoMu20_v2", &HLT_IsoMu20_v2, &b_HLT_IsoMu20_v2);
