@@ -37,6 +37,7 @@ public :
    Float_t         elePF2PATPT[20];   //[numElePF2PAT]
    Int_t           elePF2PATCharge[20];   //[numElePF2PAT]
    Float_t         elePF2PATMVA[20];   //[numElePF2PAT]
+   Float_t         elePF2PATMVAcategory[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransDist[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransError[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransSignificance[20];   //[numElePF2PAT]
@@ -115,6 +116,7 @@ public :
    Float_t         elePF2PATlooseElectronSortedPt[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedEta[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedMVA[20];   //[numLooseElePF2PAT]
+   Float_t         elePF2PATlooseElectronSortedMVAcategory[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedRelIso[20];   //[numLooseElePF2PAT]
    Int_t           numMuonPF2PAT;
    Int_t           numLooseMuonPF2PAT;
@@ -372,6 +374,7 @@ public :
    TBranch        *b_elePF2PATPT;   //!
    TBranch        *b_elePF2PATCharge;   //!
    TBranch        *b_elePF2PATMVA;   //!
+   TBranch        *b_elePF2PATMVAcategory;   //!
    TBranch        *b_elePF2PATImpactTransDist;   //!
    TBranch        *b_elePF2PATImpactTransError;   //!
    TBranch        *b_elePF2PATImpactTransSignificance;   //!
@@ -450,6 +453,7 @@ public :
    TBranch        *b_elePF2PATlooseElectronSortedPt;   //!
    TBranch        *b_elePF2PATlooseElectronSortedEta;   //!
    TBranch        *b_elePF2PATlooseElectronSortedMVA;   //!
+   TBranch        *b_elePF2PATlooseElectronSortedMVAcategory;   //!
    TBranch        *b_elePF2PATlooseElectronSortedRelIso;   //!
    TBranch        *b_numMuonPF2PAT;   //!
    TBranch        *b_numLooseMuonPF2PAT;   //!
@@ -941,6 +945,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATPT", elePF2PATPT, &b_elePF2PATPT);
    fChain->SetBranchAddress("elePF2PATCharge", elePF2PATCharge, &b_elePF2PATCharge);
    fChain->SetBranchAddress("elePF2PATMVA", elePF2PATMVA, &b_elePF2PATMVA);
+   fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory, &b_elePF2PATMVAcategory);
    fChain->SetBranchAddress("elePF2PATImpactTransDist", elePF2PATImpactTransDist, &b_elePF2PATImpactTransDist);
    fChain->SetBranchAddress("elePF2PATImpactTransError", elePF2PATImpactTransError, &b_elePF2PATImpactTransError);
    fChain->SetBranchAddress("elePF2PATImpactTransSignificance", elePF2PATImpactTransSignificance, &b_elePF2PATImpactTransSignificance);
@@ -1021,6 +1026,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedPt", elePF2PATlooseElectronSortedPt, &b_elePF2PATlooseElectronSortedPt);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedEta", elePF2PATlooseElectronSortedEta, &b_elePF2PATlooseElectronSortedEta);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVA", elePF2PATlooseElectronSortedMVA, &b_elePF2PATlooseElectronSortedMVA);
+   fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVAcategory", elePF2PATlooseElectronSortedMVAcategory, &b_elePF2PATlooseElectronSortedMVAcategory);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedRelIso", elePF2PATlooseElectronSortedRelIso, &b_elePF2PATlooseElectronSortedRelIso);
    fChain->SetBranchAddress("numMuonPF2PAT", &numMuonPF2PAT, &b_numMuonPF2PAT);
    fChain->SetBranchAddress("numLooseMuonPF2PAT", &numLooseMuonPF2PAT, &b_numLooseMuonPF2PAT);
