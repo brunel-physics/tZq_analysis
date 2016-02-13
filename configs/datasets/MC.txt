@@ -122,7 +122,7 @@ plotType = f
 fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
 runType = mc
 crossSection = 3.22
-totalEvents = 18790122
+totalEvents = 15301695
 histoName = zz
 colour = kPink
 label = zz
@@ -150,7 +150,7 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50Files.txt
-totalEvents = 29193937
+totalEvents = 30471017
 crossSection = 2008.4
 runType = mc
 histoName = zPlusJets
@@ -160,7 +160,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 30899063
+totalEvents = 93034762
 crossSection = 1861.0
 runType = mc
 histoName = zPlusJets
