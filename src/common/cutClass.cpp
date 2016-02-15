@@ -28,9 +28,12 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightEled0_(0.011811),
   tightEleMissLayers_(0),
   tightEleCheckPhotonVeto_(true),
-  tightEleMVA0_(0.972153),
-  tightEleMVA1_(0.922126),
-  tightEleMVA2_(0.610764),
+  tightEleMVA0_(0.972153), // Medium cut
+  tightEleMVA1_(0.922126), // Medium cut 
+  tightEleMVA2_(0.610764), // Medium cut	
+  //tightEleMVA0_(0.988153), // Tight cut
+  //tightEleMVA1_(0.967910), // Tight cut
+  //tightEleMVA2_(0.841729), // Tight cut
   tightEleRelIso_(0.15),
   //Loose electron initialisation
   numLooseEle_(3),
@@ -57,14 +60,14 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numJets_(2),
   maxJets_(4),
   jetPt_(30.),
-  jetEta_(2.5),
+  jetEta_(5.0),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
   numbJets_(1),
   maxbJets_(2),
-  bDiscCut_(0.935), // Tight cut
-  //bDiscCut_(0.80), // Medium level
+  //bDiscCut_(0.935), // Tight cut
+  bDiscCut_(0.80), // Medium level
   //bDiscCut_(0.460), // Loose cut
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
