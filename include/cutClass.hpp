@@ -62,14 +62,18 @@ class Cuts{
   float tightEled0_;
   int tightEleMissLayers_;
   bool tightEleCheckPhotonVeto_;
-  float tightEleMVA_;
+  float tightEleMVA0_;
+  float tightEleMVA1_;
+  float tightEleMVA2_;
   float tightEleRelIso_;
   
   //Loose electron cuts
   unsigned int numLooseEle_;
   float looseElePt_;
   float looseEleEta_;
-  float looseEleMVA_;
+  float looseEleMVA0_;
+  float looseEleMVA1_;
+  float looseEleMVA2_;
   float looseEleRelIso_;
 
   //Tight muon cuts

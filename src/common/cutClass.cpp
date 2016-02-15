@@ -28,13 +28,17 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightEled0_(0.011811),
   tightEleMissLayers_(0),
   tightEleCheckPhotonVeto_(true),
-  tightEleMVA_(0.5),
+  tightEleMVA0_(0.972153),
+  tightEleMVA1_(0.922126),
+  tightEleMVA2_(0.610764),
   tightEleRelIso_(0.15),
   //Loose electron initialisation
   numLooseEle_(3),
   looseElePt_(10),
   looseEleEta_(2.5),
-  looseEleMVA_(0.5),
+  looseEleMVA0_(0.972153),
+  looseEleMVA1_(0.922126),
+  looseEleMVA2_(0.610764),
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
@@ -48,7 +52,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   looseMuonRelIso_(0.25),
   //zMass cuts
   invZMassCut_(15.),
-  invWMassCut_(5.),
+  invWMassCut_(15.),
   //Jet initialisation
   numJets_(2),
   maxJets_(4),
@@ -59,8 +63,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //B-discriminator cut
   numbJets_(1),
   maxbJets_(2),
-  //bDiscCut_(0.935), // Tight cut
-  bDiscCut_(0.80), // Medium level
+  bDiscCut_(0.935), // Tight cut
+  //bDiscCut_(0.80), // Medium level
   //bDiscCut_(0.460), // Loose cut
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
@@ -143,7 +147,6 @@ bool Cuts::parse_config(std::string confName){
     eles.lookupValue("pt",tightElePt_);
     eles.lookupValue("eta",tightEleEta_);
     eles.lookupValue("relIso",tightEleRelIso_);
-    eles.lookupValue("MVA",tightEleMVA_);
     eles.lookupValue("number",numTightEle_);
   }
   if (cuts.exists("looseElectrons")){
@@ -151,7 +154,6 @@ bool Cuts::parse_config(std::string confName){
     eles.lookupValue("pt",looseElePt_);
     eles.lookupValue("eta",looseEleEta_);
     eles.lookupValue("relIso",looseEleRelIso_);
-    eles.lookupValue("MVA",looseEleMVA_);
     eles.lookupValue("number",numLooseEle_);
   }
   if (cuts.exists("tightMuons")){
@@ -289,7 +291,10 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
     if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if (event->elePF2PATMVA[i] < tightEleMVA_)continue;
+    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
+    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
+    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
+//    if (event->elePF2PATMVA[i] < tightEleMVA_)continue;
     if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
     
     electrons.push_back(i);
@@ -303,7 +308,9 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
     if (tempVec.Pt() < looseElePt_) continue;
     if (std::abs(tempVec.Eta()) > looseEleEta_)continue;
-    if (event->elePF2PATMVA[i] < looseEleMVA_)continue;
+    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) )continue;
+    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) )continue;
+    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) )continue;
     if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > looseEleRelIso_)continue;    
 
     electrons.push_back(i);
@@ -490,8 +497,8 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
     for ( uint k = 0; k < jets.size(); k++ ){
       for ( uint l = k + 1; l < jets.size(); l++ ){
 	// check that one of the two compared jets aren't neutral.
-//	std::cout << "jet charge: " << event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] << std::endl;
-	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] == 0 ) continue;
+	//std::cout << "jet charge: " << (event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]]) << std::endl;
+	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] <= 0 ) continue;
 	// Now ensure that the leading b jet isn't one of these!
 	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
 	  if( getLeadingBjetPt(event,event->bTagIndex) == event->jetPF2PATPt[jets[k]]) continue;
@@ -950,7 +957,9 @@ std::vector<int> Cuts::getInvIsoEles(AnalysisEvent* event) {
     if (std::abs(event->elePF2PATBeamSpotCorrectedTrackD0[i]) > tightEled0_)continue;
     if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if (event->elePF2PATMVA[i] < tightEleMVA_)continue;
+    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
+    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
+    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
     if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() < tightEleRelIso_)continue;
 
     electrons.push_back(i);
@@ -1039,6 +1048,7 @@ void Cuts::dumpLeptonInfo(AnalysisEvent* event){
     std::cout << " | " << event->elePF2PATPhi[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATD0PV[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATMVA[event->electronIndexTight[i]];
+    std::cout << " | " << event->elePF2PATMVAcategory[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATMissingInnerLayers[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATComRelIsoRho[event->electronIndexTight[i]]/tempVec.Pt();
     std::cout << " | " << event->elePF2PATPhotonConversionVeto[event->electronIndexTight[i]];
