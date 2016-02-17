@@ -792,7 +792,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   //  std::cout << event->jetIndex.size() << std::endl;
   synchCutFlowHist_->Fill(4.5);
   event->bTagIndex = makeBCuts(event,event->jetIndex);
-  //  synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
+  synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (!event->bTagIndex.size() == 1) return false;
   synchCutFlowHist_->Fill(5.5);
