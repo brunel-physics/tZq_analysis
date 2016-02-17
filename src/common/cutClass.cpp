@@ -28,20 +28,20 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightEled0_(0.011811),
   tightEleMissLayers_(0),
   tightEleCheckPhotonVeto_(true),
-  tightEleMVA0_(0.972153), // Medium cut
-  tightEleMVA1_(0.922126), // Medium cut 
-  tightEleMVA2_(0.610764), // Medium cut	
-  //tightEleMVA0_(0.988153), // Tight cut
-  //tightEleMVA1_(0.967910), // Tight cut
-  //tightEleMVA2_(0.841729), // Tight cut
+  //tightEleMVA0_(0.972153), // Medium cut
+  //tightEleMVA1_(0.922126), // Medium cut 
+  //tightEleMVA2_(0.610764), // Medium cut	
+  tightEleMVA0_(0.988153), // Tight cut
+  tightEleMVA1_(0.967910), // Tight cut
+  tightEleMVA2_(0.841729), // Tight cut
   tightEleRelIso_(0.15),
   //Loose electron initialisation
   numLooseEle_(3),
   looseElePt_(10),
   looseEleEta_(2.5),
-  looseEleMVA0_(0.972153),
-  looseEleMVA1_(0.922126),
-  looseEleMVA2_(0.610764),
+ // looseEleMVA0_(0.972153),
+ // looseEleMVA1_(0.922126),
+ // looseEleMVA2_(0.610764),
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
@@ -55,7 +55,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   looseMuonRelIso_(0.25),
   //zMass cuts
   invZMassCut_(15.),
-  invWMassCut_(15.),
+  invWMassCut_(50.),
   //Jet initialisation
   numJets_(2),
   maxJets_(4),
@@ -66,8 +66,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //B-discriminator cut
   numbJets_(1),
   maxbJets_(2),
-  //bDiscCut_(0.935), // Tight cut
-  bDiscCut_(0.80), // Medium level
+  bDiscCut_(0.935), // Tight cut
+  //bDiscCut_(0.80), // Medium level
   //bDiscCut_(0.460), // Loose cut
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
@@ -750,7 +750,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
   synchNumEles_->Fill(event->electronIndexTight.size());
-  synchNumMus_->Fill(event->muonIndexTight.size());
+  synchNumMus_->Fill(event->muonIndexTight.size());/*
   //If electrons are expected to be the Z, check there are an oppositely charged pair.
   bool zCand = false;
   if (numTightEle_ > 1){
@@ -771,12 +771,14 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     }
   }
   if (!zCand) return false;
-  synchCutFlowHist_->Fill(1.5); 
-  if (singleEventInfoDump_) std::cout << "Gets past z cand stuff with " << event->electronIndexTight.size() << " tight electrons and " << event->muonIndexTight.size() << " tight muons" << std::endl;
+  if (singleEventInfoDump_) std::cout << "Gets past z cand stuff with " << event->electronIndexTight.size() << " tight electrons and " << event->muonIndexTight.size() << " tight muons" << std::endl;*/
+
+  // Check number of leptons is correct
+  if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
+  synchCutFlowHist_->Fill(1.5); 
   //loose lepton veto
-  if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
   if (event->muonIndexTight.size() != getLooseMuons(event).size()) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
@@ -820,7 +822,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
 TH1F* Cuts::getSynchCutFlow(){
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
-  char const *names[] = {"Trigger","Lep Pair", "3 Leptons", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
+  char const *names[] = {"Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
   for (unsigned int i = 1; i < 10; ++i){
     std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
   }
