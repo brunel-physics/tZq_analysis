@@ -28,20 +28,20 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightEled0_(0.011811),
   tightEleMissLayers_(0),
   tightEleCheckPhotonVeto_(true),
-  //tightEleMVA0_(0.972153), // Medium cut
-  //tightEleMVA1_(0.922126), // Medium cut 
-  //tightEleMVA2_(0.610764), // Medium cut	
-  tightEleMVA0_(0.988153), // Tight cut
-  tightEleMVA1_(0.967910), // Tight cut
-  tightEleMVA2_(0.841729), // Tight cut
+  tightEleMVA0_(0.972153), // Medium cut
+  tightEleMVA1_(0.922126), // Medium cut 
+  tightEleMVA2_(0.610764), // Medium cut	
+  //tightEleMVA0_(0.988153), // Tight cut
+  //tightEleMVA1_(0.967910), // Tight cut
+  //tightEleMVA2_(0.841729), // Tight cut
   tightEleRelIso_(0.15),
   //Loose electron initialisation
   numLooseEle_(3),
   looseElePt_(10),
   looseEleEta_(2.5),
- // looseEleMVA0_(0.972153),
- // looseEleMVA1_(0.922126),
- // looseEleMVA2_(0.610764),
+  looseEleMVA0_(0.),
+  looseEleMVA1_(0.),
+  looseEleMVA2_(0.),
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
@@ -84,7 +84,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   getBTagWeight_(false),
   //MET and mTW cuts go here.
   metCut_(0.),
-  mTWCut_(0.),
+  mTWCut_(20.),
   TopMassCutLower_(91.),
   TopMassCutUpper_(155.)
 {
