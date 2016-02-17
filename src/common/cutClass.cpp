@@ -531,7 +531,6 @@ float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex){
   float leadingBjetMass = getLeadingBjetMass( event, bTagIndex );
   if (leadingBjetMass == -1.0) return -1.0;
   float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATPt);
-  std::cout << topMass << std::endl;
   return topMass;
 }
 
@@ -552,7 +551,6 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets){
     //    if ( TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M() < leadingBJetMass ){
     leadingBJetMass = TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M();
       //      }
-    std::cout << "Returned: " << leadingBjetPt << std::endl;
     return leadingBJetMass;
 }
 
