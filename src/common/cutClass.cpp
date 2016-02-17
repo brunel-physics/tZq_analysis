@@ -542,6 +542,8 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets){
 
     for (std::vector<int>::const_iterator lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
 
+      if ( bJets[*lIt] > event->jetIndex.size() ) continue;
+
       if ( event->jetPF2PATPtRaw[bJets[*lIt]] > leadingBjetPt ){
 	leadingBjetPt = event->jetPF2PATPtRaw[bJets[*lIt]];
 	tempIt = *lIt;
