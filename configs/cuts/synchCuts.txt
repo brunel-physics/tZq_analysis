@@ -1,0 +1,29 @@
+cuts = 
+{
+	tightMuons = {
+	      pt   = 20.;
+	      eta  = 2.4;
+	      relIso = 0.12;
+	      number = 0;
+	      },
+	looseMuons = {
+	      pt   = 10.;
+	      eta  = 2.4;
+	      relIso = 0.2;
+	      number = 0;
+	      },
+	tightElectrons = {
+	      pt   = 20.;
+	      eta  = 2.5;
+	      relIso = 0.107587;
+	      number = 3.;
+	      },
+	looseElectrons = {
+	      pt   = 10;
+	      eta  = 2.5;
+	      relIso = 0.107587;
+	      number = 3.; 
+	      }
+}
+trigLabel = "e";
+plotPostfix = "eee";

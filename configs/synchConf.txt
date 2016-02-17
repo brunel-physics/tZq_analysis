@@ -1,5 +1,5 @@
 datasets = "configs/datasets/synch.txt";
-cuts = "configs/cuts/eeeCuts.txt";
+cuts = "configs/cuts/synchCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/eee_synch/";
 outputPostfix = "eee";
