@@ -54,7 +54,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   looseMuonEta_(2.4),
   looseMuonRelIso_(0.25),
   //zMass cuts
-  invZMassCut_(15.),
+  invZMassCut_(5.),
   invWMassCut_(50.),
   //Jet initialisation
   numJets_(2),
@@ -173,8 +173,16 @@ bool Cuts::parse_config(std::string confName){
     mus.lookupValue("relIso",looseMuonRelIso_);
     mus.lookupValue("number",numLooseMu_);
   }
-  std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
+  if (cuts.exists("jets")){
+    libconfig::Setting& jets = cuts["jets"];
+    jets.lookupValue("numJets",numJets_);
+    jets.lookupValue("maxJets",maxJets_);
+    jets.lookupValue("numbJets",numbJets_);
+    jets.lookupValue("maxbJets",maxbJets_);
+  }
   
+  std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
+
   if (makeEventDump_){ 
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");

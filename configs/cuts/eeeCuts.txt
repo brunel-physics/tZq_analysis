@@ -24,6 +24,13 @@ cuts =
 	      relIso = 0.107587;
 	      number = 3.; 
 	      }
+        jets = {
+                numJets = 2;
+                maxJets = 4;
+                numbJets = 1;
+                maxbJets = 2;
+        }
+
 }
 trigLabel = "e";
 plotPostfix = "eee";
