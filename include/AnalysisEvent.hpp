@@ -310,9 +310,6 @@ public :
    Float_t         mhtSignif;
    Int_t           nTriggerBits;
    Int_t           TriggerBits[1];   //[nTriggerBits]
-   Double_t        PileUpWeightRunA;
-   Double_t        PileUpWeightRunB;
-   Double_t        PileUpWeightRunC;
    Double_t	   weight_muF0p5;
    Double_t	   weight_muF2;
    Double_t	   weight_muR0p5;
@@ -639,7 +636,6 @@ public :
    TBranch        *b_mhtSignif;   //!
    TBranch        *b_nTriggerBits;   //!
    TBranch        *b_TriggerBits;   //!
-   TBranch        *b_pileUpWeight;   //!
    TBranch	  *b_weight_muF0p5;   //!
    TBranch	  *b_weight_muF2;   //!
    TBranch	  *b_weight_muR0p5;   //!
@@ -1212,9 +1208,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("mhtSignif", &mhtSignif, &b_mhtSignif);
    fChain->SetBranchAddress("nTriggerBits", &nTriggerBits, &b_nTriggerBits);
    fChain->SetBranchAddress("TriggerBits", &TriggerBits, &b_TriggerBits);
-   fChain->SetBranchAddress("PileUpWeightRunA", &PileUpWeightRunA, &b_pileUpWeight);
-   fChain->SetBranchAddress("PileUpWeightRunB", &PileUpWeightRunB, &b_pileUpWeight);
-   fChain->SetBranchAddress("PileUpWeightRunC", &PileUpWeightRunC, &b_pileUpWeight);
 /*   if (isMC) {
      fChain->SetBranchAddress("weight_muF0p5", &weight_muF0p5, &b_weight_muF0p5);
      fChain->SetBranchAddress("weight_muF2", &weight_muF2, &b_weight_muF2);
