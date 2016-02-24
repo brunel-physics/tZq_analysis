@@ -329,6 +329,8 @@ public :
 
     //MC Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
+   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
+   Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
 
@@ -646,6 +648,8 @@ public :
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3;
    TBranch        *b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
+   TBranch	  *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
+   TBranch	  *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_nGenPar;   //!
@@ -1216,6 +1220,8 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3", &HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3, &b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3);
    //MC trigger branches
    fChain->SetBranchAddress("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1", &HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1, &b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1);
+   fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1);
+   fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1);
    fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1);
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1);
    if (isMC) {
