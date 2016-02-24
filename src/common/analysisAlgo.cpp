@@ -516,19 +516,16 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   
   if (channelsToRun && !trileptonChannel){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned int channelInd = 1; channelInd != 15; channelInd = channelInd << 1){
+    for (unsigned int channelInd = 1; channelInd != 4; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelInd & 5){
+      if (channelInd & 1){
 	std::cout << "ee ";
       }
-      if (channelInd & 10){ // mumu channels
+      if (channelInd & 2){ // mumu channels
 	std::cout << "mumu ";
       }
       if (channelInd & 3){ //nominal samples
 	std::cout << "nominal" << std::endl;
-      }
-      if (channelInd & 12){ //inv iso samples
-	std::cout << "inverted" << std::endl;
       }
     }
   }
@@ -628,7 +625,7 @@ void AnalysisAlgo::runMainAnalysis(){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
-    if ( !trileptonChannel ){ channelIndMax = 15; }
+    if ( !trileptonChannel ){ channelIndMax = 4; }
     for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -673,7 +670,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       } 
       if (channelsToRun && !trileptonChannel){
-	if (channelInd & 5){ // ee channels
+	if (channelInd & 1){ // ee channels
 	  cutObj->setNumLeps(0,0,2,2);
 	  cutObj->setCutConfTrigLabel("e");
 	  channel = "ee";
@@ -681,7 +678,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  chanName += "ee";
 	}
 
-	if (channelInd & 10){ // mumu channels
+	if (channelInd & 2){ // mumu channels
 	  cutObj->setNumLeps(2,2,0,0);
 	  cutObj->setCutConfTrigLabel("m");
 	  channel = "mumu";
