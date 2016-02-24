@@ -122,13 +122,6 @@ double AnalysisAlgo::zptSF(TString channel, float zpt){
     param2 =-2.12648e-02;
     param3 = 2.32868e-01;
   }
-
-  if (channel == "emu"){
-    param1 = 1.03732e+00;
-    param2 =-2.11550e-02;
-    param3 = 1.52830e-01;
-  }
-
   if (channel == "ee"){
     param1 = 8.23251e-01;
     param2 = -1.74036e-02;
@@ -523,21 +516,18 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   
   if (channelsToRun && !trileptonChannel){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned int channelInd = 1; channelInd != 64; channelInd = channelInd << 1){
+    for (unsigned int channelInd = 1; channelInd != 15; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelInd & 9){
+      if (channelInd & 5){
 	std::cout << "ee ";
       }
-      if (channelInd & 18){ //emu channels
-	std::cout << "emu ";
-      }
-      if (channelInd & 40){ // mumu channels
+      if (channelInd & 10){ // mumu channels
 	std::cout << "mumu ";
       }
-      if (channelInd & 7){ //nominal samples
+      if (channelInd & 3){ //nominal samples
 	std::cout << "nominal" << std::endl;
       }
-      if (channelInd & 56){ //inv iso samples
+      if (channelInd & 12){ //inv iso samples
 	std::cout << "inverted" << std::endl;
       }
     }
@@ -638,7 +628,7 @@ void AnalysisAlgo::runMainAnalysis(){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
-    if ( !trileptonChannel ){ channelIndMax = 64; }
+    if ( !trileptonChannel ){ channelIndMax = 15; }
     for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -683,28 +673,22 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       } 
       if (channelsToRun && !trileptonChannel){
-	if (channelInd & 9){ // ee channels
+	if (channelInd & 5){ // ee channels
 	  cutObj->setNumLeps(0,0,2,2);
 	  cutObj->setCutConfTrigLabel("e");
 	  channel = "ee";
 	  postfix = "ee";
 	  chanName += "ee";
 	}
-	if (channelInd & 18){ //emu channels
-	  cutObj->setNumLeps(1,1,1,1);
-	  cutObj->setCutConfTrigLabel("d");
-	  channel = "emu";
-	  postfix = "emu";
-	  chanName += "emu";
-	}
-	if (channelInd & 36){ // mumu channels
+
+	if (channelInd & 10){ // mumu channels
 	  cutObj->setNumLeps(2,2,0,0);
 	  cutObj->setCutConfTrigLabel("m");
 	  channel = "mumu";
 	  postfix = "mumu";
 	  chanName += "mumu";
 	}
-	if (channelInd & 7){ //nominal samples
+	if (channelInd & 3){ //nominal samples
 	  cutObj->setInvIsoCut(false);
 	  invertIsoCut = false;
 	  chanName += "nom";
@@ -916,12 +900,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	      float twgt = 0.987;
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
-	      eventWeight *= twgt;
-	    }
-	    else if (channel == "emu"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.035;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.035;
 	      eventWeight *= twgt;
 	    }
 	    if (channel == "mumu"){
