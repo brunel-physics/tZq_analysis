@@ -1,6 +1,6 @@
 [mumuRun2015C]
 fileName = configs/datasets/fileLists/mumuRun2015CFiles.txt
-luminosity = 16.345
+luminosity = 17.227
 runType = data
 histoName = data
 label = Data
@@ -10,7 +10,7 @@ triggerFlag = mCt
 
 [mumuRun2015D]
 fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
-luminosity = 2120.016
+luminosity = 2094.981
 runType = data
 histoName = data
 label = Data
