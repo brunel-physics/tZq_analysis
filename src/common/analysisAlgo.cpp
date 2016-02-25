@@ -236,21 +236,20 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
 
   if (!isMC){
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_IsoMu20_v2",1);
-    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_IsoMu18_v1",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
   }
   else{
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_IsoMu20_v1",1);
-    chain->SetBranchStatus("HLT_IsoMu20_eta2p1_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
   }
@@ -625,6 +624,7 @@ void AnalysisAlgo::runMainAnalysis(){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
+
     if ( !trileptonChannel ){ channelIndMax = 4; }
     for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
@@ -810,6 +810,8 @@ void AnalysisAlgo::runMainAnalysis(){
       int zLep1Index = -1; // Addresses in elePF2PATWhatever of the z lepton
       int zLep2Index = -1;
       int wLepIndex = -1;
+      int wQuark1Index = -1;
+      int wQuark2Index = -1;
       int jetInd[15];  // The index of the selected jets;
       int bJetInd[10]; // Index of selected b-jets;
       //Now add in the branches:
@@ -829,7 +831,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
 	  mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
 	  mvaTree[systIn]->Branch("zLep2Index",&zLep2Index,"zLep2Index/I");
-	  mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
+	  if (trileptonChannel) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
+	  else if (!trileptonChannel) {
+	    mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
+	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
+	  } 
 	  mvaTree[systIn]->Branch("jetInd",jetInd,"jetInd[15]/I");
 	  mvaTree[systIn]->Branch("bJetInd",bJetInd,"jetInd[10]/I");
 
@@ -980,7 +986,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (makeMVATree){
 	    zLep1Index = event->zPairIndex.first;
 	    zLep2Index = event->zPairIndex.second;
-	    wLepIndex = event->wLepIndex;
+	    if (trileptonChannel) wLepIndex = event->wLepIndex;
+	    else if (!trileptonChannel){
+	      wQuark1Index = event->wPairIndex.first;
+	      wQuark2Index = event->wPairIndex.second;
+	    }
 	    for (unsigned int jetIndexIt = 0; jetIndexIt < 15; jetIndexIt++){
 	      if (jetIndexIt < event->jetIndex.size()) jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
 	      else jetInd[jetIndexIt] = -1;
