@@ -12,7 +12,7 @@ To create MC pileup, execute: "root -l scripts/createPileUpMC.C"
 To create data pileup files, in cmssw release execute:
 	pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON pileup_latest.txt  --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root
 where MyAnalysisJSON.txt is the JSON used in creating nTuples of data, and pileup_latest.txt is the latest pileup JSON ("/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt").
-For scale up/down, just vary the inelastic cross-section by the perscribed uncertanity (currently +/- 5%).
+For scale up/down, just vary the inelastic cross-section by the perscribed uncertanity (currently +/- 2.7%).
 See https://twiki.cern.ch/twiki/bin/view/CMS/PileupJSONFileforData#2015_Pileup_JSON_Files for further info.
 
 
