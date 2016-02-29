@@ -237,9 +237,6 @@ public :
    Float_t         looseJetPF2PATEta[40];   //[numLooseBJetsPF2PAT]
    Float_t         looseJetPF2PATBDisc[40];   //[numLooseBJetsPF2PAT]
    Float_t         looseJetPF2PATCDisc[40];   //[numLooseCJetsPF2PAT]
-   Float_t         jetPF2PATBtagDisc_pfJetProbabilityBJetTags[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATBtagDisc_pfCombinedInclusiveSecondaryVertexV2BJetTags[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATBtagDisc_pfCombinedMVAV2BJetTags[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATMuEnergy[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATMuEnergyFraction[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATNeutralHadEnergy[40];   //[numJetPF2PAT]
@@ -560,9 +557,6 @@ public :
    TBranch        *b_looseJetPF2PATEta;   //!
    TBranch        *b_looseJetPF2PATBDisc;   //!
    TBranch        *b_looseJetPF2PATCDisc;   //!
-   TBranch        *b_jetPF2PATBtagDisc_pfJetProbabilityBJetTags;   //!
-   TBranch        *b_jetPF2PATBtagDisc_pfCombinedInclusiveSecondaryVertexV2BJetTags;   //!
-   TBranch        *b_jetPF2PATBtagDisc_pfCombinedMVAV2BJetTags;   //!
    TBranch        *b_jetPF2PATMuEnergy;   //!
    TBranch        *b_jetPF2PATMuEnergyFraction;   //!
    TBranch        *b_jetPF2PATNeutralHadEnergy;   //!
@@ -1125,9 +1119,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("looseJetPF2PATEta", looseJetPF2PATEta, &b_looseJetPF2PATEta);
    fChain->SetBranchAddress("looseJetPF2PATBDisc", looseJetPF2PATBDisc, &b_looseJetPF2PATBDisc);
 //   fChain->SetBranchAddress("looseJetPF2PATCDisc", looseJetPF2PATCDisc, &b_looseJetPF2PATCDisc);
-   fChain->SetBranchAddress("jetPF2PATBtagDisc_pfJetProbabilityBJetTags", jetPF2PATBtagDisc_pfJetProbabilityBJetTags, &b_jetPF2PATBtagDisc_pfJetProbabilityBJetTags);
-   fChain->SetBranchAddress("jetPF2PATBtagDisc_pfCombinedInclusiveSecondaryVertexV2BJetTags", jetPF2PATBtagDisc_pfCombinedInclusiveSecondaryVertexV2BJetTags, &b_jetPF2PATBtagDisc_pfCombinedInclusiveSecondaryVertexV2BJetTags);
-   fChain->SetBranchAddress("jetPF2PATBtagDisc_pfCombinedMVAV2BJetTags", jetPF2PATBtagDisc_pfCombinedMVAV2BJetTags, &b_jetPF2PATBtagDisc_pfCombinedMVAV2BJetTags);
    fChain->SetBranchAddress("jetPF2PATMuEnergy", jetPF2PATMuEnergy, &b_jetPF2PATMuEnergy);
    fChain->SetBranchAddress("jetPF2PATMuEnergyFraction", jetPF2PATMuEnergyFraction, &b_jetPF2PATMuEnergyFraction);
    fChain->SetBranchAddress("jetPF2PATNeutralHadEnergy", jetPF2PATNeutralHadEnergy, &b_jetPF2PATNeutralHadEnergy);
