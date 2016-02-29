@@ -873,7 +873,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
-	    // trilepton stuff
+	    // trilepton stuff - not updated since Run2012
 	    if (channel == "eee"){
 	      float twgt = 0.987;
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
@@ -898,17 +898,17 @@ void AnalysisAlgo::runMainAnalysis(){
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.0212;
 	      eventWeight *= twgt;
 	    }
-	    // dilepton stuff, placeholder for now
+	    // dilepton stuff, updated for Run2015 MC
 	    if (channel == "ee"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
+	      float twgt = 0.976;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.001;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.001;
 	      eventWeight *= twgt;
 	    }
 	    if (channel == "mumu"){
-	      float twgt = 0.886;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.042;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.042;
+	      float twgt = 0.965;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.001;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.001;
 	      eventWeight *= twgt;
 	    }
 	  }
