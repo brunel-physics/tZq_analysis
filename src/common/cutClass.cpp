@@ -1394,9 +1394,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   else if (fabs(event->jetPF2PATEta[index]) <= 2.3) oldSmearCorr = 0.096;
   else oldSmearCorr = 0.166;
   float oldSmearValue = 1.0;
-  std::cout << "oldSmearValue: " << oldSmearValue << std::endl;
   if (isMC_ && event->genJetPF2PATPT[index] > -990.) oldSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * oldSmearCorr)/event->jetPF2PATPtRaw[index];
-  std::cout << "oldSmearValue: " << oldSmearValue << std::endl;
   float newJECCorr = 0.;
   if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
     newJECCorr = 1.061;
@@ -1435,18 +1433,15 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   }
   float newSmearValue = 1.0;
   if (isMC_ && event->genJetPF2PATPT[index] > -990.){ newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * newJECCorr)/event->jetPF2PATPtRaw[index];
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   }
   //  std::cout << event->jetPF2PATPtRaw[index] << std::setprecision(7) << " " << oldSmearValue << " " << newSmearValue << std::endl;
   TLorentzVector returnJet;
   if (newSmearValue < 0.01) {
-    std::cout << __LINE__ << " : " << __FILE__ << std::endl;
     returnJet.SetPxPyPzE(0.01,0.01,0.01,0.01);
     return returnJet;
   }
   else{
 	 returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index]/oldSmearValue,newSmearValue*event->jetPF2PATPy[index]/oldSmearValue,newSmearValue*event->jetPF2PATPz[index]/oldSmearValue,newSmearValue*event->jetPF2PATE[index]/oldSmearValue);
-         std::cout << __LINE__ << " : " << __FILE__ << std::endl;
   }
   if (isMC_){
     float jerUncer = getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst);
