@@ -31,14 +31,15 @@ int main(int argc, char* argv[]) {
     std::cout << "Loading file: " << lSStr.str().c_str() << std::endl;
 
     TFile *inputFile = new TFile ( (lSStr.str()).c_str() );
-    TTree *lTree = (TTree*)inputFile->Get("tree");  
-     
-    AnalysisEvent* lEvent = new AnalysisEvent(lTree);
+    TTree *lTree = (TTree*)inputFile->Get("tree");       
+    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", lTree);
+
     Int_t lNumEvents = lTree->GetEntries();
     std::cout << "lNumEvents: " << lNumEvents << std::endl;
 
     for ( Int_t j = 0; j < lNumEvents; j++ ){
       lTree->GetEvent(j);
+
       for ( Int_t k = 0; k < lEvent->numElePF2PAT; k++){
 	histElePt->Fill(lEvent->elePF2PATPT[k]);
 	histEleEta->Fill(lEvent->elePF2PATEta[k]);
