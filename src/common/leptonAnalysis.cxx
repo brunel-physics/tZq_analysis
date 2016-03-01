@@ -73,9 +73,9 @@ int main(int argc, char* argv[]) {
 
   std::vector<TTree*> inputTrees;
 
-  while ((dirp = readdir(dp)) != NULL) {
+  while (dirp = readdir(dp)) {
     std::string line (dirp->d_name);
-    if ( line == "." || line == "..");
+    if ( line == "." || line == "..")
     continue;
     TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
     TTree *lTempTree = (TTree*)inputFile->Get("tree");
