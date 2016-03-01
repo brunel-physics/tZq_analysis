@@ -17,7 +17,7 @@ static void show_usage(std::string name){
   std::cerr << "Usage: " << name << " <options>"
 	    << "Options:\n"
 	    << "\t-o  \tOUTFILE\tOutput file path for plots. If set overwrites the default.\n"
-	    << "\t-i  \tOUTFILE\tInput file path for input nTuples. If set overwrites the default.\n"
+	    << "\t-i \tOUTFILE\tInput file path for input nTuples. If set overwrites the default.\n"
 	    << "\t-h  --help\t\t\tShow this help message\n"
 	    << std::endl;
 }
@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 
   std::string inputDir = "";
   std::string outFileString = "plots/distributions/output.root";
+  bool inputFlag (false);
 
   for (int i = 1; i < argc; ++i){
     std::string arg = argv[i];
@@ -38,22 +39,27 @@ int main(int argc, char* argv[]) {
 	outFileString = argv[++i];
       } 
       else{
-	std::cerr << "requires a string for output folder name.";
+	std::cerr << "requires a string for output folder name." << std::endl;;
       }
     }
-    else if (arg=="-c"){//Set input folder
+    else if (arg=="-i"){//Set input folder
       if (i + 1 < argc){
 	inputDir = argv[++i];
 	if ( inputDir == "" ){
-	  std::cerr << "requires a non-null input dir to be run over!";
+	  std::cerr << "requires a non-null input dir to be run over!" << std::endl;;
 	  return 0;
 	}
-      }
-      else{
-	std::cerr << "requires an input dir to be run over!";
-	return 0;
+	else{
+	  inputFlag = true;
+	}
       }
     }
+  }
+
+
+  if (!inputFlag){
+    std::cerr << "Program requires an input dir to be run over!" << std::endl;;
+	return 0;
   }
 
   DIR *dp;
@@ -61,12 +67,17 @@ int main(int argc, char* argv[]) {
 
   if((dp  = opendir( inputDir.c_str() )) == NULL) {
     std::cout << "Error opening Directory" << std::endl;
+    std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
+    return 0;
   }
 
   std::vector<TTree*> inputTrees;
 
   while ((dirp = readdir(dp)) != NULL) {
-    TFile *inputFile = new TFile ((std::string(dirp->d_name)).c_str()) ;
+    std::string line (dirp->d_name);
+    if ( line == "." || line == "..");
+    continue;
+    TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
     TTree *lTempTree = (TTree*)inputFile->Get("tree");
     inputTrees.push_back(lTempTree);
   }
