@@ -1,6 +1,9 @@
 #include "AnalysisEvent.hpp"
+#include <libconfig.h++>
+#include <dirent.h>
 
 #include "TFile.h"
+#include "TChain.h"
 #include "TTree.h"
 #include "TH1F.h"
 
@@ -8,11 +11,65 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <fstream>
+
+static void show_usage(std::string name){
+  std::cerr << "Usage: " << name << " <options>"
+	    << "Options:\n"
+	    << "\t-o  \tOUTFILE\tOutput file path for plots. If set overwrites the default.\n"
+	    << "\t-i  \tOUTFILE\tInput file path for input nTuples. If set overwrites the default.\n"
+	    << "\t-h  --help\t\t\tShow this help message\n"
+	    << std::endl;
+}
 
 int main(int argc, char* argv[]) {
 
-  Int_t lNumberOfFiles = argc;
-  std::cout << "lNumberOfFiles: " << lNumberOfFiles-1 << std::endl;
+  std::string inputDir = "";
+  std::string outFileString = "plots/distributions/output.root";
+
+  for (int i = 1; i < argc; ++i){
+    std::string arg = argv[i];
+    if ((arg=="-h") || (arg == "--help")){ // Display help stuff
+      show_usage(argv[0]);
+      return 0;
+    }
+    else if (arg=="-o"){//Set output file
+      if (i + 1 < argc){
+	outFileString = argv[++i];
+      } 
+      else{
+	std::cerr << "requires a string for output folder name.";
+      }
+    }
+    else if (arg=="-c"){//Set input folder
+      if (i + 1 < argc){
+	inputDir = argv[++i];
+	if ( inputDir == "" ){
+	  std::cerr << "requires a non-null input dir to be run over!";
+	  return 0;
+	}
+      }
+      else{
+	std::cerr << "requires an input dir to be run over!";
+	return 0;
+      }
+    }
+  }
+
+  DIR *dp;
+  struct dirent *dirp;
+
+  if((dp  = opendir( inputDir.c_str() )) == NULL) {
+    std::cout << "Error opening Directory" << std::endl;
+  }
+
+  std::vector<TTree*> inputTrees;
+
+  while ((dirp = readdir(dp)) != NULL) {
+    TFile *inputFile = new TFile ((std::string(dirp->d_name)).c_str()) ;
+    TTree *lTempTree = (TTree*)inputFile->Get("tree");
+    inputTrees.push_back(lTempTree);
+  }
 
   TH1F* histElePt      = new TH1F ("histElePt"    , "Distribution of reco-electron p_{T}" , 500, 0.0  , 500.0);
   TH1F* histEleEta     = new TH1F ("histEleEta"   , "Distribution of reco-electron #eta"  , 500, -2.50, 2.5);
@@ -25,21 +82,15 @@ int main(int argc, char* argv[]) {
   TH1F* histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
 
 
-  for ( Int_t i = 1; i < lNumberOfFiles; i++ ){
-    std::stringstream lSStr;
-    lSStr << argv[i];
-    std::cout << "Loading file: " << lSStr.str().c_str() << std::endl;
+  for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
 
-    TFile *inputFile = new TFile ( (lSStr.str()).c_str() );
-    TTree *lTree = (TTree*)inputFile->Get("tree");       
-    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", lTree);
+    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", *lIt);
 
-    Int_t lNumEvents = lTree->GetEntries();
-    std::cout << "lNumEvents: " << lNumEvents << std::endl;
-
+    Int_t lNumEvents = (*lIt)->GetEntries();
+    
     for ( Int_t j = 0; j < lNumEvents; j++ ){
-      lTree->GetEvent(j);
-
+      (*lIt)->GetEvent(j);
+      
       for ( Int_t k = 0; k < lEvent->numElePF2PAT; k++){
 	histElePt->Fill(lEvent->elePF2PATPT[k]);
 	histEleEta->Fill(lEvent->elePF2PATEta[k]);
@@ -49,14 +100,13 @@ int main(int argc, char* argv[]) {
       for ( Int_t l = 0; l < lEvent->numMuonPF2PAT; l++){
 	histMuPt->Fill(lEvent->muonPF2PATPt[l]);
 	histMuEta->Fill(lEvent->muonPF2PATEta[l]);
-	//	  histMuGenPt->Fill(lEvent->genMuonPATPT[l]);
-	histMuGenEta->Fill(lEvent->genMuonPF2PATEta[l]);
+      //	  histMuGenPt->Fill(lEvent->genMuonPATPT[l]);
+      histMuGenEta->Fill(lEvent->genMuonPF2PATEta[l]);
       }
     }
-  }
-
-  TFile *outFile = new TFile ( "pT_eta_distributions.root", "RECREATE" );
-
+  }  
+  TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
+  
   histElePt->Write();
   histEleEta->Write();
   //    histEleGenPt->Write();
