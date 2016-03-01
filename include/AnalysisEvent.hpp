@@ -200,16 +200,6 @@ public :
    Float_t         jetPF2PATCorrErrHi[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATN90Hits[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATTriggered[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVPT[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL2D[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL2Dxy[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL2DxyErr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL2DxySig[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL3D[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL3DErr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVL3DSig[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVMass[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATSVNtracks[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATSVX[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATSVY[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATSVZ[40];   //[numJetPF2PAT]
@@ -522,16 +512,6 @@ public :
    TBranch        *b_jetPF2PATCorrErrHi;   //!
    TBranch        *b_jetPF2PATN90Hits;   //!
    TBranch        *b_jetPF2PATTriggered;   //!
-   TBranch        *b_jetPF2PATSVPT;   //!
-   TBranch        *b_jetPF2PATSVL2D;   //!
-   TBranch        *b_jetPF2PATSVL2Dxy;   //!
-   TBranch        *b_jetPF2PATSVL2DxyErr;   //!
-   TBranch        *b_jetPF2PATSVL2DxySig;   //!
-   TBranch        *b_jetPF2PATSVL3D;   //!
-   TBranch        *b_jetPF2PATSVL3DErr;   //!
-   TBranch        *b_jetPF2PATSVL3DSig;   //!
-   TBranch        *b_jetPF2PATSVMass;   //!
-   TBranch        *b_jetPF2PATSVNtracks;   //!
    TBranch        *b_jetPF2PATSVX;   //!
    TBranch        *b_jetPF2PATSVY;   //!
    TBranch        *b_jetPF2PATSVZ;   //!
@@ -1084,16 +1064,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("jetPF2PATCorrErrHi", jetPF2PATCorrErrHi, &b_jetPF2PATCorrErrHi);
    fChain->SetBranchAddress("jetPF2PATN90Hits", jetPF2PATN90Hits, &b_jetPF2PATN90Hits);
    fChain->SetBranchAddress("jetPF2PATTriggered", jetPF2PATTriggered, &b_jetPF2PATTriggered);
-   fChain->SetBranchAddress("jetPF2PATSVPT", jetPF2PATSVPT, &b_jetPF2PATSVPT);
-   fChain->SetBranchAddress("jetPF2PATSVL2D", jetPF2PATSVL2D, &b_jetPF2PATSVL2D);
-   fChain->SetBranchAddress("jetPF2PATSVL2Dxy", jetPF2PATSVL2Dxy, &b_jetPF2PATSVL2Dxy);
-   fChain->SetBranchAddress("jetPF2PATSVL2DxyErr", jetPF2PATSVL2DxyErr, &b_jetPF2PATSVL2DxyErr);
-   fChain->SetBranchAddress("jetPF2PATSVL2DxySig", jetPF2PATSVL2DxySig, &b_jetPF2PATSVL2DxySig);
-   fChain->SetBranchAddress("jetPF2PATSVL3D", jetPF2PATSVL3D, &b_jetPF2PATSVL3D);
-   fChain->SetBranchAddress("jetPF2PATSVL3DErr", jetPF2PATSVL3DErr, &b_jetPF2PATSVL3DErr);
-   fChain->SetBranchAddress("jetPF2PATSVL3DSig", jetPF2PATSVL3DSig, &b_jetPF2PATSVL3DSig);
-   fChain->SetBranchAddress("jetPF2PATSVMass", jetPF2PATSVMass, &b_jetPF2PATSVMass);
-   fChain->SetBranchAddress("jetPF2PATSVNtracks", jetPF2PATSVNtracks, &b_jetPF2PATSVNtracks);
    fChain->SetBranchAddress("jetPF2PATSVX", jetPF2PATSVX, &b_jetPF2PATSVX);
    fChain->SetBranchAddress("jetPF2PATSVY", jetPF2PATSVY, &b_jetPF2PATSVY);
    fChain->SetBranchAddress("jetPF2PATSVZ", jetPF2PATSVZ, &b_jetPF2PATSVZ);
