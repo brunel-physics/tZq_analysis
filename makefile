@@ -40,7 +40,7 @@ INCLUDE_PATH = 	-Iinclude  \
 
 CFLAGS = -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC -pthread -std=c++0x $(shell root-config --cflags) ${INCLUDE_PATH}
 
-LHAP = -I/cms/cmssw/slc6_amd64_gcc491/external/lhapdf/6.1.5-cms/full/include -L/cms/cmssw/slc6_amd64_gcc491/external/lhapdf/6.1.5-cms/full/lib -lLHAPDF
+LHAP = -I/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/include/LHAPDF -L/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/lib -lLHAPDF
 #LHAPDFLAGS = -I$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull INCLUDE) -L$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull LIBDIR) -lLHAPDF -lgfortran -lz
 
 ROOTSYS = /home/eepgadm/root/
