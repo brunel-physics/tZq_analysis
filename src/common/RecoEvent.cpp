@@ -1,14 +1,14 @@
-#define AnalysisEvent_cxx
-#include "AnalysisEvent.hpp"
+#define RecoEvent_cxx
+#include "RecoEvent.hpp"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void AnalysisEvent::Loop()
+void RecoEvent::Loop()
 {
 //   In a ROOT session, you can do:
-//      Root > .L AnalysisEvent.C
-//      Root > AnalysisEvent t
+//      Root > .L RecoEvent.C
+//      Root > RecoEvent t
 //      Root > t.GetEntry(12); // Fill t data members with entry number 12
 //      Root > t.Show();       // Show values of entry 12
 //      Root > t.Show(16);     // Read and show values of entry 16
@@ -42,7 +42,7 @@ void AnalysisEvent::Loop()
    }
 }
 
-float AnalysisEvent::getEventWeight(Long64_t entry){
+float RecoEvent::getEventWeight(Long64_t entry){
   return 1.;
 }
 
