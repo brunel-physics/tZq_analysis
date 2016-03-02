@@ -104,6 +104,7 @@ public :
    Float_t         elePF2PATPhotonConversionDcotCustom[20];   //[numElePF2PAT]
    Float_t         elePF2PATTriggerMatch[20];   //[numElePF2PAT]
    Float_t         elePF2PATJetOverlap[20];   //[numElePF2PAT]
+   Float_t         genElePF2PATPT[20];   //[numElePF2PAT]
    Float_t         genElePF2PATET[20];   //[numElePF2PAT]
    Float_t         genElePF2PATPX[20];   //[numElePF2PAT]
    Float_t         genElePF2PATPY[20];   //[numElePF2PAT]
@@ -166,6 +167,7 @@ public :
    Float_t         muonPF2PATlooseMuonSortedRelIso[20];   //[numLooseMuonPF2PAT]
    Float_t         muonPF2PATlooseMuonSortedisGlb[20];   //[numLooseMuonPF2PAT]
    Float_t         muonPF2PATlooseMuonSortedisTrk[20];   //[numLooseMuonPF2PAT]
+   Float_t         genMuonPF2PATPT[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATET[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATPX[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATPY[20];   //[numMuonPF2PAT]
@@ -187,6 +189,7 @@ public :
    Double_t        jetPF2PATPx[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATPy[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATPz[40];   //[numJetPF2PAT]
+   Int_t           jetPF2PATID[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATdRClosestLepton[40];   //[numJetPF2PAT]
    Int_t           jetPF2PATNtracksInJet[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATJetCharge[40];   //[numJetPF2PAT]
@@ -218,6 +221,7 @@ public :
    Float_t         genJetPF2PATPX[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPY[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPZ[40];   //[numJetPF2PAT]
+   Int_t           genJetPF2PATID[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPhi[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATTheta[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATEta[40];   //[numJetPF2PAT]
@@ -416,6 +420,7 @@ public :
    TBranch        *b_elePF2PATPhotonConversionDcotCustom;   //!
    TBranch        *b_elePF2PATTriggerMatch;   //!
    TBranch        *b_elePF2PATJetOverlap;   //!
+   TBranch        *b_genElePF2PATPT;   //!
    TBranch        *b_genElePF2PATET;   //!
    TBranch        *b_genElePF2PATPX;   //!
    TBranch        *b_genElePF2PATPY;   //!
@@ -478,6 +483,7 @@ public :
    TBranch        *b_muonPF2PATlooseMuonSortedRelIso;   //!
    TBranch        *b_muonPF2PATlooseMuonSortedisGlb;   //!
    TBranch        *b_muonPF2PATlooseMuonSortedisTrk;   //!
+   TBranch        *b_genMuonPF2PATPT;   //!
    TBranch        *b_genMuonPF2PATET;   //!
    TBranch        *b_genMuonPF2PATPX;   //!
    TBranch        *b_genMuonPF2PATPY;   //!
@@ -499,6 +505,7 @@ public :
    TBranch        *b_jetPF2PATPx;   //!
    TBranch        *b_jetPF2PATPy;   //!
    TBranch        *b_jetPF2PATPz;   //!
+   TBranch        *b_jetPF2PATID;   //!
    TBranch        *b_jetPF2PATdRClosestLepton;   //!
    TBranch        *b_jetPF2PATNtracksInJet;   //!
    TBranch        *b_jetPF2PATJetCharge;   //!
@@ -530,6 +537,7 @@ public :
    TBranch        *b_genJetPF2PATPX;   //!
    TBranch        *b_genJetPF2PATPY;   //!
    TBranch        *b_genJetPF2PATPZ;   //!
+   TBranch        *b_genJetPF2PATID;   //!
    TBranch        *b_genJetPF2PATPhi;   //!
    TBranch        *b_genJetPF2PATTheta;   //!
    TBranch        *b_genJetPF2PATEta;   //!
@@ -965,6 +973,7 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATTriggerMatch", elePF2PATTriggerMatch, &b_elePF2PATTriggerMatch);
    fChain->SetBranchAddress("elePF2PATJetOverlap", elePF2PATJetOverlap, &b_elePF2PATJetOverlap);
    if (isMC) { 
+     fChain->SetBranchAddress("genElePF2PATPT", genElePF2PATPT, &b_genElePF2PATPT);
      fChain->SetBranchAddress("genElePF2PATET", genElePF2PATET, &b_genElePF2PATET);
      fChain->SetBranchAddress("genElePF2PATPX", genElePF2PATPX, &b_genElePF2PATPX);
      fChain->SetBranchAddress("genElePF2PATPY", genElePF2PATPY, &b_genElePF2PATPY);
@@ -1029,6 +1038,7 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("muonPF2PATlooseMuonSortedisGlb", muonPF2PATlooseMuonSortedisGlb, &b_muonPF2PATlooseMuonSortedisGlb);
    fChain->SetBranchAddress("muonPF2PATlooseMuonSortedisTrk", muonPF2PATlooseMuonSortedisTrk, &b_muonPF2PATlooseMuonSortedisTrk);
    if (isMC) {
+     fChain->SetBranchAddress("genMuonPF2PATPT", genMuonPF2PATPT, &b_genMuonPF2PATPT);
      fChain->SetBranchAddress("genMuonPF2PATET", genMuonPF2PATET, &b_genMuonPF2PATET);
      fChain->SetBranchAddress("genMuonPF2PATPX", genMuonPF2PATPX, &b_genMuonPF2PATPX);
      fChain->SetBranchAddress("genMuonPF2PATPY", genMuonPF2PATPY, &b_genMuonPF2PATPY);
@@ -1051,6 +1061,7 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("jetPF2PATPx", jetPF2PATPx, &b_jetPF2PATPx);
    fChain->SetBranchAddress("jetPF2PATPy", jetPF2PATPy, &b_jetPF2PATPy);
    fChain->SetBranchAddress("jetPF2PATPz", jetPF2PATPz, &b_jetPF2PATPz);
+   fChain->SetBranchAddress("jetPF2PATID", jetPF2PATID, &b_jetPF2PATID);
    fChain->SetBranchAddress("jetPF2PATdRClosestLepton", jetPF2PATdRClosestLepton, &b_jetPF2PATdRClosestLepton);
    fChain->SetBranchAddress("jetPF2PATNtracksInJet", jetPF2PATNtracksInJet, &b_jetPF2PATNtracksInJet);
    fChain->SetBranchAddress("jetPF2PATJetCharge", jetPF2PATJetCharge, &b_jetPF2PATJetCharge);
@@ -1083,6 +1094,7 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genJetPF2PATPX", genJetPF2PATPX, &b_genJetPF2PATPX);
      fChain->SetBranchAddress("genJetPF2PATPY", genJetPF2PATPY, &b_genJetPF2PATPY);
      fChain->SetBranchAddress("genJetPF2PATPZ", genJetPF2PATPZ, &b_genJetPF2PATPZ);
+     fChain->SetBranchAddress("genJetPF2PATID", genJetPF2PATPID &b_genJetPF2PATID);
      fChain->SetBranchAddress("genJetPF2PATPhi", genJetPF2PATPhi, &b_genJetPF2PATPhi);
      fChain->SetBranchAddress("genJetPF2PATTheta", genJetPF2PATTheta, &b_genJetPF2PATTheta);
      fChain->SetBranchAddress("genJetPF2PATEta", genJetPF2PATEta, &b_genJetPF2PATEta);
