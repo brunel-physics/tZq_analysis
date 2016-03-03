@@ -23,7 +23,7 @@ class AnalysisAlgo{
         AnalysisAlgo();
         ~AnalysisAlgo();
 
-	double zptSF(TString channel, float zpt);
+	double zptSF(std::string channel, float zpt);
 	void setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag);
 	void show_usage(std::string name);
 
