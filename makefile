@@ -8,7 +8,8 @@ EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-Llib \
-		-L/home/eepgadm/lib/local/lib\
+		-L${HOME}/usr/lib \
+		-L${HOME}/usr/lib64 \
 
 LIBRARIES = $(shell root-config --libs) \
 		-lconfig++ \
@@ -17,14 +18,12 @@ LIBRARIES = $(shell root-config --libs) \
 
 INCLUDE_PATH = 	-Iinclude  \
 		-I/usr/include \
-		-I/home/eepgadm/lib/local/include
+		-I${HOME}/usr/include \
 
 CFLAGS = $(shell root-config --cflags) -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC ${INCLUDE_PATH}
 
 #LHAP = -I/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/include/LHAPDF -L/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/lib -lLHAPDF
 #LHAPDFLAGS = -I$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull INCLUDE) -L$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull LIBDIR) -lLHAPDF -lgfortran -lz
-
-ROOTSYS = /home/eepgadm/root/
 
 LINK_LIBRARY_FLAGS = -shared -Wall -g -O0 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
 LINK_EXECUTABLE_FLAGS = -Wall -g -O0 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} -lTQZanalysisTools
