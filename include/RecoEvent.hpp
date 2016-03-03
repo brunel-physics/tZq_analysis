@@ -38,6 +38,8 @@ public :
    Int_t           elePF2PATCharge[20];   //[numElePF2PAT]
    Float_t         elePF2PATMVA[20];   //[numElePF2PAT]
    Float_t         elePF2PATMVAcategory[20];   //[numElePF2PAT]
+   Float_t         elePF2PATNonTrigMVA[20];   //[numElePF2PAT]
+   Float_t         elePF2PATNonTrigMVAcategory[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransDist[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransError[20];   //[numElePF2PAT]
    Float_t         elePF2PATImpactTransSignificance[20];   //[numElePF2PAT]
@@ -118,7 +120,18 @@ public :
    Float_t         elePF2PATlooseElectronSortedEta[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedMVA[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedMVAcategory[20];   //[numLooseElePF2PAT]
+   Float_t         elePF2PATlooseElectronSortedNonTrigMVA[20];   //[numLooseElePF2PAT]
+   Float_t         elePF2PATlooseElectronSortedNonTrigMVAcategory[20];   //[numLooseElePF2PAT]
    Float_t         elePF2PATlooseElectronSortedRelIso[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATPT[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATET[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATPX[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATPY[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATPZ[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATPhi[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATTheta[20];   //[numLooseElePF2PAT]
+   Float_t         genLooseElePF2PATEta[20];   //[numLooseElePF2PAT]
+   Int_t           genLooseElePF2PATCharge[20];   //[numLooseElePF2PAT]
    Int_t           numMuonPF2PAT;
    Int_t           numLooseMuonPF2PAT;
    Float_t         muonPF2PATE[20];   //[numMuonPF2PAT]
@@ -176,6 +189,15 @@ public :
    Float_t         genMuonPF2PATTheta[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATEta[20];   //[numMuonPF2PAT]
    Int_t           genMuonPF2PATCharge[20];   //[numMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATPT[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATET[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATPX[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATPY[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATPZ[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATPhi[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATTheta[20];   //[numLooseMuonPF2PAT]
+   Float_t         genLooseMuonPF2PATEta[20];   //[numLooseMuonPF2PAT]
+   Int_t           genLooseMuonPF2PATCharge[20];   //[numLooseMuonPF2PAT]
    Int_t           numJetPF2PAT;
    Double_t        jetPF2PATE[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATEt[40];   //[numJetPF2PAT]
@@ -221,7 +243,6 @@ public :
    Float_t         genJetPF2PATPX[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPY[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPZ[40];   //[numJetPF2PAT]
-   Int_t           genJetPF2PATID[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATPhi[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATTheta[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATEta[40];   //[numJetPF2PAT]
@@ -354,6 +375,8 @@ public :
    TBranch        *b_elePF2PATCharge;   //!
    TBranch        *b_elePF2PATMVA;   //!
    TBranch        *b_elePF2PATMVAcategory;   //!
+   TBranch        *b_elePF2PATNonTrigMVA;   //!
+   TBranch        *b_elePF2PATNonTrigMVAcategory;   //!
    TBranch        *b_elePF2PATImpactTransDist;   //!
    TBranch        *b_elePF2PATImpactTransError;   //!
    TBranch        *b_elePF2PATImpactTransSignificance;   //!
@@ -434,7 +457,18 @@ public :
    TBranch        *b_elePF2PATlooseElectronSortedEta;   //!
    TBranch        *b_elePF2PATlooseElectronSortedMVA;   //!
    TBranch        *b_elePF2PATlooseElectronSortedMVAcategory;   //!
+   TBranch        *b_elePF2PATlooseElectronSortedNonTrigMVA;   //!
+   TBranch        *b_elePF2PATlooseElectronSortedNonTrigMVAcategory;   //!
    TBranch        *b_elePF2PATlooseElectronSortedRelIso;   //!
+   TBranch        *b_genLooseElePF2PATPT;   //!
+   TBranch        *b_genLooseElePF2PATET;   //!
+   TBranch        *b_genLooseElePF2PATPX;   //!
+   TBranch        *b_genLooseElePF2PATPY;   //!
+   TBranch        *b_genLooseElePF2PATPZ;   //!
+   TBranch        *b_genLooseElePF2PATPhi;   //!
+   TBranch        *b_genLooseElePF2PATTheta;   //!
+   TBranch        *b_genLooseElePF2PATEta;   //!
+   TBranch        *b_genLooseElePF2PATCharge;   //!
    TBranch        *b_numMuonPF2PAT;   //!
    TBranch        *b_numLooseMuonPF2PAT;   //!
    TBranch        *b_muonPF2PATE;   //!
@@ -492,6 +526,15 @@ public :
    TBranch        *b_genMuonPF2PATTheta;   //!
    TBranch        *b_genMuonPF2PATEta;   //!
    TBranch        *b_genMuonPF2PATCharge;   //!
+   TBranch        *b_genLooseMuonPF2PATPT;   //!
+   TBranch        *b_genLooseMuonPF2PATET;   //!
+   TBranch        *b_genLooseMuonPF2PATPX;   //!
+   TBranch        *b_genLooseMuonPF2PATPY;   //!
+   TBranch        *b_genLooseMuonPF2PATPZ;   //!
+   TBranch        *b_genLooseMuonPF2PATPhi;   //!
+   TBranch        *b_genLooseMuonPF2PATTheta;   //!
+   TBranch        *b_genLooseMuonPF2PATEta;   //!
+   TBranch        *b_genLooseMuonPF2PATCharge;   //!
    TBranch        *b_numJetPF2PAT;   //!
    TBranch        *b_jetPF2PATE;   //!
    TBranch        *b_jetPF2PATEt;   //!
@@ -537,7 +580,6 @@ public :
    TBranch        *b_genJetPF2PATPX;   //!
    TBranch        *b_genJetPF2PATPY;   //!
    TBranch        *b_genJetPF2PATPZ;   //!
-   TBranch        *b_genJetPF2PATID;   //!
    TBranch        *b_genJetPF2PATPhi;   //!
    TBranch        *b_genJetPF2PATTheta;   //!
    TBranch        *b_genJetPF2PATEta;   //!
@@ -906,6 +948,8 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATCharge", elePF2PATCharge, &b_elePF2PATCharge);
    fChain->SetBranchAddress("elePF2PATMVA", elePF2PATMVA, &b_elePF2PATMVA);
    fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory, &b_elePF2PATMVAcategory);
+   fChain->SetBranchAddress("elePF2PATNonTrigMVA", elePF2PATNonTrigMVA, &b_elePF2PATNonTrigMVA);
+   fChain->SetBranchAddress("elePF2PATNonTrigMVAcategory", elePF2PATNonTrigMVAcategory, &b_elePF2PATNonTrigMVAcategory);
    fChain->SetBranchAddress("elePF2PATImpactTransDist", elePF2PATImpactTransDist, &b_elePF2PATImpactTransDist);
    fChain->SetBranchAddress("elePF2PATImpactTransError", elePF2PATImpactTransError, &b_elePF2PATImpactTransError);
    fChain->SetBranchAddress("elePF2PATImpactTransSignificance", elePF2PATImpactTransSignificance, &b_elePF2PATImpactTransSignificance);
@@ -988,7 +1032,20 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedEta", elePF2PATlooseElectronSortedEta, &b_elePF2PATlooseElectronSortedEta);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVA", elePF2PATlooseElectronSortedMVA, &b_elePF2PATlooseElectronSortedMVA);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVAcategory", elePF2PATlooseElectronSortedMVAcategory, &b_elePF2PATlooseElectronSortedMVAcategory);
+   fChain->SetBranchAddress("elePF2PATlooseElectronSortedNonTrigMVA", elePF2PATlooseElectronSortedNonTrigMVA, &b_elePF2PATlooseElectronSortedNonTrigMVA);
+   fChain->SetBranchAddress("elePF2PATlooseElectronSortedNonTrigMVAcategory", elePF2PATlooseElectronSortedNonTrigMVAcategory, &b_elePF2PATlooseElectronSortedNonTrigMVAcategory);
    fChain->SetBranchAddress("elePF2PATlooseElectronSortedRelIso", elePF2PATlooseElectronSortedRelIso, &b_elePF2PATlooseElectronSortedRelIso);
+   if (isMC) {
+     fChain->SetBranchAddress("genLooseElePF2PATPT", genLooseElePF2PATPT, &b_genLooseElePF2PATPT);
+     fChain->SetBranchAddress("genLooseElePF2PATET", genLooseElePF2PATET, &b_genLooseElePF2PATET);
+     fChain->SetBranchAddress("genLooseElePF2PATPX", genLooseElePF2PATPX, &b_genLooseElePF2PATPX);
+     fChain->SetBranchAddress("genLooseElePF2PATPY", genLooseElePF2PATPY, &b_genLooseElePF2PATPY);
+     fChain->SetBranchAddress("genLooseElePF2PATPZ", genLooseElePF2PATPZ, &b_genLooseElePF2PATPZ);
+     fChain->SetBranchAddress("genLooseElePF2PATPhi", genLooseElePF2PATPhi, &b_genLooseElePF2PATPhi);
+     fChain->SetBranchAddress("genLooseElePF2PATTheta", genLooseElePF2PATTheta, &b_genLooseElePF2PATTheta);
+     fChain->SetBranchAddress("genLooseElePF2PATEta", genLooseElePF2PATEta, &b_genLooseElePF2PATEta);
+     fChain->SetBranchAddress("genLooseElePF2PATCharge", genLooseElePF2PATCharge, &b_genLooseElePF2PATCharge);
+   }
    fChain->SetBranchAddress("numMuonPF2PAT", &numMuonPF2PAT, &b_numMuonPF2PAT);
    fChain->SetBranchAddress("numLooseMuonPF2PAT", &numLooseMuonPF2PAT, &b_numLooseMuonPF2PAT);
    fChain->SetBranchAddress("muonPF2PATE", muonPF2PATE, &b_muonPF2PATE);
@@ -1047,6 +1104,15 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genMuonPF2PATTheta", genMuonPF2PATTheta, &b_genMuonPF2PATTheta);
      fChain->SetBranchAddress("genMuonPF2PATEta", genMuonPF2PATEta, &b_genMuonPF2PATEta);
      fChain->SetBranchAddress("genMuonPF2PATCharge", genMuonPF2PATCharge, &b_genMuonPF2PATCharge);
+     fChain->SetBranchAddress("genLooseMuonPF2PATPT", genLooseMuonPF2PATPT, &b_genLooseMuonPF2PATPT);
+     fChain->SetBranchAddress("genLooseMuonPF2PATET", genLooseMuonPF2PATET, &b_genLooseMuonPF2PATET);
+     fChain->SetBranchAddress("genLooseMuonPF2PATPX", genLooseMuonPF2PATPX, &b_genLooseMuonPF2PATPX);
+     fChain->SetBranchAddress("genLooseMuonPF2PATPY", genLooseMuonPF2PATPY, &b_genLooseMuonPF2PATPY);
+     fChain->SetBranchAddress("genLooseMuonPF2PATPZ", genLooseMuonPF2PATPZ, &b_genLooseMuonPF2PATPZ);
+     fChain->SetBranchAddress("genLooseMuonPF2PATPhi", genLooseMuonPF2PATPhi, &b_genLooseMuonPF2PATPhi);
+     fChain->SetBranchAddress("genLooseMuonPF2PATTheta", genLooseMuonPF2PATTheta, &b_genLooseMuonPF2PATTheta);
+     fChain->SetBranchAddress("genLooseMuonPF2PATEta", genLooseMuonPF2PATEta, &b_genLooseMuonPF2PATEta);
+     fChain->SetBranchAddress("genLooseMuonPF2PATCharge", genLooseMuonPF2PATCharge, &b_genLooseMuonPF2PATCharge);
    }
    fChain->SetBranchAddress("numJetPF2PAT", &numJetPF2PAT, &b_numJetPF2PAT);
    fChain->SetBranchAddress("jetPF2PATE", jetPF2PATE, &b_jetPF2PATE);
@@ -1094,7 +1160,6 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genJetPF2PATPX", genJetPF2PATPX, &b_genJetPF2PATPX);
      fChain->SetBranchAddress("genJetPF2PATPY", genJetPF2PATPY, &b_genJetPF2PATPY);
      fChain->SetBranchAddress("genJetPF2PATPZ", genJetPF2PATPZ, &b_genJetPF2PATPZ);
-     fChain->SetBranchAddress("genJetPF2PATID", genJetPF2PATPID, &b_genJetPF2PATID);
      fChain->SetBranchAddress("genJetPF2PATPhi", genJetPF2PATPhi, &b_genJetPF2PATPhi);
      fChain->SetBranchAddress("genJetPF2PATTheta", genJetPF2PATTheta, &b_genJetPF2PATTheta);
      fChain->SetBranchAddress("genJetPF2PATEta", genJetPF2PATEta, &b_genJetPF2PATEta);
