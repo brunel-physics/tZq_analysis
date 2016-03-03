@@ -21,12 +21,13 @@ INCLUDE_PATH = 	-Iinclude  \
 		-I${HOME}/usr/include \
 
 CFLAGS = $(shell root-config --cflags) -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC ${INCLUDE_PATH}
+LDFLAGS = -Wl,-R${PWD}/lib
 
 #LHAP = -I/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/include/LHAPDF -L/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/lib -lLHAPDF
 #LHAPDFLAGS = -I$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull INCLUDE) -L$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull LIBDIR) -lLHAPDF -lgfortran -lz
 
 LINK_LIBRARY_FLAGS = -shared -Wall -g -O0 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
-LINK_EXECUTABLE_FLAGS = -Wall -g -O0 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} -lTQZanalysisTools
+LINK_EXECUTABLE_FLAGS = -Wall -g -O0 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} ${LDFLAGS} -lTQZanalysisTools
 
 .PHONY: all _all clean _cleanall build _buildall install _installall rpm _rpmall test _testall spec_update
 
