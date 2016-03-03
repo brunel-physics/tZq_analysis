@@ -6,39 +6,20 @@ EXECUTABLE_SOURCES = $(wildcard src/common/*.cxx)
 EXECUTABLE_OBJECT_FILES = $(patsubst src/common/%.cxx,obj/%.o,${EXECUTABLE_SOURCES})
 EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
-LIBRARY_PATH = 	-L/home/eepgadm/root/lib \
+LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-Llib \
 		-L/home/eepgadm/lib/local/lib\
 
-LIBRARIES = 	-lCore \
-		-lCint  \
-		-lRIO  \
-		-lNet  \
-		-lHist  \
-		-lGraf  \
-		-lGraf3d  \
-		-lGpad  \
-		-lTMVA  \
-		-lTree  \
-		-lRint  \
-		-lPostscript  \
-		-lMatrix  \
-		-lPhysics  \
-		-lMathCore  \
-		-lThread  \
-		-pthread  \
-		-lm  \
-		-ldl \
+LIBRARIES = $(shell root-config --libs) \
 		-lconfig++ \
 		-lLHAPDF \
 		-lz \
 
 INCLUDE_PATH = 	-Iinclude  \
-		-I/home/eepgadm/root/include \
 		-I/usr/include \
 		-I/home/eepgadm/lib/local/include
 
-CFLAGS = -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC -pthread -std=c++0x $(shell root-config --cflags) ${INCLUDE_PATH}
+CFLAGS = $(shell root-config --cflags) -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC ${INCLUDE_PATH}
 
 #LHAP = -I/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/include/LHAPDF -L/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/lib -lLHAPDF
 #LHAPDFLAGS = -I$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull INCLUDE) -L$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull LIBDIR) -lLHAPDF -lgfortran -lz
