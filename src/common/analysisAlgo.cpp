@@ -46,7 +46,7 @@ AnalysisAlgo::AnalysisAlgo():
 
 AnalysisAlgo::~AnalysisAlgo(){}
 
-double AnalysisAlgo::zptSF(TString channel, float zpt){
+double AnalysisAlgo::zptSF(std::string channel, float zpt){
 
   double param1 = 0;
   double param2 = 0;
