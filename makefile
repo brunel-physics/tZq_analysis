@@ -21,7 +21,7 @@ INCLUDE_PATH = 	-Iinclude  \
 		-I${HOME}/usr/include \
 
 CFLAGS = $(shell root-config --cflags) -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC ${INCLUDE_PATH}
-LDFLAGS = -Wl,-R${PWD}/lib
+LDFLAGS = -Wl,-R${PWD}/lib,-R$(shell root-config --libdir)
 
 #LHAP = -I/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/include/LHAPDF -L/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/lib -lLHAPDF
 #LHAPDFLAGS = -I$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull INCLUDE) -L$(shell cd ${CMSSW_BASE}; scram tool tag lhapdffull LIBDIR) -lLHAPDF -lgfortran -lz
