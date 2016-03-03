@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
     else if (arg=="-i"){//Set input folder
       if (i + 1 < argc){
 	inputDir = argv[++i];
+    if ( inputDir.back() != '/' ) inputDir += '/';
 	if ( inputDir == "" ){
 	  std::cerr << "requires a non-null input dir to be run over!" << std::endl;;
 	  return 0;
