@@ -211,7 +211,6 @@ public :
    Double_t        jetPF2PATPx[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATPy[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATPz[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATID[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATdRClosestLepton[40];   //[numJetPF2PAT]
    Int_t           jetPF2PATNtracksInJet[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATJetCharge[40];   //[numJetPF2PAT]
@@ -548,7 +547,6 @@ public :
    TBranch        *b_jetPF2PATPx;   //!
    TBranch        *b_jetPF2PATPy;   //!
    TBranch        *b_jetPF2PATPz;   //!
-   TBranch        *b_jetPF2PATID;   //!
    TBranch        *b_jetPF2PATdRClosestLepton;   //!
    TBranch        *b_jetPF2PATNtracksInJet;   //!
    TBranch        *b_jetPF2PATJetCharge;   //!
@@ -1127,7 +1125,6 @@ void RecoEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("jetPF2PATPx", jetPF2PATPx, &b_jetPF2PATPx);
    fChain->SetBranchAddress("jetPF2PATPy", jetPF2PATPy, &b_jetPF2PATPy);
    fChain->SetBranchAddress("jetPF2PATPz", jetPF2PATPz, &b_jetPF2PATPz);
-   fChain->SetBranchAddress("jetPF2PATID", jetPF2PATID, &b_jetPF2PATID);
    fChain->SetBranchAddress("jetPF2PATdRClosestLepton", jetPF2PATdRClosestLepton, &b_jetPF2PATdRClosestLepton);
    fChain->SetBranchAddress("jetPF2PATNtracksInJet", jetPF2PATNtracksInJet, &b_jetPF2PATNtracksInJet);
    fChain->SetBranchAddress("jetPF2PATJetCharge", jetPF2PATJetCharge, &b_jetPF2PATJetCharge);
