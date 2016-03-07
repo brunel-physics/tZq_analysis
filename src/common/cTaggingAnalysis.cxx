@@ -116,6 +116,7 @@ int main(int argc, char* argv[]) {
 
   // Initial progress bar.
   TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
+  TMVA::Timer* lTimer2 = new TMVA::Timer ( discriminatorIncrement, "Filling plots", true );
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter (1);
@@ -169,12 +170,15 @@ int main(int argc, char* argv[]) {
 	  if (lCvsLdisc >= lArrayIt && std::abs(lFlavour) == 4) ++lTotalNumCjetsCvsL[lArrayIt];
 	} 
 
-	lTimer->DrawProgressBar(lCounter++, "");
       }
     }
+  lTimer->DrawProgressBar(lCounter++, "");
   }
 
   double lTempDiscr (-1.0);
+  std::cout << "\n" << std::endl;
+  lTimer2->DrawProgressBar(0, "");
+  Int_t lCounter2 (1);
 
   for (int i = 0; i != discriminatorIncrement; i++, lTempDiscr += 2/discriminatorIncrement){
 
@@ -190,6 +194,7 @@ int main(int argc, char* argv[]) {
     h_CvsB_cJetPassEfficiency->Fill( lTempDiscr, lPassedCvsB_cJetFraction[i]);
     h_CvsL_cJetPassEfficiency->Fill( lTempDiscr, lPassedCvsL_cJetFraction[i]);
 
+    lTimer->DrawProgressBar(lCounter2++, "");
   }
 
   TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
