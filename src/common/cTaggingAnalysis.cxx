@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
     h_CvsB_cJetPassEfficiency->Fill( lTempDiscr, lPassedCvsB_cJetFraction[i]);
     h_CvsL_cJetPassEfficiency->Fill( lTempDiscr, lPassedCvsL_cJetFraction[i]);
 
-    lTimer->DrawProgressBar(lCounter2++, "");
+    lTimer2->DrawProgressBar(lCounter2++, "");
   }
 
   TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
