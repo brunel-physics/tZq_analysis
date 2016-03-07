@@ -1,4 +1,4 @@
-#include "RecoEvent.hpp"
+#include "AnalysisEvent.hpp"
 #include <libconfig.h++>
 #include <dirent.h>
 
@@ -6,6 +6,7 @@
 #include "TChain.h"
 #include "TTree.h"
 #include "TH1F.h"
+#include "TMVA/Timer.h"
 
 #include <stdlib.h> 
 #include <string>
@@ -73,6 +74,8 @@ int main(int argc, char* argv[]) {
 
   std::vector<TTree*> inputTrees;
 
+  std::cout << "Attaching files to TTree ... " << std::endl;
+
   while ( (dirp = readdir(dp)) != NULL ) {
     std::string line (dirp->d_name);
     if ( line == "." || line == "..")
@@ -81,6 +84,8 @@ int main(int argc, char* argv[]) {
     TTree *lTempTree = (TTree*)inputFile->Get("tree");
     inputTrees.push_back(lTempTree);
   }
+
+  std::cout << "Attached all files to TTree!" << std::endl;
 
   TH1F* histElePt      = new TH1F ("histElePt"    , "Distribution of reco-electron p_{T}" , 500, 0.0  , 500.0);
   TH1F* histEleEta     = new TH1F ("histEleEta"   , "Distribution of reco-electron #eta"  , 500, -2.50, 2.5);
@@ -92,10 +97,14 @@ int main(int argc, char* argv[]) {
   TH1F* histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
   TH1F* histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
 
+  TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
+  lTimer->DrawProgressBar(0, "");
+
+  Int_t lCounter (1);
 
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
-
-    RecoEvent* lEvent = new RecoEvent(true, "null", *lIt);
+    
+    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", *lIt);
 
     Int_t lNumEvents = (*lIt)->GetEntries();
     
@@ -110,12 +119,14 @@ int main(int argc, char* argv[]) {
       }
       for ( Int_t l = 0; l < lEvent->numLooseMuonPF2PAT; l++){
 	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[l]);
-	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[l]);
+	histMuEta->Fill(lEvent->muonPF2PATEta[l]);
   	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[l]);
-    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[l]);
+    	histMuGenEta->Fill(lEvent->genMuonPF2PATEta[l]);
       }
     }
-  }  
+    lTimer->DrawProgressBar(lCounter++, "");
+  }
+
   TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
   histElePt->Write();
@@ -129,6 +140,6 @@ int main(int argc, char* argv[]) {
   histMuGenEta->Write();
 
   outFile->Close();
-  std::cout << "Finished." << std::endl;
+  std::cout << "\n Finished." << std::endl;
 }
 
