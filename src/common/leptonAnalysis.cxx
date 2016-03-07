@@ -119,9 +119,9 @@ int main(int argc, char* argv[]) {
       }
       for ( Int_t l = 0; l < lEvent->numLooseMuonPF2PAT; l++){
 	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[l]);
-	histMuEta->Fill(lEvent->muonPF2PATEta[l]);
+	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[l]);
   	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[l]);
-    	histMuGenEta->Fill(lEvent->genMuonPF2PATEta[l]);
+    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[l]);
       }
     }
     lTimer->DrawProgressBar(lCounter++, "");
