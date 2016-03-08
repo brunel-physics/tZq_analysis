@@ -1,5 +1,11 @@
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${PWD}/lib:/home/eepgadm/lib/local/lib/"
-#export LHAPATH="/cms/cmssw/slc6_amd64_gcc472/external/lhapdf/5.9.1/share/lhapdf/PDFsets/"
-export LHAPATH="/cms/cmssw/slc6_amd64_gcc493/external/lhapdf/6.1.5-kpegke3/share/LHAPDF/"
+export LIBCONFIG_PATH=$(find ~ /lib /usr/lib /lib64 /usr/lib64 -name libconfig++.so -print0 -quit | xargs -0 -I % dirname %);
+export LIBLHAPDF_PATH=$(find ~ /lib /usr/lib /lib64 /usr/lib64 -name libLHAPDF.so -print0 -quit | xargs -0 -I % dirname %);
+export INCCONFIG_PATH=$(find ~ /usr/include -name libconfig.h++ -print0 -quit | xargs -0 -I % dirname %);
+export INCLHAPDF_PATH=$(find ~ /usr/include -name LHAPDF.h -print0 -quit | xargs -0 -I % dirname %);
 
-export TQZ_TOOLS_PATH='.'
+echo "# To avoid having to run this script again, add the following lines to"
+echo "# your shell's configuration file"
+echo "export LIBCONFIG_PATH=$LIBCONFIG_PATH"
+echo "export LIBLHAPDF_PATH=$LIBLHAPDF_PATH"
+echo "export INCCONFIG_PATH=$INCCONFIG_PATH"
+echo "export INCLHAPDF_PATH=$INCLHAPDF_PATH"

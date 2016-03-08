@@ -8,8 +8,8 @@ EXECUTABLES = $(patsubst src/common/%.cxx,bin/%,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-Llib \
-		-L${HOME}/usr/lib \
-		-L${HOME}/usr/lib64 \
+		-L${LIBCONFIG_PATH} \
+		-L${LIBLHAPDF_PATH} \
 
 LIBRARIES = $(shell root-config --libs) \
 		-lconfig++ \
@@ -18,7 +18,8 @@ LIBRARIES = $(shell root-config --libs) \
 
 INCLUDE_PATH = 	-Iinclude  \
 		-I/usr/include \
-		-I${HOME}/usr/include \
+		-I${INCCONFIG_PATH} \
+		-I${INCLHAPDF_PATH} \
 
 CFLAGS = $(shell root-config --cflags) -g -O2 -pipe -Wall -W -Woverloaded-virtual -MMD -MP -fPIC ${INCLUDE_PATH}
 LDFLAGS = -Wl,-R${PWD}/lib,-R$(shell root-config --libdir)
