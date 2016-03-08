@@ -9,6 +9,7 @@
 #include <math.h>
 #include <iomanip>
 #include <fstream>
+#include <random>
 
 #include <libconfig.h++>
 
@@ -1396,100 +1397,91 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 
 TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   
-  float oldSmearCorr = 0.;
-  if (fabs(event->jetPF2PATEta[index]) <= 1.1) oldSmearCorr = 0.066;
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.7) oldSmearCorr = 0.191;
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.3) oldSmearCorr = 0.096;
-  else oldSmearCorr = 0.166;
-  float oldSmearValue = 1.0;
-  if (isMC_ && event->genJetPF2PATPT[index] > -990.) oldSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * oldSmearCorr)/event->jetPF2PATPtRaw[index];
-  float newJECCorr = 0.;
+  float jerSF = 0.0;
+  float jerSigma = 0.0;
+
+  float newSmearValue = 1.0;  
+  TLorentzVector returnJet;
 
   // JER Scaling Factors and uncertainities
   if (fabs(event->jetPF2PATEta[index]) <= 0.5) {
-    newJECCorr = 1.095;
-    if (syst == 16) newJECCorr += 0.018;
-    else if (syst == 32) newJECCorr -= 0.018;
+    jerSF = 1.095;
+    jerSigma = 0.018;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
-    newJECCorr = 1.120;
-    if (syst == 16) newJECCorr += 0.028;
-    else if (syst == 32) newJECCorr -= 0.028;
+    jerSF = 1.120;
+    jerSigma = 0.028;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.1) {
-    newJECCorr = 1.097;
-    if (syst == 16) newJECCorr += 0.017;
-    else if (syst == 32) newJECCorr -= 0.017;
+    jerSF = 1.097;
+    jerSigma = 0.017;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.3) {
-    newJECCorr = 1.103;
-    if (syst == 16) newJECCorr += 0.033;
-    else if (syst == 32) newJECCorr -= 0.033;
+    jerSF = 1.103;
+    jerSigma = 0.033;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.7) {
-    newJECCorr = 1.118;
-    if (syst == 16) newJECCorr += 0.014;
-    else if (syst == 32) newJECCorr -= 0.014;
+    jerSF = 1.118;
+    jerSigma = 0.014;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.9) {
-    newJECCorr = 1.100;
-    if (syst == 16) newJECCorr += 0.033;
-    else if (syst == 32) newJECCorr -= 0.033;
+    jerSF = 1.100;
+    jerSigma = 0.033;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 2.1) {
-    newJECCorr = 1.162;
-    if (syst == 16) newJECCorr += 0.044;
-    else if (syst == 32) newJECCorr -= 0.044;
+    jerSF = 1.162;
+    jerSigma = 0.044;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 2.3) {
-    newJECCorr = 1.160;
-    if (syst == 16) newJECCorr += 0.048;
-    else if (syst == 32) newJECCorr -= 0.048;
+    jerSF = 1.160;
+    jerSigma = 0.048;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 2.5) {
-    newJECCorr = 1.161;
-    if (syst == 16) newJECCorr += 0.060;
-    else if (syst == 32) newJECCorr -= 0.060;
+    jerSF = 1.161;
+    jerSigma = 0.060;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 2.8) {
-    newJECCorr = 1.209;
-    if (syst == 16) newJECCorr += 0.059;
-    else if (syst == 32) newJECCorr -= 0.059;
+    jerSF = 1.209;
+    jerSigma = 0.059;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 3.0){
-    newJECCorr = 1.564;
-    if (syst == 16) newJECCorr += 0.321;
-    else if (syst == 32) newJECCorr -= 0.321;
+    jerSF = 1.564;
+    jerSigma = 0.321;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 3.2){
-    newJECCorr = 1.384;
-    if (syst == 16) newJECCorr += 0.033;
-    else if (syst == 32) newJECCorr -= 0.033;
+    jerSF = 1.384;
+    jerSigma = 0.033;
   } 
   else {
-    newJECCorr = 1.216;
-    if (syst == 16) newJECCorr += 0.050;
-    else if (syst == 32) newJECCorr -= 0.050;
+    jerSF = 1.216;
+    jerSigma = 0.050;
   }
-  float newSmearValue = 1.0;
-  if (isMC_ && event->genJetPF2PATPT[index] > -990.){ newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * newJECCorr)/event->jetPF2PATPtRaw[index];
+
+  
+
+  if ( isMC_ ){
+    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
+      if (syst == 16) jerSF += jerSigma;
+      else if (syst == 32) jerSF -= jerSigma;
+      newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
+      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+    }
+    else { // Randomly smear 
+      std::random_device lRandom;
+      std::normal_distribution<float> distribution (0.0,std::sqrt(jerSF*jerSF-1)*jerSigma);
+      newSmearValue = distribution (lRandom);
+      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+    }
   }
-  //  std::cout << event->jetPF2PATPtRaw[index] << std::setprecision(7) << " " << oldSmearValue << " " << newSmearValue << std::endl;
-  TLorentzVector returnJet;
-  if (newSmearValue < 0.01) {
-    returnJet.SetPxPyPzE(0.01,0.01,0.01,0.01);
-    return returnJet;
-  }
-  else{
-	 returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index]/oldSmearValue,newSmearValue*event->jetPF2PATPy[index]/oldSmearValue,newSmearValue*event->jetPF2PATPz[index]/oldSmearValue,newSmearValue*event->jetPF2PATE[index]/oldSmearValue);
-  }
+
+  else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+
   if (isMC_){
     float jerUncer = getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst);
     returnJet *= 1+jerUncer;
   }
-  //  if (returnJet.Pt() == 0.) std::cout << event->jetPF2PATPtRaw[index]  << " " << event->genJetPF2PATPT[index] << " " << event->jetPF2PATPx[index] << " " << event->jetPF2PATPy[index] << " " << event->jetPF2PATPz[index] << " " << event->jetPF2PATE[index] << " " << oldSmearValue << " " << newSmearValue <<std::endl;
+  
   return returnJet;
-
 }
 
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4){
