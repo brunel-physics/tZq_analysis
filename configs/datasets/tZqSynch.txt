@@ -1,5 +1,5 @@
 [tZq_synch]
-fileName = configs/datasets/fileLists/synchFiles.txt
+fileName = configs/datasets/fileLists/tZqSynchFiles.txt
 totalEvents = 41974
 crossSection = 0.008188
 runType = mc
