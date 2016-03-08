@@ -1252,29 +1252,29 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   float leptonWeight = 1.;
   if (trileptonChannel_ == true){
     if (numTightEle_ > 1){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()), false);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()), false);
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
-      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
     }
     else{
-      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
     }
   }
 
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()),false);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()),false);
     }
   }
 
@@ -1303,11 +1303,31 @@ float Cuts::eleSF(float pt, float eta){
   return h_eleSFs->GetBinContent(bin);
 }
 
-float Cuts::muonSF(float pt, float eta){
-  if (eta < 0.9) return 0.9925;
-  else if (eta < 1.2) return 0.9928 * 1.0006;
-  else if (eta < 2.1) return 0.9960 * 1.0006;
-  else return 0.9952 * 1.0004;
+float Cuts::muonSF(float pt, float eta, bool isMC){
+
+  TFile* muonIDsFile = new TFile("ScaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
+  TFile* muonIsoFile = new TFile("ScaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
+
+  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
+  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
+
+  TH2F* h_muonIDs = (TH2F*)((muonIDsFile->Get("abseta_pt"))->Clone());
+  TH2F* h_muonPFiso = (TH2F*)((muonIsoFile->Get("abseta_pt"))->Clone());
+
+  double maxIdPt = h_muonIDs->GetYaxis()->GetXmax();
+  double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
+
+  uint binId (0);
+  uint binIso (0);
+
+  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
+  else binId = h_muonIDs->FindBin(eta,maxIdPt);
+
+  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
+  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
+
+  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+
 }
 
 void Cuts::initialiseJECCors(){
@@ -1467,7 +1487,6 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 			       "central");           // systematics type
   BTagCalibrationReader reader_up(&calib, BTagEntry::OP_LOOSE, "comb", "up");  // sys up
   BTagCalibrationReader reader_do(&calib, BTagEntry::OP_LOOSE, "comb", "down");  // sys down
-
 
   //Get SF
 
