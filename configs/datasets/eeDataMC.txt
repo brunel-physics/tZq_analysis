@@ -31,7 +31,7 @@ plotType = f
 
 [ttbarDilepton]
 fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 6102376
+totalEvents = 30796419
 crossSection = 87.31
 runType = mc
 histoName = ttbar
