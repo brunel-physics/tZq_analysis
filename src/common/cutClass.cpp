@@ -1,12 +1,16 @@
 #include "cutClass.hpp"
+#include "BTagCalibrationStandalone.hpp"
+
+#include "TLorentzVector.h"
+
 #include <sstream>
+#include <iostream>
 #include <cmath>
 #include <math.h>
-#include "TLorentzVector.h"
-#include <iostream>
-#include <libconfig.h++>
 #include <iomanip>
 #include <fstream>
+
+#include <libconfig.h++>
 
 Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel):
 
@@ -101,9 +105,6 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Initialises fine" << std::endl;
   initialiseJECCors();
   std::cout << "Gets past JEC Cors" << std::endl;
-  
-  //Initialise array of b-tagging errors here.
-  SFb_error = { 0.033408, 0.015446, 0.0146992, 0.0183964, 0.0185363, 0.0145547, 0.0176743, 0.0203609, 0.0143342, 0.0148771, 0.0157936, 0.0176496, 0.0209156, 0.0278529, 0.0346877, 0.0350101 };
 }
 
 Cuts::~Cuts(){
@@ -1471,81 +1472,67 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     eff = bTagEffPlots_[7]->GetBinContent(bTagEffPlots_[7]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[7]->GetYaxis()->FindBin(std::abs(jet.Eta()))) / bTagEffPlots_[3]->GetBinContent(bTagEffPlots_[3]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[3]->GetYaxis()->FindBin(std::abs(jet.Eta())));
   }
 
+  // setup calibration readers
+  BTagCalibration calib("CSVv2T", "ScaleFactors/CSVv2.csv");
+  BTagCalibrationReader reader(&calib,               // calibration instance
+			       BTagEntry::OP_LOOSE,  // operating point
+			       "comb",               // measurement type
+			       "central");           // systematics type
+  BTagCalibrationReader reader_up(&calib, BTagEntry::OP_LOOSE, "comb", "up");  // sys up
+  BTagCalibrationReader reader_do(&calib, BTagEntry::OP_LOOSE, "comb", "down");  // sys down
+
+
   //Get SF
-  float SF = 1.;
+
+  // Initalise variables.
+  double jet_scalefactor (1.0); 
+  double jet_scalefactor_up (1.0);  
+  double jet_scalefactor_do (1.0); 
+
   float SFerr = 0.;
   
-  float x = jet.Pt();
+  float jetPt = jet.Pt();
+  float maxBjetPt = 670.0;
+  float maxLjetPt = 1000.0;
+
   //Do some things if it's a b or c
-  if (partonFlavour == 4 || partonFlavour == 5){
-    SF = 1.00572*((1.+(0.013676*x))/(1.+(0.0143279*x)));
-    int ptBin = getptbin_for_btag(jet.Pt());
-    SFerr = SFb_error[ptBin];
-    if (partonFlavour == 4) SFerr*=2;
-  }
-  //Light jets
-  else {
-    float min;
-    float max;
-    if (std::abs(jet.Eta()) < 0.5){
-      SF = ((1.01177+(0.0023066*x))+(-4.56052e-06*(x*x)))+(2.57917e-09*(x*(x*x)));
-      min = ((0.977761+(0.00170704*x))+(-3.2197e-06*(x*x)))+(1.78139e-09*(x*(x*x)));
-      max = ((1.04582+(0.00290226*x))+(-5.89124e-06*(x*x)))+(3.37128e-09*(x*(x*x)));
-    }
-    else if (std::abs(jet.Eta()) < 1.0){
-      SF = ((0.975966+(0.00196354*x))+(-3.83768e-06*(x*x)))+(2.17466e-09*(x*(x*x)));
-      min = ((0.945135+(0.00146006*x))+(-2.70048e-06*(x*x)))+(1.4883e-09*(x*(x*x)));
-      max = ((1.00683+(0.00246404*x))+(-4.96729e-06*(x*x)))+(2.85697e-09*(x*(x*x)));
-    }
-    else if (std::abs(jet.Eta()) < 1.5){
-      SF = ((0.93821+(0.00180935*x))+(-3.86937e-06*(x*x)))+(2.43222e-09*(x*(x*x)));
-      min = ((0.911657+(0.00142008*x))+(-2.87569e-06*(x*x)))+(1.76619e-09*(x*(x*x)));
-      max = ((0.964787+(0.00219574*x))+(-4.85552e-06*(x*x)))+(3.09457e-09*(x*(x*x)));
-    }
-    else{
-      SF = ((1.00022+(0.0010998*x))+(-3.10672e-06*(x*x)))+(2.35006e-09*(x*(x*x)));
-      min = ((0.970045+(0.000862284*x))+(-2.31714e-06*(x*x)))+(1.68866e-09*(x*(x*x)));
-      max = ((1.03039+(0.0013358*x))+(-3.89284e-06*(x*x)))+(3.01155e-09*(x*(x*x)));
-    }
-    SFerr = std::abs(max-SF)>fabs(min-SF)? std::abs(max-SF):std::abs(min-SF);
+
+  if ( partonFlavour == 5 ){
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
   }
 
+  else if ( partonFlavour == 4 ){
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+  }
+
+  //Light jets
+  else {
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+  }
+
+  SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>fabs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
 
   //Apply the weight of the jet and set the error
   if (event->jetPF2PATBDiscriminator[index] > bDiscCut_){
     *mcTag *= eff;
-    *dataTag *= eff*SF;
+    *dataTag *= eff*jet_scalefactor;
 
-    if (partonFlavour == 5 || partonFlavour == 4) *err1 += SFerr/SF;
-    else *err3 += SFerr/SF;
+    if (partonFlavour == 5 || partonFlavour == 4) *err1 += SFerr/jet_scalefactor;
+    else *err3 += SFerr/jet_scalefactor;
   }
   else{
     *mcNoTag *= (1-eff);
-    *dataNoTag *= (1-eff*SF);
+    *dataNoTag *= (1-eff*jet_scalefactor);
 
-    if (partonFlavour == 5 || partonFlavour == 4) *err2 += (-eff*SFerr)/(1-eff*SF);
-    else *err4 += (-eff*SFerr)/(1-eff*SF);
+    if (partonFlavour == 5 || partonFlavour == 4) *err2 += (-eff*SFerr)/(1-eff*jet_scalefactor);
+    else *err4 += (-eff*SFerr)/(1-eff*jet_scalefactor);
     
   }
 
-}
-
-int Cuts::getptbin_for_btag(float pt){
-  if(pt<30) return 0;
-  else if(pt<40) return 1;
-  else if(pt<50) return 2;
-  else if(pt<60) return 3;
-  else if(pt<70) return 4;
-  else if(pt<80) return 5;
-  else if(pt<100) return 6;
-  else if(pt<120) return 7;
-  else if(pt<160) return 8;
-  else if(pt<210) return 9;
-  else if(pt<260) return 10;
-  else if(pt<320) return 11;
-  else if(pt<400) return 12;
-  else if(pt<500) return 13;
-  else if(pt<600) return 14;
-  else return 15;
-  
 }
