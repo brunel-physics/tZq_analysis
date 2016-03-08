@@ -1256,8 +1256,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()), false);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()), false);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
@@ -1273,8 +1273,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()),false);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()),false);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
     }
   }
 
@@ -1303,7 +1303,7 @@ float Cuts::eleSF(float pt, float eta){
   return h_eleSFs->GetBinContent(bin);
 }
 
-float Cuts::muonSF(float pt, float eta, bool isMC){
+float Cuts::muonSF(float pt, float eta){
 
   TFile* muonIDsFile = new TFile("ScaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
   TFile* muonIsoFile = new TFile("ScaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
