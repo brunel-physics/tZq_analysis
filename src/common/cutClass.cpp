@@ -1289,31 +1289,18 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 }
 
 float Cuts::eleSF(float pt, float eta){
-  if ( pt < 30 ){
-    if (eta < 0.8) return 0.969;
-    else if (eta < 1.4442) return 0.935;
-    else if (eta < 1.5660) return 1.032;
-    else if (eta < 2.5) return 0.919;
-  }
-  else if (pt < 40){
-    if (eta < 0.8) return 0.926;        
-    else if (eta < 1.4442) return 0.945;
-    else if (eta < 1.5660) return 0.907;
-    else if (eta < 2.5) return 0.926;   
-  }
-  else if (pt < 50){
-    if (eta < 0.8) return 0.969;        
-    else if (eta < 1.4442) return 0.964;
-    else if (eta < 1.5660) return 0.957;
-    else if (eta < 2.5) return 0.952;   
-  }
-  else{
-    if (eta < 0.8) return 0.975;        
-    else if (eta < 1.4442) return 0.974;
-    else if (eta < 1.5660) return 0.877;
-    else if (eta < 2.5) return 0.950;   
-  }
-  return 1.;
+
+  TFile* electronSFsFile = new TFile("ScaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+  electronSFsFile->ls();
+  TH2F* h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D"))->Clone());
+
+  double maxPt = h_eleSFs->GetYaxis()->GetXmax();
+  uint bin (0);
+
+  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
+  else bin = h_eleSFs->FindBin(eta,maxPt);
+
+  return h_eleSFs->GetBinContent(bin);
 }
 
 float Cuts::muonSF(float pt, float eta){
