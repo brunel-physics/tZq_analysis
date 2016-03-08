@@ -1494,6 +1494,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   float jetPt = jet.Pt();
   float maxBjetPt = 670.0;
   float maxLjetPt = 1000.0;
+  bool doubleUncertainty = false;
 
   //Do some things if it's a b or c
 
@@ -1501,12 +1502,20 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     jet_scalefactor = reader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
     jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
     jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
+    }
   }
 
   else if ( partonFlavour == 4 ){
     jet_scalefactor = reader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
     jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
     jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
+    }
   }
 
   //Light jets
@@ -1514,6 +1523,15 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     jet_scalefactor = reader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
     jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
     jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    if (jetPt > maxLjetPt){
+      jetPt = maxLjetPt;
+      doubleUncertainty = true;
+    }
+  }
+
+  if (doubleUncertainty) {
+    jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
+    jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
   }
 
   SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>fabs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
