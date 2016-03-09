@@ -39,7 +39,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //tightEleMVA0_(0.988153), // Tight cut
   //tightEleMVA1_(0.967910), // Tight cut
   //tightEleMVA2_(0.841729), // Tight cut
-  tightEleRelIso_(0.15),
+  tightEleRelIso_(0.107587),
   //Loose electron initialisation
   numLooseEle_(3),
   looseElePt_(10),
@@ -348,19 +348,20 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //Do a little test of muon id stuff here.
     if (event->muonPF2PATChi2[i] < 0.) continue;
     if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
+    //    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
     //if (event->muonPF2PATNChambers[i] < 2) continue;
     //if (i == 0) std::cout << "gets to tighter ";
     //if (i == 0) std::cout << "First muon ";
     //if (i > 0) std::cout << "Checking second muon";
     
     if (event->muonPF2PATTkLysWithMeasurements[i] < 5) continue;
-    if (fabs(event->muonPF2PATDBPV[i]) >= 0.02) continue;
+    if (fabs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+    if (fabs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
-    if (event->muonPF2PATMuonNHits[i] <= 1) continue;
+    if (event->muonPF2PATMuonNHits[i] < 1) continue;
     if (event->muonPF2PATVldPixHits[i] < 0) continue;
     if (event->muonPF2PATMatchedStations[i] < 1) continue;
-    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
+    //    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     //if(i == 0) std::cout << "does first ";
     //if (i > 0) std::cout << "allows second muon";
     muons.push_back(i);
@@ -589,11 +590,21 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
     TLorentzVector jetVec = getJetLVec(event,i,syst);
     //    std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy), event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
+
     if (jetVec.Pt() < jetPt_) continue;
     if (std::abs(jetVec.Eta()) > jetEta_) continue;
-    if (event->jetPF2PATNConstituents[i] < jetNConsts_) continue;
-    //std::cerr << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99)) << "\t" << std::abs(event->jetPF2PATEta[i]) << "\t" <<  (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99) <<  "\t" << (event->jetPF2PATChargedHadronEnergyFraction[i] > 0.) << "\t" << (event->jetPF2PATChargedMultiplicity[i] > 0.)  << "\t" << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.))) << std::endl;
-    if (jetIDDo_ && !((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.)))) continue;
+
+    bool jetId (true);
+
+    // Jet ID == loose
+    if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0      
+      if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
+      if ( std::abs(jetVec.Eta()) <= 2.40 && ( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) ) jetId = false;
+    }
+    else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+      if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+    }
+
     double deltaLep = 10000.;
 //    double deltaQuark = 10000.;
     //Testing out if electron only cleaning works.
