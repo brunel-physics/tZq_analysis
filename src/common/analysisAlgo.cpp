@@ -581,7 +581,7 @@ void AnalysisAlgo::setupSystematics()
 
   //Initialise PDFs
   if (systToRun & 1024 || systToRun & 2048){
-    LHAPDF::initPDFSet(1, "CT10nnlo.LHgrid");
+    LHAPDF::initPDFSet(1, "CT14nnlo.LHgrid");
     //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
     //    LHAPDF::initPDFSet(1, "cteq6lg.LHgrid");
   }

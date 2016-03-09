@@ -115,8 +115,6 @@ class Cuts{
   void initialiseJECCors();
   float getJECUncertainty(float,float,int);
   TLorentzVector getJetLVec(AnalysisEvent*,int,int);
-  int getptbin_for_btag(float);
-  std::vector<float> SFb_error;
 
   //Histogram to be used in synchronisation.
   TH1F* synchCutFlowHist_;

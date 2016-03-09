@@ -1,12 +1,17 @@
 #include "cutClass.hpp"
+#include "BTagCalibrationStandalone.hpp"
+
+#include "TLorentzVector.h"
+
 #include <sstream>
+#include <iostream>
 #include <cmath>
 #include <math.h>
-#include "TLorentzVector.h"
-#include <iostream>
-#include <libconfig.h++>
 #include <iomanip>
 #include <fstream>
+#include <random>
+
+#include <libconfig.h++>
 
 Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel):
 
@@ -34,7 +39,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //tightEleMVA0_(0.988153), // Tight cut
   //tightEleMVA1_(0.967910), // Tight cut
   //tightEleMVA2_(0.841729), // Tight cut
-  tightEleRelIso_(0.15),
+  tightEleRelIso_(0.107587),
   //Loose electron initialisation
   numLooseEle_(3),
   looseElePt_(10),
@@ -101,9 +106,6 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Initialises fine" << std::endl;
   initialiseJECCors();
   std::cout << "Gets past JEC Cors" << std::endl;
-  
-  //Initialise array of b-tagging errors here.
-  SFb_error = { 0.033408, 0.015446, 0.0146992, 0.0183964, 0.0185363, 0.0145547, 0.0176743, 0.0203609, 0.0143342, 0.0148771, 0.0157936, 0.0176496, 0.0209156, 0.0278529, 0.0346877, 0.0350101 };
 }
 
 Cuts::~Cuts(){
@@ -346,19 +348,20 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //Do a little test of muon id stuff here.
     if (event->muonPF2PATChi2[i] < 0.) continue;
     if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
+    //    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
     //if (event->muonPF2PATNChambers[i] < 2) continue;
     //if (i == 0) std::cout << "gets to tighter ";
     //if (i == 0) std::cout << "First muon ";
     //if (i > 0) std::cout << "Checking second muon";
     
     if (event->muonPF2PATTkLysWithMeasurements[i] < 5) continue;
-    if (fabs(event->muonPF2PATDBPV[i]) >= 0.02) continue;
+    if (fabs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+    if (fabs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
-    if (event->muonPF2PATMuonNHits[i] <= 1) continue;
+    if (event->muonPF2PATMuonNHits[i] < 1) continue;
     if (event->muonPF2PATVldPixHits[i] < 0) continue;
     if (event->muonPF2PATMatchedStations[i] < 1) continue;
-    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
+    //    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     //if(i == 0) std::cout << "does first ";
     //if (i > 0) std::cout << "allows second muon";
     muons.push_back(i);
@@ -587,26 +590,24 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
     TLorentzVector jetVec = getJetLVec(event,i,syst);
     //    std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy), event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
+
     if (jetVec.Pt() < jetPt_) continue;
     if (std::abs(jetVec.Eta()) > jetEta_) continue;
-    if (event->jetPF2PATNConstituents[i] < jetNConsts_) continue;
-    //std::cerr << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99)) << "\t" << std::abs(event->jetPF2PATEta[i]) << "\t" <<  (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99) <<  "\t" << (event->jetPF2PATChargedHadronEnergyFraction[i] > 0.) << "\t" << (event->jetPF2PATChargedMultiplicity[i] > 0.)  << "\t" << ((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.))) << std::endl;
-    if (jetIDDo_ && !((event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.)))) continue;
-    double deltaLep = 10000.;
-//    double deltaQuark = 10000.;
-    //Testing out if electron only cleaning works.
-    /*    if (event->electronIndexTight.size() > 1){
-      if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]))
-      deltaLep = deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]);
-    if (deltaLep > deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]))
-      deltaLep = deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]);
+
+    bool jetId (true);
+
+    // Jet ID == loose
+    if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0      
+      if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
+      if ( std::abs(jetVec.Eta()) <= 2.40 && ( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) ) jetId = false;
+    }
+    else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+      if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
     }
 
-    else if (event->electronIndexTight.size() > 0){
-      if (deltaLep > deltaR(event->wLepton.Eta(),event->wLepton.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]))
-	deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),event->jetPF2PATEta[i],event->jetPF2PATPhi[i]);
-	}*/
-    //    else { deltaLep = 10000.;}
+    if (!jetId) continue;
+
+    double deltaLep = 10000.;
 
     if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi());
@@ -616,16 +617,8 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     if (trileptonChannel_ == true && deltaLep > deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi());
 
-/*
-    if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi()))
-      deltaQuark = deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi());
-	
-    if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi()))
-      deltaQuark = deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi());
-*/
-
     //std::cout << event->jetPF2PATPtRaw[i] << " " << deltaLep << std::endl;
-  if (deltaLep < 0.5) continue;
+  if (deltaLep < 0.4) continue;
 //    if (deltaQuark < 1.0 && !trileptonChannel_) continue;
     //    if (event->jetPF2PATdRClosestLepton[i] < 0.5) continue;
     if (isMC_ && makeBTagEffPlots_){
@@ -696,29 +689,16 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 
   //MuEG triggers
   bool muEGTrig = false;
-  if (!isMC_) {if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;}
-  else if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 ){
-    muEGTrig = true;
-    //    std::cout << "muEGTrig for MC fired." << std::endl;
-  }
+  if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;
 
   //double electron triggers
   bool eeTrig = false;
-  //  std::cout << "event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 : " << event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 << std::endl;
-  if (!isMC_) {if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;}
-  else if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) {
-    eeTrig = true;
-    //    std::cout << "eeTrig for MC fired." << std::endl;   
-  }
+  if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;
 
   //double muon triggers
   bool mumuTrig = false;
-  if (!isMC_) {if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;}
+  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 >0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
 
-  else if (event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0){
-    mumuTrig = true;
-    //    std::cout << "mumuTrig for MC fired." << std::endl;  
-  }
 
   if (cutConfTrigLabel_.find("d") != std::string::npos){if (muEGTrig) return true;}
   if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
@@ -1251,25 +1231,25 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   float leptonWeight = 1.;
   if (trileptonChannel_ == true){
     if (numTightEle_ > 1){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
-      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
     }
     else{
-      leptonWeight *= eleSF(event->wLepton.Pt(),fabs(event->wLepton.Eta()));
+      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
     }
   }
 
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else if (numTightMu_ == 2){
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
@@ -1288,38 +1268,45 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 }
 
 float Cuts::eleSF(float pt, float eta){
-  if ( pt < 30 ){
-    if (eta < 0.8) return 0.969;
-    else if (eta < 1.4442) return 0.935;
-    else if (eta < 1.5660) return 1.032;
-    else if (eta < 2.5) return 0.919;
-  }
-  else if (pt < 40){
-    if (eta < 0.8) return 0.926;        
-    else if (eta < 1.4442) return 0.945;
-    else if (eta < 1.5660) return 0.907;
-    else if (eta < 2.5) return 0.926;   
-  }
-  else if (pt < 50){
-    if (eta < 0.8) return 0.969;        
-    else if (eta < 1.4442) return 0.964;
-    else if (eta < 1.5660) return 0.957;
-    else if (eta < 2.5) return 0.952;   
-  }
-  else{
-    if (eta < 0.8) return 0.975;        
-    else if (eta < 1.4442) return 0.974;
-    else if (eta < 1.5660) return 0.877;
-    else if (eta < 2.5) return 0.950;   
-  }
-  return 1.;
+
+  TFile* electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+  electronSFsFile->ls();
+  TH2F* h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D"))->Clone());
+
+  double maxPt = h_eleSFs->GetYaxis()->GetXmax();
+  uint bin (0);
+
+  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
+  else bin = h_eleSFs->FindBin(eta,maxPt);
+
+  return h_eleSFs->GetBinContent(bin);
 }
 
 float Cuts::muonSF(float pt, float eta){
-  if (eta < 0.9) return 0.9925;
-  else if (eta < 1.2) return 0.9928 * 1.0006;
-  else if (eta < 2.1) return 0.9960 * 1.0006;
-  else return 0.9952 * 1.0004;
+
+  TFile* muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
+  TFile* muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
+
+  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
+  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
+
+  TH2F* h_muonIDs = (TH2F*)((muonIDsFile->Get("abseta_pt"))->Clone());
+  TH2F* h_muonPFiso = (TH2F*)((muonIsoFile->Get("abseta_pt"))->Clone());
+
+  double maxIdPt = h_muonIDs->GetYaxis()->GetXmax();
+  double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
+
+  uint binId (0);
+  uint binIso (0);
+
+  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
+  else binId = h_muonIDs->FindBin(eta,maxIdPt);
+
+  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
+  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
+
+  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+
 }
 
 void Cuts::initialiseJECCors(){
@@ -1388,68 +1375,91 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 
 TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   
-  float oldSmearCorr = 0.;
-  if (fabs(event->jetPF2PATEta[index]) <= 1.1) oldSmearCorr = 0.066;
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.7) oldSmearCorr = 0.191;
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.3) oldSmearCorr = 0.096;
-  else oldSmearCorr = 0.166;
-  float oldSmearValue = 1.0;
-  if (isMC_ && event->genJetPF2PATPT[index] > -990.) oldSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * oldSmearCorr)/event->jetPF2PATPtRaw[index];
-  float newJECCorr = 0.;
-  if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
-    newJECCorr = 1.061;
-    if (syst == 16) newJECCorr = 1.084;
-    else if (syst == 32) newJECCorr = 1.038;
+  float jerSF = 0.0;
+  float jerSigma = 0.0;
+
+  float newSmearValue = 1.0;  
+  TLorentzVector returnJet;
+
+  // JER Scaling Factors and uncertainities
+  if (fabs(event->jetPF2PATEta[index]) <= 0.5) {
+    jerSF = 1.095;
+    jerSigma = 0.018;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
+    jerSF = 1.120;
+    jerSigma = 0.028;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 1.1) {
+    jerSF = 1.097;
+    jerSigma = 0.017;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.3) {
-    newJECCorr = 1.088;
-    if (syst == 16) newJECCorr = 1.117;
-    else if (syst == 32) newJECCorr = 1.059;
+    jerSF = 1.103;
+    jerSigma = 0.033;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 1.7) {
+    jerSF = 1.118;
+    jerSigma = 0.014;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 1.9) {
-    newJECCorr = 1.106;
-    if (syst == 16) newJECCorr = 1.136;
-    else if (syst == 32) newJECCorr = 1.076;
+    jerSF = 1.100;
+    jerSigma = 0.033;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 2.1) {
+    jerSF = 1.162;
+    jerSigma = 0.044;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 2.3) {
+    jerSF = 1.160;
+    jerSigma = 0.048;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 2.5) {
-    newJECCorr = 1.126;
-    if (syst == 16) newJECCorr = 1.22;
-    else if (syst == 32) newJECCorr = 1.032;
+    jerSF = 1.161;
+    jerSigma = 0.060;
+  }
+  else if (fabs(event->jetPF2PATEta[index]) <= 2.8) {
+    jerSF = 1.209;
+    jerSigma = 0.059;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 3.0){
-    newJECCorr = 1.343;
-    if (syst == 16) newJECCorr = 1.466;
-    else if (syst == 32) newJECCorr = 1.22;
+    jerSF = 1.564;
+    jerSigma = 0.321;
   }
   else if (fabs(event->jetPF2PATEta[index]) <= 3.2){
-    newJECCorr = 1.303;
-    if (syst == 16) newJECCorr = 1.414;
-    else if (syst == 32) newJECCorr = 1.192;
+    jerSF = 1.384;
+    jerSigma = 0.033;
   } 
   else {
-    newJECCorr = 1.320;
-    if (syst == 16) newJECCorr = 1.606;
-    else if (syst == 32) newJECCorr = 1.304;
+    jerSF = 1.216;
+    jerSigma = 0.050;
   }
-  float newSmearValue = 1.0;
-  if (isMC_ && event->genJetPF2PATPT[index] > -990.){ newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * newJECCorr)/event->jetPF2PATPtRaw[index];
+
+  
+
+  if ( isMC_ ){
+    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
+      if (syst == 16) jerSF += jerSigma;
+      else if (syst == 32) jerSF -= jerSigma;
+      newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
+      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+    }
+    else { // Randomly smear 
+      std::random_device lRandom;
+      std::normal_distribution<float> distribution (0.0,std::sqrt(jerSF*jerSF-1)*jerSigma);
+      newSmearValue = distribution (lRandom);
+      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+    }
   }
-  //  std::cout << event->jetPF2PATPtRaw[index] << std::setprecision(7) << " " << oldSmearValue << " " << newSmearValue << std::endl;
-  TLorentzVector returnJet;
-  if (newSmearValue < 0.01) {
-    returnJet.SetPxPyPzE(0.01,0.01,0.01,0.01);
-    return returnJet;
-  }
-  else{
-	 returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index]/oldSmearValue,newSmearValue*event->jetPF2PATPy[index]/oldSmearValue,newSmearValue*event->jetPF2PATPz[index]/oldSmearValue,newSmearValue*event->jetPF2PATE[index]/oldSmearValue);
-  }
+
+  else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+
   if (isMC_){
     float jerUncer = getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst);
     returnJet *= 1+jerUncer;
   }
-  //  if (returnJet.Pt() == 0.) std::cout << event->jetPF2PATPtRaw[index]  << " " << event->genJetPF2PATPT[index] << " " << event->jetPF2PATPx[index] << " " << event->jetPF2PATPy[index] << " " << event->jetPF2PATPz[index] << " " << event->jetPF2PATE[index] << " " << oldSmearValue << " " << newSmearValue <<std::endl;
+  
   return returnJet;
-
 }
 
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4){
@@ -1471,81 +1481,84 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     eff = bTagEffPlots_[7]->GetBinContent(bTagEffPlots_[7]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[7]->GetYaxis()->FindBin(std::abs(jet.Eta()))) / bTagEffPlots_[3]->GetBinContent(bTagEffPlots_[3]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[3]->GetYaxis()->FindBin(std::abs(jet.Eta())));
   }
 
+  // setup calibration readers
+  BTagCalibration calib("CSVv2T", "scaleFactors/CSVv2.csv");
+  BTagCalibrationReader reader(&calib,               // calibration instance
+			       BTagEntry::OP_LOOSE,  // operating point
+			       "comb",               // measurement type
+			       "central");           // systematics type
+  BTagCalibrationReader reader_up(&calib, BTagEntry::OP_LOOSE, "comb", "up");  // sys up
+  BTagCalibrationReader reader_do(&calib, BTagEntry::OP_LOOSE, "comb", "down");  // sys down
+
   //Get SF
-  float SF = 1.;
+
+  // Initalise variables.
+  double jet_scalefactor (1.0); 
+  double jet_scalefactor_up (1.0);  
+  double jet_scalefactor_do (1.0); 
+
   float SFerr = 0.;
   
-  float x = jet.Pt();
+  float jetPt = jet.Pt();
+  float maxBjetPt = 670.0;
+  float maxLjetPt = 1000.0;
+  bool doubleUncertainty = false;
+
   //Do some things if it's a b or c
-  if (partonFlavour == 4 || partonFlavour == 5){
-    SF = 1.00572*((1.+(0.013676*x))/(1.+(0.0143279*x)));
-    int ptBin = getptbin_for_btag(jet.Pt());
-    SFerr = SFb_error[ptBin];
-    if (partonFlavour == 4) SFerr*=2;
-  }
-  //Light jets
-  else {
-    float min;
-    float max;
-    if (std::abs(jet.Eta()) < 0.5){
-      SF = ((1.01177+(0.0023066*x))+(-4.56052e-06*(x*x)))+(2.57917e-09*(x*(x*x)));
-      min = ((0.977761+(0.00170704*x))+(-3.2197e-06*(x*x)))+(1.78139e-09*(x*(x*x)));
-      max = ((1.04582+(0.00290226*x))+(-5.89124e-06*(x*x)))+(3.37128e-09*(x*(x*x)));
+
+  if ( partonFlavour == 5 ){
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
     }
-    else if (std::abs(jet.Eta()) < 1.0){
-      SF = ((0.975966+(0.00196354*x))+(-3.83768e-06*(x*x)))+(2.17466e-09*(x*(x*x)));
-      min = ((0.945135+(0.00146006*x))+(-2.70048e-06*(x*x)))+(1.4883e-09*(x*(x*x)));
-      max = ((1.00683+(0.00246404*x))+(-4.96729e-06*(x*x)))+(2.85697e-09*(x*(x*x)));
-    }
-    else if (std::abs(jet.Eta()) < 1.5){
-      SF = ((0.93821+(0.00180935*x))+(-3.86937e-06*(x*x)))+(2.43222e-09*(x*(x*x)));
-      min = ((0.911657+(0.00142008*x))+(-2.87569e-06*(x*x)))+(1.76619e-09*(x*(x*x)));
-      max = ((0.964787+(0.00219574*x))+(-4.85552e-06*(x*x)))+(3.09457e-09*(x*(x*x)));
-    }
-    else{
-      SF = ((1.00022+(0.0010998*x))+(-3.10672e-06*(x*x)))+(2.35006e-09*(x*(x*x)));
-      min = ((0.970045+(0.000862284*x))+(-2.31714e-06*(x*x)))+(1.68866e-09*(x*(x*x)));
-      max = ((1.03039+(0.0013358*x))+(-3.89284e-06*(x*x)))+(3.01155e-09*(x*(x*x)));
-    }
-    SFerr = std::abs(max-SF)>fabs(min-SF)? std::abs(max-SF):std::abs(min-SF);
   }
 
+  else if ( partonFlavour == 4 ){
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
+    }
+  }
+
+  //Light jets
+  else {
+    jet_scalefactor = reader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    if (jetPt > maxLjetPt){
+      jetPt = maxLjetPt;
+      doubleUncertainty = true;
+    }
+  }
+
+  if (doubleUncertainty) {
+    jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
+    jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
+  }
+
+  SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>fabs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
 
   //Apply the weight of the jet and set the error
   if (event->jetPF2PATBDiscriminator[index] > bDiscCut_){
     *mcTag *= eff;
-    *dataTag *= eff*SF;
+    *dataTag *= eff*jet_scalefactor;
 
-    if (partonFlavour == 5 || partonFlavour == 4) *err1 += SFerr/SF;
-    else *err3 += SFerr/SF;
+    if (partonFlavour == 5 || partonFlavour == 4) *err1 += SFerr/jet_scalefactor;
+    else *err3 += SFerr/jet_scalefactor;
   }
   else{
     *mcNoTag *= (1-eff);
-    *dataNoTag *= (1-eff*SF);
+    *dataNoTag *= (1-eff*jet_scalefactor);
 
-    if (partonFlavour == 5 || partonFlavour == 4) *err2 += (-eff*SFerr)/(1-eff*SF);
-    else *err4 += (-eff*SFerr)/(1-eff*SF);
+    if (partonFlavour == 5 || partonFlavour == 4) *err2 += (-eff*SFerr)/(1-eff*jet_scalefactor);
+    else *err4 += (-eff*SFerr)/(1-eff*jet_scalefactor);
     
   }
 
-}
-
-int Cuts::getptbin_for_btag(float pt){
-  if(pt<30) return 0;
-  else if(pt<40) return 1;
-  else if(pt<50) return 2;
-  else if(pt<60) return 3;
-  else if(pt<70) return 4;
-  else if(pt<80) return 5;
-  else if(pt<100) return 6;
-  else if(pt<120) return 7;
-  else if(pt<160) return 8;
-  else if(pt<210) return 9;
-  else if(pt<260) return 10;
-  else if(pt<320) return 11;
-  else if(pt<400) return 12;
-  else if(pt<500) return 13;
-  else if(pt<600) return 14;
-  else return 15;
-  
 }
