@@ -1291,7 +1291,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 
 float Cuts::eleSF(float pt, float eta){
 
-  TFile* electronSFsFile = new TFile("ScaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+  TFile* electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
   electronSFsFile->ls();
   TH2F* h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D"))->Clone());
 
@@ -1306,8 +1306,8 @@ float Cuts::eleSF(float pt, float eta){
 
 float Cuts::muonSF(float pt, float eta){
 
-  TFile* muonIDsFile = new TFile("ScaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
-  TFile* muonIsoFile = new TFile("ScaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
+  TFile* muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
+  TFile* muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
 
   muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
   muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
@@ -1504,7 +1504,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   // setup calibration readers
-  BTagCalibration calib("CSVv2T", "ScaleFactors/CSVv2.csv");
+  BTagCalibration calib("CSVv2T", "scaleFactors/CSVv2.csv");
   BTagCalibrationReader reader(&calib,               // calibration instance
 			       BTagEntry::OP_LOOSE,  // operating point
 			       "comb",               // measurement type
