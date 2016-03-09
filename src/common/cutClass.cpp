@@ -617,14 +617,6 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     if (trileptonChannel_ == true && deltaLep > deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi());
 
-/*
-    if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi()))
-      deltaQuark = deltaR(event->wPairQuarks.first.Eta(),event->wPairQuarks.first.Phi(),jetVec.Eta(),jetVec.Phi());
-	
-    if (!trileptonChannel_ && deltaQuark > deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi()))
-      deltaQuark = deltaR(event->wPairQuarks.second.Eta(),event->wPairQuarks.second.Phi(),jetVec.Eta(),jetVec.Phi());
-*/
-
     //std::cout << event->jetPF2PATPtRaw[i] << " " << deltaLep << std::endl;
   if (deltaLep < 0.4) continue;
 //    if (deltaQuark < 1.0 && !trileptonChannel_) continue;
