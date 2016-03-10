@@ -184,7 +184,11 @@ class Cuts{
 
   private:
 
+  TFile* electronSFsFile;
   TH2F* h_eleSFs;
+
+  TFile* muonIDsFile;
+  TFile* muonIsoFile;  
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;
   
