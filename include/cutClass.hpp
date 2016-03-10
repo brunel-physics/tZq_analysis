@@ -44,8 +44,8 @@ class Cuts{
 
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*);
-  float eleSF(float, float);
-  float muonSF(float, float);
+  float eleSF(double, double);
+  float muonSF(double, double);
 
   //set to true to fill in histograms.
   bool doPlots_;
@@ -183,6 +183,10 @@ class Cuts{
   void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;};
 
   private:
+
+  TH2F* h_eleSFs;
+  TH2F* h_muonIDs;
+  TH2F* h_muonPFiso;
   
 };
 
