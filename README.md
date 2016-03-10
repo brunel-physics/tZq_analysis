@@ -21,6 +21,8 @@ Systematics Status:
 
 Trigger: Efficiencies updated.
 JEC and JER: 2015 Fall 15
-bTagging: To-do
+bTagging: Up to date.
 Pileup: Up to date (MC & data 2015 76X)
 PDF: Up to date.
+Electron and Muon SF: Up to date!
+Factorisation/renomalisation/matching scales: To do!
