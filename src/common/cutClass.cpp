@@ -1282,29 +1282,19 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 
 float Cuts::eleSF(double pt, double eta){
 
-  //  std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
   double maxPt = h_eleSFs->GetYaxis()->GetXmax();
-  //  std::cout << "maxPt: " << maxPt << std::endl;
-  uint bin = 0;
+  uint bin(0);
+
   if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
   else bin = h_eleSFs->FindBin(eta,maxPt);
-  //  std::cout << "maxBin: " << h_eleSFs->FindBin(eta,maxPt) << std::endl;
-  //  int x(0), y(0),z(0);
-  //  h_eleSFs->GetBinXYZ(bin,x,y,z);
-  //  std::cout << "x/y: " << x << "/" << y << std::endl;
-  float eleSF = h_eleSFs->GetBinContent(bin);
-  //  std::cout << "h_eleSFs->GetBinContent(" << bin << "): " << eleSF << std::endl;
-  //  std::cout << "alt way: " <<  h_eleSFs->GetBinContent(x,y,z) << std::endl;;
-  //  std::cout << "h_eleSFs->GetBinError(" << bin << "): " << h_eleSFs->GetBinError(bin) << std::endl;
-  return eleSF;
+
+  return h_eleSFs->GetBinContent(bin);
 }
 
 float Cuts::muonSF(double pt, double eta){
   
-  //  std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
   double maxIdPt = h_muonIDs->GetYaxis()->GetXmax();
   double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
-
   uint binId (0), binIso (0);
 
   if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
@@ -1313,14 +1303,7 @@ float Cuts::muonSF(double pt, double eta){
   if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
   else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
 
-  //  std::cout << "binId: " << binId << std::endl;
-  //  std::cout << "binIso: " << binIso << std::endl;
-
-  //  std::cout << "h_muonIDs->GetBinContent(" << binId << ")/h_muonPFiso->GetBinContent(" << binIso << "): " << h_muonIDs->GetBinContent(binId) << "/" << h_muonPFiso->GetBinContent(binIso) << std::endl;
-
   return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
-  //  return 1.0;
-
 }
 
 void Cuts::initialiseJECCors(){
