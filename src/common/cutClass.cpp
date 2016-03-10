@@ -108,24 +108,26 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Gets past JEC Cors" << std::endl;
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
-  TFile* electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
-  h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D")));
-  electronSFsFile->Close();
+  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+  h_eleSFs = (TH2F*)(electronSFsFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
-  std::cout << "\nLoad muon SFs from root file ... " << std::endl;
-  TFile* muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
-  TFile* muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
+  std::cout << "Load muon SFs from root file ... " << std::endl;
+  muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
+  muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
   muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
+  h_muonIDs = (TH2F*)(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC/abseta_pt_MC"));
   muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
-  h_muonIDs = (TH2F*)((muonIDsFile->Get("abseta_pt_MC")));
-  h_muonPFiso = (TH2F*)((muonIsoFile->Get("abseta_pt_MC")));
-  muonIDsFile->Close();
-  muonIsoFile->Close();
+  h_muonPFiso = (TH2F*)(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC/abseta_pt_MC"));
   std::cout << "Got muon SFs!\n" << std::endl;
 }
 
 Cuts::~Cuts(){
+
+  electronSFsFile->Close();
+  muonIDsFile->Close();
+  muonIsoFile->Close();
+
   if (synchCutFlow_) {
     delete synchCutFlowHist_;
     delete synchNumEles_;
@@ -1280,33 +1282,44 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 
 float Cuts::eleSF(double pt, double eta){
 
-  /*  double maxPt = h_eleSFs->GetYaxis()->GetXmax();
-  int bin = 0;
-  std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
+  //  std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
+  double maxPt = h_eleSFs->GetYaxis()->GetXmax();
+  //  std::cout << "maxPt: " << maxPt << std::endl;
+  uint bin = 0;
   if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
   else bin = h_eleSFs->FindBin(eta,maxPt);
-	 std::cout << "bin: " << bin << std::endl;
+  //  std::cout << "maxBin: " << h_eleSFs->FindBin(eta,maxPt) << std::endl;
+  //  int x(0), y(0),z(0);
+  //  h_eleSFs->GetBinXYZ(bin,x,y,z);
+  //  std::cout << "x/y: " << x << "/" << y << std::endl;
   float eleSF = h_eleSFs->GetBinContent(bin);
-  std::cout << "eleSF: " << eleSF << std::endl;*/
-  return 1.0;
+  //  std::cout << "h_eleSFs->GetBinContent(" << bin << "): " << eleSF << std::endl;
+  //  std::cout << "alt way: " <<  h_eleSFs->GetBinContent(x,y,z) << std::endl;;
+  //  std::cout << "h_eleSFs->GetBinError(" << bin << "): " << h_eleSFs->GetBinError(bin) << std::endl;
+  return eleSF;
 }
 
 float Cuts::muonSF(double pt, double eta){
-  /*
+  
+  //  std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
   double maxIdPt = h_muonIDs->GetYaxis()->GetXmax();
   double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
 
-  uint binId (0);
-  uint binIso (0);
+  uint binId (0), binIso (0);
 
   if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
   else binId = h_muonIDs->FindBin(eta,maxIdPt);
 
   if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
-  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);*/
+  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
 
-//  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
-  return 1.0;
+  //  std::cout << "binId: " << binId << std::endl;
+  //  std::cout << "binIso: " << binIso << std::endl;
+
+  //  std::cout << "h_muonIDs->GetBinContent(" << binId << ")/h_muonPFiso->GetBinContent(" << binIso << "): " << h_muonIDs->GetBinContent(binId) << "/" << h_muonPFiso->GetBinContent(binIso) << std::endl;
+
+  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+  //  return 1.0;
 
 }
 
