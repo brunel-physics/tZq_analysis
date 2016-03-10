@@ -109,7 +109,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
   TFile* electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
-  h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D"))->Clone());
+  h_eleSFs = (TH2F*)((electronSFsFile->Get("EGamma_SF2D")));
   electronSFsFile->Close();
   std::cout << "Got electron SFs!\n" << std::endl;
 
@@ -118,8 +118,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   TFile* muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
   muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
   muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
-  h_muonIDs = (TH2F*)((muonIDsFile->Get("abseta_pt"))->Clone());
-  h_muonPFiso = (TH2F*)((muonIsoFile->Get("abseta_pt"))->Clone());
+  h_muonIDs = (TH2F*)((muonIDsFile->Get("abseta_pt_MC")));
+  h_muonPFiso = (TH2F*)((muonIsoFile->Get("abseta_pt_MC")));
   muonIDsFile->Close();
   muonIsoFile->Close();
   std::cout << "Got muon SFs!\n" << std::endl;
@@ -1284,15 +1284,15 @@ float Cuts::eleSF(double pt, double eta){
   int bin = 0;
   std::cout << "eta/pt: " << eta << "/" << pt << std::endl;
   if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
-  else bin = h_eleSFs->FindBin(eta,maxPt)
-  std::cout << "bin: " << bin << std::endl;
+  else bin = h_eleSFs->FindBin(eta,maxPt);
+	 std::cout << "bin: " << bin << std::endl;
   float eleSF = h_eleSFs->GetBinContent(bin);
   std::cout << "eleSF: " << eleSF << std::endl;*/
   return 1.0;
 }
 
 float Cuts::muonSF(double pt, double eta){
-
+  /*
   double maxIdPt = h_muonIDs->GetYaxis()->GetXmax();
   double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
 
@@ -1303,7 +1303,7 @@ float Cuts::muonSF(double pt, double eta){
   else binId = h_muonIDs->FindBin(eta,maxIdPt);
 
   if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
-  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
+  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);*/
 
 //  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
   return 1.0;
