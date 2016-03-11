@@ -89,8 +89,18 @@ colour = kCyan
 label = tW
 plotType = f
 
-[WZinclusive]
-fileName = configs/datasets/fileLists/WZinclusive.txt
+[WZ2l2q]
+fileName = configs/datasets/fileLists/WZ2l2q.txt
+totalEvents = 25704656
+crossSection = 5.595
+runType = mc
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[WZjets]
+fileName = configs/datasets/fileLists/WZjets.txt
 totalEvents = 12542004
 crossSection = 5.26
 runType = mc
