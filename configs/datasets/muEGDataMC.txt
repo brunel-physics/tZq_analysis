@@ -89,8 +89,28 @@ colour = kCyan
 label = tW
 plotType = f
 
-[WZinclusive]
-fileName = configs/datasets/fileLists/WZinclusive.txt
+[WZ1l1nu2q]
+fileName = configs/datasets/fileLists/WZ1l1nu2q.txt
+totalEvents = 19742520
+crossSection = 10.71
+runType = mc
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[WZ2l2q]
+fileName = configs/datasets/fileLists/WZ2l2q.txt
+totalEvents = 25704656
+crossSection = 5.595
+runType = mc
+histoName = wz
+colour = kOrange
+label = wz
+plotType = f
+
+[WZjets]
+fileName = configs/datasets/fileLists/WZjets.txt
 totalEvents = 12542004
 crossSection = 5.26
 runType = mc
@@ -126,6 +146,16 @@ totalEvents = 15301695
 histoName = zz
 colour = kPink
 label = zz
+plotType = f
+
+[WW1l1nu2q]
+fileName = configs/datasets/fileLists/WW1l1nu2qFiles.txt
+totalEvents = 8920400
+crossSection = 49.997
+runType = mc
+histoName = WW
+colour = kRed1
+label = WW
 plotType = f
 
 [WW2l2nu]
