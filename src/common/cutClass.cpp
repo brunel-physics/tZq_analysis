@@ -2,6 +2,7 @@
 #include "BTagCalibrationStandalone.hpp"
 
 #include "TLorentzVector.h"
+#include "TRandom.h"
 
 #include <sstream>
 #include <iostream>
@@ -1433,28 +1434,20 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     jerSF = 1.216;
     jerSigma = 0.050;
   }
+      std::cout << std::setprecision(6) << std::fixed;
 
   if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
-    //    std::cout << "deltaR: " << deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) << std::endl;
-    //    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
+    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
-/*          }
-    else { // Randomly smear 
+          }
+    else { // If not, randomly smear 
       srand (time(NULL));
-      std::mt19937 mt (rand());
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
-      std::cout << std::setprecision(6) << std::fixed;
-      std::cout << "jerSF/jerSigma: " << jerSF << "/" << jerSigma << std::endl;
-      std::cout << "std::sqrt(jerSF*jerSF-1)*jerSigma: " << std::sqrt(jerSF*jerSF-1)*jerSigma << std::endl;
-      std::normal_distribution<float> distribution (0.0,std::sqrt(jerSF*jerSF-1)*jerSigma);
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
-      newSmearValue = distribution (mt);
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
-      }*/
+      }
   }
 
   else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
