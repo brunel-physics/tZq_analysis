@@ -19,12 +19,14 @@ cuts =
 	      number = 2.;
 	      },
 	looseElectrons = {
-	      pt   = 10;
+	      pt   = 10.;
 	      eta  = 2.5;
 	      relIso = 0.107587;
 	      number = 2.; 
 	      }
 	jets = {
+		pt = 30.;
+		eta = 2.4;
 		numJets = 4;
 		maxJets = 8;
 		numbJets = 1;

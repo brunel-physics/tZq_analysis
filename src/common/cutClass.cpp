@@ -65,7 +65,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numJets_(2),
   maxJets_(4),
   jetPt_(30.),
-  jetEta_(5.0),
+  jetEta_(2.4),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
@@ -196,6 +196,8 @@ bool Cuts::parse_config(std::string confName){
   }
   if (cuts.exists("jets")){
     libconfig::Setting& jets = cuts["jets"];
+    jets.lookupValue("pt",jetPt_);
+    jets.lookupValue("eta",jetEta_);
     jets.lookupValue("numJets",numJets_);
     jets.lookupValue("maxJets",maxJets_);
     jets.lookupValue("numbJets",numbJets_);
