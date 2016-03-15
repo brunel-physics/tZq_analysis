@@ -14,6 +14,7 @@ LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 LIBRARIES = $(shell root-config --libs) \
 		-lconfig++ \
 		-lLHAPDF \
+		-lTMVA \
 		-lz \
 
 INCLUDE_PATH = 	-Iinclude  \
