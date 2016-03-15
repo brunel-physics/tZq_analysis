@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   TH1F* histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
   TH1F* histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
 
-  TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
+  TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", false );
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter (1);
@@ -118,11 +118,11 @@ int main(int argc, char* argv[]) {
 	histEleGenPt->Fill(lEvent->genLooseElePF2PATPT[k]);
 	histEleGenEta->Fill(lEvent->genLooseElePF2PATEta[k]);
       }
-      for ( Int_t l = 0; l < lEvent->numLooseMuonPF2PAT; l++){
-	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[l]);
-	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[l]);
-  	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[l]);
-    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[l]);
+      for ( Int_t k2 = 0; k2 < lEvent->numMuonPF2PAT; k2++){
+	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k2]);
+	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[k2]);
+  	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[k2]);
+    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[k2]);
       }
     }
     lTimer->DrawProgressBar(lCounter++, "");

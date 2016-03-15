@@ -2,6 +2,7 @@
 #include "BTagCalibrationStandalone.hpp"
 
 #include "TLorentzVector.h"
+#include "TRandom.h"
 
 #include <sstream>
 #include <iostream>
@@ -65,7 +66,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numJets_(2),
   maxJets_(4),
   jetPt_(30.),
-  jetEta_(5.0),
+  jetEta_(2.4),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
@@ -115,10 +116,10 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Load muon SFs from root file ... " << std::endl;
   muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
   muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
-  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC");
-  h_muonIDs = (TH2F*)(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/efficienciesMC/abseta_pt_MC"));
-  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC");
-  h_muonPFiso = (TH2F*)(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/efficienciesMC/abseta_pt_MC"));
+  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1");
+  h_muonIDs = (TH2F*)(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
+  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1");
+  h_muonPFiso = (TH2F*)(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
   std::cout << "Got muon SFs!\n" << std::endl;
 }
 
@@ -196,6 +197,8 @@ bool Cuts::parse_config(std::string confName){
   }
   if (cuts.exists("jets")){
     libconfig::Setting& jets = cuts["jets"];
+    jets.lookupValue("pt",jetPt_);
+    jets.lookupValue("eta",jetEta_);
     jets.lookupValue("numJets",numJets_);
     jets.lookupValue("maxJets",maxJets_);
     jets.lookupValue("numbJets",numbJets_);
@@ -1431,23 +1434,20 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     jerSF = 1.216;
     jerSigma = 0.050;
   }
+      std::cout << std::setprecision(6) << std::fixed;
 
-  if ( isMC_ ){
-    //    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
+  if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
+    if (deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0) { // If matching from GEN to RECO using dR<Rcone/2, just scale
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
+      newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
-      //    }
-      /*    else { // Randomly smear 
+          }
+    else { // If not, randomly smear 
       srand (time(NULL));
-      std::mt19937 mt (rand());
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
-      std::normal_distribution<float> distribution (0.0,std::sqrt(jerSF*jerSF-1)*jerSigma);
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
-      newSmearValue = distribution (mt);
-      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
-      }*/
+      }
   }
 
   else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);

@@ -1,8 +1,5 @@
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <stdlib.h> 
 #include "TTree.h"
+#include "TMVA/Timer.h"
 
 #include "analysisAlgo.hpp"
 #include "config_parser.hpp"
@@ -10,6 +7,10 @@
 
 #include <iomanip>
 #include <math.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <stdlib.h> 
 
 AnalysisAlgo::AnalysisAlgo():
   config(""),
@@ -854,8 +855,13 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents = 0;
-      for (int i = 0; i < numberOfEvents; i++){
-	if (i % 500 < 0.01) std::cerr << i << " (" << 100*float(i)/numberOfEvents << "%) with " << event->numElePF2PAT << " electrons. Found " << (synchCutFlow?cutObj->numFound():foundEvents) << " events.\r";
+      TMVA::Timer* lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
+      lEventTimer->DrawProgressBar(0, "");
+      for (int i = 0; i < numberOfEvents; i++) {
+	std::stringstream lSStrFoundLeptons, lSStrFoundEvents;
+	lSStrFoundLeptons <<  event->numElePF2PAT;
+	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
+	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
 	event->GetEntry(i);
 	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
 	int systMask = 1;

@@ -28,11 +28,10 @@ colour = kGreen
 label = ttZ
 plotType = f
 
-
-[ttbarDilepton]
-fileName = configs/datasets/fileLists/ttbarDileptonFiles.txt
-totalEvents = 30796419
-crossSection = 87.31
+[ttbarInclusivePowerheg]
+fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+totalEvents = 97994442
+crossSection = 831.76
 runType = mc
 histoName = ttbar
 colour = kRed
@@ -181,7 +180,7 @@ plotType = f
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50Files.txt
 totalEvents = 149963618
-crossSection = 2008.4
+crossSection = 6025.2
 runType = mc
 histoName = zPlusJets
 colour = kBlue
