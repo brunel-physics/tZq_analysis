@@ -1,6 +1,6 @@
 [tZq_synch]
 fileName = configs/datasets/fileLists/tZqSynchFiles.txt
-totalEvents = 41974
+totalEvents = 200105
 crossSection = 0.008188
 runType = mc
 histoName = tZq
