@@ -1349,7 +1349,7 @@ float Cuts::muonSF(double pt, double eta){
 }
 
 void Cuts::initialiseJECCors(){
-  std::ifstream jecFile("scripts/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt");
+  std::ifstream jecFile("scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt");
   std::string line;
   bool first = true;
 
