@@ -906,15 +906,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }
 	    // dilepton stuff, updated for Run2015 MC
 	    if (channel == "ee"){
-	      float twgt = 0.976;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.001;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.001;
+	      float twgt = 0.958;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.009;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.009;
 	      eventWeight *= twgt;
 	    }
 	    if (channel == "mumu"){
-	      float twgt = 0.965;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.001;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.001;
+	      float twgt = 0.931;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
 	      eventWeight *= twgt;
 	    }
 	  }

@@ -191,6 +191,18 @@ class Cuts{
   TFile* muonIsoFile;  
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;
+
+  // Cut Id variables
+
+  double cutIdSigmaIEtaIEtaCut_[2];
+  double cutIdEtaIn_[2];
+  double cutIdPhiIn_[2];
+  double cutIdHoverE_[2];
+  double cutIdRelIso_[2];
+  double cutIdOoEmooP_[2];
+  double cutIdD0_[2];
+  double cutIdDz_[2];
+  uint cutIdMissingLayers_[2];
   
 };
 
