@@ -66,7 +66,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numJets_(2),
   maxJets_(4),
   jetPt_(30.),
-  jetEta_(2.4),
+  jetEta_(4.7),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
@@ -103,7 +103,18 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
     synchNumMus_ = new TH1I("synchNumMuos","synchNumMuos",10,0,10);
     synchMuonCutFlow_ = new TH1I("synchMuonCutFlow","synchMuonCutFlow",11,0,11);
     synchCutTopMassHist_ = new TH1F("synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.);
+
+    cutIdSigmaIEtaIEtaCut_ = 	{0.0101, 0.0279};
+    cutIdEtaIn_ = 		{0.00926, 0.00724};
+    cutIdPhiIn_ = 		{0.0336, 0.0918};
+    cutIdHoverE_ = 		{0.0597, 0.0615};
+    cutIdRelIso_ = 		{0.0354, 0.0646};
+    cutIdOoEmooP_ = 		{0.012, 0.00999};
+    cutIdD0_ = 			{0.0111, 0.0351};
+    cutIdDz_ = 			{0.0466, 0.417};
+    cutIdMissingLayers_ = 	{2, 1};
   }
+
   std::cout << "\nInitialises fine" << std::endl;
   initialiseJECCors();
   std::cout << "Gets past JEC Cors" << std::endl;
@@ -317,15 +328,43 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
-    if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
-    if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
-    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
-    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
-//    if (event->elePF2PATMVA[i] < tightEleMVA_)continue;
-    if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
+
+    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
+        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
+    	if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
+	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
+	}
     
+    else { // Else do cut-based ID for synchornisation
+	 // Barrel cut-based ID
+	if ( event->elePF2PATIsBarrel[i] ){
+		if ( !event->elePF2PATSCSigmaIEtaIEta[i] < cutIdSigmaIEtaIEtaCut_[0] ) continue;
+		if ( !std::abs(event->elePF2PATDeltaEtaSC[i]) < cutIdEtaIn_[0] ) continue;
+		if ( !std::abs(event->elePF2PATDeltaPhiSC[i]) < cutIdPhiIn_[0] ) continue;
+		if ( !event->elePF2PATHoverE[i] < cutIdHoverE_[0] ) continue;
+	    	if ( !(event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) < cutIdRelIso_[0] ) continue;
+		if ( !(1/event->elePF2PATE[i] * 1/tempVec.P()) < cutIdOoEmooP_[0] ) continue;
+	        if ( !std::abs(event->elePF2PATD0PV[i]) < cutIdD0_[0] )continue;
+		if ( !std::abs(event->elePF2PATDZPV[i]) < cutIdDz_[0] ) continue;
+       	    	if ( !event->elePF2PATMissingInnerLayers[i] < cutIdMissingLayers_[0] ) continue;
+		}
+	else { // Endcap cut-based ID
+                if ( !event->elePF2PATSCSigmaIEtaIEta[i] < cutIdSigmaIEtaIEtaCut_[1] ) continue;
+                if ( !std::abs(event->elePF2PATDeltaEtaSC[i]) < cutIdEtaIn_[1] ) continue;
+                if ( !std::abs(event->elePF2PATDeltaPhiSC[i]) < cutIdPhiIn_[1] ) continue;
+                if ( !event->elePF2PATHoverE[i] < cutIdHoverE_[1] ) continue;
+                if ( !(event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) < cutIdRelIso_[1] ) continue;
+                if ( !(1/event->elePF2PATE[i] * 1/tempVec.P()) < cutIdOoEmooP_[0] ) continue;
+                if ( !std::abs(event->elePF2PATD0PV[i]) < cutIdD0_[1] )continue;
+                if ( !std::abs(event->elePF2PATDZPV[i]) < cutIdDz_[1] ) continue;
+                if ( !event->elePF2PATMissingInnerLayers[i] < cutIdMissingLayers_[1] ) continue;
+		}
+	}
+	
     electrons.push_back(i);
   }
   return electrons;
