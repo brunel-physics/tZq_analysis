@@ -273,7 +273,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
   if ( !trileptonChannel_ && isFCNC_) { // Do FCNC stuff
-    event->cTagIndex = makeCCuts(event,event->jetIndex,event->bTagIndex);
+    event->cTagIndex = makeCCuts(event,event->jetIndex);
     if (event->cTagIndex.size() < numcJets_) return false;
     if (event->cTagIndex.size() < maxcJets_) return false;
     if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
@@ -767,7 +767,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
   return bJets;
 }
 
-std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets, std::vector<int> bJets){
+std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
 
   std::vector<int> cJets;
     for (unsigned int i = 0; i < jets.size(); i++){
