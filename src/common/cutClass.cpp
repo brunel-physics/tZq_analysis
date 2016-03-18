@@ -225,6 +225,8 @@ bool Cuts::parse_config(std::string confName){
     jets.lookupValue("maxJets",maxJets_);
     jets.lookupValue("numbJets",numbJets_);
     jets.lookupValue("maxbJets",maxbJets_);
+    jets.lookupValue("numcJets",numcJets_);
+    jets.lookupValue("maxcJets",maxcJets_);
   }
   
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;

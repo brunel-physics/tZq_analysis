@@ -30,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 285620642
+totalEvents = 97994442 
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -209,7 +209,7 @@ triggerFlag = eCt
 
 [eeRun2015D]
 fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
-luminosity = 2095.17
+luminosity = 2155.638
 runType = data
 histoName = data
 label = Data
