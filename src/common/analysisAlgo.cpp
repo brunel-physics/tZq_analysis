@@ -621,7 +621,7 @@ void AnalysisAlgo::setupPlots()
   stageNames.push_back("zMass");
   stageNames.push_back("jetSel");
   stageNames.push_back("bTag");
-  if ( !trileptonChannel_ ) {stageNames.push_back("wMass");}
+  if ( !trileptonChannel_ && !isFCNC_) {stageNames.push_back("wMass");}
   if ( !trileptonChannel_ && isFCNC_) {stageNames.push_back("cTag");}
 }
 
