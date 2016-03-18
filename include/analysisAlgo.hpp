@@ -65,7 +65,8 @@ class AnalysisAlgo{
 	bool customJetRegion;
 	float metCut;
 	float mtwCut;
-	bool trileptonChannel;
+	bool trileptonChannel_;
+	bool isFCNC_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;

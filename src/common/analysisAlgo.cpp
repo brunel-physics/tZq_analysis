@@ -42,7 +42,8 @@ AnalysisAlgo::AnalysisAlgo():
   customJetRegion(false),
   metCut(0.),
   mtwCut(0.),
-  trileptonChannel(true)
+  trileptonChannel_(true),
+  isFCNC_(false)
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -323,7 +324,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       }
     }
     else if (arg=="--dilepton"){ // Sets whether trilepton or dilepton channel is to be analysed.
-      trileptonChannel = false;
+      trileptonChannel_ = false;
+    }
+    else if (arg =="--FCNC"){ // Runs code in FCNC mode.
+	isFCNC_ = true;
     }
     else if (arg=="-n") { // using this option sets the number of entries to run over.
       if (i+1 < argc){
@@ -480,7 +484,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     std::cerr << "I doubt that set of options is a good idea, so I'm going to just quietly exit here. Don't generate and use b-tag efficiency numbers at the same time...";
     exit(0);
   }
-
+  if (trileptonChannel_ && isFCNC_){
+    std::cerr << "Code has not been setup to do a trilepton FCNC search, only a dilepton one. Please use --dilepton argument.";
+    exit(0);
+  }
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;
@@ -489,7 +496,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     exit(0);
   }
   
-  if (channelsToRun && trileptonChannel){
+  if (channelsToRun && trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
     for (unsigned int channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -514,7 +521,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
   }
   
-  if (channelsToRun && !trileptonChannel){
+  if (channelsToRun && !trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
     for (unsigned int channelInd = 1; channelInd != 4; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -592,7 +599,7 @@ void AnalysisAlgo::setupSystematics()
 void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel);
+  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_);
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
     exit(0);
@@ -612,7 +619,8 @@ void AnalysisAlgo::setupPlots()
   stageNames.push_back("zMass");
   stageNames.push_back("jetSel");
   stageNames.push_back("bTag");
-  if ( !trileptonChannel ) {stageNames.push_back("wMass");}
+  if ( !trileptonChannel_ ) {stageNames.push_back("wMass");}
+  if ( !trileptonChannel_ && isFCNC_) {stageNames.push_back("cTag");}
 }
 
 void AnalysisAlgo::runMainAnalysis(){
@@ -626,11 +634,11 @@ void AnalysisAlgo::runMainAnalysis(){
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
 
-    if ( !trileptonChannel ){ channelIndMax = 4; }
+    if ( !trileptonChannel_ ){ channelIndMax = 4; }
     for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelsToRun && trileptonChannel){
+      if (channelsToRun && trileptonChannel_){
 	if (channelInd & 17){ // eee channels
 	  cutObj->setNumLeps(0,0,3,3);
 	  cutObj->setCutConfTrigLabel("e");
@@ -670,7 +678,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  chanName += "inv";
 	}
       } 
-      if (channelsToRun && !trileptonChannel){
+      if (channelsToRun && !trileptonChannel_){
 	if (channelInd & 1){ // ee channels
 	  cutObj->setNumLeps(0,0,2,2);
 	  cutObj->setCutConfTrigLabel("e");
@@ -719,7 +727,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()] = std::map<std::string,Plots*>();
 	      for (unsigned int j = 0; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel);
+		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_);
 	      }
 	    }
 	  }//end cutFlow find loop
@@ -832,8 +840,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
 	  mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
 	  mvaTree[systIn]->Branch("zLep2Index",&zLep2Index,"zLep2Index/I");
-	  if (trileptonChannel) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
-	  else if (!trileptonChannel) {
+	  if (trileptonChannel_) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
+	  else if (!trileptonChannel_) {
 	    mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
 	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
 	  } 
@@ -992,8 +1000,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (makeMVATree){
 	    zLep1Index = event->zPairIndex.first;
 	    zLep2Index = event->zPairIndex.second;
-	    if (trileptonChannel) wLepIndex = event->wLepIndex;
-	    else if (!trileptonChannel){
+	    if (trileptonChannel_) wLepIndex = event->wLepIndex;
+	    else if (!trileptonChannel_){
 	      wQuark1Index = event->wPairIndex.first;
 	      wQuark2Index = event->wPairIndex.second;
 	    }

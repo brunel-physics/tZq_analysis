@@ -16,6 +16,7 @@ class Cuts{
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
   std::vector<int> makeMetCuts(AnalysisEvent*);
   std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>);
+  std::vector<int> makeCCuts(AnalysisEvent*, std::vector<int>, std::vector<int>);
   
   std::vector<int> getTightEles(AnalysisEvent* event);
   std::vector<int> getInvIsoEles(AnalysisEvent* event);
@@ -54,6 +55,7 @@ class Cuts{
   bool synchCutFlow_; //For synch
   bool singleEventInfoDump_; //For dropping info on event for synching.
   const bool trileptonChannel_;
+  const bool isFCNC_;
 
   // Tight electron cuts
   unsigned int numTightEle_;
@@ -104,6 +106,12 @@ class Cuts{
   unsigned int numbJets_;
   unsigned int maxbJets_;
   float bDiscCut_;
+
+  //C-Disc cut
+  unsigned int numcJets_;
+  unsigned int maxcJets_;
+  float cVsLDiscCut_;
+  float cVsBDiscCut_;
   
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
@@ -160,7 +168,7 @@ class Cuts{
   std::string cutConfTrigLabel_;
 
  public:
-  Cuts(bool, bool, bool, bool, bool, const bool);
+  Cuts(bool, bool, bool, bool, bool, const bool, const bool);
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);

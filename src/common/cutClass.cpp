@@ -14,7 +14,7 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel):
+Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC):
 
   //Do plots?
   doPlots_(doPlots),
@@ -26,6 +26,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //Synchronisation cut flow.
   singleEventInfoDump_(dumpEventNumber),
   trileptonChannel_(trileptonChannel),
+  isFCNC_(isFCNC),
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_(3),
@@ -75,6 +76,16 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   bDiscCut_(0.935), // Tight cut
   //bDiscCut_(0.80), // Medium level
   //bDiscCut_(0.460), // Loose cut
+  //C-discriminator cut
+  numcJets_(1),
+  maxcJets_(1),
+  cVsLDiscCut_(0.450), // Tight cut
+  //cVsLDiscCut_(0.050), // Medium level
+  //cVsLDiscCut_(-0.670), // Loose cut
+  cVsBDiscCut_(-0.35), // Tight cut
+  //cVsBDiscCut_(-0.16), // Medium level
+  //cVsBDiscCut_(-0.23), // Loose cut
+
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
   //Same for trigger flag.
@@ -260,15 +271,24 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (event->bTagIndex.size() > maxbJets_) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
-  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
-  if ( doPlots_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-  if ( doPlots_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
+
+  if ( !trileptonChannel_ && isFCNC_) { // Do FCNC stuff
+    event->cTagIndex = makeCCuts(event,event->jetIndex,event->bTagIndex);
+    if (event->cTagIndex.size() < numcJets_) return false;
+    if (event->cTagIndex.size() < maxcJets_) return false;
+    if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
+    if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
+  }
+
+  if ( !trileptonChannel_ && !isFCNC_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+  if ( doPlots_ && !isFCNC_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
-  if (trileptonChannel_ && event->metPF2PATPt < metCut_) return false;
+  if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
   float mtw = std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
-  if (trileptonChannel_ && mtw < mTWCut_) return false;
+  if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_) return false;
   return true;
 }
 
@@ -731,6 +751,19 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
     bJets.push_back(i);
   }
   return bJets;
+}
+
+std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets, std::vector<int> bJets){
+
+  std::vector<int> cJets;
+    for (unsigned int i = 0; i < jets.size(); i++){
+    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATCvsLDiscriminator[jets[i]] << std::endl;
+    if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
+    if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
+    cJets.push_back(i);
+  }
+  return cJets;
+
 }
 
 void Cuts::setTightEle(float,float,float)

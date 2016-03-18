@@ -695,6 +695,7 @@ public :
    std::vector<int> muonIndexLoose;
    std::vector<int> jetIndex;
    std::vector<int> bTagIndex; 
+   std::vector<int> cTagIndex; 
 
    std::pair<TLorentzVector,TLorentzVector> zPairLeptons;
    std::pair<float,float> zPairRelIso;
