@@ -659,7 +659,10 @@ float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets, std::
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
 
   std::vector<int> jets;
-  float mcTag = 1., mcNoTag = 1., dataTag = 1., dataNoTag = 1., errTag = 0., errNoTag = 0., err1 = 0., err2 = 0., err3 = 0., err4 = 0.;
+  float mcTag = 1., mcNoTag = 1., dataTag = 1., dataNoTag = 1., errTag = 0., errNoTag = 0.; 
+  float err1 = 0., err2 = 0., err3 = 0., err4 = 0.; // b-tagging errors
+  float err5 = 0., err6 = 0., err7 = 0., err8 = 0.; // c-tagging errors
+
   //  std::cout << event->eventNum << std::endl << "Jets: " << std::endl;
   for (int i = 0; i < event->numJetPF2PAT; i++){
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
@@ -722,20 +725,31 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     jets.push_back(i);
 
     if (getBTagWeight_){
-      getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&errTag,&errNoTag,&err1,&err2,&err3,&err4);
+      getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&errTag,&errNoTag,&err1,&err2,&err3,&err4,&err5,&err6,&err7,&err8);
     }
   }
   //Evaluate b-tag weight for event here.
   if (getBTagWeight_){
     float bWeight = (dataNoTag * dataTag)/(mcNoTag * mcTag);
-    if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag)
+    float cWeight = (dataNoTag * dataTag)/(mcNoTag * mcTag);
+    if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag){
       bWeight = 1.;
+      cWeight = 1.;
+    }
     float bWeightErr = std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight;
+    float cWeightErr = std::sqrt( pow(err5+err6,2) + pow(err7 + err8, 2)) * cWeight;
+
     if (syst == 256)
       bWeight += bWeightErr;
     if (syst == 512)
       bWeight -= bWeightErr;
+    if (syst == 4096)
+      cWeight += cWeightErr;
+    if (syst == 8192)
+      cWeight += cWeightErr;
+
     *eventWeight *= bWeight;
+    *eventWeight *= cWeight;
   }
   return jets;
 }
@@ -1532,7 +1546,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   return returnJet;
 }
 
-void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4){
+void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4, float * err5, float * err6, float * err7, float * err8){
   //Use b-tagging efficiencies and scale factors.
   //Firstly get efficiency for pt/eta bin here.
   float eff = 1.;

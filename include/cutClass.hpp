@@ -154,7 +154,7 @@ class Cuts{
   //And the efficiency plots.
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
-  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*);
+  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*,float*,float*,float*);
 
   //met and mtw cut values
   float metCut_;
