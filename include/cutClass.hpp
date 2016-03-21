@@ -22,7 +22,6 @@ class Cuts{
   std::vector<int> getInvIsoEles(AnalysisEvent* event);
   std::vector<int> getLooseEles(AnalysisEvent* event);
   std::vector<int> getTightMuons(AnalysisEvent* event);
-  std::vector<int> synchTightMuons(AnalysisEvent* event);
   std::vector<int> getInvIsoMuons(AnalysisEvent* event);
   std::vector<int> getLooseMuons(AnalysisEvent* event);
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
