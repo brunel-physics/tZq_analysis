@@ -799,7 +799,6 @@ void AnalysisAlgo::runMainAnalysis(){
       //extract the dataset weight.
       float datasetWeight = dataset->getDatasetWeight(totalLumi);
 
-
       //Apply trigger SF here. Also does systematic for trigger +-
       if (infoDump) datasetWeight = 1;
       std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
@@ -861,7 +860,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }*/
 
       int numberOfEvents = datasetChain->GetEntries();
-      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
+//      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
       //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
@@ -885,7 +884,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  eventWeight = 1;
 	  //apply trigger weights here.
-	  if (dataset->isMC()){
+	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
 	    float pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
@@ -950,7 +949,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systInd) systMask = systMask << 1;
 	    continue;
 	  }
-	  //	  std::cout << std::setprecision(9) << eventWeight << " " << datasetWeight << std::endl;
 	  //Do PDF reweighting things here
 	  if (systMask == 1024 || systMask == 2048){
 	    //std::cout << std::setprecision(15) << eventWeight << " ";

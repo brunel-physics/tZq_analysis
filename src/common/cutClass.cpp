@@ -109,7 +109,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
 
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
-    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",9,0,9);
+    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",10,0,10);
     synchNumEles_ = new TH1I("synchNumEles","synchNumEles",10,0,10);
     synchNumMus_ = new TH1I("synchNumMuos","synchNumMuos",10,0,10);
     synchMuonCutFlow_ = new TH1I("synchMuonCutFlow","synchMuonCutFlow",11,0,11);
@@ -236,6 +236,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //If we're doing synchronisation, do this function.
   if (synchCutFlow_){
+    *eventWeight = 1.0;
     return synchCuts(event);
   }
 
@@ -790,7 +791,7 @@ std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
     if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATCvsLDiscriminator[jets[i]] << std::endl;
 //      if (event->jetPF2PATJetCharge[jets[i]] <= 0) continue; // If a negatively charged jet ... I.e. if not a  u or c ...
     if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
-//    if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
+    if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
     cJets.push_back(i);
   }
   return cJets;
@@ -843,47 +844,27 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     std::cout << std::setprecision(6) << std::fixed;
   }
 
+  synchCutFlowHist_->Fill(0.5); // Total events
+
   if (!triggerCuts(event)) return false; 
-  synchCutFlowHist_->Fill(0.5);
+  synchCutFlowHist_->Fill(1.5); // Trigger cuts
   if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
  
-  /* //If electrons are expected to be the Z, check there are an oppositely charged pair.
-  bool zCand = false;
-  if (numTightEle_ > 1){
-    for (unsigned int i = 0; i < event->electronIndexTight.size();++i){
-      for (unsigned int j = i +1; j < event->electronIndexTight.size();++j){
-	if (event->elePF2PATCharge[event->electronIndexTight[i]] * event->elePF2PATCharge[event->electronIndexTight[j]] > 0) continue;
-	zCand = true;
-      }
-    }
-
-  }
-  else if (numTightMu_ > 1){
-    for (unsigned int i = 0; i < event->muonIndexTight.size();++i){
-      for (unsigned int j = i +1; j < event->muonIndexTight.size();++j){
-	if (event->muonPF2PATCharge[event->muonIndexTight[i]] * event->muonPF2PATCharge[event->muonIndexTight[j]] > 0) continue;
-	zCand = true;
-      }
-    }
-  }
-  if (!zCand) return false;
-  if (singleEventInfoDump_) std::cout << "Gets past z cand stuff with " << event->electronIndexTight.size() << " tight electrons and " << event->muonIndexTight.size() << " tight muons" << std::endl;*/
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
-
 
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
 
   // Check at exactly three tight leptons
-  int looseLeps = getLooseLepsNum(event);
+/*  int looseLeps = getLooseLepsNum(event);
   if (isMC_ && looseLeps < 2) return false;
-  if (!isMC_ && looseLeps < 3) return false;
+  if (!isMC_ && looseLeps < 3) return false;*/
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
 
-  synchCutFlowHist_->Fill(1.5); 
+  synchCutFlowHist_->Fill(2.5); 
 
   synchNumEles_->Fill(event->electronIndexTight.size());
   synchNumMus_->Fill(event->muonIndexTight.size());
@@ -892,11 +873,11 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
   if (event->muonIndexTight.size() != getLooseMuons(event).size()) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
-  synchCutFlowHist_->Fill(2.5);
+  synchCutFlowHist_->Fill(3.5);
   if (makeEventDump_){dumpToFile(event,2);}
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
   if (fabs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
-  synchCutFlowHist_->Fill(3.5);
+  synchCutFlowHist_->Fill(4.5);
 
   //Add in extra steps here.
   float tempWeight = 1.;
@@ -907,21 +888,21 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     dumpToFile(event,4);
   }
   //  std::cout << event->jetIndex.size() << std::endl;
-  synchCutFlowHist_->Fill(4.5);
+  synchCutFlowHist_->Fill(5.5);
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (!event->bTagIndex.size() == 1) return false;
-  synchCutFlowHist_->Fill(5.5);
+  synchCutFlowHist_->Fill(6.5);
   if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
   if (event->metPF2PATPt < metCut_) return false;
-  synchCutFlowHist_->Fill(6.5);
+  synchCutFlowHist_->Fill(7.5);
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
   if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) < mTWCut_) return false;
-  synchCutFlowHist_->Fill(7.5);
+  synchCutFlowHist_->Fill(8.5);
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex, event->jetIndex)  << std::endl;
   if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
-  synchCutFlowHist_->Fill(8.5);
+  synchCutFlowHist_->Fill(9.5);
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_){
     dumpToFile(event,6);
@@ -932,8 +913,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
 TH1F* Cuts::getSynchCutFlow(){
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
-  char const *names[] = {"Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
-  for (unsigned int i = 1; i < 10; ++i){
+  char const *names[] = {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
+  for (unsigned int i = 1; i < 11; ++i){
     std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
   }
   std::cout << "The number of leptons in the passing trigger events:" << std::endl;
