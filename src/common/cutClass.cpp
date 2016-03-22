@@ -79,8 +79,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //C-discriminator cut
   numcJets_(1),
   maxcJets_(1),
-  cVsLDiscCut_(0.450), // Tight cut
-  //cVsLDiscCut_(0.050), // Medium level
+  //cVsLDiscCut_(0.450), // Tight cut
+  cVsLDiscCut_(0.050), // Medium level
   //cVsLDiscCut_(-0.670), // Loose cut
   cVsBDiscCut_(-0.35), // Tight cut
   //cVsBDiscCut_(-0.16), // Medium level
@@ -831,8 +831,6 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   }
 
   int looseLeps = getLooseLepsNum(event);
-  if (isMC_ && looseLeps < 2) return false;
-  if (!isMC_ && looseLeps < 3) return false;
   if (!triggerCuts(event)) return false; 
   synchCutFlowHist_->Fill(0.5);
   if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
@@ -866,8 +864,12 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
-  if (event->electronIndexTight.size() != numTightEle_) return false;
-  if (event->muonIndexTight.size() != numTightMu_) return false;
+//  if (event->electronIndexTight.size() != numTightEle_) return false;
+//  if (event->muonIndexTight.size() != numTightMu_) return false;
+
+  // Check at least three leptons
+  if (isMC_ && looseLeps < 2) return false;
+  if (!isMC_ && looseLeps < 3) return false;
   synchCutFlowHist_->Fill(1.5); 
   //loose lepton veto
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
