@@ -385,6 +385,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
   std::vector<int> electrons;
   for (int i = 0; i < event->numElePF2PAT; i++){
+    TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
@@ -871,12 +872,13 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
 
   // Check at least three leptons
+  if (event->electronIndexTight.size() < numTightEle_) return false;
+  if (event->muonIndexTight.size() < numTightMu_) return false;
+
   if (isMC_ && looseLeps < 2) return false;
   if (!isMC_ && looseLeps < 3) return false;
   synchCutFlowHist_->Fill(1.5); 
 
-  if (event->electronIndexTight.size() < numTightEle_) return false;
-  if (event->muonIndexTight.size() < numTightMu_) return false;
 
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
