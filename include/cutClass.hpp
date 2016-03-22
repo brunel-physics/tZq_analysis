@@ -1,6 +1,7 @@
 #ifndef _cutClass_hpp_
 #define _cutClass_hpp_
 
+#include <array>
 #include "AnalysisEvent.hpp"
 #include <vector>
 #include <map>
@@ -194,15 +195,15 @@ class Cuts{
 
   // Cut Id variables
 
-  double cutIdSigmaIEtaIEtaCut_[2];
-  double cutIdEtaIn_[2];
-  double cutIdPhiIn_[2];
-  double cutIdHoverE_[2];
-  double cutIdRelIso_[2];
-  double cutIdOoEmooP_[2];
-  double cutIdD0_[2];
-  double cutIdDz_[2];
-  uint cutIdMissingLayers_[2];
+  std::array<double, 2> cutIdSigmaIEtaIEtaCut_;
+  std::array<double, 2> cutIdEtaIn_;
+  std::array<double, 2> cutIdPhiIn_;
+  std::array<double, 2> cutIdHoverE_;
+  std::array<double, 2> cutIdRelIso_;
+  std::array<double, 2> cutIdOoEmooP_;
+  std::array<double, 2> cutIdD0_;
+  std::array<double, 2> cutIdDz_;
+  std::array<unsigned, 2> cutIdMissingLayers_;
   
 };
 
