@@ -59,7 +59,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numLooseMu_(0),
   looseMuonPt_(20.),
   looseMuonEta_(2.4),
-  looseMuonRelIso_(0.15),
+  looseMuonRelIso_(0.2),
   //zMass cuts
   invZMassCut_(15.),
   invWMassCut_(50.),
