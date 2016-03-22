@@ -876,19 +876,17 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
 
-  // Check at least three leptons
+  // Check at exactly three tight leptons
   int looseLeps = getLooseLepsNum(event);
   if (isMC_ && looseLeps < 2) return false;
   if (!isMC_ && looseLeps < 3) return false;
-  if (event->electronIndexTight.size() < numTightEle_) return false;
-  if (event->muonIndexTight.size() < numTightMu_) return false;
+  if (event->electronIndexTight.size() != numTightEle_) return false;
+  if (event->muonIndexTight.size() != numTightMu_) return false;
 
   synchCutFlowHist_->Fill(1.5); 
 
-
   synchNumEles_->Fill(event->electronIndexTight.size());
   synchNumMus_->Fill(event->muonIndexTight.size());
-
 
   //loose lepton veto
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
