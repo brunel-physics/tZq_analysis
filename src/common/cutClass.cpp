@@ -46,9 +46,9 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numLooseEle_(3),
   looseElePt_(20),
   looseEleEta_(2.5),
-  looseEleMVA0_(0.),
-  looseEleMVA1_(0.),
-  looseEleMVA2_(0.),
+  looseEleMVA0_(0.972153),
+  looseEleMVA1_(0.922126),
+  looseEleMVA2_(0.610764),
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
@@ -291,7 +291,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
-  if (event->electronIndexLoose.size() != numLooseEle_) return false;
+      if (event->electronIndexLoose.size() != numLooseEle_) return false;
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
@@ -383,8 +383,15 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
+    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
+//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
+	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;
+	}
 
-    if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
     // Barrel cut-based Veto ID
     	if ( event->elePF2PATIsBarrel[i] ){
       	if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
