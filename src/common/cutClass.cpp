@@ -841,7 +841,6 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     std::cout << std::setprecision(6) << std::fixed;
   }
 
-  int looseLeps = getLooseLepsNum(event);
   if (!triggerCuts(event)) return false; 
   synchCutFlowHist_->Fill(0.5);
   if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
@@ -871,17 +870,20 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
 
-  // Check at least three leptons
-  if (event->electronIndexTight.size() < numTightEle_) return false;
-  if (event->muonIndexTight.size() < numTightMu_) return false;
-
-  if (isMC_ && looseLeps < 2) return false;
-  if (!isMC_ && looseLeps < 3) return false;
-  synchCutFlowHist_->Fill(1.5); 
-
 
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
+
+  // Check at least three leptons
+  int looseLeps = getLooseLepsNum(event);
+  if (isMC_ && looseLeps < 2) return false;
+  if (!isMC_ && looseLeps < 3) return false;
+  if (event->electronIndexTight.size() < numTightEle_) return false;
+  if (event->muonIndexTight.size() < numTightMu_) return false;
+
+  synchCutFlowHist_->Fill(1.5); 
+
+
   synchNumEles_->Fill(event->electronIndexTight.size());
   synchNumMus_->Fill(event->muonIndexTight.size());
 
