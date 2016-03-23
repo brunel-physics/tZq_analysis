@@ -431,7 +431,6 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
     if (!event->muonPF2PATTrackID[i]) continue;
     if (!event->muonPF2PATGlobalID[i]) continue;
-    //    if (!event->muonPF2PATIsPFMuon[i]) continue;
     if (event->muonPF2PATPt[i] < tightMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) > tightMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] > tightMuonRelIso_) continue;
@@ -450,8 +449,8 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (fabs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
     if (event->muonPF2PATMuonNHits[i] < 1) continue;
-    if (event->muonPF2PATVldPixHits[i] < 0) continue;
-    if (event->muonPF2PATMatchedStations[i] < 1) continue;
+    if (event->muonPF2PATVldPixHits[i] < 1) continue;
+    if (event->muonPF2PATMatchedStations[i] < 2) continue;
     //    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     //if(i == 0) std::cout << "does first ";
     //if (i > 0) std::cout << "allows second muon";
@@ -858,22 +857,25 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->muonIndexTight = getTightMuons(event);
 
   // Check at exactly three tight leptons
-/*  int looseLeps = getLooseLepsNum(event);
-  if (isMC_ && looseLeps < 2) return false;
-  if (!isMC_ && looseLeps < 3) return false;*/
-  if (event->electronIndexTight.size() != numTightEle_) return false;
-  if (event->muonIndexTight.size() != numTightMu_) return false;
-
-  synchCutFlowHist_->Fill(2.5); 
-
   synchNumEles_->Fill(event->electronIndexTight.size());
   synchNumMus_->Fill(event->muonIndexTight.size());
+  //if (event->electronIndexTight.size() != numTightEle_) return false;
+  //if (event->muonIndexTight.size() != numTightMu_) return false;
+  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+  synchCutFlowHist_->Fill(2.5); 
+
 
   //loose lepton veto
+  int looseLeps = getLooseLepsNum(event);
+  if (isMC_ && looseLeps < 2) return false;
+  if (!isMC_ && looseLeps < 3) return false; 
+
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
   if (event->muonIndexTight.size() != getLooseMuons(event).size()) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
   synchCutFlowHist_->Fill(3.5);
+
+
   if (makeEventDump_){dumpToFile(event,2);}
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
   if (fabs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;

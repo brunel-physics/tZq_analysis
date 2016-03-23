@@ -3,11 +3,11 @@ cuts =
 	tightMuons = {
 	      pt   = 20.;
 	      eta  = 2.4;
-	      relIso = 0.2;
+	      relIso = 0.15;
 	      number = 0;
 	      },
 	looseMuons = {
-	      pt   = 10.;
+	      pt   = 20.;
 	      eta  = 2.4;
 	      relIso = 0.2;
 	      number = 0;
