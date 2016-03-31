@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
     if ( line == "." || line == "..")
     continue;
     TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
-    TTree *lTempTree = (TTree*)inputFile->Get("tree");
+    TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
     inputTrees.push_back(lTempTree);
   }
 

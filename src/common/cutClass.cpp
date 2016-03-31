@@ -122,16 +122,16 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
   electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
-  h_eleSFs = (TH2F*)(electronSFsFile->Get("EGamma_SF2D"));
+  h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
   std::cout << "Load muon SFs from root file ... " << std::endl;
   muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
   muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
   muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1");
-  h_muonIDs = (TH2F*)(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
+  h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
   muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1");
-  h_muonPFiso = (TH2F*)(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
+  h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
   std::cout << "Got muon SFs!\n" << std::endl;
 }
 

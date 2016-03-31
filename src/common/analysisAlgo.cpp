@@ -558,28 +558,28 @@ void AnalysisAlgo::setupSystematics()
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
-  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+  dataPU = dynamic_cast<TH1F*>(dataPileupFile->Get("pileup")->Clone());
   mcPileupFile = new TFile("pileup/pileupMC.root","READ");
-  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  mcPU = dynamic_cast<TH1F*>(mcPileupFile->Get("pileup")->Clone());
 
   //Get systematic files too.
   systUpFile = new TFile("pileup/truePileupUp.root","READ");
-  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+  pileupUpHist = dynamic_cast<TH1F*>(systUpFile->Get("pileup")->Clone());
   systDownFile = new TFile("pileup/truePileupDown.root","READ");
-  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  pileupDownHist = dynamic_cast<TH1F*>(systDownFile->Get("pileup")->Clone());
 
-  puReweight = (TH1F*)dataPU->Clone();
+  puReweight = dynamic_cast<TH1F*>(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
   puReweight->Divide(mcPU);
   puReweight->SetDirectory(nullptr);
 
   /// And do the same for systematic sampl
-  puSystUp = (TH1F*)pileupUpHist->Clone();
+  puSystUp = dynamic_cast<TH1F*>(pileupUpHist->Clone());
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
   puSystUp->SetDirectory(nullptr);
-  puSystDown = (TH1F*)pileupDownHist->Clone();
+  puSystDown = dynamic_cast<TH1F*>(pileupDownHist->Clone());
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
   puSystDown->SetDirectory(nullptr);
@@ -786,7 +786,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	TFile * datasetFileForHists = new TFile(("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	for (int unsigned denNum = 0; denNum < denomNum.size(); denNum++){
 	  for (int unsigned eff = 0; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.push_back((TH2D*)(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	    bTagEffPlots.push_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
 	  }
 	}
 	for (int unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
