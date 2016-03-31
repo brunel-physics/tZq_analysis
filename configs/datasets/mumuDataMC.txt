@@ -190,7 +190,7 @@ plotType = f
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 92993271
-crossSection = 1861.0
+crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
 colour = kBlue
@@ -209,7 +209,7 @@ triggerFlag = eCt
 
 [mumuRun2015D]
 fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
-luminosity = 2095.17
+luminosity = 2186.175
 runType = data
 histoName = data
 label = Data

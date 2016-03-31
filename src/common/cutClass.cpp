@@ -14,7 +14,7 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel):
+Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC):
 
   //Do plots?
   doPlots_(doPlots),
@@ -26,6 +26,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //Synchronisation cut flow.
   singleEventInfoDump_(dumpEventNumber),
   trileptonChannel_(trileptonChannel),
+  isFCNC_(isFCNC),
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_(3),
@@ -43,11 +44,11 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightEleRelIso_(0.107587),
   //Loose electron initialisation
   numLooseEle_(3),
-  looseElePt_(10),
+  looseElePt_(20),
   looseEleEta_(2.5),
-  looseEleMVA0_(0.),
-  looseEleMVA1_(0.),
-  looseEleMVA2_(0.),
+  looseEleMVA0_(0.972153),
+  looseEleMVA1_(0.922126),
+  looseEleMVA2_(0.610764),
   looseEleRelIso_(0.15),
   //Tight muon initialisation
   numTightMu_(0),
@@ -56,9 +57,9 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   tightMuonRelIso_(0.15),
   //Loose muons
   numLooseMu_(0),
-  looseMuonPt_(10.),
+  looseMuonPt_(20.),
   looseMuonEta_(2.4),
-  looseMuonRelIso_(0.25),
+  looseMuonRelIso_(0.2),
   //zMass cuts
   invZMassCut_(15.),
   invWMassCut_(50.),
@@ -75,6 +76,16 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   bDiscCut_(0.935), // Tight cut
   //bDiscCut_(0.80), // Medium level
   //bDiscCut_(0.460), // Loose cut
+  //C-discriminator cut
+  numcJets_(1),
+  maxcJets_(1),
+  //cVsLDiscCut_(0.450), // Tight cut
+  cVsLDiscCut_(0.050), // Medium level
+  //cVsLDiscCut_(-0.670), // Loose cut
+  cVsBDiscCut_(-0.35), // Tight cut
+  //cVsBDiscCut_(-0.16), // Medium level
+  //cVsBDiscCut_(-0.23), // Loose cut
+
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_(true),
   //Same for trigger flag.
@@ -91,28 +102,18 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //MET and mTW cuts go here.
   metCut_(0.),
   mTWCut_(20.),
-  TopMassCutLower_(91.),
-  TopMassCutUpper_(155.)
+  TopMassCutLower_(95.),
+  TopMassCutUpper_(200.)
 {
   //Space here in case other stuff needs to be done.
 
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
-    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",9,0,9);
+    synchCutFlowHist_ = new TH1F("synchCutFlow","synchCutFlow",10,0,10);
     synchNumEles_ = new TH1I("synchNumEles","synchNumEles",10,0,10);
     synchNumMus_ = new TH1I("synchNumMuos","synchNumMuos",10,0,10);
     synchMuonCutFlow_ = new TH1I("synchMuonCutFlow","synchMuonCutFlow",11,0,11);
     synchCutTopMassHist_ = new TH1F("synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.);
-
-    cutIdSigmaIEtaIEtaCut_ = 	{0.0101, 0.0279};
-    cutIdEtaIn_ = 		{0.00926, 0.00724};
-    cutIdPhiIn_ = 		{0.0336, 0.0918};
-    cutIdHoverE_ = 		{0.0597, 0.0615};
-    cutIdRelIso_ = 		{0.0354, 0.0646};
-    cutIdOoEmooP_ = 		{0.012, 0.00999};
-    cutIdD0_ = 			{0.0111, 0.0351};
-    cutIdDz_ = 			{0.0466, 0.417};
-    cutIdMissingLayers_ = 	{2, 1};
   }
 
   std::cout << "\nInitialises fine" << std::endl;
@@ -214,6 +215,8 @@ bool Cuts::parse_config(std::string confName){
     jets.lookupValue("maxJets",maxJets_);
     jets.lookupValue("numbJets",numbJets_);
     jets.lookupValue("maxbJets",maxbJets_);
+    jets.lookupValue("numcJets",numcJets_);
+    jets.lookupValue("maxcJets",maxcJets_);
   }
   
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
@@ -260,15 +263,24 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (event->bTagIndex.size() > maxbJets_) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
-  if ( !trileptonChannel_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
-  if ( doPlots_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-  if ( doPlots_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
+
+  if ( !trileptonChannel_ && isFCNC_) { // Do FCNC stuff
+    event->cTagIndex = makeCCuts(event,event->jetIndex);
+    if (event->cTagIndex.size() < numcJets_) return false;
+    if (event->cTagIndex.size() < maxcJets_) return false;
+    if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
+    if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
+  }
+
+  if ( !trileptonChannel_ && !isFCNC_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+  if ( doPlots_ && !isFCNC_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
-  if (trileptonChannel_ && event->metPF2PATPt < metCut_) return false;
+  if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
   float mtw = std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
-  if (trileptonChannel_ && mtw < mTWCut_) return false;
+  if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_) return false;
   return true;
 }
 
@@ -279,7 +291,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
-  if (event->electronIndexLoose.size() != numLooseEle_) return false;
+      if (event->electronIndexLoose.size() != numLooseEle_) return false;
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
@@ -318,53 +330,46 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
   for (int i = 0; i < event->numElePF2PAT; i++){
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
-    /*    std::cout << tempVec.Pt();
-    std::cout << " | " << event->elePF2PATComRelIsoRho[i]/tempVec.Pt();
-    std::cout << " | " << event->elePF2PATRhoIso[i];
-    std::cout << " | " << event->elePF2PATAEff03[i];
-    std::cout << " | " << event->elePF2PATChHadIso[i];
-    std::cout << " | " << event->elePF2PATNtHadIso[i];
-    std::cout << " | " << event->elePF2PATGammaIso[i] << std::endl;*/
 
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
 
     if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
-        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
-        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
+//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
+//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
     	if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
 	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
     	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
     	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
 	}
     
-    else { // Else do cut-based ID for synchornisation
+    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+
 	 // Barrel cut-based ID
 	if ( event->elePF2PATIsBarrel[i] ){
-		if ( !event->elePF2PATSCSigmaIEtaIEta[i] < cutIdSigmaIEtaIEtaCut_.at(0) ) continue;
-		if ( !std::abs(event->elePF2PATDeltaEtaSC[i]) < cutIdEtaIn_.at(0) ) continue;
-		if ( !std::abs(event->elePF2PATDeltaPhiSC[i]) < cutIdPhiIn_.at(0) ) continue;
-		if ( !event->elePF2PATHoverE[i] < cutIdHoverE_.at(0) ) continue;
-	    	if ( !(event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) < cutIdRelIso_.at(0) ) continue;
-		if ( !(1/event->elePF2PATE[i] * 1/tempVec.P()) < cutIdOoEmooP_.at(0) ) continue;
-	        if ( !std::abs(event->elePF2PATD0PV[i]) < cutIdD0_.at(0) )continue;
-		if ( !std::abs(event->elePF2PATDZPV[i]) < cutIdDz_.at(0) ) continue;
-       	    	if ( !event->elePF2PATMissingInnerLayers[i] < cutIdMissingLayers_.at(0) ) continue;
-		}
-	else { // Endcap cut-based ID
-                if ( !event->elePF2PATSCSigmaIEtaIEta[i] < cutIdSigmaIEtaIEtaCut_.at(1) ) continue;
-                if ( !std::abs(event->elePF2PATDeltaEtaSC[i]) < cutIdEtaIn_.at(1) ) continue;
-                if ( !std::abs(event->elePF2PATDeltaPhiSC[i]) < cutIdPhiIn_.at(1) ) continue;
-                if ( !event->elePF2PATHoverE[i] < cutIdHoverE_.at(1) ) continue;
-                if ( !(event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) < cutIdRelIso_.at(1) ) continue;
-                if ( !(1/event->elePF2PATE[i] * 1/tempVec.P()) < cutIdOoEmooP_.at(0) ) continue;
-                if ( !std::abs(event->elePF2PATD0PV[i]) < cutIdD0_.at(1) )continue;
-                if ( !std::abs(event->elePF2PATDZPV[i]) < cutIdDz_.at(1) ) continue;
-                if ( !event->elePF2PATMissingInnerLayers[i] < cutIdMissingLayers_.at(1) ) continue;
-		}
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0766 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.373 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
-	
+	else { // Endcap cut-based ID
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0283 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.06678 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0678 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
+	}
+    }
     electrons.push_back(i);
   }
   return electrons;
@@ -374,13 +379,43 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
   std::vector<int> electrons;
   for (int i = 0; i < event->numElePF2PAT; i++){
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
-    if (tempVec.Pt() < looseElePt_) continue;
-    if (std::abs(tempVec.Eta()) > looseEleEta_)continue;
-    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) )continue;
-    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) )continue;
-    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) )continue;
-    if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > looseEleRelIso_)continue;    
 
+    if (tempVec.Pt() < tightElePt_) continue;
+    if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
+    if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
+    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
+//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
+	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) ) continue;
+    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;
+	}
+
+    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+    // Barrel cut-based Veto ID
+    	if ( event->elePF2PATIsBarrel[i] ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
+	  if ( event->elePF2PATHoverE[i] < 0.181 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.126 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.207 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 2  ) continue;
+    	}
+    	else { // Endcap cut-based Veto ID
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0352 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0113 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.144 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.174 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
+    	}
+    }
     electrons.push_back(i);
   }
   return electrons;
@@ -392,10 +427,9 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //if (i == 0) std::cout << "Starts doing first..." << event->muonPF2PATIsPFMuon[i];
     //if (i > 0) std::cout << "   " << event->muonPF2PATIsPFMuon[i];
     //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" << event->muonPF2PATEta[i] << "\t" << event->muonPF2PATComRelIsodBeta[i] << "\t" << event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" << event->muonPF2PATGlobalID[i] << "\t" << event->muonPF2PATIsPFMuon[i] << "\t" << event->muonPF2PATTrackID[i] << "\t" <<  event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
-    if(!event->muonPF2PATIsPFMuon[i]) continue;
+    if (!event->muonPF2PATIsPFMuon[i]) continue;
     if (!event->muonPF2PATTrackID[i]) continue;
     if (!event->muonPF2PATGlobalID[i]) continue;
-    //    if (!event->muonPF2PATIsPFMuon[i]) continue;
     if (event->muonPF2PATPt[i] < tightMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) > tightMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] > tightMuonRelIso_) continue;
@@ -414,8 +448,8 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (fabs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
     if (event->muonPF2PATMuonNHits[i] < 1) continue;
-    if (event->muonPF2PATVldPixHits[i] < 0) continue;
-    if (event->muonPF2PATMatchedStations[i] < 1) continue;
+    if (event->muonPF2PATVldPixHits[i] < 1) continue;
+    if (event->muonPF2PATMatchedStations[i] < 2) continue;
     //    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
     //if(i == 0) std::cout << "does first ";
     //if (i > 0) std::cout << "allows second muon";
@@ -428,7 +462,8 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
 std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   std::vector<int> muons;
   for (int i = 0; i < event->numMuonPF2PAT; i++){
-    if (!event->muonPF2PATGlobalID[i] && !event->muonPF2PATTrackID[i]) continue;
+    if (!event->muonPF2PATIsPFMuon[i]) continue;
+    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
     if (event->muonPF2PATPt[i] < looseMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) > looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] > looseMuonRelIso_) continue;
@@ -639,7 +674,10 @@ float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets, std::
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
 
   std::vector<int> jets;
-  float mcTag = 1., mcNoTag = 1., dataTag = 1., dataNoTag = 1., errTag = 0., errNoTag = 0., err1 = 0., err2 = 0., err3 = 0., err4 = 0.;
+  float mcTag = 1., mcNoTag = 1., dataTag = 1., dataNoTag = 1., errTag = 0., errNoTag = 0.; 
+  float err1 = 0., err2 = 0., err3 = 0., err4 = 0.; // b-tagging errors
+  float err5 = 0., err6 = 0., err7 = 0., err8 = 0.; // c-tagging errors
+
   //  std::cout << event->eventNum << std::endl << "Jets: " << std::endl;
   for (int i = 0; i < event->numJetPF2PAT; i++){
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
@@ -652,9 +690,14 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     bool jetId (true);
 
     // Jet ID == loose
-    if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0      
+    if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0
+      
+      // for all jets with eta <= 3.0
       if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
-      if ( std::abs(jetVec.Eta()) <= 2.40 && ( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) ) jetId = false;
+      //for jets with eta <= 2.40
+      if ( std::abs(jetVec.Eta()) <= 2.40 ) {
+	  if( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+	}
     }
     else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
       if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
@@ -702,20 +745,31 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     jets.push_back(i);
 
     if (getBTagWeight_){
-      getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&errTag,&errNoTag,&err1,&err2,&err3,&err4);
+      getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&errTag,&errNoTag,&err1,&err2,&err3,&err4,&err5,&err6,&err7,&err8);
     }
   }
   //Evaluate b-tag weight for event here.
   if (getBTagWeight_){
     float bWeight = (dataNoTag * dataTag)/(mcNoTag * mcTag);
-    if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag)
+    float cWeight = (dataNoTag * dataTag)/(mcNoTag * mcTag);
+    if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag){
       bWeight = 1.;
+      cWeight = 1.;
+    }
     float bWeightErr = std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight;
+    float cWeightErr = std::sqrt( pow(err5+err6,2) + pow(err7 + err8, 2)) * cWeight;
+
     if (syst == 256)
       bWeight += bWeightErr;
     if (syst == 512)
       bWeight -= bWeightErr;
+    if (syst == 4096)
+      cWeight += cWeightErr;
+    if (syst == 8192)
+      cWeight += cWeightErr;
+
     *eventWeight *= bWeight;
+    *eventWeight *= cWeight;
   }
   return jets;
 }
@@ -733,14 +787,33 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
   return bJets;
 }
 
+std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
+
+  std::vector<int> cJets;
+    for (unsigned int i = 0; i < jets.size(); i++){
+    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATCvsLDiscriminator[jets[i]] << std::endl;
+//      if (event->jetPF2PATJetCharge[jets[i]] <= 0) continue; // If a negatively charged jet ... I.e. if not a  u or c ...
+    if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
+    if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
+    cJets.push_back(i);
+  }
+  return cJets;
+
+}
+
 void Cuts::setTightEle(float,float,float)
 {
 }
 
 //This is only called if the thing is data. There's also a little clause to run over certain triggers if they exist. Because I failed miserably to get them all first time through processing...
 bool Cuts::triggerCuts(AnalysisEvent* event){
-
   if (skipTrigger_) return true;
+
+  if (synchCutFlow_){
+    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0)
+      return true;
+  }
+
 
   //MuEG triggers
   bool muEGTrig = false;
@@ -752,8 +825,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 
   //double muon triggers
   bool mumuTrig = false;
-  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 >0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-
+  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
 
   if (cutConfTrigLabel_.find("d") != std::string::npos){if (muEGTrig) return true;}
   if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
@@ -770,61 +842,55 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     std::cout << "Not setup for dilepton synch cuts yet. Exiting program!" << std::endl;
     exit(2);
   }
-  
+
   if (singleEventInfoDump_){
     std::cout << std::setprecision(6) << std::fixed;
   }
-  
-  int looseLeps = getLooseLepsNum(event);
-  if (isMC_ && looseLeps < 2) return false;
-  if (!isMC_ && looseLeps < 3) return false;
-  if (/*!isMC_ &&*/ !triggerCuts(event)) return false; // Commented out this so that it runs on both MC and data.
-  synchCutFlowHist_->Fill(0.5);
-  if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
-  
-  event->electronIndexTight = getTightEles(event);
-  event->muonIndexTight = getTightMuons(event);
-  synchNumEles_->Fill(event->electronIndexTight.size());
-  synchNumMus_->Fill(event->muonIndexTight.size());/*
-  //If electrons are expected to be the Z, check there are an oppositely charged pair.
-  bool zCand = false;
-  if (numTightEle_ > 1){
-    for (unsigned int i = 0; i < event->electronIndexTight.size();++i){
-      for (unsigned int j = i +1; j < event->electronIndexTight.size();++j){
-	if (event->elePF2PATCharge[event->electronIndexTight[i]] * event->elePF2PATCharge[event->electronIndexTight[j]] > 0) continue;
-	zCand = true;
-      }
-    }
 
-  }
-  else if (numTightMu_ > 1){
-    for (unsigned int i = 0; i < event->muonIndexTight.size();++i){
-      for (unsigned int j = i +1; j < event->muonIndexTight.size();++j){
-	if (event->muonPF2PATCharge[event->muonIndexTight[i]] * event->muonPF2PATCharge[event->muonIndexTight[j]] > 0) continue;
-	zCand = true;
-      }
-    }
-  }
-  if (!zCand) return false;
-  if (singleEventInfoDump_) std::cout << "Gets past z cand stuff with " << event->electronIndexTight.size() << " tight electrons and " << event->muonIndexTight.size() << " tight muons" << std::endl;*/
+  synchCutFlowHist_->Fill(0.5); // Total events
+
+  if (!triggerCuts(event)) return false; 
+  synchCutFlowHist_->Fill(1.5); // Trigger cuts
+  if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
+ 
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
+
+  event->electronIndexTight = getTightEles(event);
+  event->muonIndexTight = getTightMuons(event);
+
+  // Check at exactly three tight leptons
+  synchNumEles_->Fill(event->electronIndexTight.size());
+  synchNumMus_->Fill(event->muonIndexTight.size());
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
-  synchCutFlowHist_->Fill(1.5); 
+  // if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+  synchCutFlowHist_->Fill(2.5); 
+
+
   //loose lepton veto
+  int looseLeps = getLooseLepsNum(event);
+  if (isMC_ && looseLeps < 2) return false;
+  if (!isMC_ && looseLeps < 3) return false; 
+
   if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
   if (event->muonIndexTight.size() != getLooseMuons(event).size()) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
-  synchCutFlowHist_->Fill(2.5);
+  synchCutFlowHist_->Fill(3.5);
+
+
   if (makeEventDump_){dumpToFile(event,2);}
+
+  // Z selection
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
   if (fabs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
-  synchCutFlowHist_->Fill(3.5);
+  synchCutFlowHist_->Fill(4.5);
 
   //Add in extra steps here.
   float tempWeight = 1.;
+
+  // Jet selection
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
   if (event->jetIndex.size() < 1) return false;
@@ -832,21 +898,26 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     dumpToFile(event,4);
   }
   //  std::cout << event->jetIndex.size() << std::endl;
-  synchCutFlowHist_->Fill(4.5);
+  synchCutFlowHist_->Fill(5.5);
+  
+  // bTag selection
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (!event->bTagIndex.size() == 1) return false;
-  synchCutFlowHist_->Fill(5.5);
-  if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
-  if (event->metPF2PATPt < metCut_) return false;
   synchCutFlowHist_->Fill(6.5);
-  if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) < mTWCut_) return false;
+  // MET cut
+  if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
+  //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not currently applied
   synchCutFlowHist_->Fill(7.5);
+  // mTW cut
+  if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
+  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
+  synchCutFlowHist_->Fill(8.5);
+  // Top Mass cut
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex, event->jetIndex)  << std::endl;
   if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
-  synchCutFlowHist_->Fill(8.5);
+  synchCutFlowHist_->Fill(9.5);
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_){
     dumpToFile(event,6);
@@ -857,8 +928,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
 TH1F* Cuts::getSynchCutFlow(){
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
-  char const *names[] = {"Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
-  for (unsigned int i = 1; i < 10; ++i){
+  char const *names[] = {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
+  for (unsigned int i = 1; i < 11; ++i){
     std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
   }
   std::cout << "The number of leptons in the passing trigger events:" << std::endl;
@@ -1022,51 +1093,6 @@ std::vector<int> Cuts::getInvIsoMuons(AnalysisEvent* event){
 
     muons.push_back(i);
   }
-  return muons;
-}
-
-std::vector<int> Cuts::synchTightMuons(AnalysisEvent* event){
-  std::vector<int> muons;
-  for (int i = 0; i < event->numMuonPF2PAT; i++){
-    synchMuonCutFlow_->Fill(0.5);
-    //if (i == 0) std::cout << "Starts doing first..." << event->muonPF2PATIsPFMuon[i];
-    //if (i > 0) std::cout << "   " << event->muonPF2PATIsPFMuon[i];
-    if (!event->muonPF2PATGlobalID[i] && !event->muonPF2PATTrackID[i]) continue;
-    synchMuonCutFlow_->Fill(1.5);
-    //    if (!event->muonPF2PATIsPFMuon[i]) continue;
-    if (event->muonPF2PATPt[i] < tightMuonPt_) continue;
-    if (std::abs(event->muonPF2PATEta[i]) > tightMuonEta_) continue;
-    if (event->muonPF2PATComRelIsodBeta[i] > tightMuonRelIso_) continue;
-    synchMuonCutFlow_->Fill(2.5);
-    //Do a little test of muon id stuff here.
-    if (event->muonPF2PATChi2[i] < 0.) continue;
-    if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-    //    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
-    //if (event->muonPF2PATNChambers[i] < 2) continue;
-    //if (i == 0) std::cout << "gets to tighter ";
-    synchMuonCutFlow_->Fill(3.5);
-    //if (i == 0) std::cout << "First muon ";
-    //if (i > 0) std::cout << "Checking second muon";
-    //      std::cout << event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
-    if (event->muonPF2PATTkLysWithMeasurements[i] < 5 ) continue;
-    synchMuonCutFlow_->Fill(4.5);
-    if (event->muonPF2PATDBPV[i] > 0.02) continue;
-    synchMuonCutFlow_->Fill(5.5);
-    if (event->muonPF2PATTrackNHits[i] < 11) continue;
-    synchMuonCutFlow_->Fill(6.5);
-    if (event->muonPF2PATMuonNHits[i] <= 1) continue;
-    synchMuonCutFlow_->Fill(7.5);
-    if (event->muonPF2PATVldPixHits[i] < 0) continue;
-    synchMuonCutFlow_->Fill(8.5);
-    if (event->muonPF2PATMatchedStations[i] < 1) continue;
-    synchMuonCutFlow_->Fill(9.5);
-    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
-    synchMuonCutFlow_->Fill(10.5);
-    //if(i == 0) std::cout << "does first ";
-    //if (i > 0) std::cout << "allows second muon";
-    muons.push_back(i);
-  }
-  //  std::cout << muons.size() << std::endl;
   return muons;
 }
 
@@ -1481,8 +1507,8 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
-          }
-    else { // If not, randomly smear 
+      }
+      else { // If not, randomly smear 
       srand (time(NULL));
       newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
@@ -1499,7 +1525,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   return returnJet;
 }
 
-void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4){
+void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * errTag, float * errNoTag, float * err1, float * err2, float * err3, float * err4, float * err5, float * err6, float * err7, float * err8){
   //Use b-tagging efficiencies and scale factors.
   //Firstly get efficiency for pt/eta bin here.
   float eff = 1.;

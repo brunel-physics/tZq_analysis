@@ -77,10 +77,10 @@ ls /scratch/data/tZqSkimsRun2/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fil
 
 # Synchronisation files
 
-ls /scratch/data/tZqSkimsRun2/synch/tZq* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tZqSynchFiles.txt
-ls /scratch/data/tZqSkimsRun2/synch/WZ* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WZsynchFiles.txt
-ls /scratch/data/tZqSkimsRun2/synch/ttZ* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttZsynchFiles.txt
-ls /scratch/data/tZqSkimsRun2/synch/ttbar* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarSynchFiles.txt
+ls /scratch/data/tZqSkimsRun2/synch/tZq/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tZqSynchFiles.txt
+ls /scratch/data/tZqSkimsRun2/synch/WZ/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/WZsynchFiles.txt
+ls /scratch/data/tZqSkimsRun2/synch/ttZ/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttZsynchFiles.txt
+ls /scratch/data/tZqSkimsRun2/synch/ttbar/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarSynchFiles.txt
 
 echo Done!
 echo Filelists have been updated.

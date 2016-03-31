@@ -1,7 +1,6 @@
 #ifndef _cutClass_hpp_
 #define _cutClass_hpp_
 
-#include <array>
 #include "AnalysisEvent.hpp"
 #include <vector>
 #include <map>
@@ -17,12 +16,12 @@ class Cuts{
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
   std::vector<int> makeMetCuts(AnalysisEvent*);
   std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>);
+  std::vector<int> makeCCuts(AnalysisEvent*, std::vector<int>);
   
   std::vector<int> getTightEles(AnalysisEvent* event);
   std::vector<int> getInvIsoEles(AnalysisEvent* event);
   std::vector<int> getLooseEles(AnalysisEvent* event);
   std::vector<int> getTightMuons(AnalysisEvent* event);
-  std::vector<int> synchTightMuons(AnalysisEvent* event);
   std::vector<int> getInvIsoMuons(AnalysisEvent* event);
   std::vector<int> getLooseMuons(AnalysisEvent* event);
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
@@ -55,6 +54,7 @@ class Cuts{
   bool synchCutFlow_; //For synch
   bool singleEventInfoDump_; //For dropping info on event for synching.
   const bool trileptonChannel_;
+  const bool isFCNC_;
 
   // Tight electron cuts
   unsigned int numTightEle_;
@@ -105,6 +105,12 @@ class Cuts{
   unsigned int numbJets_;
   unsigned int maxbJets_;
   float bDiscCut_;
+
+  //C-Disc cut
+  unsigned int numcJets_;
+  unsigned int maxcJets_;
+  float cVsLDiscCut_;
+  float cVsBDiscCut_;
   
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
@@ -147,7 +153,7 @@ class Cuts{
   //And the efficiency plots.
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
-  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*);
+  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*, float*,float*,float*,float*);
 
   //met and mtw cut values
   float metCut_;
@@ -161,7 +167,7 @@ class Cuts{
   std::string cutConfTrigLabel_;
 
  public:
-  Cuts(bool, bool, bool, bool, bool, const bool);
+  Cuts(bool, bool, bool, bool, bool, const bool, const bool);
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
@@ -193,18 +199,6 @@ class Cuts{
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;
 
-  // Cut Id variables
-
-  std::array<double, 2> cutIdSigmaIEtaIEtaCut_;
-  std::array<double, 2> cutIdEtaIn_;
-  std::array<double, 2> cutIdPhiIn_;
-  std::array<double, 2> cutIdHoverE_;
-  std::array<double, 2> cutIdRelIso_;
-  std::array<double, 2> cutIdOoEmooP_;
-  std::array<double, 2> cutIdD0_;
-  std::array<double, 2> cutIdDz_;
-  std::array<unsigned, 2> cutIdMissingLayers_;
-  
 };
 
 #endif

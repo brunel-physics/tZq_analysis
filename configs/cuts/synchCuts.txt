@@ -3,11 +3,11 @@ cuts =
 	tightMuons = {
 	      pt   = 20.;
 	      eta  = 2.4;
-	      relIso = 0.2;
+	      relIso = 0.15;
 	      number = 0;
 	      },
 	looseMuons = {
-	      pt   = 10.;
+	      pt   = 20.;
 	      eta  = 2.4;
 	      relIso = 0.2;
 	      number = 0;
@@ -15,15 +15,23 @@ cuts =
 	tightElectrons = {
 	      pt   = 20.;
 	      eta  = 2.5;
-	      relIso = 0.107587;
+	      relIso = 0.0766;
 	      number = 3.;
 	      },
 	looseElectrons = {
-	      pt   = 10;
+	      pt   = 20;
 	      eta  = 2.5;
-	      relIso = 0.107587;
+	      relIso = 0.144;
 	      number = 3.; 
 	      }
+        jets = {
+                pt = 30.;
+                eta = 2.4;
+                numJets = 2;
+                maxJets = 4;
+                numbJets = 1;
+                maxbJets = 2;
+		}
 }
 trigLabel = "e";
 plotPostfix = "eee";
