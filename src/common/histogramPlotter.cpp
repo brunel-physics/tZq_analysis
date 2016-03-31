@@ -47,7 +47,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
 
   gStyle->SetLabelFont(18,"");
   
-  for (std::vector<std::string>::iterator leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
+  for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
     
   }
   //I guess I should put in the plot style stuff here? Worry about that later on. Get it plotting something at all first I guess.
@@ -61,17 +61,17 @@ HistogramPlotter::~HistogramPlotter(){
 
 void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Plots*> > plotMap){
   //Get a list of keys from the map.
-  std::map<std::string, std::map<std::string,Plots*> >::iterator firstIt = plotMap.begin();
+  auto firstIt = plotMap.begin();
   std::vector<std::string> stageNameVec;
-  for (std::map<std::string,Plots*>::iterator stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
+  for (auto stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
     stageNameVec.push_back(stageNameIt->first);
   }
   //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
   int plotNumb = firstIt->second.begin()->second->getPlotPoint().size();
   for (int i = 0; i < plotNumb; i++){
-    for (std::vector<std::string>::iterator stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
+    for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
       std::map<std::string, TH1F*> tempPlotMap;
-      for (std::map<std::string,std::map<std::string,Plots*> >::iterator mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
+      for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
 	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
       makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,"");
@@ -100,14 +100,14 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   legend_.SetFillStyle(1001);
   legend_.SetBorderSize(1);
   legend_.SetFillColor(kWhite);
-  for (std::vector<std::string>::iterator leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
+  for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
     legend_.AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
     
   //Initialise the stack
   THStack mcStack = THStack(plotName.c_str(),plotName.c_str());
   //Do a few colour changing things and add MC to the stack.
-  for (std::vector<std::string>::reverse_iterator plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+  for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
     plotMap[*plot_iter]->SetLineColor(kBlack);
     plotMap[*plot_iter]->SetLineWidth(1);

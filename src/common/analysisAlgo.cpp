@@ -631,7 +631,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
   if (totalLumi == 0.) totalLumi = usePreLumi;
   std::cout << "Using lumi: " << totalLumi << std::endl;
-  for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+  for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
@@ -865,7 +865,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents = 0;
-      TMVA::Timer* lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
+      auto  lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
       lEventTimer->DrawProgressBar(0, "");
       for (int i = 0; i < numberOfEvents; i++) {
 	std::stringstream lSStrFoundLeptons, lSStrFoundEvents;
@@ -1156,7 +1156,7 @@ void AnalysisAlgo::savePlots()
 
   std::cerr << "Gets to the delete bit" << std::endl;
   if (plots || infoDump){
-    for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+    for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
       if (cutFlowMap.find(dataset->getFillHisto()) == cutFlowMap.end()) continue;
       delete cutFlowMap[dataset->getFillHisto()];
       if (!plots) continue;
