@@ -711,7 +711,7 @@ public :
    Int_t numVert;
    TBranch * b_numVert;
 
-   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=0);
+   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr);
    virtual ~AnalysisEvent();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -726,11 +726,11 @@ public :
 #endif
 
 #ifdef AnalysisEvent_cxx
-AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : fChain(0) 
+AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : fChain(nullptr) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-   if (tree == 0) {
+   if (tree == nullptr) {
 
 #ifdef SINGLE_TREE
       // The following code should be used if you want this class to access

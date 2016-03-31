@@ -572,17 +572,17 @@ void AnalysisAlgo::setupSystematics()
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
   puReweight->Divide(mcPU);
-  puReweight->SetDirectory(0);
+  puReweight->SetDirectory(nullptr);
 
   /// And do the same for systematic sampl
   puSystUp = (TH1F*)pileupUpHist->Clone();
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
-  puSystUp->SetDirectory(0);
+  puSystUp->SetDirectory(nullptr);
   puSystDown = (TH1F*)pileupDownHist->Clone();
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
-  puSystDown->SetDirectory(0);
+  puSystDown->SetDirectory(nullptr);
 
   dataPileupFile->Close();
   mcPileupFile->Close();
@@ -790,7 +790,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	}
 	for (int unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
-	  bTagEffPlots[plotIt]->SetDirectory(0);
+	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
 	}
 	cutObj->setBTagPlots(bTagEffPlots,false);
 	datasetFileForHists->Close();
@@ -805,9 +805,9 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TTree * cloneTree = 0;
-      TTree * cloneTree2 = 0;
-      TTree * cloneTree3 = 0;
+      TTree * cloneTree = nullptr;
+      TTree * cloneTree2 = nullptr;
+      TTree * cloneTree3 = nullptr;
       if (makePostLepTree){
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree2 = datasetChain->CloneTree(0);

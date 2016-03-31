@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
   DIR *dp;
   struct dirent *dirp;
 
-  if((dp  = opendir( inputDir.c_str() )) == NULL) {
+  if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
     std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
     return 0;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Attaching files to TTree ... " << std::endl;
 
-  while ( (dirp = readdir(dp)) != NULL ) {
+  while ( (dirp = readdir(dp)) != nullptr) {
     std::string line (dirp->d_name);
     if ( line == "." || line == "..")
     continue;
