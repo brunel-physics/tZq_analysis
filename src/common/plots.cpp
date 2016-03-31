@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
+#include <boost/numeric/conversion/cast.hpp> 
 #include "TLorentzVector.h"
 
 Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned int thisCutStage, std::string postfixName, const bool trileptonChannel):
@@ -18,7 +19,7 @@ Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vect
     plotPoint[i].plotHist = new TH1F(plotName.c_str(),plotName.c_str(),nBins[i],xMins[i],xMaxs[i]);
     plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
     plotPoint[i].xAxisLabel = xAxisLabels[i];
-    plotPoint[i].fillPlot = (unsigned int)cutStage[i] <= thisCutStage;
+    plotPoint[i].fillPlot = boost::numeric_cast<unsigned int>(cutStage[i]) <= thisCutStage;
   }
   
 }

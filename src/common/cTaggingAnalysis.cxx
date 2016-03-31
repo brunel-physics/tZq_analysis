@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
   DIR *dp;
   struct dirent *dirp;
 
-  if((dp  = opendir( inputDir.c_str() )) == NULL) {
+  if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
     std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
     return 0;
@@ -77,12 +77,12 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Attaching files to TTree ... " << std::endl;
 
-  while ( (dirp = readdir(dp)) != NULL ) {
+  while ( (dirp = readdir(dp)) != nullptr) {
     std::string line (dirp->d_name);
     if ( line == "." || line == "..")
     continue;
     TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
-    TTree *lTempTree = (TTree*)inputFile->Get("tree");
+    TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
     inputTrees.push_back(lTempTree);
   }
 
@@ -91,11 +91,11 @@ int main(int argc, char* argv[]) {
   const int discriminatorIncrement (100);
 
   // Initialise Histograms.
-  TH2F * h_CvsBjetPassEfficiency = new TH2F ("h_CvsBjetPassEfficiency", "c/b jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
-  TH2F * h_CvsLjetPassEfficiency = new TH2F ("h_CvsLjetPassEfficiency", "c/l jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  auto  h_CvsBjetPassEfficiency = new TH2F ("h_CvsBjetPassEfficiency", "c/b jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  auto  h_CvsLjetPassEfficiency = new TH2F ("h_CvsLjetPassEfficiency", "c/l jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
 
-  TH2F * h_CvsB_cJetPassEfficiency = new TH2F ("h_CvsBcJetPassEfficiency", "c-jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
-  TH2F * h_CvsL_cJetPassEfficiency = new TH2F ("h_CvsLcJetPassEfficiency", "c-jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  auto  h_CvsB_cJetPassEfficiency = new TH2F ("h_CvsBcJetPassEfficiency", "c-jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  auto  h_CvsL_cJetPassEfficiency = new TH2F ("h_CvsLcJetPassEfficiency", "c-jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
 
   // Setup counters.
   //  int lTotalNumJets (0);
@@ -115,8 +115,8 @@ int main(int argc, char* argv[]) {
   double lPassedCvsL_cJetFraction [discriminatorIncrement] = {0.0};
 
   // Initial progress bar.
-  TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
-  TMVA::Timer* lTimer2 = new TMVA::Timer ( discriminatorIncrement, "Filling plots", true );
+  auto  lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
+  auto  lTimer2 = new TMVA::Timer ( discriminatorIncrement, "Filling plots", true );
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter (1);
@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
     lTimer2->DrawProgressBar(lCounter2++, "");
   }
 
-  TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
+  auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
    
   h_CvsBjetPassEfficiency->Write();
   h_CvsLjetPassEfficiency->Write();

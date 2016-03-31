@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     else if (arg=="-i"){//Set input folder
       if (i + 1 < argc){
 	inputDir = argv[++i];
+    if ( inputDir.back() != '/' ) inputDir += '/';
 	if ( inputDir == "" ){
 	  std::cerr << "requires a non-null input dir to be run over!" << std::endl;;
 	  return 0;
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]) {
   DIR *dp;
   struct dirent *dirp;
 
-  if((dp  = opendir( inputDir.c_str() )) == NULL) {
+  if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
     std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
     return 0;
@@ -76,28 +77,28 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Attaching files to TTree ... " << std::endl;
 
-  while ( (dirp = readdir(dp)) != NULL ) {
+  while ( (dirp = readdir(dp)) != nullptr) {
     std::string line (dirp->d_name);
     if ( line == "." || line == "..")
     continue;
     TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
-    TTree *lTempTree = (TTree*)inputFile->Get("tree");
+    TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
     inputTrees.push_back(lTempTree);
   }
 
   std::cout << "Attached all files to TTree!" << std::endl;
 
-  TH1F* histElePt      = new TH1F ("histElePt"    , "Distribution of reco-electron p_{T}" , 500, 0.0  , 500.0);
-  TH1F* histEleEta     = new TH1F ("histEleEta"   , "Distribution of reco-electron #eta"  , 500, -2.50, 2.5);
-  TH1F* histEleGenPt   = new TH1F ("histEleGenPt" , "Distribution of gen-electron p_{T}"  , 500, 0.0  , 500.0);
-  TH1F* histEleGenEta  = new TH1F ("histEleGenEta", "Distribution of gen-electron #eta"   , 500, -2.5 , 2.5);
+  auto  histElePt      = new TH1F ("histElePt"    , "Distribution of reco-electron p_{T}" , 500, 0.0  , 500.0);
+  auto  histEleEta     = new TH1F ("histEleEta"   , "Distribution of reco-electron #eta"  , 500, -2.50, 2.5);
+  auto  histEleGenPt   = new TH1F ("histEleGenPt" , "Distribution of gen-electron p_{T}"  , 500, 0.0  , 500.0);
+  auto  histEleGenEta  = new TH1F ("histEleGenEta", "Distribution of gen-electron #eta"   , 500, -2.5 , 2.5);
 
-  TH1F* histMuPt       = new TH1F ("histMuPt"     , "Distribution of reco-muon p_{T}"     , 500, 0.0  , 500.0);
-  TH1F* histMuEta      = new TH1F ("histMuEta"    , "Distribution of reco-muon #eta"      , 500, -2.50, 2.5);
-  TH1F* histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
-  TH1F* histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
+  auto  histMuPt       = new TH1F ("histMuPt"     , "Distribution of reco-muon p_{T}"     , 500, 0.0  , 500.0);
+  auto  histMuEta      = new TH1F ("histMuEta"    , "Distribution of reco-muon #eta"      , 500, -2.50, 2.5);
+  auto  histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
+  auto  histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
 
-  TMVA::Timer* lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", false );
+  auto  lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", false );
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter (1);
@@ -127,7 +128,7 @@ int main(int argc, char* argv[]) {
     lTimer->DrawProgressBar(lCounter++, "");
   }
 
-  TFile *outFile = new TFile ( outFileString.c_str(), "RECREATE" );
+  auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
   histElePt->Write();
   histEleEta->Write();
