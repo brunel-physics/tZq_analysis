@@ -931,8 +931,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
 	    bool tempBool = false;
-	    for (unsigned int i = 0; i < eventNumbers.size(); i++){
-	      if (eventNumbers[i] == event->eventNum) {
+	    for (unsigned int j = 0; j < eventNumbers.size(); j++){
+	      if (eventNumbers[j] == event->eventNum) {
 		tempBool = true;
 		break;
 	      }
@@ -969,8 +969,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    float max = 1.0;
 	    float pdfWeightUp = 0.0;
 	    float pdfWeightDown = 0.0;
-	    for (int i = 1; i <=50; ++i){
-	      LHAPDF::usePDFMember(1,i);
+	    for (int j = 1; j <= 50; j++){
+	      LHAPDF::usePDFMember(1,j);
 	      double xpdf1_new = LHAPDF::xfx(1, x1, q, id1);
 	      double xpdf2_new = LHAPDF::xfx(1, x2, q, id2);
 	      //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
