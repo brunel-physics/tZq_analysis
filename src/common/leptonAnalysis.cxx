@@ -6,6 +6,7 @@
 #include "TChain.h"
 #include "TTree.h"
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TMVA/Timer.h"
 
 #include <stdlib.h> 
@@ -13,6 +14,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 static void show_usage(std::string name){
   std::cerr << "Usage: " << name << " <options>"
@@ -98,7 +100,13 @@ int main(int argc, char* argv[]) {
   auto  histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
   auto  histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
 
+  auto histEleGenPtEta = new TH2F{"histEleGenPtEta",
+      "Distribution of reco-electron p_{T} against #eta", 500, 0, 300, 500, -3, 3};
+  auto histMuGenPtEta = new TH2F{"histMuGenPtEta",
+      "Distribution of reco-muon p_{T} against #eta", 500, 0, 300, 500, -3, 3};
+
   auto  lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", false );
+
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter (1);
@@ -117,12 +125,18 @@ int main(int argc, char* argv[]) {
 	histEleEta->Fill(lEvent->elePF2PATlooseElectronSortedEta[k]);
 	histEleGenPt->Fill(lEvent->genLooseElePF2PATPT[k]);
 	histEleGenEta->Fill(lEvent->genLooseElePF2PATEta[k]);
+
+        histEleGenPtEta->Fill(lEvent->elePF2PATlooseElectronSortedPt[k], 
+            lEvent->elePF2PATlooseElectronSortedEta[k]);
       }
-      for ( Int_t k2 = 0; k2 < lEvent->numMuonPF2PAT; k2++){
-	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k2]);
-	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[k2]);
-  	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[k2]);
-    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[k2]);
+      for ( Int_t k = 0; k < lEvent->numMuonPF2PAT; k++){
+	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k]);
+	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[k]);
+  	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[k]);
+    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[k]);
+
+        histMuGenPtEta->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k], 
+            lEvent->muonPF2PATlooseMuonSortedEta[k]);
       }
     }
     lTimer->DrawProgressBar(lCounter++, "");
@@ -139,6 +153,9 @@ int main(int argc, char* argv[]) {
   histMuEta->Write();
   histMuGenPt->Write();
   histMuGenEta->Write();
+
+  histEleGenPtEta->Write();
+  histMuGenPtEta->Write();
 
   outFile->Close();
   std::cout << "\n Finished." << std::endl;
