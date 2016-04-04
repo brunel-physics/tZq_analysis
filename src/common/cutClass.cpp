@@ -769,7 +769,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       cWeight += cWeightErr;
 
     *eventWeight *= bWeight;
-    *eventWeight *= cWeight;
+//    *eventWeight *= cWeight;
   }
   return jets;
 }
