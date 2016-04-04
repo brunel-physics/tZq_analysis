@@ -6,7 +6,7 @@ LIBRARY = lib/libTQZanalysisTools.so
 
 EXECUTABLE_SOURCES = $(wildcard src/common/*.cxx)
 EXECUTABLE_OBJECT_FILES = $(patsubst src/common/%.cxx,obj/%.o,${EXECUTABLE_SOURCES})
-EXECUTABLES = $(patsubst src/common/%.cxx,bin/%,${EXECUTABLE_SOURCES})
+EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-Llib \
@@ -60,7 +60,7 @@ ${LIBRARY_OBJECT_FILES}: obj/%.o : src/common/%.cpp
 -include $(LIBRARY_OBJECT_FILES:.o=.d)
 
 
-${EXECUTABLES}: bin/%: obj/%.o ${EXECUTABLE_OBJECT_FILES}
+${EXECUTABLES}: bin/%.exe: obj/%.o ${EXECUTABLE_OBJECT_FILES}
 	${CXX} ${LINK_EXECUTABLE_FLAGS} $< -o $@
 
 ${EXECUTABLE_OBJECT_FILES}: obj/%.o : src/common/%.cxx
