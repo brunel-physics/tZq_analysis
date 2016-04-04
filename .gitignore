@@ -3,10 +3,10 @@
 .#*
 #*#
 *~
-*.exe
 *.so
 *.root
 *.o
 *.d
+bin/
 plots/
 configs/datasets/fileLists/*

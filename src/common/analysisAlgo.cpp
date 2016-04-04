@@ -558,31 +558,31 @@ void AnalysisAlgo::setupSystematics()
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
-  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+  dataPU = dynamic_cast<TH1F*>(dataPileupFile->Get("pileup")->Clone());
   mcPileupFile = new TFile("pileup/pileupMC.root","READ");
-  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  mcPU = dynamic_cast<TH1F*>(mcPileupFile->Get("pileup")->Clone());
 
   //Get systematic files too.
   systUpFile = new TFile("pileup/truePileupUp.root","READ");
-  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+  pileupUpHist = dynamic_cast<TH1F*>(systUpFile->Get("pileup")->Clone());
   systDownFile = new TFile("pileup/truePileupDown.root","READ");
-  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  pileupDownHist = dynamic_cast<TH1F*>(systDownFile->Get("pileup")->Clone());
 
-  puReweight = (TH1F*)dataPU->Clone();
+  puReweight = dynamic_cast<TH1F*>(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
   puReweight->Divide(mcPU);
-  puReweight->SetDirectory(0);
+  puReweight->SetDirectory(nullptr);
 
   /// And do the same for systematic sampl
-  puSystUp = (TH1F*)pileupUpHist->Clone();
+  puSystUp = dynamic_cast<TH1F*>(pileupUpHist->Clone());
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
-  puSystUp->SetDirectory(0);
-  puSystDown = (TH1F*)pileupDownHist->Clone();
+  puSystUp->SetDirectory(nullptr);
+  puSystDown = dynamic_cast<TH1F*>(pileupDownHist->Clone());
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
-  puSystDown->SetDirectory(0);
+  puSystDown->SetDirectory(nullptr);
 
   dataPileupFile->Close();
   mcPileupFile->Close();
@@ -631,7 +631,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
   if (totalLumi == 0.) totalLumi = usePreLumi;
   std::cout << "Using lumi: " << totalLumi << std::endl;
-  for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+  for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
     uint channelIndMax = 256;
@@ -786,11 +786,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	TFile * datasetFileForHists = new TFile(("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	for (int unsigned denNum = 0; denNum < denomNum.size(); denNum++){
 	  for (int unsigned eff = 0; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.push_back((TH2D*)(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	    bTagEffPlots.push_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
 	  }
 	}
 	for (int unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
-	  bTagEffPlots[plotIt]->SetDirectory(0);
+	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
 	}
 	cutObj->setBTagPlots(bTagEffPlots,false);
 	datasetFileForHists->Close();
@@ -805,9 +805,9 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TTree * cloneTree = 0;
-      TTree * cloneTree2 = 0;
-      TTree * cloneTree3 = 0;
+      TTree * cloneTree = nullptr;
+      TTree * cloneTree2 = nullptr;
+      TTree * cloneTree3 = nullptr;
       if (makePostLepTree){
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree2 = datasetChain->CloneTree(0);
@@ -865,7 +865,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents = 0;
-      TMVA::Timer* lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
+      auto  lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
       lEventTimer->DrawProgressBar(0, "");
       for (int i = 0; i < numberOfEvents; i++) {
 	std::stringstream lSStrFoundLeptons, lSStrFoundEvents;
@@ -931,8 +931,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
 	    bool tempBool = false;
-	    for (unsigned int i = 0; i < eventNumbers.size(); i++){
-	      if (eventNumbers[i] == event->eventNum) {
+	    for (unsigned int j = 0; j < eventNumbers.size(); j++){
+	      if (eventNumbers[j] == event->eventNum) {
 		tempBool = true;
 		break;
 	      }
@@ -969,8 +969,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    float max = 1.0;
 	    float pdfWeightUp = 0.0;
 	    float pdfWeightDown = 0.0;
-	    for (int i = 1; i <=50; ++i){
-	      LHAPDF::usePDFMember(1,i);
+	    for (int j = 1; j <= 50; j++){
+	      LHAPDF::usePDFMember(1,j);
 	      double xpdf1_new = LHAPDF::xfx(1, x1, q, id1);
 	      double xpdf2_new = LHAPDF::xfx(1, x2, q, id2);
 	      //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
@@ -1156,7 +1156,7 @@ void AnalysisAlgo::savePlots()
 
   std::cerr << "Gets to the delete bit" << std::endl;
   if (plots || infoDump){
-    for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+    for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
       if (cutFlowMap.find(dataset->getFillHisto()) == cutFlowMap.end()) continue;
       delete cutFlowMap[dataset->getFillHisto()];
       if (!plots) continue;

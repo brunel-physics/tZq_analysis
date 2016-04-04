@@ -153,7 +153,7 @@ std::string th1ToFormulaBinTree(const TH1* hist, int start=0, int end=-1) {
   if (end == -1) {                      // initialize
     start = 0.;
     end = hist->GetNbinsX()+1;
-    TH1* h2 = (TH1*) hist->Clone();
+    TH1* h2 = dynamic_cast<TH1*>(hist->Clone());
     h2->SetBinContent(start, 0);  // kill underflow
     h2->SetBinContent(end, 0);    // kill overflow
     std::string res = th1ToFormulaBinTree(h2, start, end);
@@ -331,11 +331,9 @@ void BTagCalibration::readCSV(std::istream &s)
 void BTagCalibration::makeCSV(std::ostream &s) const
 { 
   s << tagger_ << ";" << BTagEntry::makeCSVHeader();
-  for (std::map<std::string, std::vector<BTagEntry> >::const_iterator i 
-           = data_.cbegin(); i != data_.cend(); ++i) {
+  for (auto i = data_.cbegin(); i != data_.cend(); ++i) {
     const std::vector<BTagEntry> &vec = i->second;
-    for (std::vector<BTagEntry>::const_iterator j 
-             = vec.cbegin(); j != vec.cend(); ++j) {
+    for (auto j = vec.cbegin(); j != vec.cend(); ++j) {
       s << j->makeCSVLine();
     }
   }
