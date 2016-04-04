@@ -558,28 +558,28 @@ void AnalysisAlgo::setupSystematics()
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
-  dataPU = dynamic_cast<TH1F*>(dataPileupFile->Get("pileup")->Clone());
+  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
   mcPileupFile = new TFile("pileup/pileupMC.root","READ");
-  mcPU = dynamic_cast<TH1F*>(mcPileupFile->Get("pileup")->Clone());
+  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
   //Get systematic files too.
   systUpFile = new TFile("pileup/truePileupUp.root","READ");
-  pileupUpHist = dynamic_cast<TH1F*>(systUpFile->Get("pileup")->Clone());
+  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
   systDownFile = new TFile("pileup/truePileupDown.root","READ");
-  pileupDownHist = dynamic_cast<TH1F*>(systDownFile->Get("pileup")->Clone());
+  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
 
-  puReweight = dynamic_cast<TH1F*>(dataPU->Clone());
+  puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
   puReweight->Divide(mcPU);
   puReweight->SetDirectory(nullptr);
 
   /// And do the same for systematic sampl
-  puSystUp = dynamic_cast<TH1F*>(pileupUpHist->Clone());
+  puSystUp = (TH1F*)(pileupUpHist->Clone());
   puSystUp->Scale(1.0/puSystUp->Integral());
   puSystUp->Divide(mcPU);
   puSystUp->SetDirectory(nullptr);
-  puSystDown = dynamic_cast<TH1F*>(pileupDownHist->Clone());
+  puSystDown = (TH1F*)(pileupDownHist->Clone());
   puSystDown->Scale(1.0/puSystDown->Integral());
   puSystDown->Divide(mcPU);
   puSystDown->SetDirectory(nullptr);

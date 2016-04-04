@@ -178,8 +178,8 @@ label = w+jets
 plotType = f
 
 [DYJetsToLL_MM-50]
-fileName = configs/datasets/fileLists/DYJets50Files.txt
-totalEvents = 149963618
+fileName = configs/datasets/fileLists/DYJetsMadgraph50Files.txt
+totalEvents = 256129485
 crossSection = 6025.2
 runType = mc
 histoName = zPlusJets
