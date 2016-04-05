@@ -112,14 +112,19 @@ int main(int argc, char* argv[]) {
   Int_t lCounter (1);
 
   // pT thresholds
-  const unsigned ele1pTThresh{17};
-  const unsigned ele1pTThreshProposed{23};
-  const unsigned ele2pTThresh{12};
+  const unsigned ele1PtThresh{17};
+  const unsigned ele2PtThresh{12};
+  const unsigned mu1PtThresh{17};
+  const unsigned mu2PtThresh{8};
+  const unsigned ele1PtThreshProposed{23};
   // Event counters
-  unsigned totalEvents{0};
-  unsigned pTCut{0};
-  unsigned eleNumCut{0};
-  unsigned newlyCut{0};
+  int totalEvents{0};
+  int elePtCut{0};
+  int eleNumCut{0};
+  int muPtCut{0};
+  int muNumCut{0};
+  int newlyCut{0};
+  int totalCut{0};
 
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
     
@@ -152,35 +157,77 @@ int main(int argc, char* argv[]) {
       }
 
       // Count the number of events which will be cut
-      if (lEvent->numLooseElePF2PAT >= 2){  // electron no. cut
-        std::vector<Float_t> elePts;
+      bool cut{true};
+      if (lEvent->numLooseElePF2PAT >= 2)  // electron no. cut
+      {
+        std::vector<Float_t> elePTs{lEvent->elePF2PATlooseElectronSortedPt,
+          lEvent->elePF2PATlooseElectronSortedPt + lEvent->numLooseElePF2PAT};
 
-        for (Int_t k = 0; k < lEvent->numLooseElePF2PAT; k++){
-          elePts.emplace_back(lEvent->elePF2PATlooseElectronSortedPt[k]);
-        }
-        std::nth_element(elePts.begin(), elePts.begin()+1, elePts.end(),
+        std::nth_element(elePTs.begin(), elePTs.begin()+1, elePTs.end(),
             std::greater<Float_t>());
-        if (elePts.at(1) < ele2pTThresh || elePts.at(0) < ele1pTThresh){
-          pTCut++;
+
+        if (elePTs.at(1) < ele2PtThresh || elePTs.at(0) < ele1PtThresh)  // ele pT cut
+        {
+          elePtCut++;
         }
-        else if (elePts.at(0) < ele1pTThreshProposed){
-          pTCut++;
+        else if (elePTs.at(0) < ele1PtThreshProposed)
+        {
+          elePtCut++;
           newlyCut++;
         }
+        else
+        {
+          cut = false;
+        }
       }
-      else {
+      else
+      {
         eleNumCut++;
+      }
+
+      if (lEvent->numMuonPF2PAT >=2)  // muon no. cut
+      {
+        std::vector<Float_t> muPTs{lEvent->muonPF2PATlooseMuonSortedPt,
+          lEvent->muonPF2PATlooseMuonSortedPt + lEvent->numMuonPF2PAT};
+
+        std::nth_element(muPTs.begin(), muPTs.begin()+1, muPTs.end(),
+            std::greater<Float_t>());
+
+        if (muPTs.at(1) < mu2PtThresh || muPTs.at(0) < mu1PtThresh)  // mu pT cut
+        {
+          muPtCut++;
+        }
+        else
+        {
+          cut = false;
+        }
+      }
+      else
+      {
+        muNumCut++;
+      }
+
+      if (cut)
+      {
+        totalCut++;
       }
     }
     lTimer->DrawProgressBar(lCounter++, "");
   }
 
+  std::cout << std::endl << std::endl;
+  std::cout << "Total no. of evets:\t\t\t" << totalEvents << std::endl;
   std::cout << std::endl;
-  std::cout << "Total no. of evets:\t\t" <<  totalEvents << std::endl;
-  std::cout << "Cut due to pT requirements:\t" << pTCut << std::endl;
-  std::cout << "Cut due to too few electrons:\t" << eleNumCut << std::endl;
-  std::cout << "Total no. cut events:\t\t" << pTCut + eleNumCut << std::endl;
-  std::cout << "Cut due to new proposals:\t" << newlyCut << std::endl;
+  std::cout << "Fail electron pT requirements:\t\t" << elePtCut << std::endl;
+  std::cout << "Fail due to too few electrons:\t\t" << eleNumCut << std::endl;
+  std::cout << "Total failing electron requirements:\t" << elePtCut + eleNumCut << std::endl;
+  std::cout << "Change due to new proposals:\t\t" << newlyCut << std::endl;
+  std::cout << std::endl;
+  std::cout << "Fail muon pT requirements:\t\t" << muPtCut << std::endl;
+  std::cout << "Fail due to too few muons:\t\t" << muNumCut << std::endl;
+  std::cout << "Total failing muon requirements:\t" << muPtCut + muNumCut << std::endl;
+  std::cout << std::endl;
+  std::cout << "Total number of cut events\t\t" << totalCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
@@ -200,4 +247,3 @@ int main(int argc, char* argv[]) {
   outFile->Close();
   std::cout << "\n Finished." << std::endl;
 }
-
