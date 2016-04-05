@@ -111,11 +111,22 @@ int main(int argc, char* argv[]) {
 
   Int_t lCounter (1);
 
+  // pT thresholds
+  const unsigned ele1pTThresh{17};
+  const unsigned ele1pTThreshProposed{23};
+  const unsigned ele2pTThresh{12};
+  // Event counters
+  unsigned totalEvents{0};
+  unsigned pTCut{0};
+  unsigned eleNumCut{0};
+  unsigned newlyCut{0};
+
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
     
     AnalysisEvent* lEvent = new AnalysisEvent(true, "null", *lIt);
 
     Int_t lNumEvents = (*lIt)->GetEntries();
+    totalEvents += lNumEvents;
     
     for ( Int_t j = 0; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
@@ -128,6 +139,7 @@ int main(int argc, char* argv[]) {
 
         histEleGenPtEta->Fill(lEvent->elePF2PATlooseElectronSortedPt[k], 
             lEvent->elePF2PATlooseElectronSortedEta[k]);
+
       }
       for ( Int_t k = 0; k < lEvent->numMuonPF2PAT; k++){
 	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k]);
@@ -138,9 +150,37 @@ int main(int argc, char* argv[]) {
         histMuGenPtEta->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k], 
             lEvent->muonPF2PATlooseMuonSortedEta[k]);
       }
+
+      // Count the number of events which will be cut
+      if (lEvent->numLooseElePF2PAT >= 2){  // electron no. cut
+        std::vector<Float_t> elePts;
+
+        for (Int_t k = 0; k < lEvent->numLooseElePF2PAT; k++){
+          elePts.emplace_back(lEvent->elePF2PATlooseElectronSortedPt[k]);
+        }
+        std::nth_element(elePts.begin(), elePts.begin()+1, elePts.end(),
+            std::greater<Float_t>());
+        if (elePts.at(1) < ele2pTThresh || elePts.at(0) < ele1pTThresh){
+          pTCut++;
+        }
+        else if (elePts.at(0) < ele1pTThreshProposed){
+          pTCut++;
+          newlyCut++;
+        }
+      }
+      else {
+        eleNumCut++;
+      }
     }
     lTimer->DrawProgressBar(lCounter++, "");
   }
+
+  std::cout << std::endl;
+  std::cout << "Total no. of evets:\t\t" <<  totalEvents << std::endl;
+  std::cout << "Cut due to pT requirements:\t" << pTCut << std::endl;
+  std::cout << "Cut due to too few electrons:\t" << eleNumCut << std::endl;
+  std::cout << "Total no. cut events:\t\t" << pTCut + eleNumCut << std::endl;
+  std::cout << "Cut due to new proposals:\t" << newlyCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
