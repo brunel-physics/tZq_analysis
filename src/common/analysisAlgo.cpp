@@ -805,12 +805,12 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TFile * outFile = nullptr;
+      std::unique_ptr<TFile> outFile;
       TTree * cloneTree = nullptr;
       TTree * cloneTree2 = nullptr;
       TTree * cloneTree3 = nullptr;
       if (makePostLepTree){
-	outFile = new TFile(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE");
+	outFile.reset(new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"});
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree2 = datasetChain->CloneTree(0);
 	cloneTree3 = datasetChain->CloneTree(0);
@@ -1039,7 +1039,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	outFile->Write();
 	outFile->Close();
-	delete cloneTree;
 
 	//If we have any events in the second tree:
 	if (cloneTree2->GetEntries() > 0){
@@ -1058,8 +1057,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	  outFile1.Write();
 	  outFile1.Close();
 	}
-	delete cloneTree2;
-	delete cloneTree3;
       }
 
 
