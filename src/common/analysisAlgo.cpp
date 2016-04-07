@@ -1040,8 +1040,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	outFile->Write();
 	outFile->Close();
 
-        std::cout << "Closed outfile!" << std::endl;
-
 	//If we have any events in the second tree:
 	if (cloneTree2->GetEntries() > 0){
 	  std::cout << "There are " << cloneTree2->GetEntries() << " entries in the second tree!" << std::endl;
