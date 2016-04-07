@@ -178,7 +178,7 @@ label = w+jets
 plotType = f
 
 [DYJetsToLL_MM-50]
-fileName = configs/datasets/fileLists/DYJetsMadgraph50Files.txt
+fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 256129485
 crossSection = 6025.2
 runType = mc

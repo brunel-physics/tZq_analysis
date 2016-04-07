@@ -805,10 +805,12 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
+      TFile * outFile = nullptr;
       TTree * cloneTree = nullptr;
       TTree * cloneTree2 = nullptr;
       TTree * cloneTree3 = nullptr;
       if (makePostLepTree){
+	outFile = new TFile(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE");
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree2 = datasetChain->CloneTree(0);
 	cloneTree3 = datasetChain->CloneTree(0);
@@ -1025,8 +1027,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
       //If we're making post lepSel skims save the tree here
       if (makePostLepTree){
-	TFile outFile(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE");
-	outFile.cd();
+	outFile->cd();
 	std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
 	std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
 	cloneTree->Write();
@@ -1036,8 +1037,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
-	outFile.Write();
-	outFile.Close();
+	outFile->Write();
+	outFile->Close();
 	delete cloneTree;
 
 	//If we have any events in the second tree:

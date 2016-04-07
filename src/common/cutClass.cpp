@@ -67,7 +67,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   numJets_(2),
   maxJets_(4),
   jetPt_(30.),
-  jetEta_(4.7),
+  jetEta_(5.0),
   jetNConsts_(2),
   jetIDDo_(true),
   //B-discriminator cut
