@@ -189,7 +189,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 92993271
+totalEvents = 169551982
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
