@@ -121,7 +121,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Gets past JEC Cors" << std::endl;
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
-  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+//  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root"); // Electron triggering MVA ID
+  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based ID
   h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
@@ -335,41 +336,45 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
 
-    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
-//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
-//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
-    	  if ( event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_ ) continue;
-	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
-	}
+//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+      /*if ( event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_ ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;*/
+/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
+//	}
     
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
 
 	 // Barrel cut-based ID
 	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0766 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.373 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0354 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.012 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
 	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0283 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.06678 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0678 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0279 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0646 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.00999 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
-    }
+  //  }
     electrons.push_back(i);
   }
   return electrons;
@@ -383,15 +388,21 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
 //        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
 //        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
-	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
+/*	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
     	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;
-	}
+    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;*/
+/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
+//	}
     
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
     // Barrel cut-based Veto ID      
     	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
@@ -415,7 +426,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
 	  }
-    }
+//    }
     electrons.push_back(i);
   }
   return electrons;
@@ -1353,8 +1364,9 @@ float Cuts::eleSF(double pt, double eta){
   double maxPt = h_eleSFs->GetYaxis()->GetXmax();
   uint bin(0);
 
-  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
-  else bin = h_eleSFs->FindBin(eta,maxPt);
+  // If cut-based, abs eta, else just eta
+  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(abs(eta),pt);
+  else bin = h_eleSFs->FindBin(abs(eta),maxPt);
 
   return h_eleSFs->GetBinContent(bin);
 }
@@ -1365,13 +1377,15 @@ float Cuts::muonSF(double pt, double eta){
   double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
   uint binId (0), binIso (0);
 
-  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
-  else binId = h_muonIDs->FindBin(eta,maxIdPt);
+  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(abs(eta),pt);
+  else binId = h_muonIDs->FindBin(abs(eta),maxIdPt);
 
-  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
-  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
+  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(abs(eta),pt);
+  else binIso = h_muonPFiso->FindBin(abs(eta),maxIsoPt);
 
-  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+  double muSF(h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+
+  return (muSF);
 }
 
 void Cuts::initialiseJECCors(){
@@ -1414,8 +1428,7 @@ void Cuts::initialiseJECCors(){
 float Cuts::getJECUncertainty(float pt, float eta, int syst){
   if (!(syst == 4 || syst == 8)){
     return 0.;
-  }
-  unsigned int ptBin = 0, etaBin = 0;
+  }  unsigned int ptBin = 0, etaBin = 0;
   for (unsigned int i = 0; i < ptMinJEC_.size(); i++){
     if (pt > ptMinJEC_[i] && pt < ptMaxJEC_[i]){
       ptBin = i;
