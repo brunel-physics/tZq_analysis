@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
   }
 
   std::cout << std::endl << std::endl;
-  std::cout << "Total no. of evets:\t\t\t" << totalEvents << std::endl;
+  std::cout << "Total no. of events:\t\t\t" << totalEvents << std::endl;
   std::cout << std::endl;
   std::cout << "Fail electron pT requirements:\t\t" << elePtCut << std::endl;
   std::cout << "Fail due to too few electrons:\t\t" << eleNumCut << std::endl;
@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Fail due to too few muons:\t\t" << muNumCut << std::endl;
   std::cout << "Total failing muon requirements:\t" << muPtCut + muNumCut << std::endl;
   std::cout << std::endl;
-  std::cout << "Total number of cut events\t\t" << totalCut << std::endl;
+  std::cout << "Total no. of cut events\t\t" << totalCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
