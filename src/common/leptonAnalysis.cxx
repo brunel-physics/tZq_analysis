@@ -160,8 +160,8 @@ int main(int argc, char* argv[]) {
       bool cut{true};
       if (lEvent->numLooseElePF2PAT >= 2)  // electron no. cut
       {
-        std::vector<Float_t> elePTs{lEvent->elePF2PATlooseElectronSortedPt,
-          lEvent->elePF2PATlooseElectronSortedPt + lEvent->numLooseElePF2PAT};
+        std::vector<Float_t> elePTs{lEvent->genLooseElePF2PATPT,
+          lEvent->genLooseElePF2PATPT + lEvent->numLooseElePF2PAT};
 
         std::nth_element(elePTs.begin(), elePTs.begin()+1, elePTs.end(),
             std::greater<Float_t>());
@@ -187,8 +187,8 @@ int main(int argc, char* argv[]) {
 
       if (lEvent->numMuonPF2PAT >=2)  // muon no. cut
       {
-        std::vector<Float_t> muPTs{lEvent->muonPF2PATlooseMuonSortedPt,
-          lEvent->muonPF2PATlooseMuonSortedPt + lEvent->numMuonPF2PAT};
+        std::vector<Float_t> muPTs{lEvent->genLooseMuonPF2PATPT,
+          lEvent->genLooseMuonPF2PATPT + lEvent->numMuonPF2PAT};
 
         std::nth_element(muPTs.begin(), muPTs.begin()+1, muPTs.end(),
             std::greater<Float_t>());
@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Fail due to too few muons:\t\t" << muNumCut << std::endl;
   std::cout << "Total failing muon requirements:\t" << muPtCut + muNumCut << std::endl;
   std::cout << std::endl;
-  std::cout << "Total no. of cut events\t\t" << totalCut << std::endl;
+  std::cout << "Total no. of cut events\t\t\t" << totalCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
