@@ -15,7 +15,7 @@
 AnalysisAlgo::AnalysisAlgo():
   config(""),
   plots(false),
-  usePreLumi(19700.),
+  usePreLumi(2095.17),
   nEvents(0.),
   outFolder("plots/"),
   postfix("default"),
