@@ -1,6 +1,6 @@
 datasets = "configs/datasets/eeDataMC.txt";
 cuts = "configs/cuts/eeCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/ee/";
+outputFolder = "plots/ee_cutBased/";
 outputPostfix = "ee";
 channelName = "ee";

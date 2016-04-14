@@ -43,7 +43,8 @@ AnalysisAlgo::AnalysisAlgo():
   metCut(0.),
   mtwCut(0.),
   trileptonChannel_(true),
-  isFCNC_(false)
+  isFCNC_(false),
+  isCtag_(false)
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -329,6 +330,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     else if (arg =="--FCNC"){ // Runs code in FCNC mode.
 	isFCNC_ = true;
     }
+    else if (arg =="--cTag"){ // Runs code in FCNC mode.
+	isCtag_ = true;
+    }
     else if (arg=="-n") { // using this option sets the number of entries to run over.
       if (i+1 < argc){
 	nEvents = atol(argv[++i]);
@@ -488,6 +492,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     std::cerr << "Code has not been setup to do a trilepton FCNC search, only a dilepton one. Please use --dilepton argument.";
     exit(0);
   }
+  if (!isFCNC_ && isCtag_){
+    std::cerr << "C-tagging is only used during an FCNC search. Please use --FCNC & --dilepton arguements.";
+    exit(0);
+  }
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;
@@ -553,8 +561,8 @@ void AnalysisAlgo::setupSystematics()
   systNames.push_back("__bTag__minus");
   systNames.push_back("__pdf__plus");
   systNames.push_back("__pdf__minus");
-  if (isFCNC_)   systNames.push_back("__cTag__plus");
-  if (isFCNC_)   systNames.push_back("__cTag__minus");
+  if (isFCNC_ && isCtag_)   systNames.push_back("__cTag__plus");
+  if (isFCNC_ && isCtag_)   systNames.push_back("__cTag__minus");
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
@@ -601,7 +609,7 @@ void AnalysisAlgo::setupSystematics()
 void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_);
+  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_, isCtag_);
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
     exit(0);
@@ -621,8 +629,8 @@ void AnalysisAlgo::setupPlots()
   stageNames.push_back("zMass");
   stageNames.push_back("jetSel");
   stageNames.push_back("bTag");
-  if ( !trileptonChannel_ && !isFCNC_) {stageNames.push_back("wMass");}
-  if ( !trileptonChannel_ && isFCNC_) {stageNames.push_back("cTag");}
+  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.push_back("wMass");}
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.push_back("cTag");}
 }
 
 void AnalysisAlgo::runMainAnalysis(){

@@ -30,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 285620642
+totalEvents = 285254191
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -179,7 +179,7 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
-totalEvents = 256129485
+totalEvents = 255927474
 crossSection = 6025.2
 runType = mc
 histoName = zPlusJets

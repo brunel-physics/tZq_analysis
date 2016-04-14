@@ -55,6 +55,7 @@ class Cuts{
   bool singleEventInfoDump_; //For dropping info on event for synching.
   const bool trileptonChannel_;
   const bool isFCNC_;
+  const bool isCtag_;
 
   // Tight electron cuts
   unsigned int numTightEle_;
@@ -167,7 +168,7 @@ class Cuts{
   std::string cutConfTrigLabel_;
 
  public:
-  Cuts(bool, bool, bool, bool, bool, const bool, const bool);
+  Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool);
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);

@@ -14,7 +14,7 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC):
+Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
   doPlots_(doPlots),
@@ -27,6 +27,7 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   singleEventInfoDump_(dumpEventNumber),
   trileptonChannel_(trileptonChannel),
   isFCNC_(isFCNC),
+  isCtag_(isCtag),
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_(3),
@@ -265,7 +266,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
-  if ( !trileptonChannel_ && isFCNC_) { // Do FCNC stuff
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) { // Do FCNC stuff & cTagging
     event->cTagIndex = makeCCuts(event,event->jetIndex);
     if (event->cTagIndex.size() < numcJets_) return false;
     if (event->cTagIndex.size() < maxcJets_) return false;
@@ -274,8 +275,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   }
 
   if ( !trileptonChannel_ && !isFCNC_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
-  if ( doPlots_ && !isFCNC_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
+  if ( doPlots_ && !isFCNC_ && isCtag_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !isCtag_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
