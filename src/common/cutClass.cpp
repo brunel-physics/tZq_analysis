@@ -1245,11 +1245,18 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[0] = 1; // Set Z=1 if MuonEG trigger fires
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[2] = 1; // Set X=1 if DoubleMuon trigger fires
+
+  event->electronIndexTight = getTightEles(event);
+  event->muonIndexTight = getTightMuons(event);
+
+  int numEles = event->electronIndexTight.size();
+  int numMuons = event->muonIndexTight.size();
+
     // Setup channel label
-    if ( numTightEle_ == 3 && numTightEle_ == 0 ) channel = "eee";
-    else if ( numTightEle_ == 2 && numTightMu_ == 1 ) channel = "eem";
-    else if ( numTightEle_ == 1 && numTightMu_ == 2 ) channel = "emm";
-    else if ( numTightEle_ == 0 && numTightMu_ == 3 ) channel = "mmm";
+    if (  numEles == 3 &&  numMuons == 0 ) channel = "eee";
+    else if ( numEles == 2 &&  numMuons == 1 ) channel = "eem";
+    else if ( numEles == 1 &&  numMuons == 2 ) channel = "emm";
+    else if ( numEles == 0 &&  numMuons == 3 ) channel = "mmm";
   }
 
   if (trileptonChannel_ == true){
