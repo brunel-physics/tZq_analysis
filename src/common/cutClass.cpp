@@ -24,7 +24,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   //Synchronisation cut flow.
   synchCutFlow_(lepCutFlow),
   //Synchronisation cut flow.
-  singleEventInfoDump_(dumpEventNumber),
+  singleEventInfoDump_(false),
+  makeEventDump_(dumpEventNumber),
   trileptonChannel_(trileptonChannel),
   isFCNC_(isFCNC),
   isCtag_(isCtag),
