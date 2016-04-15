@@ -1303,7 +1303,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 
   case 0:
     step0EventDump_.precision(3);
-    step0EventDump_ << "|" << event->eventNum << "|" << triggerFlag[0] << triggerFlag[1] << triggerFlag[2] << "|";
+    step0EventDump_ << "|" << event->eventNum << "|" << triggerFlag[0] << triggerFlag[1] << triggerFlag[2] << "|" << channel << "|";
   case 2:
     step2EventDump_ << event->eventRun << " " << event->eventNum << " ";
     break;
