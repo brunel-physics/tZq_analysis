@@ -150,7 +150,8 @@ Cuts::~Cuts(){
     delete synchNumMus_;
     delete synchMuonCutFlow_;
     delete synchCutTopMassHist_;
-    if (makeEventDump_){ step0EventDump_.close();
+    if (makeEventDump_) {
+      step0EventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
       step6EventDump_.close();
@@ -224,14 +225,13 @@ bool Cuts::parse_config(std::string confName){
   
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
 
-  if (makeEventDump_){ 
+  if (makeEventDump_) {
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
     step6EventDump_.open("step6EventDump"+postfixName_+".txt");
   }
 
-  
   return true;
 }
 
@@ -668,6 +668,21 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets, std
     return leadingBJetMass;
 }
 
+int Cuts::getLeadingJet(AnalysisEvent *event){
+    
+  float leadingJetPt = -1.0;
+  int jetIndex = -1;
+
+  for ( int jetIt = 0; jetIt != event->numJetPF2PAT; ++jetIt ){
+    if ( event->jetPF2PATPtRaw[jetIt] > leadingJetPt ){
+      leadingJetPt = event->jetPF2PATPtRaw[jetIt];
+      jetIndex = jetIt;
+    }
+  }
+  if ( jetIndex == -1 ) return -1;    
+  return jetIndex;
+}
+
 float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets, std::vector<int> jets){
     
     float leadingBjetPt = -1.0;
@@ -862,10 +877,10 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   synchCutFlowHist_->Fill(0.5); // Total events
 
+  if (makeEventDump_){dumpToFile(event,0);}
+
   if (!triggerCuts(event)) return false; 
   synchCutFlowHist_->Fill(1.5); // Trigger cuts
-  if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
- 
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
@@ -892,7 +907,6 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
   synchCutFlowHist_->Fill(3.5);
 
-
   if (makeEventDump_){dumpToFile(event,2);}
 
   // Z selection
@@ -907,9 +921,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
   if (event->jetIndex.size() < 1) return false;
-  if (makeEventDump_){
-    dumpToFile(event,4);
-  }
+  if (makeEventDump_){dumpToFile(event,4);}
+
   //  std::cout << event->jetIndex.size() << std::endl;
   synchCutFlowHist_->Fill(5.5);
   
@@ -932,9 +945,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5);
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
-  if (makeEventDump_){
-    dumpToFile(event,6);
-  }
+  if (makeEventDump_){dumpToFile(event,6);}
+
   if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
   return true;
 }
@@ -1223,8 +1235,24 @@ double Cuts::deltaR(float eta1, float phi1, float eta2, float phi2){
 
 //For dumping contents of step 4. Bit more complicated than old, so doing it elsewhere.
 void Cuts::dumpToFile(AnalysisEvent* event, int step){
+
   std::vector<TLorentzVector> tempLepVec;
-  if (step > 2 && trileptonChannel_ == true){
+  unsigned int triggerFlag[3] = {0};
+  std::string channel = "nan";
+
+  if ( step == 0 ) { // Used for 2015/2016 synch
+    // Get trigger bit setup
+    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[0] = 1; // Set Z=1 if MuonEG trigger fires
+    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[2] = 1; // Set X=1 if DoubleMuon trigger fires
+    // Setup channel label
+    if ( numTightEle_ == 3 && numTightEle_ == 0 ) channel = "eee";
+    else if ( numTightEle_ == 2 && numTightMu_ == 1 ) channel = "eem";
+    else if ( numTightEle_ == 1 && numTightMu_ == 2 ) channel = "emm";
+    else if ( numTightEle_ == 0 && numTightMu_ == 3 ) channel = "mmm";
+  }
+
+  if (trileptonChannel_ == true){
     if (event->zPairLeptons.first.Pt() < event->wLepton.Pt()){
       tempLepVec.push_back(event->wLepton);
       tempLepVec.push_back(event->zPairLeptons.first);
@@ -1265,6 +1293,10 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
   switch (step) {
+
+  case 0:
+    step0EventDump_.precision(3);
+    step0EventDump_ << "|" << event->eventNum << "|" << triggerFlag[0] << triggerFlag[1] << triggerFlag[2] << "|";
   case 2:
     step2EventDump_ << event->eventRun << " " << event->eventNum << " ";
     break;
@@ -1277,6 +1309,8 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
+    case 0:
+      step0EventDump_ << tempLepVec[i].Pt() << "|";
     case 2:
       step2EventDump_ << tempLepVec[i].Pt() << " " << tempLepVec[i].Eta() << " ";
       break;
@@ -1288,6 +1322,20 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       break;
     }
   }
+
+  for (unsigned int i = 0; i < 3; i++){
+    switch (step) {
+    case 0:
+      step0EventDump_ << tempLepVec[i].Eta() << "|";
+    }
+  }
+
+  switch (step){
+  case 0:
+    int leadingJetIndex = getLeadingJet(event);
+    step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
+  }
+
   float tempWeight = 1.;
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   for (unsigned int i = 0; i < 4; i++){
@@ -1304,6 +1352,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
   switch(step){
+  case 0:
+    step0EventDump_ << event->metPF2PATPt;
+    step0EventDump_ << std::endl;
   case 2:
     step2EventDump_ << event->metPF2PATPt;
     step2EventDump_ << std::endl;
