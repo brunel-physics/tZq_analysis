@@ -1239,6 +1239,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   std::vector<TLorentzVector> tempLepVec;
   unsigned int triggerFlag[3] = {0};
   std::string channel = "nan";
+  std::pair<int,int> leadingLeptons[3] = {std::make_pair(0,0)}; // Initalise as empty
 
   if ( step == 0 ) { // Used for 2015/2016 synch
     // Get trigger bit setup
@@ -1247,8 +1248,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[2] = 1; // Set X=1 if DoubleMuon trigger fires
 
   // Get leading 3 leptons pT
-  std::pair<int,int> leadingLeptons[3] = {std::make_pair(0,0)}; // Initalise as empty
-  
   // Search over electrons
   for ( int electronIt = 0; electronIt != event->numElePF2PAT; ++electronIt) {
     float elePt = event->elePF2PATPT[electronIt];
@@ -1343,7 +1342,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
-      //      step0EventDump_ << leadingLeptons << "|";
+      if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATPT[leadingLeptons[i].first] << "|";
+      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATPt[leadingLeptons[i].first] << "|";
+      break;
     case 2:
       step2EventDump_ << tempLepVec[i].Pt() << " " << tempLepVec[i].Eta() << " ";
       break;
@@ -1356,17 +1357,32 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
 
+  // Rel iso for step0
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
-      step0EventDump_ << tempLepVec[i].Eta() << "|";
+      if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATComRelIsoRho[leadingLeptons[i].first] << "|";
+      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATComRelIsodBeta[leadingLeptons[i].first] << "|";
+      break;
     }
   }
+
+  // lepton ID for step0?
+/*
+  for (unsigned int i = 0; i < 3; i++){
+    switch (step) {
+    case 0:
+      if ( leadingLeptons[i].second == 1 ) step0EventDump_ << elePF2PATComRelIsoRho[leadingLeptons.first] << "|";
+      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << muonPF2PATComRelIsodBeta[leadingLeptons.first] << "|";
+      break;
+    }
+  }*/
 
   switch (step){
   case 0:
     int leadingJetIndex = getLeadingJet(event);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
+    break;
   }
 
   float tempWeight = 1.;
