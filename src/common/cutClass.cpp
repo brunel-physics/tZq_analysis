@@ -1246,20 +1246,46 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[2] = 1; // Set X=1 if DoubleMuon trigger fires
 
-  event->electronIndexTight = getTightEles(event);
-  event->muonIndexTight = getTightMuons(event);
+  // Get leading 3 leptons pT
+  std::pair<int,int> leadingLeptons[3] = {std::make_pair(0,0)}; // Initalise as empty
+  
+  // Search over electrons
+  for ( int electronIt = 0; electronIt != event->numElePF2PAT; ++electronIt) {
+    float elePt = event->elePF2PATPT[electronIt];
+    if ( elePt > leadingLeptons[2].first ) {
+      if ( elePt > leadingLeptons[1].first ) {
+	if ( elePt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(electronIt,1);
+	else leadingLeptons[1] = std::make_pair(electronIt,1);
+      }
+      else if ( elePt <= leadingLeptons[1].first ) leadingLeptons[2] = std::make_pair(electronIt,1);
+    }
+  }
 
-  int numEles = event->electronIndexTight.size();
-  int numMuons = event->muonIndexTight.size();
+  // Search over muons
+  for ( int muonIt = 0; muonIt != event->numMuonPF2PAT; ++muonIt) {
+    float muonPt = event->muonPF2PATPt[muonIt];
+    if ( muonPt > leadingLeptons[2].first ) {
+      if ( muonPt > leadingLeptons[1].first ) {
+	if ( muonPt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(muonIt,2);
+	else leadingLeptons[1] = std::make_pair(muonIt,2);
+      }
+      else if ( muonPt <= leadingLeptons[1].first ) leadingLeptons[2] = std::make_pair(muonIt,2);
+    }
+  }
 
     // Setup channel label
-    if (  numEles == 3 &&  numMuons == 0 ) channel = "eee";
+  int numEles(0), numMuons(0);
+  for ( uint i = 0; i != 3; ++i ){
+    if (leadingLeptons[i].second == 1) numEles++;
+    if (leadingLeptons[i].second == 2) numMuons++;
+  }
+  if (  numEles == 3 &&  numMuons == 0 ) channel = "eee";
     else if ( numEles == 2 &&  numMuons == 1 ) channel = "eem";
     else if ( numEles == 1 &&  numMuons == 2 ) channel = "emm";
     else if ( numEles == 0 &&  numMuons == 3 ) channel = "mmm";
   }
 
-  if (trileptonChannel_ == true){
+  if ( step > 2 && trileptonChannel_ == true){
     if (event->zPairLeptons.first.Pt() < event->wLepton.Pt()){
       tempLepVec.push_back(event->wLepton);
       tempLepVec.push_back(event->zPairLeptons.first);
@@ -1317,7 +1343,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
-      step0EventDump_ << tempLepVec[i].Pt() << "|";
+      //      step0EventDump_ << leadingLeptons << "|";
     case 2:
       step2EventDump_ << tempLepVec[i].Pt() << " " << tempLepVec[i].Eta() << " ";
       break;
