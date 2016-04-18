@@ -814,12 +814,19 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TFile * outFile = nullptr;
+      TFile * outFile1 = nullptr;
       TTree * cloneTree = nullptr;
+
+      TFile * outFile2 = nullptr;
       TTree * cloneTree2 = nullptr;
+
+      TFile * outFile3 = nullptr;
       TTree * cloneTree3 = nullptr;
+
       if (makePostLepTree){
-	outFile = new TFile(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE");
+	outFile1 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
+	outFile2 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
+	outFile3 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree2 = datasetChain->CloneTree(0);
 	cloneTree3 = datasetChain->CloneTree(0);
@@ -1036,7 +1043,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
       //If we're making post lepSel skims save the tree here
       if (makePostLepTree){
-	outFile->cd();
+	outFile1->cd();
 	std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
 	std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
 	cloneTree->Write();
@@ -1046,32 +1053,31 @@ void AnalysisAlgo::runMainAnalysis(){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
-	outFile->Write();
-	outFile->Close();
-	delete cloneTree;
+        delete cloneTree;
+        cloneTree = nullptr;
+	outFile1->Write();
+	outFile1->Close();
 
 	//If we have any events in the second tree:
 	if (cloneTree2->GetEntries() > 0){
 	  std::cout << "There are " << cloneTree2->GetEntries() << " entries in the second tree!" << std::endl;
-	  TFile outFile1(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE");
-	  outFile1.cd();
+	  outFile2->cd();
 	  cloneTree2->Write();
-	  outFile1.Write();
-	  outFile1.Close();
+	  outFile2->Write();
 	}
 	if (cloneTree3->GetEntries() > 0){
 	  std::cout << "There are " << cloneTree3->GetEntries() << " entries in the third tree! What a lot of trees we've made." << std::endl;
-	  TFile outFile1(("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE");
-	  outFile1.cd();
+	  outFile3->cd();
 	  cloneTree3->Write();
-	  outFile1.Write();
-	  outFile1.Close();
-	}
-	delete cloneTree2;
-	delete cloneTree3;
+	  outFile3->Write();
+        }
+        delete cloneTree2;
+        delete cloneTree3;
+        cloneTree2 = nullptr;
+        cloneTree3 = nullptr;
+        outFile2->Close();
+        outFile3->Close();
       }
-
-
     
       //Save mva outputs
       if (makeMVATree){

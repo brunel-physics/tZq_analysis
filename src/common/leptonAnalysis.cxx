@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 
   std::vector<TTree*> inputTrees;
 
-  std::cout << "Attaching files to TTree ... " << std::endl;
+  std::cout << "Attaching files to TTree" << std::flush;
 
   while ( (dirp = readdir(dp)) != nullptr) {
     std::string line (dirp->d_name);
@@ -86,7 +86,10 @@ int main(int argc, char* argv[]) {
     TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
     TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
     inputTrees.push_back(lTempTree);
+
+    std::cout << '.' << std::flush;
   }
+  std::cout << std::endl;
 
   std::cout << "Attached all files to TTree!" << std::endl;
 
@@ -112,17 +115,24 @@ int main(int argc, char* argv[]) {
   Int_t lCounter (1);
 
   // pT thresholds
-  const unsigned ele1PtThresh{17};
-  const unsigned ele2PtThresh{12};
-  const unsigned mu1PtThresh{17};
-  const unsigned mu2PtThresh{8};
-  const unsigned ele1PtThreshProposed{23};
+  const Float_t ele1PtThresh{17};
+  const Float_t ele2PtThresh{12};
+  const Float_t mu1PtThresh{17};
+  const Float_t mu2PtThresh{8};
+  const Float_t ele1PtThreshProposed{23};
+  // eta thresholds
+  const Float_t eleEtaThresh{2.5};
+  const Float_t muEtaThresh{2.4};
   // Event counters
   int totalEvents{0};
-  int elePtCut{0};
-  int eleNumCut{0};
-  int muPtCut{0};
-  int muNumCut{0};
+  int passEleNum{0};
+  int passElePt{0};
+  int passElePtDiff{0};
+  int passEleEta{0};
+  int passMuNum{0};
+  int passMuPt{0};
+  int passMuEta{0};
+
   int newlyCut{0};
   int totalCut{0};
 
@@ -157,77 +167,107 @@ int main(int argc, char* argv[]) {
       }
 
       // Count the number of events which will be cut
+      using lepton = std::pair<Float_t, Float_t>;
+
       bool cut{true};
+      bool cutDiff{false};
       if (lEvent->numLooseElePF2PAT >= 2)  // electron no. cut
       {
-        std::vector<Float_t> elePTs{lEvent->elePF2PATlooseElectronSortedPt,
-          lEvent->elePF2PATlooseElectronSortedPt + lEvent->numLooseElePF2PAT};
+        passEleNum++;
 
-        std::nth_element(elePTs.begin(), elePTs.begin()+1, elePTs.end(),
-            std::greater<Float_t>());
-
-        if (elePTs.at(1) < ele2PtThresh || elePTs.at(0) < ele1PtThresh)  // ele pT cut
+        std::vector<lepton> eles;
+        for(int k = 0; k < lEvent->numLooseElePF2PAT; k++)
         {
-          elePtCut++;
+          eles.emplace_back(lEvent->genLooseElePF2PATEta[k],
+              lEvent->genLooseElePF2PATPT[k]);
         }
-        else if (elePTs.at(0) < ele1PtThreshProposed)
-        {
-          elePtCut++;
-          newlyCut++;
-        }
-        else
-        {
-          cut = false;
-        }
-      }
-      else
-      {
-        eleNumCut++;
-      }
 
-      if (lEvent->numMuonPF2PAT >=2)  // muon no. cut
-      {
-        std::vector<Float_t> muPTs{lEvent->muonPF2PATlooseMuonSortedPt,
-          lEvent->muonPF2PATlooseMuonSortedPt + lEvent->numMuonPF2PAT};
+        eles.erase(std::remove_if(eles.begin(), eles.end(),
+            [&](const lepton &a) -> bool {return std::abs(a.first) > eleEtaThresh;}),
+          eles.end());
 
-        std::nth_element(muPTs.begin(), muPTs.begin()+1, muPTs.end(),
-            std::greater<Float_t>());
+        if (eles.size() >= 2)  // electron eta cut
+        {
+          passEleEta++;
 
-        if (muPTs.at(1) < mu2PtThresh || muPTs.at(0) < mu1PtThresh)  // mu pT cut
-        {
-          muPtCut++;
-        }
-        else
-        {
-          cut = false;
+          std::nth_element(eles.begin(), eles.begin()+1, eles.end(),
+              [](const lepton &a, const lepton &b) -> bool
+              {return a.second > b.second;});
+
+          if (eles.at(0).second > ele1PtThresh && eles.at(1).second > ele2PtThresh)  // ele pT cut
+          {
+            if (eles.at(0).second > ele1PtThreshProposed)
+            {
+              passElePt++;
+              cut = false;
+            }
+            else
+            {  // fail proposed pT cut
+              passElePtDiff++;
+              cutDiff = true;
+            }
+          }
         }
       }
-      else
+
+      if (lEvent->numMuonPF2PAT >= 2)  // muon no. cut
       {
-        muNumCut++;
+        passMuNum++;
+
+        std::vector<lepton> mus;
+        for(int k = 0; k < lEvent->numMuonPF2PAT; k++)
+        {
+          mus.emplace_back(lEvent->genLooseMuonPF2PATEta[k],
+              lEvent->genLooseMuonPF2PATPT[k]);
+        }
+
+        mus.erase(std::remove_if(mus.begin(), mus.end(),
+            [&](const lepton &a) -> bool {return std::abs(a.first) > muEtaThresh;}),
+          mus.end());
+
+        if (mus.size() >= 2)  // muon eta cut
+        {
+          passMuEta++;
+
+          std::nth_element(mus.begin(), mus.begin()+1, mus.end(),
+              [](const lepton &a, const lepton &b) -> bool
+              {return a.second > b.second;});
+
+          if (mus.at(0).second > mu1PtThresh && mus.at(1).second > mu2PtThresh)  // muon pT cut
+          {
+            passMuPt++;
+            cut = false;
+            cutDiff = false;
+          }
+        }
       }
 
       if (cut)
       {
         totalCut++;
       }
+      if (cutDiff)
+      {
+        newlyCut++;
+      }
     }
     lTimer->DrawProgressBar(lCounter++, "");
   }
 
   std::cout << std::endl << std::endl;
-  std::cout << "Total no. of evets:\t\t\t" << totalEvents << std::endl;
+  std::cout << "Total no. of events:\t\t\t" << totalEvents << std::endl;
   std::cout << std::endl;
-  std::cout << "Fail electron pT requirements:\t\t" << elePtCut << std::endl;
-  std::cout << "Fail due to too few electrons:\t\t" << eleNumCut << std::endl;
-  std::cout << "Total failing electron requirements:\t" << elePtCut + eleNumCut << std::endl;
+  std::cout << "Containing at least two electrons:\t" << passEleNum << std::endl;
+  std::cout << "...of which pass eta requirements:\t" << passEleEta << std::endl;
+  std::cout << "...of which pass pT requirements:\t" << passElePt << std::endl;
+  std::cout << "Change due to new proposals:\t\t" << passElePtDiff << std::endl;
+  std::cout << std::endl;
+  std::cout << "Containing at least two muons:\t\t" << passMuNum << std::endl;
+  std::cout << "...of which pass eta requirements:\t" << passMuEta << std::endl;
+  std::cout << "...of which pass pT requirements:\t" << passMuPt << std::endl;
+  std::cout << std::endl;
+  std::cout << "Total no. of cut events\t\t\t" << totalCut << std::endl;
   std::cout << "Change due to new proposals:\t\t" << newlyCut << std::endl;
-  std::cout << std::endl;
-  std::cout << "Fail muon pT requirements:\t\t" << muPtCut << std::endl;
-  std::cout << "Fail due to too few muons:\t\t" << muNumCut << std::endl;
-  std::cout << "Total failing muon requirements:\t" << muPtCut + muNumCut << std::endl;
-  std::cout << std::endl;
-  std::cout << "Total number of cut events\t\t" << totalCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
   
