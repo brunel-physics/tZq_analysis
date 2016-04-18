@@ -523,7 +523,8 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	}
       }
     }
-  } else {
+  }
+  else {
     for (unsigned int i = 0; i < muons.size(); i++){
       for (unsigned int j = i + 1; j < muons.size(); j++) {
 	if (event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
@@ -539,7 +540,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
 	  event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
 	  closestMass = invMass;
-	  //Now set up W lepton
+	  //Now set up W lepton 
 	  if (muons.size() == 2){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
 	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
@@ -1416,7 +1417,8 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     else step0EventDump_ << "0";
     if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() && getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
     else step0EventDump_ << "0";
-    if ( std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) <= invZMassCut_ ) step0EventDump_ << "1"; // Z selection - step 3
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) < 3 ) step0EventDump_ << "0"; // Check to ensure there are at least three leptons - otherwise memory leak occurs.
+    else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
     else step0EventDump_ << "0";
     event->jetIndex = makeJetCuts(event, 0, &tempWeight);
     if ( event->jetIndex.size() < 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4 
