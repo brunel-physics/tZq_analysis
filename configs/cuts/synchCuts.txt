@@ -9,7 +9,7 @@ cuts =
 	looseMuons = {
 	      pt   = 20.;
 	      eta  = 2.4;
-	      relIso = 0.15;
+	      relIso = 0.25;
 	      number = 0;
 	      },
 	tightElectrons = {
