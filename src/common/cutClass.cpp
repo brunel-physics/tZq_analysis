@@ -1447,7 +1447,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }
   switch(step){
   case 0:
-    step0EventDump_ << event->metPF2PATPt;
+    step0EventDump_ << event->metPF2PATPt << "|";
   case 2:
     step2EventDump_ << event->metPF2PATPt;
     step2EventDump_ << std::endl;
