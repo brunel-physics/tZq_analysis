@@ -1,3 +1,4 @@
+
 #include "cutClass.hpp"
 #include "BTagCalibrationStandalone.hpp"
 
@@ -14,7 +15,7 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC):
+Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
   doPlots_(doPlots),
@@ -24,9 +25,11 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   //Synchronisation cut flow.
   synchCutFlow_(lepCutFlow),
   //Synchronisation cut flow.
-  singleEventInfoDump_(dumpEventNumber),
+  singleEventInfoDump_(false),
+  makeEventDump_(dumpEventNumber),
   trileptonChannel_(trileptonChannel),
   isFCNC_(isFCNC),
+  isCtag_(isCtag),
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_(3),
@@ -121,7 +124,8 @@ Cuts::Cuts(bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, b
   std::cout << "Gets past JEC Cors" << std::endl;
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
-  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root");
+//  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root"); // Electron triggering MVA ID
+  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based ID
   h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
@@ -147,7 +151,8 @@ Cuts::~Cuts(){
     delete synchNumMus_;
     delete synchMuonCutFlow_;
     delete synchCutTopMassHist_;
-    if (makeEventDump_){ step0EventDump_.close();
+    if (makeEventDump_) {
+      step0EventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
       step6EventDump_.close();
@@ -221,14 +226,13 @@ bool Cuts::parse_config(std::string confName){
   
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
 
-  if (makeEventDump_){ 
+  if (makeEventDump_) {
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
     step6EventDump_.open("step6EventDump"+postfixName_+".txt");
   }
 
-  
   return true;
 }
 
@@ -264,7 +268,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
-  if ( !trileptonChannel_ && isFCNC_) { // Do FCNC stuff
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) { // Do FCNC stuff & cTagging
     event->cTagIndex = makeCCuts(event,event->jetIndex);
     if (event->cTagIndex.size() < numcJets_) return false;
     if (event->cTagIndex.size() < maxcJets_) return false;
@@ -273,8 +277,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   }
 
   if ( !trileptonChannel_ && !isFCNC_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
-  if ( doPlots_ && !isFCNC_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
+  if ( doPlots_ && !isFCNC_ && isCtag_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !isCtag_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
@@ -318,7 +322,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     cutFlow->Fill(0.5,*eventWeight);
   }
 
-  if (fabs(invZmass) > invZMassCut_) return false;
+  if (std::abs(invZmass) > invZMassCut_) return false;
 
   //  plotMap["zMass"]->fillAllPlots(event,eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -335,41 +339,45 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
 
-    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
-//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
-//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
-    	  if ( event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_ ) continue;
-	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
-	}
+//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+      /*if ( event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_ ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
+      if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;*/
+/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
+//	}
     
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
 
 	 // Barrel cut-based ID
 	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0766 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.373 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0354 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.012 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
 	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0283 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.06678 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0678 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0279 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0646 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.00999 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
-    }
+  //  }
     electrons.push_back(i);
   }
   return electrons;
@@ -383,15 +391,21 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
+//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
 //        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
 //        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
-	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
+/*	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
     	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;
-	}
+    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;*/
+/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
+      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
+//	}
     
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
     // Barrel cut-based Veto ID      
     	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
@@ -415,7 +429,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
 	  }
-    }
+//    }
     electrons.push_back(i);
   }
   return electrons;
@@ -444,8 +458,8 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //if (i > 0) std::cout << "Checking second muon";
     
     if (event->muonPF2PATTkLysWithMeasurements[i] < 5) continue;
-    if (fabs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
-    if (fabs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+    if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+    if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
     //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
     if (event->muonPF2PATMuonNHits[i] < 1) continue;
     if (event->muonPF2PATVldPixHits[i] < 1) continue;
@@ -483,7 +497,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]);
 	float invMass = (lepton1 + lepton2).M() -91.1;
-	if (fabs(invMass) < fabs(closestMass)){
+	if (std::abs(invMass) < std::abs(closestMass)){
 	  // set up the tlorentz vectors in the event. For plotting and jazz.
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
@@ -509,14 +523,15 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	}
       }
     }
-  } else {
+  }
+  else {
     for (unsigned int i = 0; i < muons.size(); i++){
       for (unsigned int j = i + 1; j < muons.size(); j++) {
 	if (event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
 	TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
 	float invMass = (lepton1 + lepton2).M() -91;
-	if (fabs(invMass) < fabs(closestMass)){
+	if (std::abs(invMass) < std::abs(closestMass)){
 	  // set up the tlorentz vectors in the event. For plotting and jazz.
 	  event->zPairLeptons.first = lepton1;
 	  event->zPairIndex.first = muons[i];
@@ -525,7 +540,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
 	  event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
 	  closestMass = invMass;
-	  //Now set up W lepton
+	  //Now set up W lepton 
 	  if (muons.size() == 2){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
 	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
@@ -559,7 +574,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
         TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]);
         float invMass  = (lepton1 + lepton2).M() -91.1;
-	if (fabs(invMass) < fabs(closestMass)){
+	if (std::abs(invMass) < std::abs(closestMass)){
         	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
         	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
@@ -579,7 +594,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 	TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
 	float invMass = (lepton1 + lepton2).M() -91.1;
-	if (fabs(invMass) < fabs(closestMass)){
+	if (std::abs(invMass) < std::abs(closestMass)){
 		event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 		event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[i]:muons[j];
 		event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
@@ -613,7 +628,7 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]);
 	TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
 	float invWbosonMass = (wQuark1 + wQuark2).M() - 80.;
-	if( fabs(invWbosonMass) < fabs(closestWmass) ){
+	if( std::abs(invWbosonMass) < std::abs(closestWmass) ){
 	  event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
 	  event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];
 	  event->wPairQuarks.second = wQuark1.Pt() > wQuark2.Pt()?wQuark2:wQuark1;
@@ -653,6 +668,21 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets, std
     leadingBJetMass = TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M();
       //      }
     return leadingBJetMass;
+}
+
+int Cuts::getLeadingJet(AnalysisEvent *event){
+    
+  float leadingJetPt = -1.0;
+  int jetIndex = -1;
+
+  for ( int jetIt = 0; jetIt != event->numJetPF2PAT; ++jetIt ){
+    if ( event->jetPF2PATPtRaw[jetIt] > leadingJetPt ){
+      leadingJetPt = event->jetPF2PATPtRaw[jetIt];
+      jetIndex = jetIt;
+    }
+  }
+  if ( jetIndex == -1 ) return -1;    
+  return jetIndex;
 }
 
 float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets, std::vector<int> jets){
@@ -849,10 +879,11 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   synchCutFlowHist_->Fill(0.5); // Total events
 
+  if (makeEventDump_) dumpToFile(event,0);
+
   if (!triggerCuts(event)) return false; 
-  synchCutFlowHist_->Fill(1.5); // Trigger cuts
-  if (makeEventDump_) {step0EventDump_ << event->eventNum << std::endl;}
- 
+   
+  synchCutFlowHist_->Fill(1.5); // Trigger cuts - Step 0
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
@@ -865,27 +896,23 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchNumMus_->Fill(event->muonIndexTight.size());
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
-  // if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
-  synchCutFlowHist_->Fill(2.5); 
-
+  //  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+  synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
 
   //loose lepton veto
   //  int looseLeps = getLooseLepsNum(event);
   //  if (isMC_ && looseLeps < 2) return false;
   //  if (!isMC_ && looseLeps < 3) return false; 
 
-  if (event->electronIndexTight.size() != getLooseEles(event).size()) return false;
-  if (event->muonIndexTight.size() != getLooseMuons(event).size()) return false;
+  if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
-  synchCutFlowHist_->Fill(3.5);
-
-
-  if (makeEventDump_){dumpToFile(event,2);}
+  if ( makeEventDump_ ) dumpToFile(event,2);
+  synchCutFlowHist_->Fill(3.5); // Lepton Veto - step 2
 
   // Z selection
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
-  if (fabs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
-  synchCutFlowHist_->Fill(4.5);
+  if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
+  synchCutFlowHist_->Fill(4.5); // Z veto - step 3
 
   //Add in extra steps here.
   float tempWeight = 1.;
@@ -894,34 +921,34 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
   if (event->jetIndex.size() < 1) return false;
-  if (makeEventDump_){
-    dumpToFile(event,4);
-  }
+  if (makeEventDump_) dumpToFile(event,4);
   //  std::cout << event->jetIndex.size() << std::endl;
-  synchCutFlowHist_->Fill(5.5);
+  synchCutFlowHist_->Fill(5.5); // jet selection - step 4
   
   // bTag selection
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (!event->bTagIndex.size() == 1) return false;
-  synchCutFlowHist_->Fill(6.5);
+  synchCutFlowHist_->Fill(6.5); // b-jet selection - step 5
+
   // MET cut
   if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
   //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not currently applied
   synchCutFlowHist_->Fill(7.5);
+
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
   if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
-  synchCutFlowHist_->Fill(8.5);
+  synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
+
   // Top Mass cut
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex, event->jetIndex)  << std::endl;
   if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
-  synchCutFlowHist_->Fill(9.5);
+  synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
+
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
-  if (makeEventDump_){
-    dumpToFile(event,6);
-  }
+  if (makeEventDump_) dumpToFile(event,6);
   if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
   return true;
 }
@@ -1201,7 +1228,7 @@ void Cuts::dumpLooseLepInfo(AnalysisEvent* event){
 double Cuts::deltaR(float eta1, float phi1, float eta2, float phi2){
   double dEta = eta1-eta2;
   double dPhi = phi1-phi2;
-  while (fabs(dPhi) > 3.14159265359){
+  while (std::abs(dPhi) > 3.14159265359){
     dPhi += (dPhi > 0.? -2*3.14159265359:2*3.14159265359);
   }
   //  if(singleEventInfoDump_)  std::cout << eta1 << " " << eta2 << " phi " << phi1 << " " << phi2 << " ds: " << eta1-eta2 << " " << phi1-phi2 << " dR: " << std::sqrt((dEta*dEta)+(dPhi*dPhi)) << std::endl;
@@ -1210,8 +1237,50 @@ double Cuts::deltaR(float eta1, float phi1, float eta2, float phi2){
 
 //For dumping contents of step 4. Bit more complicated than old, so doing it elsewhere.
 void Cuts::dumpToFile(AnalysisEvent* event, int step){
+
   std::vector<TLorentzVector> tempLepVec;
-  if (step > 2 && trileptonChannel_ == true){
+  unsigned int triggerFlag[3] = {0};
+  std::string channel = "nan";
+  std::pair<int,int> leadingLeptons[3] = {std::make_pair(0,0)}; // Initalise as empty
+
+  if ( step == 0 ) { // Used for 2015/2016 synch
+    // Get trigger bit setup
+    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[2] = 1; // Set Z=1 if MuonEG trigger fires
+    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[0] = 1; // Set X=1 if DoubleMuon trigger fires
+
+  // Get leading 3 leptons pT
+  // Search over electrons
+  for ( int electronIt = 0; electronIt != event->numElePF2PAT; ++electronIt) {
+    float elePt = event->elePF2PATPT[electronIt];
+    std::cout << "elePt: " << elePt << std::endl; 
+    if ( elePt > leadingLeptons[2].first && elePt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(electronIt,1);
+    else if ( elePt > leadingLeptons[1].first && elePt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(electronIt,1);
+    else if ( elePt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(electronIt,1);
+  }
+
+  // Search over muons
+  for ( int muonIt = 0; muonIt != event->numMuonPF2PAT; ++muonIt) {
+    float muonPt = event->muonPF2PATPt[muonIt];
+    std::cout << "muonPt: " << muonPt << std::endl; 
+    if ( muonPt > leadingLeptons[2].first && muonPt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(muonIt,2);
+    else if ( muonPt > leadingLeptons[1].first && muonPt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(muonIt,2);
+    else if ( muonPt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(muonIt,2);
+  }
+
+    // Setup channel label
+  int numEles(0), numMuons(0);
+  for ( uint i = 0; i != 3; ++i ){
+    if (leadingLeptons[i].second == 1) numEles++;
+    if (leadingLeptons[i].second == 2) numMuons++;
+  }
+  if (  numEles == 3 &&  numMuons == 0 ) channel = "eee";
+    else if ( numEles == 2 &&  numMuons == 1 ) channel = "eem";
+    else if ( numEles == 1 &&  numMuons == 2 ) channel = "emm";
+    else if ( numEles == 0 &&  numMuons == 3 ) channel = "mmm";
+  }
+
+  if ( step > 2 && trileptonChannel_ == true){
     if (event->zPairLeptons.first.Pt() < event->wLepton.Pt()){
       tempLepVec.push_back(event->wLepton);
       tempLepVec.push_back(event->zPairLeptons.first);
@@ -1252,6 +1321,10 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
   switch (step) {
+
+  case 0:
+    step0EventDump_.precision(3);
+    step0EventDump_ << "|" << event->eventNum << "|" << triggerFlag[0] << triggerFlag[1] << triggerFlag[2] << "|" << channel << "|";
   case 2:
     step2EventDump_ << event->eventRun << " " << event->eventNum << " ";
     break;
@@ -1264,6 +1337,11 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
+    case 0:
+      if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATPT[leadingLeptons[i].first] << "|";
+      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATPt[leadingLeptons[i].first] << "|";
+      else step0EventDump_ << 0 << "|";
+      break;
     case 2:
       step2EventDump_ << tempLepVec[i].Pt() << " " << tempLepVec[i].Eta() << " ";
       break;
@@ -1275,6 +1353,37 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       break;
     }
   }
+
+  // Rel iso for step0
+  for (unsigned int i = 0; i < 3; i++){
+    switch (step) {
+    case 0:
+      if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATComRelIsoRho[leadingLeptons[i].first] << "|";
+      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATComRelIsodBeta[leadingLeptons[i].first] << "|";
+      else step0EventDump_ << 0 << "|";
+      break;
+    }
+  }
+
+  // lepton ID for step0?
+
+  for (unsigned int i = 0; i < 3; i++){
+    switch (step) {
+    case 0:
+      //if ( leadingLeptons[i].second == 1 ) step0EventDump_ << elePF2PATComRelIsoRho[leadingLeptons.first] << "|";
+      //else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << muonPF2PATComRelIsodBeta[leadingLeptons.first] << "|";
+      step0EventDump_ << "-1|";
+      break;
+    }
+  }
+
+  switch (step){
+  case 0:
+    int leadingJetIndex = getLeadingJet(event);
+    step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
+    break;
+  }
+
   float tempWeight = 1.;
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   for (unsigned int i = 0; i < 4; i++){
@@ -1291,6 +1400,32 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
   switch(step){
+  case 0:
+    step0EventDump_ << event->metPF2PATPt << "|";
+    // Synch Cut Flow stuff
+    if ( triggerCuts(event) ) step0EventDump_ << "1"; // Trigger Selection - step 0
+    else step0EventDump_ << "0";
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) == 3 ) step0EventDump_ << "1"; // 3 tight lepton selection - step 1
+    else step0EventDump_ << "0";
+    if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() == getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
+    else step0EventDump_ << "0";
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) < 3 ) step0EventDump_ << "0"; // Check to ensure there are at least three leptons - otherwise memory leak occurs.
+    else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
+    else step0EventDump_ << "0";
+    event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+    if ( event->jetIndex.size() >= 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4 
+    else step0EventDump_ << "0";
+    event->bTagIndex = makeBCuts(event,event->jetIndex);
+    if ( event->bTagIndex.size() == 1 ) step0EventDump_ << "1"; // b-Tag selection, exactly one b-jet - step 5
+    else step0EventDump_ << "0";
+    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCut_ ) step0EventDump_ << "1"; // MET selection, step 6
+    else step0EventDump_ << "0";
+    if ( (getTopMass(event, event->bTagIndex,event->jetIndex) <= TopMassCutUpper_) && (getTopMass(event, event->bTagIndex,event->jetIndex) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
+    else step0EventDump_ << "0";
+    step0EventDump_ << std::endl;
+    break;
   case 2:
     step2EventDump_ << event->metPF2PATPt;
     step2EventDump_ << std::endl;
@@ -1317,8 +1452,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
@@ -1333,8 +1468,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),fabs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),fabs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
     }
   }
 
@@ -1353,8 +1488,9 @@ float Cuts::eleSF(double pt, double eta){
   double maxPt = h_eleSFs->GetYaxis()->GetXmax();
   uint bin(0);
 
-  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(eta,pt);
-  else bin = h_eleSFs->FindBin(eta,maxPt);
+  // If cut-based, abs eta, else just eta
+  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(abs(eta),pt);
+  else bin = h_eleSFs->FindBin(std::abs(eta),maxPt);
 
   return h_eleSFs->GetBinContent(bin);
 }
@@ -1365,13 +1501,15 @@ float Cuts::muonSF(double pt, double eta){
   double maxIsoPt = h_muonPFiso->GetYaxis()->GetXmax();
   uint binId (0), binIso (0);
 
-  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(eta,pt);
-  else binId = h_muonIDs->FindBin(eta,maxIdPt);
+  if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(std::abs(eta),pt);
+  else binId = h_muonIDs->FindBin(std::abs(eta),maxIdPt);
 
-  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(eta,pt);
-  else binIso = h_muonPFiso->FindBin(eta,maxIsoPt);
+  if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(std::abs(eta),pt);
+  else binIso = h_muonPFiso->FindBin(std::abs(eta),maxIsoPt);
 
-  return (h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+  double muSF(h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso));
+
+  return (muSF);
 }
 
 void Cuts::initialiseJECCors(){
@@ -1414,8 +1552,7 @@ void Cuts::initialiseJECCors(){
 float Cuts::getJECUncertainty(float pt, float eta, int syst){
   if (!(syst == 4 || syst == 8)){
     return 0.;
-  }
-  unsigned int ptBin = 0, etaBin = 0;
+  }  unsigned int ptBin = 0, etaBin = 0;
   for (unsigned int i = 0; i < ptMinJEC_.size(); i++){
     if (pt > ptMinJEC_[i] && pt < ptMaxJEC_[i]){
       ptBin = i;
@@ -1447,51 +1584,51 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   TLorentzVector returnJet;
 
   // JER Scaling Factors and uncertainities
-  if (fabs(event->jetPF2PATEta[index]) <= 0.5) {
+  if (std::abs(event->jetPF2PATEta[index]) <= 0.5) {
     jerSF = 1.095;
     jerSigma = 0.018;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 0.8) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 0.8) {
     jerSF = 1.120;
     jerSigma = 0.028;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.1) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 1.1) {
     jerSF = 1.097;
     jerSigma = 0.017;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.3) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 1.3) {
     jerSF = 1.103;
     jerSigma = 0.033;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.7) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 1.7) {
     jerSF = 1.118;
     jerSigma = 0.014;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 1.9) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 1.9) {
     jerSF = 1.100;
     jerSigma = 0.033;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.1) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 2.1) {
     jerSF = 1.162;
     jerSigma = 0.044;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.3) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 2.3) {
     jerSF = 1.160;
     jerSigma = 0.048;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.5) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 2.5) {
     jerSF = 1.161;
     jerSigma = 0.060;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 2.8) {
+  else if (std::abs(event->jetPF2PATEta[index]) <= 2.8) {
     jerSF = 1.209;
     jerSigma = 0.059;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 3.0){
+  else if (std::abs(event->jetPF2PATEta[index]) <= 3.0){
     jerSF = 1.564;
     jerSigma = 0.321;
   }
-  else if (fabs(event->jetPF2PATEta[index]) <= 3.2){
+  else if (std::abs(event->jetPF2PATEta[index]) <= 3.2){
     jerSF = 1.384;
     jerSigma = 0.033;
   } 
@@ -1605,7 +1742,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
   }
 
-  SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>fabs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
+  SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>std::abs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
 
   //Apply the weight of the jet and set the error
   if (event->jetPF2PATBDiscriminator[index] > bDiscCut_){

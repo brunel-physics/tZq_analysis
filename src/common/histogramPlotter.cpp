@@ -24,7 +24,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   gErrorIgnoreLevel = kInfo;
 
   extensions_.push_back(".root");
-  extensions_.push_back(".png");
+  //  extensions_.push_back(".png");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
   labelOne_ = new TPaveText(0.16,0.88,0.5,0.94,"NDCBR");
