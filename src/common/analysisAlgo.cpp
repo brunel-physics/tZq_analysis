@@ -871,7 +871,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }*/
 
       int numberOfEvents = datasetChain->GetEntries();
-//      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
+      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
       //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
