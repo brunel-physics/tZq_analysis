@@ -399,6 +399,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-y"){
       dumpEventNumbers = true;
+      std::cout << "WARNING: Dump files will be empty if -a or --synch is not used." << std::endl;
     }
     else if (arg == "-t"){
       usebTagWeight = true;

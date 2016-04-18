@@ -30,6 +30,7 @@ class Cuts{
   float getTopMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getLeadingBjetMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getLeadingBjetPt(AnalysisEvent*, std::vector<int>, std::vector<int>);
+  int getLeadingJet(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*);
   
   //Method for running the synchronisation with Jeremy.
@@ -47,12 +48,13 @@ class Cuts{
   float eleSF(double, double);
   float muonSF(double, double);
 
-  //set to true to fill in histograms.
+  //set to true to fill in histograms/spit out other info
   bool doPlots_;
   bool fillCutFlow_; // Fill cut flows
   bool invertIsoCut_; // For background estimation
   bool synchCutFlow_; //For synch
   bool singleEventInfoDump_; //For dropping info on event for synching.
+  bool makeEventDump_;
   const bool trileptonChannel_;
   const bool isFCNC_;
   const bool isCtag_;
@@ -131,7 +133,6 @@ class Cuts{
   TH1I* synchMuonCutFlow_;
   TH1F* synchCutTopMassHist_;
 
-  bool makeEventDump_;
   std::ofstream step0EventDump_;
   std::ofstream step2EventDump_;
   std::ofstream step4EventDump_;
