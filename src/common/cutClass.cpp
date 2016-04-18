@@ -1421,7 +1421,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
     else step0EventDump_ << "0";
     event->jetIndex = makeJetCuts(event, 0, &tempWeight);
-    if ( event->jetIndex.size() < 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4 
+    if ( event->jetIndex.size() >= 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4 
     else step0EventDump_ << "0";
     event->bTagIndex = makeBCuts(event,event->jetIndex);
     if ( event->bTagIndex.size() == 1 ) step0EventDump_ << "1"; // b-Tag selection, exactly one b-jet - step 5
