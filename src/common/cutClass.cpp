@@ -1253,25 +1253,19 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   // Search over electrons
   for ( int electronIt = 0; electronIt != event->numElePF2PAT; ++electronIt) {
     float elePt = event->elePF2PATPT[electronIt];
-    if ( elePt > leadingLeptons[2].first ) {
-      if ( elePt > leadingLeptons[1].first ) {
-	if ( elePt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(electronIt,1);
-	else leadingLeptons[1] = std::make_pair(electronIt,1);
-      }
-      else if ( elePt <= leadingLeptons[1].first ) leadingLeptons[2] = std::make_pair(electronIt,1);
-    }
+    std::cout << "elePt: " << elePt << std::endl; 
+    if ( elePt > leadingLeptons[2].first && elePt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(electronIt,1);
+    else if ( elePt > leadingLeptons[1].first && elePt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(electronIt,1);
+    else if ( elePt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(electronIt,1);
   }
 
   // Search over muons
   for ( int muonIt = 0; muonIt != event->numMuonPF2PAT; ++muonIt) {
     float muonPt = event->muonPF2PATPt[muonIt];
-    if ( muonPt > leadingLeptons[2].first ) {
-      if ( muonPt > leadingLeptons[1].first ) {
-	if ( muonPt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(muonIt,2);
-	else leadingLeptons[1] = std::make_pair(muonIt,2);
-      }
-      else if ( muonPt <= leadingLeptons[1].first ) leadingLeptons[2] = std::make_pair(muonIt,2);
-    }
+    std::cout << "muonPt: " << muonPt << std::endl; 
+    if ( muonPt > leadingLeptons[2].first && muonPt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(muonIt,2);
+    else if ( muonPt > leadingLeptons[1].first && muonPt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(muonIt,2);
+    else if ( muonPt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(muonIt,2);
   }
 
     // Setup channel label
