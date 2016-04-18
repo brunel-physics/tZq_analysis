@@ -1251,23 +1251,30 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 
   // Get leading 3 leptons pT
   // Search over electrons
-  for ( int electronIt = 0; electronIt != event->numElePF2PAT; ++electronIt) {
+  for ( int electronIt = 0; electronIt != event->numElePF2PAT; electronIt++) {
     float elePt = event->elePF2PATPT[electronIt];
-    std::cout << "elePt: " << elePt << std::endl; 
-    if ( elePt > leadingLeptons[2].first && elePt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(electronIt,1);
-    else if ( elePt > leadingLeptons[1].first && elePt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(electronIt,1);
-    else if ( elePt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(electronIt,1);
+    float itPt[3] = {0.0};
+    for ( uint j = 0; j != 3; j++ ){
+      if ( leadingLeptons[j].second == 1 ) itPt[j] = event->elePF2PATPT[leadingLeptons[j].first];
+      else if ( leadingLeptons[j].second == 2 ) itPt[j] = event->muonPF2PATPt[leadingLeptons[j].first];
+    }
+    if ( elePt > itPt[2] && elePt <= itPt[1] ) leadingLeptons[2] = std::make_pair(electronIt,1);
+    else if ( elePt > itPt[1] && elePt <= itPt[0] ) leadingLeptons[1] = std::make_pair(electronIt,1);
+    else if ( elePt > itPt[0] ) leadingLeptons[0] = std::make_pair(electronIt,1);
   }
 
   // Search over muons
-  for ( int muonIt = 0; muonIt != event->numMuonPF2PAT; ++muonIt) {
+  for ( int muonIt = 0; muonIt != event->numMuonPF2PAT; muonIt++) {
     float muonPt = event->muonPF2PATPt[muonIt];
-    std::cout << "muonPt: " << muonPt << std::endl; 
-    if ( muonPt > leadingLeptons[2].first && muonPt <= leadingLeptons[1].first) leadingLeptons[2] = std::make_pair(muonIt,2);
-    else if ( muonPt > leadingLeptons[1].first && muonPt <= leadingLeptons[0].first ) leadingLeptons[1] = std::make_pair(muonIt,2);
-    else if ( muonPt > leadingLeptons[0].first ) leadingLeptons[0] = std::make_pair(muonIt,2);
+    float itPt[3] = {0.0};
+    for ( uint j = 0; j != 3; j++ ){
+      if ( leadingLeptons[j].second == 1 ) itPt[j] = event->elePF2PATPT[leadingLeptons[j].first];
+      else if ( leadingLeptons[j].second == 2 ) itPt[j] = event->muonPF2PATPt[leadingLeptons[j].first];
+    }
+    if ( muonPt > itPt[2] && muonPt <= itPt[1] ) leadingLeptons[2] = std::make_pair(muonIt,2);
+    else if ( muonPt > itPt[1] && muonPt <= itPt[0] ) leadingLeptons[1] = std::make_pair(muonIt,2);
+    else if ( muonPt > itPt[0] ) leadingLeptons[0] = std::make_pair(muonIt,2);
   }
-
     // Setup channel label
   int numEles(0), numMuons(0);
   for ( uint i = 0; i != 3; ++i ){
@@ -1338,6 +1345,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
+      step0EventDump_.precision(3);
       if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATPT[leadingLeptons[i].first] << "|";
       else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATPt[leadingLeptons[i].first] << "|";
       else step0EventDump_ << 0 << "|";
@@ -1358,6 +1366,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
+      step0EventDump_.precision(3);
       if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATComRelIsoRho[leadingLeptons[i].first] << "|";
       else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATComRelIsodBeta[leadingLeptons[i].first] << "|";
       else step0EventDump_ << 0 << "|";
@@ -1379,6 +1388,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 
   switch (step){
   case 0:
+    step0EventDump_.precision(3);
     int leadingJetIndex = getLeadingJet(event);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
     break;
@@ -1401,6 +1411,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }
   switch(step){
   case 0:
+    step0EventDump_.precision(3);
     step0EventDump_ << event->metPF2PATPt << "|";
     // Synch Cut Flow stuff
     if ( triggerCuts(event) ) step0EventDump_ << "1"; // Trigger Selection - step 0
