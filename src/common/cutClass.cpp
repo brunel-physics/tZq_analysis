@@ -880,13 +880,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   if (makeEventDump_) dumpToFile(event,0);
 
-  if (!triggerCuts(event)){
-    if (makeEventDump_) step0EventDump_ << "00000000" << std::endl;
-    return false; 
-  }
+  if (!triggerCuts(event)) return false; 
    
-  if (makeEventDump_) step0EventDump_ << "1";
-
   synchCutFlowHist_->Fill(1.5); // Trigger cuts - Step 0
 
   // Check number of leptons is correct
@@ -898,40 +893,24 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   // Check at exactly three tight leptons
   synchNumEles_->Fill(event->electronIndexTight.size());
   synchNumMus_->Fill(event->muonIndexTight.size());
-  if (event->electronIndexTight.size() != numTightEle_ && !makeEventDump_) return false;
-  if (event->muonIndexTight.size() != numTightMu_ && !makeEventDump_) return false;
-  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 && makeEventDump_ ){
-    step0EventDump_ << "0000000" << std::endl;
-    return false;
-  }
-  else if ( makeEventDump_ ) step0EventDump_ << "1";
-
+  if (event->electronIndexTight.size() != numTightEle_) return false;
+  if (event->muonIndexTight.size() != numTightMu_) return false;
+  //  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
   synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
-
 
   //loose lepton veto
   //  int looseLeps = getLooseLepsNum(event);
   //  if (isMC_ && looseLeps < 2) return false;
   //  if (!isMC_ && looseLeps < 3) return false; 
 
-  if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) {
-    if ( makeEventDump_ ) step0EventDump_ << "000000" << std::endl;
-    return false;
-  }
+  if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
-  if ( makeEventDump_ ){
-    step0EventDump_ << "1";
-    dumpToFile(event,2);
-  }
+  if ( makeEventDump_ ) dumpToFile(event,2);
   synchCutFlowHist_->Fill(3.5); // Lepton Veto - step 2
 
   // Z selection
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
-  if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) {
-    if ( makeEventDump_ ) step0EventDump_ << "00000" << std::endl;
-    return false;
-  }
-  if ( makeEventDump_ ) step0EventDump_ << "1";  
+  if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
   synchCutFlowHist_->Fill(4.5); // Z veto - step 3
 
   //Add in extra steps here.
@@ -940,14 +919,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   // Jet selection
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
-  if (event->jetIndex.size() < 1) {
-    if ( makeEventDump_ ) step0EventDump_ << "0000" << std::endl;
-    return false;
-  }
-  if (makeEventDump_){
-    step0EventDump_ << "1"; 
-    dumpToFile(event,4);
-  }
+  if (event->jetIndex.size() < 1) return false;
+  if (makeEventDump_) dumpToFile(event,4);
   //  std::cout << event->jetIndex.size() << std::endl;
   synchCutFlowHist_->Fill(5.5); // jet selection - step 4
   
@@ -955,11 +928,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
-  if (!event->bTagIndex.size() == 1) {
-    if ( makeEventDump_ ) step0EventDump_ << "000" << std::endl;
-    return false;
-  }
-  if ( makeEventDump_ ) step0EventDump_ << "1";;
+  if (!event->bTagIndex.size() == 1) return false;
   synchCutFlowHist_->Fill(6.5); // b-jet selection - step 5
 
   // MET cut
@@ -969,26 +938,16 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_){
-    if ( makeEventDump_ ) step0EventDump_ << "00" << std::endl;
-    return false;
-  }
-  if ( makeEventDump_ ) step0EventDump_ << "1";
+  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex, event->jetIndex)  << std::endl;
-  if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_){
-    step0EventDump_ << "0" << std::endl;
-    return false;
-  }
+  if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
 
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
-  if (makeEventDump_){
-    step0EventDump_ << "1" << std::endl;
-    dumpToFile(event,6);
-  }
+  if (makeEventDump_) dumpToFile(event,6);
   if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
   return true;
 }
@@ -1448,6 +1407,29 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   switch(step){
   case 0:
     step0EventDump_ << event->metPF2PATPt << "|";
+    // Synch Cut Flow stuff
+    if ( triggerCuts(event) ) step0EventDump_ << "1"; // Trigger Selection - step 0
+    else step0EventDump_ << "0";
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) == 3 ) step0EventDump_ << "1"; // 3 tight lepton selection - step 1
+    else step0EventDump_ << "0";
+    if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() && getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
+    else step0EventDump_ << "0";
+    if ( std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) <= invZMassCut_ ) step0EventDump_ << "1"; // Z selection - step 3
+    else step0EventDump_ << "0";
+    event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+    if ( event->jetIndex.size() < 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4 
+    else step0EventDump_ << "0";
+    event->bTagIndex = makeBCuts(event,event->jetIndex);
+    if ( event->bTagIndex.size() == 1 ) step0EventDump_ << "1"; // b-Tag selection, exactly one b-jet - step 5
+    else step0EventDump_ << "0";
+    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCut_ ) step0EventDump_ << "1"; // MET selection, step 6
+    else step0EventDump_ << "0";
+    if ( (getTopMass(event, event->bTagIndex,event->jetIndex) <= TopMassCutUpper_) && (getTopMass(event, event->bTagIndex,event->jetIndex) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
+    else step0EventDump_ << "0";
+    step0EventDump_ << std::endl;
+    break;
   case 2:
     step2EventDump_ << event->metPF2PATPt;
     step2EventDump_ << std::endl;
