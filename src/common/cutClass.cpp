@@ -1327,8 +1327,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       }
     }
   }
-  switch (step) {
 
+
+  switch (step) {
   case 0:
     step0EventDump_.precision(3);
     step0EventDump_ << "|" << event->eventNum << "|" << triggerFlag[0] << triggerFlag[1] << triggerFlag[2] << "|" << channel << "|";
@@ -1347,7 +1348,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     case 0:
       step0EventDump_.precision(3);
       if ( leadingLeptons[i].second == 1 ) step0EventDump_ << event->elePF2PATPT[leadingLeptons[i].first] << "|";
-      else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << event->muonPF2PATPt[leadingLeptons[i].first] << "|";
+      else if ( leadingLeptons[i].second == 2 )	step0EventDump_ << event->muonPF2PATPt[leadingLeptons[i].first] << "|";
       else step0EventDump_ << 0 << "|";
       break;
     case 2:
@@ -1375,13 +1376,24 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }
 
   // lepton ID for step0?
+  event->electronIndexTight = getTightEles(event);
+  event->muonIndexTight = getTightMuons(event);
 
   for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
-      //if ( leadingLeptons[i].second == 1 ) step0EventDump_ << elePF2PATComRelIsoRho[leadingLeptons.first] << "|";
-      //else if ( leadingLeptons[i].second == 2 ) step0EventDump_ << muonPF2PATComRelIsodBeta[leadingLeptons.first] << "|";
-      step0EventDump_ << "-1|";
+      bool IdFlag(0);
+      if ( leadingLeptons[i].second == 1 ) {
+	for ( uint j = 0; j != event->electronIndexTight.size(); j++ ) {
+	  if ( event->electronIndexTight[j] = leadingLeptons[i].first ) IdFlag = 1;
+	}
+      }
+      else if ( leadingLeptons[i].second == 2 ) {
+	for ( uint j = 0; j != event->muonIndexTight.size(); j++ ) {
+	  if ( event->muonIndexTight[j] = leadingLeptons[i].first ) IdFlag = 1;
+	}
+      }
+      step0EventDump_ << IdFlag << "|";
       break;
     }
   }
@@ -1416,8 +1428,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     // Synch Cut Flow stuff
     if ( triggerCuts(event) ) step0EventDump_ << "1"; // Trigger Selection - step 0
     else step0EventDump_ << "0";
-    event->electronIndexTight = getTightEles(event);
-    event->muonIndexTight = getTightMuons(event);
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) == 3 ) step0EventDump_ << "1"; // 3 tight lepton selection - step 1
     else step0EventDump_ << "0";
     if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() == getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
