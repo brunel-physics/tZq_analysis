@@ -1415,7 +1415,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     event->muonIndexTight = getTightMuons(event);
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) == 3 ) step0EventDump_ << "1"; // 3 tight lepton selection - step 1
     else step0EventDump_ << "0";
-    if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() && getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
+    if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() == getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
     else step0EventDump_ << "0";
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) < 3 ) step0EventDump_ << "0"; // Check to ensure there are at least three leptons - otherwise memory leak occurs.
     else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
