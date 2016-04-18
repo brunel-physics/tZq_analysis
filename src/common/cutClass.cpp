@@ -332,7 +332,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
   std::vector<int> electrons;
   for (int i = 0; i < event->numElePF2PAT; i++){
-    if (!event->elePF2PATIsGsf[i]) continue;
+    //    if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
     if (tempVec.Pt() < tightElePt_) continue;
@@ -1379,9 +1379,10 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
 
-  for (unsigned int i = 0; i < 3; i++){
     switch (step) {
     case 0:
+      for (unsigned int i = 0; i < 3; i++){
+
       bool IdFlag(0);
       if ( leadingLeptons[i].second == 1 ) {
 	for ( uint j = 0; j != event->electronIndexTight.size(); j++ ) {
@@ -1394,9 +1395,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 	}
       }
       step0EventDump_ << IdFlag << "|";
+      }
       break;
     }
-  }
 
   switch (step){
   case 0:
@@ -1509,10 +1510,9 @@ float Cuts::eleSF(double pt, double eta){
   double maxPt = h_eleSFs->GetYaxis()->GetXmax();
   uint bin(0);
 
-  // If cut-based, abs eta, else just eta
-  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(abs(eta),pt);
+  // If cut-based, std::abs eta, else just eta
+  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(std::abs(eta),pt);
   else bin = h_eleSFs->FindBin(std::abs(eta),maxPt);
-
   return h_eleSFs->GetBinContent(bin);
 }
 
