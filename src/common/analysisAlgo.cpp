@@ -1159,19 +1159,19 @@ void AnalysisAlgo::savePlots()
     cutObj->getSynchCutFlow();
   }
 
-  /*  for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+  /*    for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     for (unsigned int j = 0; j < stageNames.size(); j++){
     plotsMap[dataset->getFillHisto()][stageNames[j]]->saveAllPlots();
     }
-    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.root").c_str());    
-    cutFlowMap[dataset->getFillHisto()]->Draw();
-    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.png").c_str());
+    //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.root").c_str());    
+    //    cutFlowMap[dataset->getFillHisto()]->Draw();
+    //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.png").c_str());
     }*/
 
   //Delete all the plot objects.
 
   std::cerr << "Gets to the delete bit" << std::endl;
-  if (plots || infoDump){
+/*  if (plots || infoDump){
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
       if (cutFlowMap.find(dataset->getFillHisto()) == cutFlowMap.end()) continue;
       delete cutFlowMap[dataset->getFillHisto()];
@@ -1188,10 +1188,11 @@ void AnalysisAlgo::savePlots()
 	}
       }
     }
-
   }
+*/
   delete cutConfName;
   delete plotConfName;
+
   std::cerr  << "But not past it" << std::endl;
 }
 
