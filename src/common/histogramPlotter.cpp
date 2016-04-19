@@ -151,14 +151,14 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + extensions_[ext_it]).c_str());
   }
 
-  //Make log plots
+/*  //Make log plots
   canvy->SetLogy();
   mcStack.SetMaximum(max*10);
 
   //Save the log plots
   for (unsigned int ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + "_log" + extensions_[ext_it]).c_str());
-  }
+  }*/
   
   delete canvy;
 }
