@@ -256,8 +256,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
     }
   }
-  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
+
   if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
+
+  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
