@@ -327,7 +327,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   if (std::abs(invZmass) > invZMassCut_) return false;
 
-  plotMap["zMass"]->fillAllPlots(event,*eventWeight);
+  if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
   return true;
 }
