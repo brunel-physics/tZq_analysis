@@ -39,7 +39,7 @@ class HistogramPlotter{
   void setLabelThree(std::string label){labelThree_->SetLabel(label.c_str());};
   void setLumiStr(std::string lumiStr){lumiStr_ = lumiStr;};
   void setPostfix(std::string postfix){postfix_ = postfix;};
-  void setOutputFolder(std::string output){outputFolder_ = output;};
+  void setOutputFolder(std::string output);
   void changeExtensions(std::vector<std::string> extentions){extensions_ = extentions;};
   //Actual plotting commands
   void plotHistos(std::map<std::string, std::map<std::string, Plots*> >);

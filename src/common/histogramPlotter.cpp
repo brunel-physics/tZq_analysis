@@ -5,9 +5,13 @@
 #include "THStack.h"
 #include "TLegend.h"
 #include "TMath.h"
+#include <sys/stat.h>
 
 //For debugging. *sigh*
 #include <iostream>
+
+struct stat sb;
+
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap):
   //Initialise a load of variables. Labels are empty by default, but this can be changed by calling set label routines.
@@ -21,6 +25,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   legOrder_(legOrder),
   dsetMap_(dsetMap)
 {
+
   gErrorIgnoreLevel = kInfo;
 
   extensions_.push_back(".root");
@@ -168,4 +173,11 @@ void HistogramPlotter::setLabelTextSize(float size){
   labelOne_->SetTextSize(size);
   labelTwo_->SetTextSize(size);
   labelThree_->SetTextSize(size);
+}
+
+void HistogramPlotter::setOutputFolder(std::string output){
+  outputFolder_ = output;
+
+  mkdir(outputFolder_.c_str(),0700);
+
 }
