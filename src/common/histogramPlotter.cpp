@@ -10,8 +10,6 @@
 //For debugging. *sigh*
 #include <iostream>
 
-struct stat sb;
-
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap):
   //Initialise a load of variables. Labels are empty by default, but this can be changed by calling set label routines.
