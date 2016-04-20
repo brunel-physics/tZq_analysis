@@ -243,7 +243,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     return synchCuts(event);
   }
 
-  if (!isMC_) if (!triggerCuts(event)) return false;
+  //  if (!isMC_) if (!triggerCuts(event)) return false;
+  if (!triggerCuts(event)) return false;
   //Make lepton cuts. Does the inverted iso cuts if necessary.
   if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight, plotMap,cutFlow))) return false;
   //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
@@ -257,18 +258,23 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     }
   }
 
-  if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
-
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
-  event->bTagIndex = makeBCuts(event,event->jetIndex);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
+
+  event->bTagIndex = makeBCuts(event,event->jetIndex);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
+
+  if ( !trileptonChannel_ && !isFCNC_ ) { // Do wMass stuff
+    if ( getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+    if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+    if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
+  }
 
   if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) { // Do FCNC stuff & cTagging
     event->cTagIndex = makeCCuts(event,event->jetIndex);
@@ -278,9 +284,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
   }
 
-  if ( !trileptonChannel_ && !isFCNC_ && getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
-  if ( doPlots_ && !isFCNC_ && isCtag_ && !trileptonChannel_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-  if ( (doPlots_ || fillCutFlow_) && !isFCNC_ && !isCtag_ && !trileptonChannel_ ) cutFlow->Fill(4.5,*eventWeight);
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
@@ -320,14 +323,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   
   * eventWeight *= getLeptonWeight(event);
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
-  if(doPlots_||fillCutFlow_){
-    cutFlow->Fill(0.5,*eventWeight);
-  }
+  if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invZmass) > invZMassCut_) return false;
 
-  //  plotMap["zMass"]->fillAllPlots(event,eventWeight);
-  if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
+  plotMap["zMass"]->fillAllPlots(event,*eventWeight);
+  if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
   return true;
 }
 
@@ -1072,11 +1073,10 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::st
   }
 
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
-  if(doPlots_||fillCutFlow_){
-    cutFlow->Fill(0.5,*eventWeight);
-  }
+  if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invMass) > invZMassCut_) return false;
+  if (doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
   return true;
 
