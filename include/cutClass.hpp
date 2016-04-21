@@ -30,7 +30,7 @@ class Cuts{
   float getTopMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getLeadingBjetMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getLeadingBjetPt(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  int getLeadingJet(AnalysisEvent*);
+  int getLeadingJet(AnalysisEvent *event, std::vector<int>);
   bool triggerCuts(AnalysisEvent*);
   
   //Method for running the synchronisation with Jeremy.

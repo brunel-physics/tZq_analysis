@@ -415,7 +415,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.181 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.126 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0354 ) continue; // Use same rel iso as tight
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.207 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
@@ -426,7 +426,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0113 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.144 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0646 ) continue; // Use same rel iso as tight
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
@@ -649,7 +649,7 @@ float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex, std::ve
   
   float leadingBjetMass = getLeadingBjetMass( event, bTagIndex, jetIndex );
   if (leadingBjetMass == -1.0) return -1.0;
-  float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATPt);
+  float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATEt );
   return topMass;
 }
 
@@ -673,15 +673,15 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets, std
     return leadingBJetMass;
 }
 
-int Cuts::getLeadingJet(AnalysisEvent *event){
+int Cuts::getLeadingJet(AnalysisEvent *event, std::vector<int> jets){
     
   float leadingJetPt = -1.0;
   int jetIndex = -1;
 
-  for ( int jetIt = 0; jetIt != event->numJetPF2PAT; ++jetIt ){
-    if ( event->jetPF2PATPtRaw[jetIt] > leadingJetPt ){
-      leadingJetPt = event->jetPF2PATPtRaw[jetIt];
-      jetIndex = jetIt;
+  for ( auto jetIt = jets.begin(); jetIt != jets.end(); ++jetIt ){
+    if ( event->jetPF2PATPtRaw[*jetIt] > leadingJetPt ){
+      leadingJetPt = event->jetPF2PATPtRaw[*jetIt];
+      jetIndex = *jetIt;
     }
   }
   if ( jetIndex == -1 ) return -1;    
@@ -1419,16 +1419,17 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       break;
     }
 
+  float tempWeight = 1.;
+  event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+
   switch (step){
   case 0:
     step0EventDump_.precision(3);
-    int leadingJetIndex = getLeadingJet(event);
+    int leadingJetIndex = getLeadingJet(event, event->jetIndex);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
     break;
   }
 
-  float tempWeight = 1.;
-  event->jetIndex = makeJetCuts(event, 0, &tempWeight);
   for (unsigned int i = 0; i < 4; i++){
     switch (step) {
     case 2:
