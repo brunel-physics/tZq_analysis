@@ -167,23 +167,53 @@ int main(int argc, char* argv[]) {
       }
 
       // Count the number of events which will be cut
-      using lepton = std::pair<Float_t, Float_t>;
+      struct particle
+      {
+        particle(const Float_t a, const Float_t b, const Int_t c, const Int_t d) :
+          eta(a),
+          pt(b),
+          Id(c),
+          motherId(d)
+        {}
+
+        Float_t eta;
+        Float_t pt;
+        Int_t Id;
+        Int_t motherId;
+      };
 
       bool cut{true};
       bool cutDiff{false};
-      if (lEvent->numLooseElePF2PAT >= 2)  // electron no. cut
+
+      std::vector<particle> eles;
+      std::vector<particle> mus;
+      for(int k = 0; k < lEvent->nGenPar; k++)
+      {
+        switch (std::abs(lEvent->genParId[k]))
+        {
+          case 11:  // electron
+            eles.emplace_back(lEvent->genParEta[k],
+                lEvent->genParPt[k],
+                lEvent->genParId[k],
+                lEvent->genParMotherId[k]);
+            break;
+          case 13:  // muon
+            mus.emplace_back(lEvent->genParEta[k],
+                lEvent->genParPt[k],
+                lEvent->genParId[k],
+                lEvent->genParMotherId[k]);
+            break;
+          default:
+            break;
+        }
+      }
+
+      if (eles.size() >= 2)  // electron no. cut
       {
         passEleNum++;
 
-        std::vector<lepton> eles;
-        for(int k = 0; k < lEvent->numLooseElePF2PAT; k++)
-        {
-          eles.emplace_back(lEvent->genLooseElePF2PATEta[k],
-              lEvent->genLooseElePF2PATPT[k]);
-        }
-
         eles.erase(std::remove_if(eles.begin(), eles.end(),
-            [&](const lepton &a) -> bool {return std::abs(a.first) > eleEtaThresh;}),
+            [&](const particle &p) -> bool {return std::abs(p.eta) > eleEtaThresh;}),
           eles.end());
 
         if (eles.size() >= 2)  // electron eta cut
@@ -191,12 +221,12 @@ int main(int argc, char* argv[]) {
           passEleEta++;
 
           std::nth_element(eles.begin(), eles.begin()+1, eles.end(),
-              [](const lepton &a, const lepton &b) -> bool
-              {return a.second > b.second;});
+              [](const particle &a, const particle &b) -> bool
+              {return a.pt > b.pt;});
 
-          if (eles.at(0).second > ele1PtThresh && eles.at(1).second > ele2PtThresh)  // ele pT cut
+          if (eles.at(0).pt > ele1PtThresh && eles.at(1).pt > ele2PtThresh)  // ele pT cut
           {
-            if (eles.at(0).second > ele1PtThreshProposed)
+            if (eles.at(0).pt > ele1PtThreshProposed)
             {
               passElePt++;
               cut = false;
@@ -210,19 +240,12 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      if (lEvent->numMuonPF2PAT >= 2)  // muon no. cut
+      if (mus.size() >= 2)  // muon no. cut
       {
         passMuNum++;
 
-        std::vector<lepton> mus;
-        for(int k = 0; k < lEvent->numMuonPF2PAT; k++)
-        {
-          mus.emplace_back(lEvent->genLooseMuonPF2PATEta[k],
-              lEvent->genLooseMuonPF2PATPT[k]);
-        }
-
         mus.erase(std::remove_if(mus.begin(), mus.end(),
-            [&](const lepton &a) -> bool {return std::abs(a.first) > muEtaThresh;}),
+            [&](const particle &p) -> bool {return std::abs(p.eta) > muEtaThresh;}),
           mus.end());
 
         if (mus.size() >= 2)  // muon eta cut
@@ -230,10 +253,10 @@ int main(int argc, char* argv[]) {
           passMuEta++;
 
           std::nth_element(mus.begin(), mus.begin()+1, mus.end(),
-              [](const lepton &a, const lepton &b) -> bool
-              {return a.second > b.second;});
+              [](const particle &a, const particle &b) -> bool
+              {return a.pt > b.pt;});
 
-          if (mus.at(0).second > mu1PtThresh && mus.at(1).second > mu2PtThresh)  // muon pT cut
+          if (mus.at(0).pt > mu1PtThresh && mus.at(1).pt > mu2PtThresh)  // muon pT cut
           {
             passMuPt++;
             cut = false;
