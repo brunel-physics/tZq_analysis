@@ -270,7 +270,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Change due to new proposals:\t\t" << newlyCut << std::endl;
 
   auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
-  
+
   histElePt->Write();
   histEleEta->Write();
   histEleGenPt->Write();
@@ -281,7 +281,18 @@ int main(int argc, char* argv[]) {
   histMuGenPt->Write();
   histMuGenEta->Write();
 
+  histEleGenPtEta->SetStats(kFALSE);
+  histEleGenPtEta->SetTitle("");
+  histEleGenPtEta->GetXaxis()->SetTitle("p_{T}");
+  histEleGenPtEta->GetYaxis()->SetTitle("#eta");
+  histEleGenPtEta->SetTitleOffset(0.5f, "Y");
   histEleGenPtEta->Write();
+
+  histMuGenPtEta->SetStats(kFALSE);
+  histMuGenPtEta->SetTitle("");
+  histMuGenPtEta->GetXaxis()->SetTitle("p_{T}");
+  histMuGenPtEta->GetYaxis()->SetTitle("#eta");
+  histMuGenPtEta->SetTitleOffset(0.5f, "Y");
   histMuGenPtEta->Write();
 
   outFile->Close();
