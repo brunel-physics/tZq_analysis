@@ -354,6 +354,7 @@ public :
    Float_t         genParE[30];   //[nGenPar]
    Float_t         genParPt[30];   //[nGenPar]
    Int_t           genParId[30];   //[nGenPar]
+   Int_t	   genParMotherId[30]; //[nGenPar]
    Int_t           genParCharge[30];   //[nGenPar]
    Int_t           eventRun;
    Int_t           eventNum;
@@ -684,6 +685,7 @@ public :
    TBranch        *b_genParE;   //!
    TBranch        *b_genParPt;   //!
    TBranch        *b_genParId;   //!
+   TBranch        *b_genParMotherId;   //!
    TBranch        *b_genParCharge;   //!
    TBranch        *b_eventRun;   //!
    TBranch        *b_eventNum;   //!
@@ -747,144 +749,6 @@ AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : 
       // of trees.
       TChain * chain = new TChain("tree","");
       chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_100_0_Gu6_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_101_0_CCe_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_102_0_10I_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_103_0_OgH_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_104_0_Nzk_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_105_0_iJR_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_106_0_tN9_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_107_0_h2Y_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_108_0_hBb_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_109_0_UEL_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_10_0_Ib1_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_110_0_V1q_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_111_0_n74_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_112_0_hBx_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_113_0_WeN_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_114_0_KaM_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_115_0_aRw_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_116_0_3pE_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_117_0_gJ7_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_118_0_mdM_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_119_0_YT2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_11_0_bm4_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_120_0_E3n_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_121_0_XdE_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_122_0_uZf_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_123_0_4GT_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_124_0_sDL_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_125_0_XCl_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_126_0_Hy1_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_127_0_b4J_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_128_0_o4T_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_129_0_N37_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_12_0_z2F_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_130_0_aU1_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_131_0_PdR_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_132_0_xFc_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_133_0_ne2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_134_0_E9S_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_135_0_I03_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_136_0_IN2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_137_0_Uqj_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_138_0_kas_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_139_0_Tcm_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_13_0_QjC_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_140_0_nU2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_14_0_HCk_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_15_0_Tgc_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_16_0_0LI_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_17_1_Kxc_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_18_0_8Y8_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_19_0_EVu_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_1_1_e4c_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_20_0_pdV_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_21_1_hD4_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_22_0_KYU_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_23_0_yFZ_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_24_0_82B_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_25_4_iUG_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_26_0_pQ6_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_27_1_P51_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_28_0_K6r_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_29_0_Rkn_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_2_1_L0i_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_30_0_a9x_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_31_0_LG5_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_32_1_uRU_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_33_0_xP0_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_34_0_hCV_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_35_0_9n9_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_36_0_FAp_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_37_0_ST3_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_38_0_JeX_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_39_0_3aN_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_3_1_2ED_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_40_1_Dlo_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_41_0_kJO_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_42_0_NPy_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_43_0_pSx_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_44_0_efb_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_45_0_rj2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_46_0_t0y_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_48_0_bFb_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_49_0_hFD_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_4_1_gY0_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_50_0_mOO_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_51_0_Tvz_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_52_0_Qyu_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_53_0_tnv_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_54_1_BWs_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_55_0_5I2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_56_1_VTy_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_57_0_JtC_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_58_0_V1s_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_59_1_kJJ_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_5_0_ARX_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_60_0_d9h_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_61_1_4bi_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_62_0_Awp_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_63_0_NZJ_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_64_0_l4R_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_65_0_Xcp_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_66_0_msr_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_67_1_qQe_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_68_0_NNV_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_69_0_MmH_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_6_0_eIW_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_70_0_xdw_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_71_0_m7u_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_72_0_rIz_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_73_0_nnp_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_74_0_ai2_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_75_0_qBL_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_76_0_jS5_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_77_0_LlI_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_78_0_iIw_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_79_0_8BG_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_7_1_Tzw_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_80_0_sbp_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_81_0_kfW_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_82_0_OL9_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_83_0_4xd_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_84_0_92G_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_85_0_PbM_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_86_0_c6m_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_87_0_WGZ_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_88_0_8HI_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_89_0_Hjw_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_8_0_gZh_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_90_0_Aed_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_91_0_hOn_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_92_0_4zD_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_93_0_DHy_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_94_0_4l8_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_95_0_t8O_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_96_0_As6_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_97_0_zCu_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_98_0_mn7_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_99_0_Q1y_skim.root/tree");
-      chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root/tree");
       tree = chain;
 #endif // SINGLE_TREE
 
@@ -1273,6 +1137,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genParE", genParE, &b_genParE);
      fChain->SetBranchAddress("genParPt", genParPt, &b_genParPt);
      fChain->SetBranchAddress("genParId", genParId, &b_genParId);
+     fChain->SetBranchAddress("genParMotherId", genParMotherId, &b_genParMotherId);
      fChain->SetBranchAddress("genParCharge", genParCharge, &b_genParCharge);
    }
    fChain->SetBranchAddress("eventRun", &eventRun, &b_eventRun);
