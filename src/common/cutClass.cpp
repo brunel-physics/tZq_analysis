@@ -1245,6 +1245,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   std::string channel = "nan";
   std::pair<int,int> leadingLeptons[3] = {std::make_pair(0,0)}; // Initalise as empty
 
+  // lepton ID for step0?
+  event->electronIndexTight = getTightEles(event);
+  event->muonIndexTight = getTightMuons(event);
 
   if ( step == 0 ) { // Used for 2015/2016 synch
     // Get trigger bit setup
@@ -1254,48 +1257,53 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 
   // Get leading 3 leptons pT
   // Search over electrons
-    //    for ( auto electronIt = event->electronIndexTight.begin(); electronIt != event->electronIndexTight.end(); electronIt++) {
-    for ( int electronIt = 0; electronIt != event->numElePF2PAT; electronIt++ ) {
-    float elePt = event->elePF2PATPT[electronIt];
-    float itPt[3] = {0.0};
-    for ( uint j = 0; j != 3; j++ ){
-      if ( leadingLeptons[j].second == 1 ) itPt[j] = leadingLeptons[j].first;
-      else if ( leadingLeptons[j].second == 2 ) itPt[j] = leadingLeptons[j].first;
-    }
-
-    if ( elePt > itPt[2] && elePt <= itPt[1] )
-      leadingLeptons[2] = std::make_pair(electronIt,1);
-    else if ( elePt > itPt[1] && elePt <= itPt[0] ){
-      leadingLeptons[2] = leadingLeptons[1];
-      leadingLeptons[1] = std::make_pair(electronIt,1);
-    }
-    else if ( elePt > itPt[0] ){
-      leadingLeptons[2] = leadingLeptons[1];
-      leadingLeptons[1] = leadingLeptons[0];
-      leadingLeptons[0] = std::make_pair(electronIt,1);
-    }
-  }
-
-  // Search over muons
-    for ( int  muonIt = 0; muonIt != event->numMuonPF2PAT; muonIt++ ) {
-    float muonPt = event->muonPF2PATPt[muonIt];
+    for ( auto electronIt = event->electronIndexTight.begin(); electronIt != event->electronIndexTight.end(); electronIt++) {
+    //    for ( int electronIt = 0; electronIt != event->numElePF2PAT; electronIt++ ) {
+    float elePt = event->elePF2PATPT[*electronIt];
     float itPt[3] = {0.0};
     for ( uint j = 0; j != 3; j++ ){
       if ( leadingLeptons[j].second == 1 ) itPt[j] = event->elePF2PATPT[leadingLeptons[j].first];
       else if ( leadingLeptons[j].second == 2 ) itPt[j] = event->muonPF2PATPt[leadingLeptons[j].first];
     }
 
-    if ( muonPt > itPt[2] && muonPt <= itPt[1] ) leadingLeptons[2] = std::make_pair(muonIt,2);
+    if ( elePt > itPt[2] && elePt <= itPt[1] ){
+      leadingLeptons[2] = std::make_pair(*electronIt,1);
+    }
+    else if ( elePt > itPt[1] && elePt <= itPt[0] ){
+      leadingLeptons[2] = leadingLeptons[1];
+      leadingLeptons[1] = std::make_pair(*electronIt,1);
+    }
+    else if ( elePt > itPt[0] ){
+      leadingLeptons[2] = leadingLeptons[1];
+      leadingLeptons[1] = leadingLeptons[0];
+      leadingLeptons[0] = std::make_pair(*electronIt,1);
+    }
+  }
+
+  // Search over muons
+    for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
+    //    for ( int  muonIt = 0; muonIt != event->numMuonPF2PAT; muonIt++ ) {
+    float muonPt = event->muonPF2PATPt[*muonIt];
+    float itPt[3] = {0.0};
+    for ( uint j = 0; j != 3; j++ ){
+      if ( leadingLeptons[j].second == 1 ) itPt[j] = event->elePF2PATPT[leadingLeptons[j].first];
+      else if ( leadingLeptons[j].second == 2 ) itPt[j] = event->muonPF2PATPt[leadingLeptons[j].first];
+    }
+
+    if ( muonPt > itPt[2] && muonPt <= itPt[1] ){
+      leadingLeptons[2] = std::make_pair(*muonIt,2);
+    }
     else if ( muonPt > itPt[1] && muonPt <= itPt[0] ){
       leadingLeptons[2] = leadingLeptons[1];
-      leadingLeptons[1] = std::make_pair(muonIt,2);
+      leadingLeptons[1] = std::make_pair(*muonIt,2);
     }
     else if ( muonPt > itPt[0] ){
       leadingLeptons[2] = leadingLeptons[1];
       leadingLeptons[1] = leadingLeptons[0];
-      leadingLeptons[0] = std::make_pair(muonIt,2);
+      leadingLeptons[0] = std::make_pair(*muonIt,2);
     }
   }
+
     // Setup channel label
   int numEles(0), numMuons(0);
   for ( uint i = 0; i != 3; ++i ){
@@ -1397,11 +1405,8 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
   }
 
-  // lepton ID for step0?
-  event->electronIndexTight = getTightEles(event);
-  event->muonIndexTight = getTightMuons(event);
-
-  switch (step) {
+// Id flag superfluous as now we are doing selection on leading leptons
+/*  switch (step) {
   case 0:
     for (unsigned int i = 0; i < 3; i++){
 
@@ -1419,7 +1424,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       step0EventDump_ << IdFlag << "|";
     }
     break;
-  }
+  }*/
 
   float tempWeight = 1.;
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
