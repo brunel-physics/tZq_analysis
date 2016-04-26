@@ -125,7 +125,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
 //  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root"); // Electron triggering MVA ID
-  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based ID
+  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
+  electronSFsFile = new TFile("scaleFactors/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Medium ID
   h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
@@ -354,9 +355,31 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
       if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
       if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
 //	}
-    
-//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
-
+    if (!synchCutFlow_) {
+	if ( event->elePF2PATIsBarrel[i] ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0766 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0373 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
+	}
+	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based ID
+	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0283 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
+	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0678 ) continue;
+	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
+	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
+	  }
+    }
+    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
 	 // Barrel cut-based ID
 	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
