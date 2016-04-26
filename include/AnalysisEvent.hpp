@@ -349,13 +349,13 @@ public :
 
    //Gen info
    Int_t           nGenPar;
-   Float_t         genParEta[30];   //[nGenPar]
-   Float_t         genParPhi[30];   //[nGenPar]
-   Float_t         genParE[30];   //[nGenPar]
-   Float_t         genParPt[30];   //[nGenPar]
-   Int_t           genParId[30];   //[nGenPar]
-   Int_t	   genParMotherId[30]; //[nGenPar]
-   Int_t           genParCharge[30];   //[nGenPar]
+   Float_t         genParEta[50];   //[nGenPar]
+   Float_t         genParPhi[50];   //[nGenPar]
+   Float_t         genParE[50];   //[nGenPar]
+   Float_t         genParPt[50];   //[nGenPar]
+   Int_t           genParId[50];   //[nGenPar]
+   Int_t	   genParMotherId[50]; //[nGenPar]
+   Int_t           genParCharge[50];   //[nGenPar]
    Int_t           eventRun;
    Int_t           eventNum;
    Float_t         eventLumiblock;

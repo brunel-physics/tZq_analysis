@@ -830,11 +830,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	outFile2 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
 	outFile3 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
 	cloneTree = datasetChain->CloneTree(0);
+	cloneTree->SetDirectory(outFile1);
 	cloneTree2 = datasetChain->CloneTree(0);
+	cloneTree2->SetDirectory(outFile2);
 	cloneTree3 = datasetChain->CloneTree(0);
+	cloneTree3->SetDirectory(outFile3);
 	cutObj->setCloneTree(cloneTree,cloneTree2,cloneTree3);
       }
-      //If we're making the MVA tree, set it up here. 
+      //If we're making the MVA tree, set it up here.
+      TFile * mvaOutFile = nullptr;
       std::vector<TTree *> mvaTree;
       //Add a few variables into the MVA tree for easy access of stuff like lepton index etc
       float eventWeight = 0;
@@ -848,6 +852,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //Now add in the branches:
     
       if (makeMVATree){
+        mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
 	int systMask = 1;
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
 	for (unsigned int systIn = 0; systIn < systNames.size(); systIn++){
@@ -858,6 +863,7 @@ void AnalysisAlgo::runMainAnalysis(){
 		continue;
 		}*/
 	  mvaTree.push_back(datasetChain->CloneTree(0));
+	  mvaTree[systIn]->SetDirectory(mvaOutFile);
 	  mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
 	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
 	  mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
@@ -1084,8 +1090,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //Save mva outputs
       if (makeMVATree){
 	std::cout << (mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root") << std::endl;
-	TFile mvaOutFile((mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE");
-	mvaOutFile.cd();
+	mvaOutFile->cd();
 	std::cout << std::endl;
 	int systMask = 1;
 	std::cout << "Saving Systematics: ";
@@ -1106,11 +1111,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
-	mvaOutFile.Write();
-	mvaOutFile.Close();
+	mvaOutFile->Write();
 	for (unsigned int i = 0; i < mvaTree.size(); i++){
 	  delete mvaTree[i];
 	}
+	mvaOutFile->Close();
       }
       if (infoDump){
 	std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
