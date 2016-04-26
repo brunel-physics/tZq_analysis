@@ -830,8 +830,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	outFile2 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
 	outFile3 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
 	cloneTree = datasetChain->CloneTree(0);
+	cloneTree->SetDirectory(outFile1);
 	cloneTree2 = datasetChain->CloneTree(0);
+	cloneTree2->SetDirectory(outFile2);
 	cloneTree3 = datasetChain->CloneTree(0);
+	cloneTree3->SetDirectory(outFile3);
 	cutObj->setCloneTree(cloneTree,cloneTree2,cloneTree3);
       }
       //If we're making the MVA tree, set it up here. 
