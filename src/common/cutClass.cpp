@@ -403,7 +403,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
-  //  }
+    }
     electrons.push_back(i);
   }
   return electrons;
