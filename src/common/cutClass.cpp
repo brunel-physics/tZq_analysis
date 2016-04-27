@@ -1,4 +1,3 @@
-
 #include "cutClass.hpp"
 #include "BTagCalibrationStandalone.hpp"
 
@@ -133,10 +132,10 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   std::cout << "Load muon SFs from root file ... " << std::endl;
   muonIDsFile = new TFile("scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root");
   muonIsoFile = new TFile("scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root");
-  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1");
-  h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
-  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1");
-  h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio"));
+  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
+  h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
+  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
+  h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
   std::cout << "Got muon SFs!\n" << std::endl;
 }
 
@@ -361,7 +360,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0766 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue;
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0373 ) continue;
@@ -372,7 +371,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0678 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue;
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
@@ -386,7 +385,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0354 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.012 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
@@ -397,7 +396,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0646 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.00999 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
@@ -431,14 +430,13 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
       if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
 //	}
     
-//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
     // Barrel cut-based Veto ID      
     	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.181 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0354 ) continue; // Use same rel iso as tight
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue; // Use same rel iso as tight
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.207 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
@@ -449,13 +447,12 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0113 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
-	  if ( (event->elePF2PATComRelIsoRho[i]/tempVec.Pt()) >= 0.0646 ) continue; // Use same rel iso as tight
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue; // Use same rel iso as tight
 	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
 	  }
-//    }
     electrons.push_back(i);
   }
   return electrons;
