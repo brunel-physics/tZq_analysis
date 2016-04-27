@@ -146,24 +146,24 @@ int main(int argc, char* argv[]) {
     for ( Int_t j = 0; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
       
-      for ( Int_t k = 0; k < lEvent->numLooseElePF2PAT; k++){
-	histElePt->Fill(lEvent->elePF2PATlooseElectronSortedPt[k]);
-	histEleEta->Fill(lEvent->elePF2PATlooseElectronSortedEta[k]);
-	histEleGenPt->Fill(lEvent->genLooseElePF2PATPT[k]);
-	histEleGenEta->Fill(lEvent->genLooseElePF2PATEta[k]);
+      for ( Int_t k = 0; k < lEvent->numElePF2PAT; k++){
+	histElePt->Fill(lEvent->elePF2PATPT[k]);
+	histEleEta->Fill(lEvent->elePF2PATEta[k]);
+	histEleGenPt->Fill(lEvent->genElePF2PATPT[k]);
+	histEleGenEta->Fill(lEvent->genElePF2PATEta[k]);
 
-        histEleGenPtEta->Fill(lEvent->elePF2PATlooseElectronSortedPt[k], 
-            lEvent->elePF2PATlooseElectronSortedEta[k]);
+        histEleGenPtEta->Fill(lEvent->elePF2PATPT[k], 
+            lEvent->elePF2PATEta[k]);
 
       }
       for ( Int_t k = 0; k < lEvent->numMuonPF2PAT; k++){
-	histMuPt->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k]);
-	histMuEta->Fill(lEvent->muonPF2PATlooseMuonSortedEta[k]);
-  	histMuGenPt->Fill(lEvent->genLooseMuonPF2PATPT[k]);
-    	histMuGenEta->Fill(lEvent->genLooseMuonPF2PATEta[k]);
+	histMuPt->Fill(lEvent->muonPF2PATPt[k]);
+	histMuEta->Fill(lEvent->muonPF2PATEta[k]);
+  	histMuGenPt->Fill(lEvent->genMuonPF2PATPT[k]);
+    	histMuGenEta->Fill(lEvent->genMuonPF2PATEta[k]);
 
-        histMuGenPtEta->Fill(lEvent->muonPF2PATlooseMuonSortedPt[k], 
-            lEvent->muonPF2PATlooseMuonSortedEta[k]);
+        histMuGenPtEta->Fill(lEvent->muonPF2PATPt[k], 
+            lEvent->muonPF2PATEta[k]);
       }
 
       // Count the number of events which will be cut

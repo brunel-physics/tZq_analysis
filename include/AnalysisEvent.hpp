@@ -25,7 +25,6 @@ public :
 
    // Declaration of leaf types
    Int_t           numElePF2PAT;
-   Int_t           numLooseElePF2PAT;
    Float_t         elePF2PATE[20];   //[numElePF2PAT]
    Float_t         elePF2PATET[20];   //[numElePF2PAT]
    Float_t         elePF2PATPX[20];   //[numElePF2PAT]
@@ -115,25 +114,7 @@ public :
    Float_t         genElePF2PATTheta[20];   //[numElePF2PAT]
    Float_t         genElePF2PATEta[20];   //[numElePF2PAT]
    Int_t           genElePF2PATCharge[20];   //[numElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedEt[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedPt[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedEta[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedMVA[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedMVAcategory[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedNonTrigMVA[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedNonTrigMVAcategory[20];   //[numLooseElePF2PAT]
-   Float_t         elePF2PATlooseElectronSortedRelIso[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATPT[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATET[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATPX[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATPY[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATPZ[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATPhi[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATTheta[20];   //[numLooseElePF2PAT]
-   Float_t         genLooseElePF2PATEta[20];   //[numLooseElePF2PAT]
-   Int_t           genLooseElePF2PATCharge[20];   //[numLooseElePF2PAT]
    Int_t           numMuonPF2PAT;
-   Int_t           numLooseMuonPF2PAT;
    Float_t         muonPF2PATE[20];   //[numMuonPF2PAT]
    Float_t         muonPF2PATET[20];   //[numMuonPF2PAT]
    Float_t         muonPF2PATPt[20];   //[numMuonPF2PAT]
@@ -171,15 +152,9 @@ public :
    Int_t           muonPF2PATTkLysWithMeasurements[20];   //[numMuonPF2PAT]
    Int_t           muonPF2PATVldPixHits[20];   //[numMuonPF2PAT]
    Int_t           muonPF2PATMatchedStations[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATGlbTkNormChi2[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATDBPV[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATDZPV[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedEt[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedPt[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedEta[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedRelIso[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedisGlb[20];   //[numLooseMuonPF2PAT]
-   Float_t         muonPF2PATlooseMuonSortedisTrk[20];   //[numLooseMuonPF2PAT]
+   Float_t         muonPF2PATGlbTkNormChi2[20];   //[numMuonPF2PAT]
+   Float_t         muonPF2PATDBPV[20];   //[numMuonPF2PAT]
+   Float_t         muonPF2PATDZPV[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATPT[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATET[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATPX[20];   //[numMuonPF2PAT]
@@ -189,15 +164,6 @@ public :
    Float_t         genMuonPF2PATTheta[20];   //[numMuonPF2PAT]
    Float_t         genMuonPF2PATEta[20];   //[numMuonPF2PAT]
    Int_t           genMuonPF2PATCharge[20];   //[numMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATPT[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATET[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATPX[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATPY[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATPZ[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATPhi[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATTheta[20];   //[numLooseMuonPF2PAT]
-   Float_t         genLooseMuonPF2PATEta[20];   //[numLooseMuonPF2PAT]
-   Int_t           genLooseMuonPF2PATCharge[20];   //[numLooseMuonPF2PAT]
    Int_t           numJetPF2PAT;
    Double_t        jetPF2PATE[40];   //[numJetPF2PAT]
    Double_t        jetPF2PATEt[40];   //[numJetPF2PAT]
@@ -246,13 +212,6 @@ public :
    Float_t         genJetPF2PATTheta[40];   //[numJetPF2PAT]
    Float_t         genJetPF2PATEta[40];   //[numJetPF2PAT]
    Int_t           genJetPF2PATPID[40];   //[numJetPF2PAT]
-   Int_t           numLooseJetPF2PAT;
-   Float_t         looseJetPF2PATEt[40];   //[numLooseBJetsPF2PAT]
-   Float_t         looseJetPF2PATPt[40];   //[numLooseBJetsPF2PAT]
-   Float_t         looseJetPF2PATEta[40];   //[numLooseBJetsPF2PAT]
-   Float_t         looseJetPF2PATBDisc[40];   //[numLooseBJetsPF2PAT]
-   Float_t         looseJetPF2PATCvsLDisc[40];   //[numLooseCJetsPF2PAT]
-   Float_t         looseJetPF2PATCvsBDisc[40];   //[numLooseCJetsPF2PAT]
    Float_t         jetPF2PATMuEnergy[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATMuEnergyFraction[40];   //[numJetPF2PAT]
    Float_t         jetPF2PATNeutralHadEnergy[40];   //[numJetPF2PAT]
@@ -362,7 +321,6 @@ public :
 
    // List of branches
    TBranch        *b_numElePF2PAT;   //!
-   TBranch        *b_numLooseElePF2PAT;   //!
    TBranch        *b_elePF2PATE;   //!
    TBranch        *b_elePF2PATET;   //!
    TBranch        *b_elePF2PATPX;   //!
@@ -452,25 +410,7 @@ public :
    TBranch        *b_genElePF2PATTheta;   //!
    TBranch        *b_genElePF2PATEta;   //!
    TBranch        *b_genElePF2PATCharge;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedEt;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedPt;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedEta;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedMVA;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedMVAcategory;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedNonTrigMVA;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedNonTrigMVAcategory;   //!
-   TBranch        *b_elePF2PATlooseElectronSortedRelIso;   //!
-   TBranch        *b_genLooseElePF2PATPT;   //!
-   TBranch        *b_genLooseElePF2PATET;   //!
-   TBranch        *b_genLooseElePF2PATPX;   //!
-   TBranch        *b_genLooseElePF2PATPY;   //!
-   TBranch        *b_genLooseElePF2PATPZ;   //!
-   TBranch        *b_genLooseElePF2PATPhi;   //!
-   TBranch        *b_genLooseElePF2PATTheta;   //!
-   TBranch        *b_genLooseElePF2PATEta;   //!
-   TBranch        *b_genLooseElePF2PATCharge;   //!
    TBranch        *b_numMuonPF2PAT;   //!
-   TBranch        *b_numLooseMuonPF2PAT;   //!
    TBranch        *b_muonPF2PATE;   //!
    TBranch        *b_muonPF2PATET;   //!
    TBranch        *b_muonPF2PATPt;   //!
@@ -511,12 +451,6 @@ public :
    TBranch        *b_muonPF2PATGlbTkNormChi2;   //!
    TBranch        *b_muonPF2PATDBPV;   //!
    TBranch        *b_muonPF2PATDZPV;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedEt;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedPt;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedEta;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedRelIso;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedisGlb;   //!
-   TBranch        *b_muonPF2PATlooseMuonSortedisTrk;   //!
    TBranch        *b_genMuonPF2PATPT;   //!
    TBranch        *b_genMuonPF2PATET;   //!
    TBranch        *b_genMuonPF2PATPX;   //!
@@ -526,15 +460,6 @@ public :
    TBranch        *b_genMuonPF2PATTheta;   //!
    TBranch        *b_genMuonPF2PATEta;   //!
    TBranch        *b_genMuonPF2PATCharge;   //!
-   TBranch        *b_genLooseMuonPF2PATPT;   //!
-   TBranch        *b_genLooseMuonPF2PATET;   //!
-   TBranch        *b_genLooseMuonPF2PATPX;   //!
-   TBranch        *b_genLooseMuonPF2PATPY;   //!
-   TBranch        *b_genLooseMuonPF2PATPZ;   //!
-   TBranch        *b_genLooseMuonPF2PATPhi;   //!
-   TBranch        *b_genLooseMuonPF2PATTheta;   //!
-   TBranch        *b_genLooseMuonPF2PATEta;   //!
-   TBranch        *b_genLooseMuonPF2PATCharge;   //!
    TBranch        *b_numJetPF2PAT;   //!
    TBranch        *b_jetPF2PATE;   //!
    TBranch        *b_jetPF2PATEt;   //!
@@ -583,13 +508,6 @@ public :
    TBranch        *b_genJetPF2PATTheta;   //!
    TBranch        *b_genJetPF2PATEta;   //!
    TBranch        *b_genJetPF2PATPID;   //!
-   TBranch        *b_numLooseBJetsPF2PAT;   //!
-   TBranch        *b_looseJetPF2PATEt;   //!
-   TBranch        *b_looseJetPF2PATPt;   //!
-   TBranch        *b_looseJetPF2PATEta;   //!
-   TBranch        *b_looseJetPF2PATBDisc;   //!
-   TBranch        *b_looseJetPF2PATCvsLDisc;   //!
-   TBranch        *b_looseJetPF2PATCvsBDisc;   //!
    TBranch        *b_jetPF2PATMuEnergy;   //!
    TBranch        *b_jetPF2PATMuEnergyFraction;   //!
    TBranch        *b_jetPF2PATNeutralHadEnergy;   //!
@@ -798,7 +716,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetMakeClass(1);
 
    fChain->SetBranchAddress("numElePF2PAT", &numElePF2PAT, &b_numElePF2PAT);
-   fChain->SetBranchAddress("numLooseElePF2PAT", &numLooseElePF2PAT, &b_numLooseElePF2PAT);
    fChain->SetBranchAddress("elePF2PATE", elePF2PATE, &b_elePF2PATE);
    fChain->SetBranchAddress("elePF2PATET", elePF2PATET, &b_elePF2PATET);
    fChain->SetBranchAddress("elePF2PATPX", elePF2PATPX, &b_elePF2PATPX);
@@ -890,27 +807,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genElePF2PATEta", genElePF2PATEta, &b_genElePF2PATEta);
      fChain->SetBranchAddress("genElePF2PATCharge", genElePF2PATCharge, &b_genElePF2PATCharge);
    }
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedEt", elePF2PATlooseElectronSortedEt, &b_elePF2PATlooseElectronSortedEt);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedPt", elePF2PATlooseElectronSortedPt, &b_elePF2PATlooseElectronSortedPt);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedEta", elePF2PATlooseElectronSortedEta, &b_elePF2PATlooseElectronSortedEta);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVA", elePF2PATlooseElectronSortedMVA, &b_elePF2PATlooseElectronSortedMVA);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedMVAcategory", elePF2PATlooseElectronSortedMVAcategory, &b_elePF2PATlooseElectronSortedMVAcategory);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedNonTrigMVA", elePF2PATlooseElectronSortedNonTrigMVA, &b_elePF2PATlooseElectronSortedNonTrigMVA);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedNonTrigMVAcategory", elePF2PATlooseElectronSortedNonTrigMVAcategory, &b_elePF2PATlooseElectronSortedNonTrigMVAcategory);
-   fChain->SetBranchAddress("elePF2PATlooseElectronSortedRelIso", elePF2PATlooseElectronSortedRelIso, &b_elePF2PATlooseElectronSortedRelIso);
-   if (isMC) {
-     fChain->SetBranchAddress("genLooseElePF2PATPT", genLooseElePF2PATPT, &b_genLooseElePF2PATPT);
-     fChain->SetBranchAddress("genLooseElePF2PATET", genLooseElePF2PATET, &b_genLooseElePF2PATET);
-     fChain->SetBranchAddress("genLooseElePF2PATPX", genLooseElePF2PATPX, &b_genLooseElePF2PATPX);
-     fChain->SetBranchAddress("genLooseElePF2PATPY", genLooseElePF2PATPY, &b_genLooseElePF2PATPY);
-     fChain->SetBranchAddress("genLooseElePF2PATPZ", genLooseElePF2PATPZ, &b_genLooseElePF2PATPZ);
-     fChain->SetBranchAddress("genLooseElePF2PATPhi", genLooseElePF2PATPhi, &b_genLooseElePF2PATPhi);
-     fChain->SetBranchAddress("genLooseElePF2PATTheta", genLooseElePF2PATTheta, &b_genLooseElePF2PATTheta);
-     fChain->SetBranchAddress("genLooseElePF2PATEta", genLooseElePF2PATEta, &b_genLooseElePF2PATEta);
-     fChain->SetBranchAddress("genLooseElePF2PATCharge", genLooseElePF2PATCharge, &b_genLooseElePF2PATCharge);
-   }
    fChain->SetBranchAddress("numMuonPF2PAT", &numMuonPF2PAT, &b_numMuonPF2PAT);
-   fChain->SetBranchAddress("numLooseMuonPF2PAT", &numLooseMuonPF2PAT, &b_numLooseMuonPF2PAT);
    fChain->SetBranchAddress("muonPF2PATE", muonPF2PATE, &b_muonPF2PATE);
    fChain->SetBranchAddress("muonPF2PATET", muonPF2PATET, &b_muonPF2PATET);
    fChain->SetBranchAddress("muonPF2PATPt", muonPF2PATPt, &b_muonPF2PATPt);
@@ -951,12 +848,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("muonPF2PATDZPV", muonPF2PATDZPV, &b_muonPF2PATDZPV);
    fChain->SetBranchAddress("muonPF2PATVldPixHits", muonPF2PATVldPixHits, &b_muonPF2PATVldPixHits);
    fChain->SetBranchAddress("muonPF2PATMatchedStations", muonPF2PATMatchedStations, &b_muonPF2PATMatchedStations);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedEt", muonPF2PATlooseMuonSortedEt, &b_muonPF2PATlooseMuonSortedEt);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedPt", muonPF2PATlooseMuonSortedPt, &b_muonPF2PATlooseMuonSortedPt);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedEta", muonPF2PATlooseMuonSortedEta, &b_muonPF2PATlooseMuonSortedEta);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedRelIso", muonPF2PATlooseMuonSortedRelIso, &b_muonPF2PATlooseMuonSortedRelIso);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedisGlb", muonPF2PATlooseMuonSortedisGlb, &b_muonPF2PATlooseMuonSortedisGlb);
-   fChain->SetBranchAddress("muonPF2PATlooseMuonSortedisTrk", muonPF2PATlooseMuonSortedisTrk, &b_muonPF2PATlooseMuonSortedisTrk);
    if (isMC) {
      fChain->SetBranchAddress("genMuonPF2PATPT", genMuonPF2PATPT, &b_genMuonPF2PATPT);
      fChain->SetBranchAddress("genMuonPF2PATET", genMuonPF2PATET, &b_genMuonPF2PATET);
@@ -967,15 +858,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genMuonPF2PATTheta", genMuonPF2PATTheta, &b_genMuonPF2PATTheta);
      fChain->SetBranchAddress("genMuonPF2PATEta", genMuonPF2PATEta, &b_genMuonPF2PATEta);
      fChain->SetBranchAddress("genMuonPF2PATCharge", genMuonPF2PATCharge, &b_genMuonPF2PATCharge);
-     fChain->SetBranchAddress("genLooseMuonPF2PATPT", genLooseMuonPF2PATPT, &b_genLooseMuonPF2PATPT);
-     fChain->SetBranchAddress("genLooseMuonPF2PATET", genLooseMuonPF2PATET, &b_genLooseMuonPF2PATET);
-     fChain->SetBranchAddress("genLooseMuonPF2PATPX", genLooseMuonPF2PATPX, &b_genLooseMuonPF2PATPX);
-     fChain->SetBranchAddress("genLooseMuonPF2PATPY", genLooseMuonPF2PATPY, &b_genLooseMuonPF2PATPY);
-     fChain->SetBranchAddress("genLooseMuonPF2PATPZ", genLooseMuonPF2PATPZ, &b_genLooseMuonPF2PATPZ);
-     fChain->SetBranchAddress("genLooseMuonPF2PATPhi", genLooseMuonPF2PATPhi, &b_genLooseMuonPF2PATPhi);
-     fChain->SetBranchAddress("genLooseMuonPF2PATTheta", genLooseMuonPF2PATTheta, &b_genLooseMuonPF2PATTheta);
-     fChain->SetBranchAddress("genLooseMuonPF2PATEta", genLooseMuonPF2PATEta, &b_genLooseMuonPF2PATEta);
-     fChain->SetBranchAddress("genLooseMuonPF2PATCharge", genLooseMuonPF2PATCharge, &b_genLooseMuonPF2PATCharge);
    }
    fChain->SetBranchAddress("numJetPF2PAT", &numJetPF2PAT, &b_numJetPF2PAT);
    fChain->SetBranchAddress("jetPF2PATE", jetPF2PATE, &b_jetPF2PATE);
@@ -1027,13 +909,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genJetPF2PATEta", genJetPF2PATEta, &b_genJetPF2PATEta);
      fChain->SetBranchAddress("genJetPF2PATPID", genJetPF2PATPID, &b_genJetPF2PATPID);
    }
-   fChain->SetBranchAddress("numLooseJetPF2PAT", &numLooseJetPF2PAT, &b_numLooseBJetsPF2PAT);
-   fChain->SetBranchAddress("looseJetPF2PATEt", looseJetPF2PATEt, &b_looseJetPF2PATEt);
-   fChain->SetBranchAddress("looseJetPF2PATPt", looseJetPF2PATPt, &b_looseJetPF2PATPt);
-   fChain->SetBranchAddress("looseJetPF2PATEta", looseJetPF2PATEta, &b_looseJetPF2PATEta);
-   fChain->SetBranchAddress("looseJetPF2PATBDisc", looseJetPF2PATBDisc, &b_looseJetPF2PATBDisc);
-//   fChain->SetBranchAddress("looseJetPF2PATCvsLDisc", looseJetPF2PATCvsLDisc, &b_looseJetPF2PATCvsLDisc);
-//   fChain->SetBranchAddress("looseJetPF2PATCvsBDisc", looseJetPF2PATCvsBDisc, &b_looseJetPF2PATCvsBDisc);
    fChain->SetBranchAddress("jetPF2PATMuEnergy", jetPF2PATMuEnergy, &b_jetPF2PATMuEnergy);
    fChain->SetBranchAddress("jetPF2PATMuEnergyFraction", jetPF2PATMuEnergyFraction, &b_jetPF2PATMuEnergyFraction);
    fChain->SetBranchAddress("jetPF2PATNeutralHadEnergy", jetPF2PATNeutralHadEnergy, &b_jetPF2PATNeutralHadEnergy);
