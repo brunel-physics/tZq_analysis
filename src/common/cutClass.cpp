@@ -7,7 +7,6 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
-#include <math.h>
 #include <iomanip>
 #include <fstream>
 #include <random>

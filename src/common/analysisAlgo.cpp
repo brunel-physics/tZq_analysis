@@ -6,11 +6,10 @@
 #include "AnalysisEvent.hpp"
 
 #include <iomanip>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <stdlib.h> 
 
 AnalysisAlgo::AnalysisAlgo():
   config(""),
