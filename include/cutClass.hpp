@@ -60,7 +60,7 @@ class Cuts{
   const bool isCtag_;
 
   // Tight electron cuts
-  unsigned int numTightEle_;
+  unsigned numTightEle_;
   float tightElePt_;
   float tightEleEta_;
   float tightEled0_;
@@ -72,7 +72,7 @@ class Cuts{
   float tightEleRelIso_;
   
   //Loose electron cuts
-  unsigned int numLooseEle_;
+  unsigned numLooseEle_;
   float looseElePt_;
   float looseEleEta_;
   float looseEleMVA0_;
@@ -81,13 +81,13 @@ class Cuts{
   float looseEleRelIso_;
 
   //Tight muon cuts
-  unsigned int numTightMu_;
+  unsigned numTightMu_;
   float tightMuonPt_;
   float tightMuonEta_;
   float tightMuonRelIso_;
 
   //Loose muon cuts
-  unsigned int numLooseMu_;
+  unsigned numLooseMu_;
   float looseMuonPt_;
   float looseMuonEta_;
   float looseMuonRelIso_;
@@ -97,22 +97,22 @@ class Cuts{
   float invWMassCut_;
 
   //Tight jet cuts
-  unsigned int numJets_;
-  unsigned int maxJets_;
+  unsigned numJets_;
+  unsigned maxJets_;
   float jetPt_;
   float jetEta_;
   int jetNConsts_;
   bool jetIDDo_;
 
   //B-Disc cut
-  unsigned int numbJets_;
-  unsigned int maxbJets_;
+  unsigned numbJets_;
+  unsigned maxbJets_;
   float bDiscCut_;
   float bDiscSynchCut_;
 
   //C-Disc cut
-  unsigned int numcJets_;
-  unsigned int maxcJets_;
+  unsigned numcJets_;
+  unsigned maxcJets_;
   float cVsLDiscCut_;
   float cVsBDiscCut_;
   

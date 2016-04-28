@@ -97,7 +97,7 @@ class AnalysisAlgo{
 	std::vector<std::string> fillExp;
 	std::vector<std::string> xAxisLabels;
 	std::vector<int> eventNumbers;
-	std::vector<unsigned int> jetRegVars;
+	std::vector<unsigned> jetRegVars;
 
 	// Systematic Stuff
 	//Making a vector of strings that will give systematics name.

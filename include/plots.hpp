@@ -83,7 +83,7 @@ class Plots{
   const bool trileptonChannel_;
 
  public:
-  Plots(std::vector<std::string>,std::vector<float>,std::vector<float>,std::vector<int>,std::vector<std::string>, std::vector<std::string>, std::vector<int>, unsigned int, std::string postfixName="", const bool trileptonChannel = true);
+  Plots(std::vector<std::string>,std::vector<float>,std::vector<float>,std::vector<int>,std::vector<std::string>, std::vector<std::string>, std::vector<int>, unsigned, std::string postfixName="", const bool trileptonChannel = true);
   ~Plots();
   void fillAllPlots(AnalysisEvent*, float);
   void saveAllPlots();
