@@ -6,6 +6,7 @@ echo First deleting old filelists ...
 
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets10To50Files.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50Files.txt
+rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50v2Files.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50MadgraphFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2015CFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2015DFiles.txt
@@ -49,6 +50,7 @@ echo Now outputting the lists of the dataset directories into their relevant fil
 
 ls /scratch/data/tZqSkimsRun2/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2/DYJetsToLL_M-50/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50Files.txt
+ls /scratch/data/tZqSkimsRun2/DYJetsToLL_M-50_amcatnlo_v2/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50v2Files.txt
 ls /scratch/data/tZqSkimsRun2/DYJetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50MadgraphFiles.txt
 ls /scratch/data/tZqSkimsRun2/eeRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2015CFiles.txt
 ls /scratch/data/tZqSkimsRun2/eeRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2015DFiles.txt
