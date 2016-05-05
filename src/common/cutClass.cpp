@@ -75,9 +75,10 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   //B-discriminator cut
   numbJets_(1),
   maxbJets_(2),
-  //bDiscCut_(0.935), // Tight cut
+  bDiscCut_(0.935), // Tight cut
   //bDiscCut_(0.80), // Medium level
-  bDiscCut_(0.460), // Loose cut
+  //bDiscCut_(0.460), // Loose cut
+   bDiscSynchCut_(0.460),
   //C-discriminator cut
   numcJets_(1),
   maxcJets_(1),
@@ -347,13 +348,8 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
       if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
       if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
       if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;*/
-/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
 //	}
+
     if (!synchCutFlow_) {
 	if ( event->elePF2PATIsBarrel[i] ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
@@ -416,6 +412,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
+
 //    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
 //        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
 //        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
@@ -466,6 +463,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //if (i == 0) std::cout << "Starts doing first..." << event->muonPF2PATIsPFMuon[i];
     //if (i > 0) std::cout << "   " << event->muonPF2PATIsPFMuon[i];
     //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" << event->muonPF2PATEta[i] << "\t" << event->muonPF2PATComRelIsodBeta[i] << "\t" << event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" << event->muonPF2PATGlobalID[i] << "\t" << event->muonPF2PATIsPFMuon[i] << "\t" << event->muonPF2PATTrackID[i] << "\t" <<  event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
+
     if (!event->muonPF2PATIsPFMuon[i]) continue;
     //    if (!event->muonPF2PATTrackID[i]) continue; // Apparently not needed in synch?
     if (!event->muonPF2PATGlobalID[i]) continue;
@@ -835,7 +833,8 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
 
   for (unsigned int i = 0; i < jets.size(); i++){
     if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
-    if (event->jetPF2PATBDiscriminator[jets[i]] < bDiscCut_) continue;
+    if (event->jetPF2PATBDiscriminator[jets[i]] < bDiscCut_ && !synchCutFlow_) continue;
+    if (event->jetPF2PATBDiscriminator[jets[i]] < bDiscSynchCut_ && synchCutFlow_) continue;
 
     bJets.push_back(i);
   }
@@ -1756,11 +1755,11 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   // setup calibration readers
   BTagCalibration calib("CSVv2T", "scaleFactors/CSVv2.csv");
   BTagCalibrationReader reader(&calib,               // calibration instance
-			       BTagEntry::OP_LOOSE,  // operating point
+			       BTagEntry::OP_TIGHT,  // operating point
 			       "comb",               // measurement type
 			       "central");           // systematics type
-  BTagCalibrationReader reader_up(&calib, BTagEntry::OP_LOOSE, "comb", "up");  // sys up
-  BTagCalibrationReader reader_do(&calib, BTagEntry::OP_LOOSE, "comb", "down");  // sys down
+  BTagCalibrationReader reader_up(&calib, BTagEntry::OP_TIGHT, "comb", "up");  // sys up
+  BTagCalibrationReader reader_do(&calib, BTagEntry::OP_TIGHT, "comb", "down");  // sys down
 
   //Get SF
 

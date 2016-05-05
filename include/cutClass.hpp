@@ -108,6 +108,7 @@ class Cuts{
   unsigned int numbJets_;
   unsigned int maxbJets_;
   float bDiscCut_;
+  float bDiscSynchCut_;
 
   //C-Disc cut
   unsigned int numcJets_;
