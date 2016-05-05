@@ -729,8 +729,8 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     TLorentzVector jetVec = getJetLVec(event,i,syst);
     // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy), event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
 
-    if (jetVec.Pt() < jetPt_) continue;
-    if (std::abs(jetVec.Eta()) > jetEta_) continue;
+    if (jetVec.Pt() <= jetPt_) continue;
+    if (std::abs(jetVec.Eta()) >= jetEta_) continue;
 
     bool jetId (true);
 
@@ -1639,12 +1639,18 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 }
 
 TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
+
+  TLorentzVector returnJet;
   
+  if (synchCutFlow_) {
+	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+	return returnJet;
+  }
+
   float jerSF = 0.0;
   float jerSigma = 0.0;
 
   float newSmearValue = 1.0;  
-  TLorentzVector returnJet;
 
   // JER Scaling Factors and uncertainities
   if (std::abs(event->jetPF2PATEta[index]) <= 0.5) {
