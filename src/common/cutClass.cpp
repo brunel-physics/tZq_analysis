@@ -339,8 +339,8 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
-    if (tempVec.Pt() < tightElePt_) continue;
-    if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
+    if (tempVec.Pt() <= tightElePt_) continue;
+    if (std::abs(tempVec.Eta()) >= tightEleEta_)continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
 
 //    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
@@ -467,29 +467,20 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
     //    if (!event->muonPF2PATTrackID[i]) continue; // Apparently not needed in synch?
     if (!event->muonPF2PATGlobalID[i]) continue;
-    if (event->muonPF2PATPt[i] < tightMuonPt_) continue;
-    if (std::abs(event->muonPF2PATEta[i]) > tightMuonEta_) continue;
-    if (event->muonPF2PATComRelIsodBeta[i] > tightMuonRelIso_) continue;
+
+    if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
+    if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
+    if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
     //Do a little test of muon id stuff here.
-    if (event->muonPF2PATChi2[i] < 0.) continue;
-    if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-    //    if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
-    //if (event->muonPF2PATNChambers[i] < 2) continue;
-    //if (i == 0) std::cout << "gets to tighter ";
-    //if (i == 0) std::cout << "First muon ";
-    //if (i > 0) std::cout << "Checking second muon";
-    
+    if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
     if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
     if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
     if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
-    //      if (event->muonPF2PATTrackNHits[i] < 11) continue;
     if (event->muonPF2PATMuonNHits[i] < 1) continue;
     if (event->muonPF2PATVldPixHits[i] < 1) continue;
     if (event->muonPF2PATMatchedStations[i] < 2) continue;
-    //    if (std::abs(event->pvZ - event->muonPF2PATVertZ[i]) > 0.5) continue;
-    //if(i == 0) std::cout << "does first ";
-    //if (i > 0) std::cout << "allows second muon";
+
     muons.push_back(i);
   }
   //  std::cout << muons.size() << std::endl;
@@ -500,12 +491,13 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   std::vector<int> muons;
   for (int i = 0; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
-    if (event->muonPF2PATPt[i] < looseMuonPt_) continue;
-    if (std::abs(event->muonPF2PATEta[i]) > looseMuonEta_) continue;
-    if (event->muonPF2PATComRelIsodBeta[i] > looseMuonRelIso_) continue;
-
-    muons.push_back(i);
+//    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
+    if (event->muonPF2PATPt[i] <= looseMuonPt_) continue;
+    if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
+    if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
+    if (event->muonPF2PATGlobalID[i] || event->muonPF2PATTrackID[i])
+	muons.push_back(i);
+    else continue;
   }
   return muons;
 }
