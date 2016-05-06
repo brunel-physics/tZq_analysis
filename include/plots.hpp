@@ -89,7 +89,7 @@ class Plots{
   void saveAllPlots();
   void fillOnePlot(std::string, AnalysisEvent*,float);
   void saveOnePlots(int);
-  std::vector<plot> getPlotPoint(){return plotPoint;};
+  std::vector<plot> getPlotPoint(){return plotPoint;}
   std::map<std::string, float (Plots::*)(AnalysisEvent*)> getFncPtrMap();
 
 
