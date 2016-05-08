@@ -60,7 +60,7 @@ class Cuts{
   const bool isCtag_;
 
   // Tight electron cuts
-  unsigned int numTightEle_;
+  unsigned numTightEle_;
   float tightElePt_;
   float tightEleEta_;
   float tightEled0_;
@@ -72,7 +72,7 @@ class Cuts{
   float tightEleRelIso_;
   
   //Loose electron cuts
-  unsigned int numLooseEle_;
+  unsigned numLooseEle_;
   float looseElePt_;
   float looseEleEta_;
   float looseEleMVA0_;
@@ -81,13 +81,13 @@ class Cuts{
   float looseEleRelIso_;
 
   //Tight muon cuts
-  unsigned int numTightMu_;
+  unsigned numTightMu_;
   float tightMuonPt_;
   float tightMuonEta_;
   float tightMuonRelIso_;
 
   //Loose muon cuts
-  unsigned int numLooseMu_;
+  unsigned numLooseMu_;
   float looseMuonPt_;
   float looseMuonEta_;
   float looseMuonRelIso_;
@@ -97,22 +97,22 @@ class Cuts{
   float invWMassCut_;
 
   //Tight jet cuts
-  unsigned int numJets_;
-  unsigned int maxJets_;
+  unsigned numJets_;
+  unsigned maxJets_;
   float jetPt_;
   float jetEta_;
   int jetNConsts_;
   bool jetIDDo_;
 
   //B-Disc cut
-  unsigned int numbJets_;
-  unsigned int maxbJets_;
+  unsigned numbJets_;
+  unsigned maxbJets_;
   float bDiscCut_;
   float bDiscSynchCut_;
 
   //C-Disc cut
-  unsigned int numcJets_;
-  unsigned int maxcJets_;
+  unsigned numcJets_;
+  unsigned maxcJets_;
   float cVsLDiscCut_;
   float cVsBDiscCut_;
   
@@ -174,23 +174,23 @@ class Cuts{
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
-  void setMC(bool isMC) {isMC_ = isMC;};
-  void setCloneTree(TTree* tree, TTree* tree2, TTree* tree3) {postLepSelTree_ = tree; postLepSelTree2_ = tree2; postLepSelTree3_ = tree3;};
-  void setNumLeps(int tightMu, int looseMu, int tightEle, int looseEle){numTightEle_ = tightEle; numLooseEle_ = looseEle; numTightMu_ = tightMu; numLooseMu_ = looseMu;};
-  void setCutConfTrigLabel(std::string newLabel){cutConfTrigLabel_ = newLabel;};
-  void setInvIsoCut(bool invIso){invertIsoCut_ = invIso;};
-  void setTriggerFlag(std::string triggerFlag) {triggerFlag_ = triggerFlag;};
-  void setBTagPlots(std::vector<TH2D*> vec, bool makePlotsOrRead) {makeBTagEffPlots_ = makePlotsOrRead; bTagEffPlots_ = vec;getBTagWeight_ = !makePlotsOrRead;};
-  void setSkipTrig(bool skip){skipTrigger_ = skip;};
-  void setMetCut(float cut){metCut_ = cut;};
-  void setMTWCut(float cut){mTWCut_ = cut;};
-  void setJetRegion(int nJets, int nBets, int maxJets, int maxBJets){numJets_ = nJets; numbJets_ = nBets; maxJets_ = maxJets; maxbJets_ = maxBJets;};
+  void setMC(bool isMC) {isMC_ = isMC;}
+  void setCloneTree(TTree* tree, TTree* tree2, TTree* tree3) {postLepSelTree_ = tree; postLepSelTree2_ = tree2; postLepSelTree3_ = tree3;}
+  void setNumLeps(int tightMu, int looseMu, int tightEle, int looseEle){numTightEle_ = tightEle; numLooseEle_ = looseEle; numTightMu_ = tightMu; numLooseMu_ = looseMu;}
+  void setCutConfTrigLabel(std::string newLabel){cutConfTrigLabel_ = newLabel;}
+  void setInvIsoCut(bool invIso){invertIsoCut_ = invIso;}
+  void setTriggerFlag(std::string triggerFlag) {triggerFlag_ = triggerFlag;}
+  void setBTagPlots(std::vector<TH2D*> vec, bool makePlotsOrRead) {makeBTagEffPlots_ = makePlotsOrRead; bTagEffPlots_ = vec;getBTagWeight_ = !makePlotsOrRead;}
+  void setSkipTrig(bool skip){skipTrigger_ = skip;}
+  void setMetCut(float cut){metCut_ = cut;}
+  void setMTWCut(float cut){mTWCut_ = cut;}
+  void setJetRegion(int nJets, int nBets, int maxJets, int maxBJets){numJets_ = nJets; numbJets_ = nBets; maxJets_ = maxJets; maxbJets_ = maxBJets;}
   bool parse_config(std::string);
   void dumpLeptonInfo(AnalysisEvent*);
   void dumpLooseLepInfo(AnalysisEvent*);
   TH1F* getSynchCutFlow();
-  int numFound(){return synchCutFlowHist_->GetBinContent(4);};
-  void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;};
+  int numFound(){return synchCutFlowHist_->GetBinContent(4);}
+  void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;}
 
   private:
 

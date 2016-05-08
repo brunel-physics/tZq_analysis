@@ -5,7 +5,7 @@
 #include <boost/numeric/conversion/cast.hpp> 
 #include "TLorentzVector.h"
 
-Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned int thisCutStage, std::string postfixName, const bool trileptonChannel):
+Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned thisCutStage, std::string postfixName, const bool trileptonChannel):
 
   trileptonChannel_(trileptonChannel)
 
@@ -13,19 +13,19 @@ Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vect
   //Get the function pointer map for later custopmisation. This is gonna be great, I promise.
   std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap = getFncPtrMap();
   plotPoint = std::vector<plot>(names.size());
-  for (unsigned int i = 0; i < names.size(); i++){
+  for (unsigned i = 0; i < names.size(); i++){
     std::string plotName = names[i] + "_" + postfixName;
     plotPoint[i].name = plotName;
     plotPoint[i].plotHist = new TH1F(plotName.c_str(),plotName.c_str(),nBins[i],xMins[i],xMaxs[i]);
     plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
     plotPoint[i].xAxisLabel = xAxisLabels[i];
-    plotPoint[i].fillPlot = boost::numeric_cast<unsigned int>(cutStage[i]) <= thisCutStage;
+    plotPoint[i].fillPlot = boost::numeric_cast<unsigned>(cutStage[i]) <= thisCutStage;
   }
   
 }
 
 Plots::~Plots(){
-  for (unsigned int i = 0; i < plotPoint.size(); i++){
+  for (unsigned i = 0; i < plotPoint.size(); i++){
     delete plotPoint[i].plotHist;
   }
 }
@@ -119,8 +119,8 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
 
 float Plots::fillLepton1Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return fabs(event->elePF2PATEta[event->electronIndexTight[0]]);
-  else return  fabs(event->muonPF2PATEta[event->muonIndexTight[0]]);
+    return std::abs(event->elePF2PATEta[event->electronIndexTight[0]]);
+  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
   return -10;
 }
 float Plots::fillLepton2Pt(AnalysisEvent* event){
@@ -132,8 +132,8 @@ float Plots::fillLepton2Pt(AnalysisEvent* event){
 
 float Plots::fillLepton2Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return fabs(event->elePF2PATEta[event->electronIndexTight[1]]);
-  else return  fabs(event->muonPF2PATEta[event->muonIndexTight[1]]);
+    return std::abs(event->elePF2PATEta[event->electronIndexTight[1]]);
+  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
   return -10;
 }
 float Plots::fillLepton3Pt(AnalysisEvent* event){
@@ -151,7 +151,7 @@ float Plots::fillLepton3Pt(AnalysisEvent* event){
 
 float Plots::fillLepton3Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 2)
-    return fabs(event->elePF2PATEta[event->electronIndexTight[2]]);
+    return std::abs(event->elePF2PATEta[event->electronIndexTight[2]]);
   if (event->muonIndexTight.size() > 2)
     return event->muonPF2PATEta[event->muonIndexTight[2]];
   if (event->electronIndexTight.size() > 1)
@@ -279,12 +279,12 @@ float Plots::fillSecondJetPt(AnalysisEvent* event){
 }
 
 float Plots::fillLeadingJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 0) return fabs(event->jetPF2PATEta[event->jetIndex[0]]);
+  if (event->jetIndex.size() > 0) return std::abs(event->jetPF2PATEta[event->jetIndex[0]]);
   return -10;
 }
 
 float Plots::fillSecondJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 1) return fabs(event->jetPF2PATEta[event->jetIndex[1]]);
+  if (event->jetIndex.size() > 1) return std::abs(event->jetPF2PATEta[event->jetIndex[1]]);
   return -10;
 }
 
@@ -311,11 +311,11 @@ float Plots::fillZLep2Pt(AnalysisEvent* event){
 }
 
 float Plots::fillZLep1Eta(AnalysisEvent* event){
-  return fabs(event->zPairLeptons.first.Eta());
+  return std::abs(event->zPairLeptons.first.Eta());
 }
 
 float Plots::fillZLep2Eta(AnalysisEvent* event){
-  return fabs(event->zPairLeptons.second.Eta());
+  return std::abs(event->zPairLeptons.second.Eta());
 }
 
 float Plots::fillZLep1Phi(AnalysisEvent* event){
@@ -339,7 +339,7 @@ float Plots::fillWLepPt(AnalysisEvent* event){
 }
 
 float Plots::fillWLepEta(AnalysisEvent* event){
-  return fabs(event->wLepton.Eta());
+  return std::abs(event->wLepton.Eta());
 }
 
 float Plots::fillWLepPhi(AnalysisEvent* event){
@@ -512,7 +512,7 @@ float Plots::filllbDelPhi(AnalysisEvent* event){
 }
 
 void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
-  for (unsigned int i = 0; i < plotPoint.size(); i++){
+  for (unsigned i = 0; i < plotPoint.size(); i++){
     if (plotPoint[i].fillPlot){
       plotPoint[i].plotHist->Fill((this->*plotPoint[i].fillExp)(event),eventWeight);
     }
@@ -520,7 +520,7 @@ void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
 }
 
 void Plots::saveAllPlots(){
-  for (unsigned int i = 0; i < plotPoint.size(); i++){
+  for (unsigned i = 0; i < plotPoint.size(); i++){
     plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".root").c_str());
 //    plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".png").c_str());
   }

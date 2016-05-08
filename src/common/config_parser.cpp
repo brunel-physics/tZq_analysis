@@ -4,7 +4,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <stdlib.h> 
 #include <libconfig.h++>
 
 int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, double * lumi,std::vector<std::string>*plotNames,std::vector<float>*xMin,std::vector<float>*xMax,std::vector<int>*nBins,std::vector<std::string>*fillExp,std::vector<std::string>*xAxisLabels,std::vector<int>*cutStage,std::string* cutsConfName,std::string* plotConfName, std::string* outFolder, std::string* postfix, std::string* channel){
