@@ -813,6 +813,11 @@ void AnalysisAlgo::runMainAnalysis(){
       //Apply trigger SF here. Also does systematic for trigger +-
       if (infoDump) datasetWeight = 1;
       std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
+      if (datasetChain->GetEntries() == 0)
+      {
+        std::cout << "No entries in tree, skipping..." << std::endl;
+        continue;
+      }
       AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
