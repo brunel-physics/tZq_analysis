@@ -287,7 +287,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-  float mtw = std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
+  float mtw = std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())));
   if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_) return false;
   return true;
 }
@@ -799,8 +799,8 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       bWeight = 1.;
 //      cWeight = 1.;
     }
-    float bWeightErr = std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight;
-//    float cWeightErr = std::sqrt( pow(err5+err6,2) + pow(err7 + err8, 2)) * cWeight;
+    float bWeightErr = std::sqrt( std::pow(err1+err2,2) + std::pow(err3 + err4, 2)) * bWeight;
+//    float cWeightErr = std::sqrt( std::pow(err5+err6,2) + std::pow(err7 + err8, 2)) * cWeight;
 
     if (syst == 256)
       bWeight += bWeightErr;
@@ -953,7 +953,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
+  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
@@ -1482,7 +1482,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     event->bTagIndex = makeBCuts(event,event->jetIndex);
     if ( event->bTagIndex.size() == 1 ) step0EventDump_ << "1"; // b-Tag selection, exactly one b-jet - step 5
     else step0EventDump_ << "0";
-    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCut_ ) step0EventDump_ << "1"; // MET selection, step 6
+    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCut_ ) step0EventDump_ << "1"; // MET selection, step 6
     else step0EventDump_ << "0";
     if ( (getTopMass(event, event->bTagIndex,event->jetIndex) <= TopMassCutUpper_) && (getTopMass(event, event->bTagIndex,event->jetIndex) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
     else step0EventDump_ << "0";

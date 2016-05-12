@@ -130,7 +130,7 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
     param3 = 1.64031e-01;
   }
 
-  return  (exp(param1+param2*zpt) +param3 );
+  return  (std::exp(param1+param2*zpt) +param3 );
 }
 
 

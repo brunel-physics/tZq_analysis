@@ -470,10 +470,10 @@ float Plots::fillwTransverseMass(AnalysisEvent* event){
   if ( trileptonChannel_ ) {
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-  return std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
+  return std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())));
   }
   else if ( !trileptonChannel_ ) {
-  return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
+  return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-std::cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
   }
   else
     return -10;
