@@ -89,15 +89,15 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
     if (line.find("luminosity") == 0){
       std::string temp = line.substr(11);
       temp = temp.substr(temp.find_first_not_of(" ="));
-      //      lumi = temp.c_str().atof();
-      lumi = atof(temp.c_str());
+      //      lumi = temp.c_str().std::stof();
+      lumi = std::stof(temp.c_str());
       *totalLumi+=lumi;
     }
     //Get cross section info (if mc)
     if (line.find("crossSection") == 0){
       std::string temp = line.substr(13);
       temp = temp.substr(temp.find_first_not_of(" ="));
-      crossSection = atof(temp.c_str());
+      crossSection = std::stof(temp.c_str());
     }
     //MC or data
     if (line.find("runType") == 0){
@@ -111,7 +111,7 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       std::string temp = line.substr(12);
       temp = temp.substr(temp.find_first_not_of(" ="));
       //      std::cout << temp;
-      totalEvents = atol(temp.c_str());
+      totalEvents = std::stol(temp.c_str());
     }
     if (line.find("histoName") == 0){
       histoFill = line.substr(10);

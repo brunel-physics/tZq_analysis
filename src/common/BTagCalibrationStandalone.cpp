@@ -73,14 +73,14 @@ throw std::exception();
   }
 
   // make parameters
-  unsigned op = stoi(vec[0]);
+  unsigned op = std::stoi(vec[0]);
   if (op > 3) {
 std::cerr << "ERROR in BTagCalibration: "
           << "Invalid csv line; OperatingPoint > 3: "
           << csvLine;
 throw std::exception();
   }
-  unsigned jf = stoi(vec[3]);
+  unsigned jf = std::stoi(vec[3]);
   if (jf > 2) {
 std::cerr << "ERROR in BTagCalibration: "
           << "Invalid csv line; JetFlavor > 2: "
@@ -92,12 +92,12 @@ throw std::exception();
     vec[1],
     vec[2],
     BTagEntry::JetFlavor(jf),
-    stof(vec[4]),
-    stof(vec[5]),
-    stof(vec[6]),
-    stof(vec[7]),
-    stof(vec[8]),
-    stof(vec[9])
+    std::stof(vec[4]),
+    std::stof(vec[5]),
+    std::stof(vec[6]),
+    std::stof(vec[7]),
+    std::stof(vec[8]),
+    std::stof(vec[9])
   );
 }
 

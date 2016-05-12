@@ -336,7 +336,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg=="-n") { // using this option sets the number of entries to run over.
       if (i+1 < argc){
-	nEvents = atol(argv[++i]);
+      nEvents = std::stol(argv[++i]);
       }else{
 	std::cerr << "-n requires a number of events to run over! You idiot!";
       }
@@ -360,7 +360,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg=="-l"){
       if (i+1 < argc){
-	usePreLumi = atof(argv[++i]);
+	usePreLumi = std::stof(argv[++i]);
       }else{
 	std::cerr << "-l requries a float!";
 	exit(0);
@@ -407,7 +407,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-f" || arg == "--nFiles"){
       if (i+1 < argc){
-	numFiles = atoi(argv[++i]);
+	numFiles = std::stoi(argv[++i]);
       }else{
 	 std::cerr << "-f requires an int";
 	 exit(0);
@@ -418,7 +418,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss(argv[++i]);
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(atoi(item.c_str()));
+	jetRegVars.push_back(std::stoi(item.c_str()));
       }
     }
     else if (arg == "-g"){
@@ -432,7 +432,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-v" || arg == "--syst"){
       if (i+1 < argc){
-	systToRun = atoi(argv[++i]);
+	systToRun = std::stoi(argv[++i]);
       }
       else{
 	std::cerr << "-v requires an int";
@@ -444,7 +444,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-k"){
       if (i+1 < argc){
-	channelsToRun = atoi(argv[++i]);
+	channelsToRun = std::stoi(argv[++i]);
       }
       else{
 	std::cerr << "-k needs a config file!";
@@ -463,17 +463,17 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss(argv[++i]);
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(atoi(item.c_str()));
+	jetRegVars.push_back(std::stoi(item.c_str()));
       }
       std::cout << "CAUTION! Using a custom jet region of "<< jetRegVars[0] << "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets" <<std::endl;
 
     }
     else if (arg == "--metCut"){
-      metCut = atof(argv[++i]);
+      metCut = std::stof(argv[++i]);
       std::cout << "Non zero MET cut! Applied " << metCut << " cut." << std::endl;
     }
     else if (arg == "--mtwCut"){
-      mtwCut = atof(argv[++i]);
+      mtwCut = std::stof(argv[++i]);
       std::cout << "Non zero mTW cut! Applied " << mtwCut << " cut." << std::endl;
     }
     
