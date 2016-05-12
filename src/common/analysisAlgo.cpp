@@ -418,7 +418,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss(argv[++i]);
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(std::stoi(item.c_str()));
+	jetRegVars.push_back(std::stoi(item));
       }
     }
     else if (arg == "-g"){
@@ -463,7 +463,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss(argv[++i]);
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(std::stoi(item.c_str()));
+	jetRegVars.push_back(std::stoi(item));
       }
       std::cout << "CAUTION! Using a custom jet region of "<< jetRegVars[0] << "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets" <<std::endl;
 
@@ -733,13 +733,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	      datasetInfos[dataset->getFillHisto()].legType = dataset->getPlotType();
 	    }
 	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << (dataset->getFillHisto()).c_str() << " : " << (systNames[systInd]+channel).c_str() << std::endl; 
+	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl; 
 	      if (plotsMap.find(channel) == plotsMap.end()){
 		plotsVec.push_back(systNames[systInd]+channel);
 	      }
-	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()] = std::map<std::string,Plots*>();
+	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
 	      for (unsigned j = 0; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_);
+		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_);
 	      }
 	    }
 	  }//end cutFlow find loop
@@ -764,9 +764,9 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += invertIsoCut?"invIso":"";
 	std::cout << "skims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-	std::ifstream secondTree(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+	std::ifstream secondTree("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root");
 	if (secondTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	std::ifstream thirdTree(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+	std::ifstream thirdTree("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root");
 	if (thirdTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
       }
       cutObj->setMC(dataset->isMC());

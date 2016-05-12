@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
   if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
-    std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
+    std::cout << inputDir << " is not a valid directory" << std::endl;
     return 0;
   }
 

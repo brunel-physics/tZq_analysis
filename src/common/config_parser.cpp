@@ -47,7 +47,7 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
 //For reading the file config. 
 int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, double * totalLumi){
   std::cout << "file config: " << fileConf << std::endl;
-  std::ifstream conf(fileConf.c_str());
+  std::ifstream conf(fileConf);
   if (!conf.is_open()){
     std::cerr << "Couldn't open file config! Exiting!\n";
     return 0;
@@ -90,14 +90,14 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       std::string temp = line.substr(11);
       temp = temp.substr(temp.find_first_not_of(" ="));
       //      lumi = temp.c_str().std::stof();
-      lumi = std::stof(temp.c_str());
+      lumi = std::stof(temp);
       *totalLumi+=lumi;
     }
     //Get cross section info (if mc)
     if (line.find("crossSection") == 0){
       std::string temp = line.substr(13);
       temp = temp.substr(temp.find_first_not_of(" ="));
-      crossSection = std::stof(temp.c_str());
+      crossSection = std::stof(temp);
     }
     //MC or data
     if (line.find("runType") == 0){
@@ -111,7 +111,7 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       std::string temp = line.substr(12);
       temp = temp.substr(temp.find_first_not_of(" ="));
       //      std::cout << temp;
-      totalEvents = std::stol(temp.c_str());
+      totalEvents = std::stol(temp);
     }
     if (line.find("histoName") == 0){
       histoFill = line.substr(10);

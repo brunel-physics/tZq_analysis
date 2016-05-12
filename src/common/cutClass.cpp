@@ -1593,16 +1593,16 @@ void Cuts::initialiseJECCors(){
     std::vector<float> tempUp;
     std::vector<float> tempDown;
 
-    etaMinJEC_.push_back(std::stof(tempVec[0].c_str()));
-    etaMaxJEC_.push_back(std::stof(tempVec[1].c_str()));
+    etaMinJEC_.push_back(std::stof(tempVec[0]));
+    etaMaxJEC_.push_back(std::stof(tempVec[1]));
     for (unsigned i = 1; i < tempVec.size()/3; i++){
       unsigned ind = i * 3;
       if (first){
-      	ptMinJEC_.push_back(std::stof(tempVec[ind].c_str()));
-	ptMaxJEC_.push_back((ind+3 >= tempVec.size()?10000.:std::stof(tempVec[ind+3].c_str())));
+      	ptMinJEC_.push_back(std::stof(tempVec[ind]));
+	ptMaxJEC_.push_back((ind+3 >= tempVec.size()?10000.:std::stof(tempVec[ind+3])));
       }
-      tempUp.push_back(std::stof(tempVec[ind+1].c_str()));
-      tempDown.push_back(std::stof(tempVec[ind+2].c_str()));
+      tempUp.push_back(std::stof(tempVec[ind+1]));
+      tempDown.push_back(std::stof(tempVec[ind+2]));
     }
     jecSFUp_.push_back(tempUp);
     jecSFDown_.push_back(tempDown);
