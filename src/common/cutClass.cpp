@@ -2,7 +2,6 @@
 #include "BTagCalibrationStandalone.hpp"
 
 #include "TLorentzVector.h"
-#include "TRandom.h"
 
 #include <sstream>
 #include <iostream>
@@ -1714,9 +1713,14 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
       }
       else { // If not, randomly smear 
-      srand (time(nullptr));
-      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
-      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+        static std::mt19937_64 mt{std::random_device{}()};
+        std::normal_distribution<float> gauss{0, std::sqrt(jerSF*jerSF-1)*jerSigma};
+        newSmearValue = 1.0f + gauss(mt);
+
+        // srand (time(nullptr));
+        // newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
+
+        returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
       }
   }
 
