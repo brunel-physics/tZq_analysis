@@ -30,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 283932969
+totalEvents = 97548164
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -170,7 +170,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 261388750
+totalEvents = 24067937
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring
@@ -179,7 +179,7 @@ plotType = f
 
 [DYJetsToLL_MM-50]
 fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
-totalEvents = 255115534
+totalEvents = 254975920
 crossSection = 6025.2
 runType = mc
 histoName = zPlusJets
@@ -189,7 +189,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 168956911
+totalEvents = 30749295
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
