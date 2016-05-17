@@ -24,273 +24,275 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    // Declaration of leaf types
-   Int_t           numElePF2PAT;
-   Float_t         elePF2PATE[20];   //[numElePF2PAT]
-   Float_t         elePF2PATET[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPX[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPY[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPZ[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhi[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTheta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATEta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPT[20];   //[numElePF2PAT]
-   Int_t           elePF2PATCharge[20];   //[numElePF2PAT]
-   Float_t         elePF2PATMVA[20];   //[numElePF2PAT]
-   Float_t         elePF2PATMVAcategory[20];   //[numElePF2PAT]
-   Float_t         elePF2PATNonTrigMVA[20];   //[numElePF2PAT]
-   Float_t         elePF2PATNonTrigMVAcategory[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpactTransDist[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpactTransError[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpactTransSignificance[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpact3DDist[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpact3DError[20];   //[numElePF2PAT]
-   Float_t         elePF2PATImpact3DSignificance[20];   //[numElePF2PAT]
-   Float_t         elePF2PATChargedHadronIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATNeutralHadronIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhotonIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackPt[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackPhi[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackEta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackChi2[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackNDOF[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackD0[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackDBD0[20];   //[numElePF2PAT]
-   Float_t         elePF2PATD0PV[20];   //[numElePF2PAT]
-   Float_t         elePF2PATDZPV[20];   //[numElePF2PAT]
-   Float_t         elePF2PATBeamSpotCorrectedTrackD0[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackDz[20];   //[numElePF2PAT]
-   Float_t         elePF2PATVtxZ[20];   //[numElePF2PAT]
-   Int_t           elePF2PATIsGsf[20];   //[numElePF2PAT]
-   Float_t         elePF2PATGsfPx[20];   //[numElePF2PAT]
-   Float_t         elePF2PATGsfPy[20];   //[numElePF2PAT]
-   Float_t         elePF2PATGsfPz[20];   //[numElePF2PAT]
-   Float_t         elePF2PATGsfE[20];   //[numElePF2PAT]
-   Float_t         elePF2PATEcalEnergy[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCEta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCE[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCPhi[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCEoverP[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCSigmaEtaEta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCSigmaIEtaIEta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCSigmaIEtaIEta5x5[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCE1x5[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCE5x5[20];   //[numElePF2PAT]
-   Float_t         elePF2PATSCE2x5max[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackIso04[20];   //[numElePF2PAT]
-   Float_t         elePF2PATEcalIso04[20];   //[numElePF2PAT]
-   Float_t         elePF2PATHcalIso04[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTrackIso03[20];   //[numElePF2PAT]
-   Float_t         elePF2PATEcalIso03[20];   //[numElePF2PAT]
-   Float_t         elePF2PATHcalIso03[20];   //[numElePF2PAT]
-   Float_t         elePF2PATdr04EcalRecHitSumEt[20];   //[numElePF2PAT]
-   Float_t         elePF2PATdr03EcalRecHitSumEt[20];   //[numElePF2PAT]
-   Float_t         elePF2PATEcalIsoDeposit[20];   //[numElePF2PAT]
-   Float_t         elePF2PATHcalIsoDeposit[20];   //[numElePF2PAT]
-   Float_t         elePF2PATComRelIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATComRelIsodBeta[20];   //[numElePF2PAT]
-   Float_t         elePF2PATComRelIsoRho[20];   //[numElePF2PAT]
-   Float_t         elePF2PATChHadIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATNtHadIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATGammaIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATRhoIso[20];   //[numElePF2PAT]
-   Float_t         elePF2PATAEff03[20];   //[numElePF2PAT]
-   Int_t           elePF2PATMissingInnerLayers[20];   //[numElePF2PAT]
-   Float_t         elePF2PATHoverE[20];   //[numElePF2PAT]
-   Float_t         elePF2PATDeltaPhiSC[20];   //[numElePF2PAT]
-   Float_t         elePF2PATDeltaEtaSC[20];   //[numElePF2PAT]
-   Int_t           elePF2PATIsBarrel[20];   //[numElePF2PAT]
-   Int_t           elePF2PATPhotonConversionTag[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhotonConversionDist[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhotonConversionDcot[20];   //[numElePF2PAT]
-   Int_t           elePF2PATPhotonConversionVeto[20];   //[numElePF2PAT]
-   Int_t           elePF2PATPhotonConversionTagCustom[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhotonConversionDistCustom[20];   //[numElePF2PAT]
-   Float_t         elePF2PATPhotonConversionDcotCustom[20];   //[numElePF2PAT]
-   Float_t         elePF2PATTriggerMatch[20];   //[numElePF2PAT]
-   Float_t         elePF2PATJetOverlap[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATPT[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATET[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATPX[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATPY[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATPZ[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATPhi[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATTheta[20];   //[numElePF2PAT]
-   Float_t         genElePF2PATEta[20];   //[numElePF2PAT]
-   Int_t           genElePF2PATCharge[20];   //[numElePF2PAT]
-   Int_t           numMuonPF2PAT;
-   Float_t         muonPF2PATE[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATET[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPt[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPX[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPY[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPZ[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPhi[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATTheta[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATEta[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATCharge[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATGlobalID[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATTrackID[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATChi2[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATD0[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATTrackDBD0[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATDBInnerTrackD0[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATBeamSpotCorrectedD0[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATTrackNHits[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATMuonNHits[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATNDOF[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATVertX[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATVertY[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATVertZ[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATChargedHadronIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATNeutralHadronIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATPhotonIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATTrackIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATEcalIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATHcalIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATComRelIso[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATComRelIsodBeta[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATIsPFMuon[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATNChambers[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATNMatches[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATTkLysWithMeasurements[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATVldPixHits[20];   //[numMuonPF2PAT]
-   Int_t           muonPF2PATMatchedStations[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATGlbTkNormChi2[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATDBPV[20];   //[numMuonPF2PAT]
-   Float_t         muonPF2PATDZPV[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATPT[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATET[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATPX[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATPY[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATPZ[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATPhi[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATTheta[20];   //[numMuonPF2PAT]
-   Float_t         genMuonPF2PATEta[20];   //[numMuonPF2PAT]
-   Int_t           genMuonPF2PATCharge[20];   //[numMuonPF2PAT]
-   Int_t           numJetPF2PAT;
-   Double_t        jetPF2PATE[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATEt[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPt[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPtRaw[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATUnCorEt[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATUnCorPt[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATEta[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATTheta[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPhi[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPx[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPy[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATPz[40];   //[numJetPF2PAT]
-   Double_t        jetPF2PATdRClosestLepton[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATNtracksInJet[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATJetCharge[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATfHPD[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATBtagSoftMuonPtRel[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATBtagSoftMuonQuality[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATCorrFactor[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATCorrResidual[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATL2L3ResErr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATCorrErrLow[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATCorrErrHi[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATN90Hits[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATTriggered[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVX[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVY[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVZ[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVDX[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVDY[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATSVDZ[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATBDiscriminator[40];   //[numJetPF2PAT]
-   Float_t	   jetPF2PATCvsLDiscriminator[40];   //[numJetPF2PAT]
-   Float_t	   jetPF2PATCvsBDiscriminator[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATNConstituents[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATPID[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATClosestBPartonDeltaR[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATClosestCPartonDeltaR[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATET[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATPT[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATPX[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATPY[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATPZ[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATPhi[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATTheta[40];   //[numJetPF2PAT]
-   Float_t         genJetPF2PATEta[40];   //[numJetPF2PAT]
-   Int_t           genJetPF2PATPID[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATMuEnergy[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATMuEnergyFraction[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralHadEnergy[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralEmEnergy[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATChargedHadronEnergyFraction[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralHadronEnergyFraction[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATChargedEmEnergyFraction[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralEmEnergyFraction[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATChargedHadronEnergyFractionCorr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralHadronEnergyFractionCorr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATChargedEmEnergyFractionCorr[40];   //[numJetPF2PAT]
-   Float_t         jetPF2PATNeutralEmEnergyFractionCorr[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATNeutralMultiplicity[40];   //[numJetPF2PAT]
-   Int_t           jetPF2PATChargedMultiplicity[40];   //[numJetPF2PAT]
-   Double_t        metPF2PATEt;
-   Double_t        metPF2PATEtRaw;
-   Double_t        metPF2PATPhi;
-   Double_t        metPF2PATPt;
-   Double_t        metPF2PATPx;
-   Double_t        metPF2PATPy;
-   Float_t         metPF2PATScalarEt;
-   Float_t         metPF2PATEtUncorrected;
-   Float_t         metPF2PATPhiUncorrected;
-   Float_t         genMetPF2PATEt;
-   Float_t         genMetPF2PATPhi;
-   Float_t         genMetPF2PATPt;
-   Float_t         genMetPF2PATPx;
-   Float_t         genMetPF2PATPy;
-   Int_t           numTauPF2PAT;
-   Float_t         tauPF2PATE[1];   //[numTauPF2PAT]
-   Float_t         tauPF2PATPt[1];   //[numTauPF2PAT]
-   Float_t         tauPF2PATPhi[1];   //[numTauPF2PAT]
-   Float_t         tauPF2PATEta[1];   //[numTauPF2PAT]
-   Int_t           numGeneralTracks;
-   Float_t         generalTracksPt[1000];   //[numGeneralTracks]
-   Float_t         generalTracksEta[1000];   //[numGeneralTracks]
-   Float_t         generalTracksTheta[1000];   //[numGeneralTracks]
-   Float_t         generalTracksBeamSpotCorrectedD0[1000];   //[numGeneralTracks]
-   Float_t         generalTracksPhi[1000];   //[numGeneralTracks]
-   Int_t           generalTracksCharge[1000];   //[numGeneralTracks]
-   Int_t           isElePlusJets;
-   Float_t         genPDFScale;
-   Float_t         genPDFx1;
-   Float_t         genPDFx2;
-   Int_t           genPDFf1;
-   Int_t           genPDFf2;
-   Int_t           processId;
-   Float_t         processPtHat;
-   Double_t        processMCWeight;
-   Float_t         beamSpotX;
-   Float_t         beamSpotY;
-   Float_t         beamSpotZ;
-   Float_t         pvX;
-   Float_t         pvY;
-   Float_t         pvZ;
-   Float_t         pvDX;
-   Float_t         pvDY;
-   Float_t         pvDZ;
-   Float_t         pvRho;
-   Int_t           pvIsFake;
-   Float_t         pvNdof;
-   Float_t         pvChi2;
-   Float_t         mhtPt;
-   Float_t         mhtPy;
-   Float_t         mhtPx;
-   Float_t         mhtPhi;
-   Float_t         mhtSumEt;
-   Float_t         mhtSignif;
-   Int_t           nTriggerBits;
-   Int_t           TriggerBits[1];   //[nTriggerBits]
-   Double_t	   weight_muF0p5;
-   Double_t	   weight_muF2;
-   Double_t	   weight_muR0p5;
-   Double_t	   weight_muR2;
-   Double_t	   origWeightForNorm;
-   //   Int_t           numVert;
+   static constexpr Int_t NELECTRONSMAX{30};
+   Int_t                  numElePF2PAT;
+   Float_t                elePF2PATE[NELECTRONSMAX];
+   Float_t                elePF2PATET[NELECTRONSMAX];
+   Float_t                elePF2PATPX[NELECTRONSMAX];
+   Float_t                elePF2PATPY[NELECTRONSMAX];
+   Float_t                elePF2PATPZ[NELECTRONSMAX];
+   Float_t                elePF2PATPhi[NELECTRONSMAX];
+   Float_t                elePF2PATTheta[NELECTRONSMAX];
+   Float_t                elePF2PATEta[NELECTRONSMAX];
+   Float_t                elePF2PATPT[NELECTRONSMAX];
+   Int_t                  elePF2PATCharge[NELECTRONSMAX];
+   Float_t                elePF2PATMVA[NELECTRONSMAX];
+   Float_t                elePF2PATMVAcategory[NELECTRONSMAX];
+   Float_t                elePF2PATNonTrigMVA[NELECTRONSMAX];
+   Float_t                elePF2PATNonTrigMVAcategory[NELECTRONSMAX];
+   Float_t                elePF2PATImpactTransDist[NELECTRONSMAX];
+   Float_t                elePF2PATImpactTransError[NELECTRONSMAX];
+   Float_t                elePF2PATImpactTransSignificance[NELECTRONSMAX];
+   Float_t                elePF2PATImpact3DDist[NELECTRONSMAX];
+   Float_t                elePF2PATImpact3DError[NELECTRONSMAX];
+   Float_t                elePF2PATImpact3DSignificance[NELECTRONSMAX];
+   Float_t                elePF2PATChargedHadronIso[NELECTRONSMAX];
+   Float_t                elePF2PATNeutralHadronIso[NELECTRONSMAX];
+   Float_t                elePF2PATPhotonIso[NELECTRONSMAX];
+   Float_t                elePF2PATTrackPt[NELECTRONSMAX];
+   Float_t                elePF2PATTrackPhi[NELECTRONSMAX];
+   Float_t                elePF2PATTrackEta[NELECTRONSMAX];
+   Float_t                elePF2PATTrackChi2[NELECTRONSMAX];
+   Float_t                elePF2PATTrackNDOF[NELECTRONSMAX];
+   Float_t                elePF2PATTrackD0[NELECTRONSMAX];
+   Float_t                elePF2PATTrackDBD0[NELECTRONSMAX];
+   Float_t                elePF2PATD0PV[NELECTRONSMAX];
+   Float_t                elePF2PATDZPV[NELECTRONSMAX];
+   Float_t                elePF2PATBeamSpotCorrectedTrackD0[NELECTRONSMAX];
+   Float_t                elePF2PATTrackDz[NELECTRONSMAX];
+   Float_t                elePF2PATVtxZ[NELECTRONSMAX];
+   Int_t                  elePF2PATIsGsf[NELECTRONSMAX];
+   Float_t                elePF2PATGsfPx[NELECTRONSMAX];
+   Float_t                elePF2PATGsfPy[NELECTRONSMAX];
+   Float_t                elePF2PATGsfPz[NELECTRONSMAX];
+   Float_t                elePF2PATGsfE[NELECTRONSMAX];
+   Float_t                elePF2PATSCEta[NELECTRONSMAX];
+   Float_t                elePF2PATSCE[NELECTRONSMAX];
+   Float_t                elePF2PATSCPhi[NELECTRONSMAX];
+   Float_t                elePF2PATSCSigmaEtaEta[NELECTRONSMAX];
+   Float_t                elePF2PATSCSigmaIEtaIEta[NELECTRONSMAX];
+   Float_t                elePF2PATSCE1x5[NELECTRONSMAX];
+   Float_t                elePF2PATSCE5x5[NELECTRONSMAX];
+   Float_t                elePF2PATSCE2x5max[NELECTRONSMAX];
+   Float_t                elePF2PATTrackIso04[NELECTRONSMAX];
+   Float_t                elePF2PATEcalIso04[NELECTRONSMAX];
+   Float_t                elePF2PATHcalIso04[NELECTRONSMAX];
+   Float_t                elePF2PATTrackIso03[NELECTRONSMAX];
+   Float_t                elePF2PATEcalIso03[NELECTRONSMAX];
+   Float_t                elePF2PATHcalIso03[NELECTRONSMAX];
+   Float_t                elePF2PATdr04EcalRecHitSumEt[NELECTRONSMAX];
+   Float_t                elePF2PATdr03EcalRecHitSumEt[NELECTRONSMAX];
+   Float_t                elePF2PATEcalIsoDeposit[NELECTRONSMAX];
+   Float_t                elePF2PATHcalIsoDeposit[NELECTRONSMAX];
+   Float_t                elePF2PATComRelIso[NELECTRONSMAX];
+   Float_t                elePF2PATComRelIsodBeta[NELECTRONSMAX];
+   Float_t                elePF2PATComRelIsoRho[NELECTRONSMAX];
+   Float_t                elePF2PATChHadIso[NELECTRONSMAX];
+   Float_t                elePF2PATNtHadIso[NELECTRONSMAX];
+   Float_t                elePF2PATGammaIso[NELECTRONSMAX];
+   Float_t                elePF2PATRhoIso[NELECTRONSMAX];
+   Float_t                elePF2PATAEff03[NELECTRONSMAX];
+   Int_t                  elePF2PATMissingInnerLayers[NELECTRONSMAX];
+   Float_t                elePF2PATHoverE[NELECTRONSMAX];
+   Float_t                elePF2PATDeltaPhiSC[NELECTRONSMAX];
+   Float_t                elePF2PATDeltaEtaSC[NELECTRONSMAX];
+   Int_t                  elePF2PATIsBarrel[NELECTRONSMAX];
+   Int_t                  elePF2PATPhotonConversionTag[NELECTRONSMAX];
+   Float_t                elePF2PATPhotonConversionDist[NELECTRONSMAX];
+   Float_t                elePF2PATPhotonConversionDcot[NELECTRONSMAX];
+   Int_t                  elePF2PATPhotonConversionVeto[NELECTRONSMAX];
+   Int_t                  elePF2PATPhotonConversionTagCustom[NELECTRONSMAX];
+   Float_t                elePF2PATPhotonConversionDistCustom[NELECTRONSMAX];
+   Float_t                elePF2PATPhotonConversionDcotCustom[NELECTRONSMAX];
+   Float_t                elePF2PATTriggerMatch[NELECTRONSMAX];
+   Float_t                elePF2PATJetOverlap[NELECTRONSMAX];
+   Float_t                genElePF2PATPT[NELECTRONSMAX];
+   Float_t                genElePF2PATET[NELECTRONSMAX];
+   Float_t                genElePF2PATPX[NELECTRONSMAX];
+   Float_t                genElePF2PATPY[NELECTRONSMAX];
+   Float_t                genElePF2PATPZ[NELECTRONSMAX];
+   Float_t                genElePF2PATPhi[NELECTRONSMAX];
+   Float_t                genElePF2PATTheta[NELECTRONSMAX];
+   Float_t                genElePF2PATEta[NELECTRONSMAX];
+   Int_t                  genElePF2PATCharge[NELECTRONSMAX];
+   static constexpr Int_t NMUONSMAX{20};
+   Int_t                  numMuonPF2PAT;
+   Float_t                muonPF2PATE[NMUONSMAX];
+   Float_t                muonPF2PATET[NMUONSMAX];
+   Float_t                muonPF2PATPt[NMUONSMAX];
+   Float_t                muonPF2PATPX[NMUONSMAX];
+   Float_t                muonPF2PATPY[NMUONSMAX];
+   Float_t                muonPF2PATPZ[NMUONSMAX];
+   Float_t                muonPF2PATPhi[NMUONSMAX];
+   Float_t                muonPF2PATTheta[NMUONSMAX];
+   Float_t                muonPF2PATEta[NMUONSMAX];
+   Int_t                  muonPF2PATCharge[NMUONSMAX];
+   Float_t                muonPF2PATGlobalID[NMUONSMAX];
+   Float_t                muonPF2PATTrackID[NMUONSMAX];
+   Float_t                muonPF2PATChi2[NMUONSMAX];
+   Float_t                muonPF2PATD0[NMUONSMAX];
+   Float_t                muonPF2PATTrackDBD0[NMUONSMAX];
+   Float_t                muonPF2PATDBInnerTrackD0[NMUONSMAX];
+   Float_t                muonPF2PATBeamSpotCorrectedD0[NMUONSMAX];
+   Int_t                  muonPF2PATTrackNHits[NMUONSMAX];
+   Int_t                  muonPF2PATMuonNHits[NMUONSMAX];
+   Float_t                muonPF2PATNDOF[NMUONSMAX];
+   Float_t                muonPF2PATVertX[NMUONSMAX];
+   Float_t                muonPF2PATVertY[NMUONSMAX];
+   Float_t                muonPF2PATVertZ[NMUONSMAX];
+   Float_t                muonPF2PATChargedHadronIso[NMUONSMAX];
+   Float_t                muonPF2PATNeutralHadronIso[NMUONSMAX];
+   Float_t                muonPF2PATPhotonIso[NMUONSMAX];
+   Float_t                muonPF2PATTrackIso[NMUONSMAX];
+   Float_t                muonPF2PATEcalIso[NMUONSMAX];
+   Float_t                muonPF2PATHcalIso[NMUONSMAX];
+   Float_t                muonPF2PATComRelIso[NMUONSMAX];
+   Float_t                muonPF2PATComRelIsodBeta[NMUONSMAX];
+   Int_t                  muonPF2PATIsPFMuon[NMUONSMAX];
+   Int_t                  muonPF2PATNChambers[NMUONSMAX];
+   Int_t                  muonPF2PATNMatches[NMUONSMAX];
+   Int_t                  muonPF2PATTkLysWithMeasurements[NMUONSMAX];
+   Int_t                  muonPF2PATVldPixHits[NMUONSMAX];
+   Int_t                  muonPF2PATMatchedStations[NMUONSMAX];
+   Float_t                muonPF2PATGlbTkNormChi2[NMUONSMAX];
+   Float_t                muonPF2PATDBPV[NMUONSMAX];
+   Float_t                muonPF2PATDZPV[NMUONSMAX];
+   Float_t                genMuonPF2PATPT[NMUONSMAX];
+   Float_t                genMuonPF2PATET[NMUONSMAX];
+   Float_t                genMuonPF2PATPX[NMUONSMAX];
+   Float_t                genMuonPF2PATPY[NMUONSMAX];
+   Float_t                genMuonPF2PATPZ[NMUONSMAX];
+   Float_t                genMuonPF2PATPhi[NMUONSMAX];
+   Float_t                genMuonPF2PATTheta[NMUONSMAX];
+   Float_t                genMuonPF2PATEta[NMUONSMAX];
+   Int_t                  genMuonPF2PATCharge[NMUONSMAX];
+   static constexpr Int_t NJETSMAX{40};
+   Int_t                  numJetPF2PAT;
+   Double_t               jetPF2PATE[NJETSMAX];
+   Double_t               jetPF2PATEt[NJETSMAX];
+   Double_t               jetPF2PATPt[NJETSMAX];
+   Double_t               jetPF2PATPtRaw[NJETSMAX];
+   Double_t               jetPF2PATUnCorEt[NJETSMAX];
+   Double_t               jetPF2PATUnCorPt[NJETSMAX];
+   Double_t               jetPF2PATEta[NJETSMAX];
+   Double_t               jetPF2PATTheta[NJETSMAX];
+   Double_t               jetPF2PATPhi[NJETSMAX];
+   Double_t               jetPF2PATPx[NJETSMAX];
+   Double_t               jetPF2PATPy[NJETSMAX];
+   Double_t               jetPF2PATPz[NJETSMAX];
+   Double_t               jetPF2PATdRClosestLepton[NJETSMAX];
+   Int_t                  jetPF2PATNtracksInJet[NJETSMAX];
+   Float_t                jetPF2PATJetCharge[NJETSMAX];
+   Float_t                jetPF2PATfHPD[NJETSMAX];
+   Float_t                jetPF2PATBtagSoftMuonPtRel[NJETSMAX];
+   Float_t                jetPF2PATBtagSoftMuonQuality[NJETSMAX];
+   Float_t                jetPF2PATCorrFactor[NJETSMAX];
+   Float_t                jetPF2PATCorrResidual[NJETSMAX];
+   Float_t                jetPF2PATL2L3ResErr[NJETSMAX];
+   Float_t                jetPF2PATCorrErrLow[NJETSMAX];
+   Float_t                jetPF2PATCorrErrHi[NJETSMAX];
+   Float_t                jetPF2PATN90Hits[NJETSMAX];
+   Float_t                jetPF2PATTriggered[NJETSMAX];
+   Float_t                jetPF2PATSVX[NJETSMAX];
+   Float_t                jetPF2PATSVY[NJETSMAX];
+   Float_t                jetPF2PATSVZ[NJETSMAX];
+   Float_t                jetPF2PATSVDX[NJETSMAX];
+   Float_t                jetPF2PATSVDY[NJETSMAX];
+   Float_t                jetPF2PATSVDZ[NJETSMAX];
+   Float_t                jetPF2PATBDiscriminator[NJETSMAX];
+   Float_t	              jetPF2PATCvsLDiscriminator[NJETSMAX];
+   Float_t	              jetPF2PATCvsBDiscriminator[NJETSMAX];
+   Int_t                  jetPF2PATNConstituents[NJETSMAX];
+   Int_t                  jetPF2PATPID[NJETSMAX];
+   Float_t                jetPF2PATClosestBPartonDeltaR[NJETSMAX];
+   Float_t                jetPF2PATClosestCPartonDeltaR[NJETSMAX];
+   Float_t                genJetPF2PATET[NJETSMAX];
+   Float_t                genJetPF2PATPT[NJETSMAX];
+   Float_t                genJetPF2PATPX[NJETSMAX];
+   Float_t                genJetPF2PATPY[NJETSMAX];
+   Float_t                genJetPF2PATPZ[NJETSMAX];
+   Float_t                genJetPF2PATPhi[NJETSMAX];
+   Float_t                genJetPF2PATTheta[NJETSMAX];
+   Float_t                genJetPF2PATEta[NJETSMAX];
+   Int_t                  genJetPF2PATPID[NJETSMAX];
+   Float_t                jetPF2PATMuEnergy[NJETSMAX];
+   Float_t                jetPF2PATMuEnergyFraction[NJETSMAX];
+   Float_t                jetPF2PATNeutralHadEnergy[NJETSMAX];
+   Float_t                jetPF2PATNeutralEmEnergy[NJETSMAX];
+   Float_t                jetPF2PATChargedHadronEnergyFraction[NJETSMAX];
+   Float_t                jetPF2PATNeutralHadronEnergyFraction[NJETSMAX];
+   Float_t                jetPF2PATChargedEmEnergyFraction[NJETSMAX];
+   Float_t                jetPF2PATNeutralEmEnergyFraction[NJETSMAX];
+   Float_t                jetPF2PATChargedHadronEnergyFractionCorr[NJETSMAX];
+   Float_t                jetPF2PATNeutralHadronEnergyFractionCorr[NJETSMAX];
+   Float_t                jetPF2PATChargedEmEnergyFractionCorr[NJETSMAX];
+   Float_t                jetPF2PATNeutralEmEnergyFractionCorr[NJETSMAX];
+   Int_t                  jetPF2PATNeutralMultiplicity[NJETSMAX];
+   Int_t                  jetPF2PATChargedMultiplicity[NJETSMAX];
+   Double_t               metPF2PATEt;
+   Double_t               metPF2PATEtRaw;
+   Double_t               metPF2PATPhi;
+   Double_t               metPF2PATPt;
+   Double_t               metPF2PATPx;
+   Double_t               metPF2PATPy;
+   Float_t                metPF2PATScalarEt;
+   Float_t                metPF2PATEtUncorrected;
+   Float_t                metPF2PATPhiUncorrected;
+   Float_t                genMetPF2PATEt;
+   Float_t                genMetPF2PATPhi;
+   Float_t                genMetPF2PATPt;
+   Float_t                genMetPF2PATPx;
+   Float_t                genMetPF2PATPy;
+   static constexpr Int_t NTAUSMAX{20};
+   Int_t                  numTauPF2PAT;
+   Float_t                tauPF2PATE[NTAUSMAX];
+   Float_t                tauPF2PATPt[NTAUSMAX];
+   Float_t                tauPF2PATPhi[NTAUSMAX];
+   Float_t                tauPF2PATEta[NTAUSMAX];
+   static constexpr Int_t NTRACKSMAX{1000};
+   Int_t                  numGeneralTracks;
+   Float_t                generalTracksPt[NTRACKSMAX];
+   Float_t                generalTracksEta[NTRACKSMAX];
+   Float_t                generalTracksTheta[NTRACKSMAX];
+   Float_t                generalTracksBeamSpotCorrectedD0[NTRACKSMAX];
+   Float_t                generalTracksPhi[NTRACKSMAX];
+   Int_t                  generalTracksCharge[NTRACKSMAX];
+   Int_t                  isElePlusJets;
+   Float_t                genPDFScale;
+   Float_t                genPDFx1;
+   Float_t                genPDFx2;
+   Int_t                  genPDFf1;
+   Int_t                  genPDFf2;
+   Int_t                  processId;
+   Float_t                processPtHat;
+   Double_t               processMCWeight;
+   Float_t                beamSpotX;
+   Float_t                beamSpotY;
+   Float_t                beamSpotZ;
+   Float_t                pvX;
+   Float_t                pvY;
+   Float_t                pvZ;
+   Float_t                pvDX;
+   Float_t                pvDY;
+   Float_t                pvDZ;
+   Float_t                pvRho;
+   Int_t                  pvIsFake;
+   Float_t                pvNdof;
+   Float_t                pvChi2;
+   Float_t                mhtPt;
+   Float_t                mhtPy;
+   Float_t                mhtPx;
+   Float_t                mhtPhi;
+   Float_t                mhtSumEt;
+   Float_t                mhtSignif;
+   Int_t                  nTriggerBits;
+   Int_t                  TriggerBits[1];   //[nTriggerBits]
+   Double_t	              weight_muF0p5;
+   Double_t	              weight_muF2;
+   Double_t	              weight_muR0p5;
+   Double_t	              weight_muR2;
+   Double_t	              origWeightForNorm;
+   // Int_t                  numVert;
 
    //2015 Data Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2;
@@ -310,17 +312,18 @@ public :
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
 
    //Gen info
-   Int_t           nGenPar;
-   Float_t         genParEta[50];   //[nGenPar]
-   Float_t         genParPhi[50];   //[nGenPar]
-   Float_t         genParE[50];   //[nGenPar]
-   Float_t         genParPt[50];   //[nGenPar]
-   Int_t           genParId[50];   //[nGenPar]
-   Int_t	   genParMotherId[50]; //[nGenPar]
-   Int_t           genParCharge[50];   //[nGenPar]
-   Int_t           eventRun;
-   Int_t           eventNum;
-   Float_t         eventLumiblock;
+   static constexpr Int_t NGENPARMAX{50};
+   Int_t                  nGenPar;
+   Float_t                genParEta[NGENPARMAX];
+   Float_t                genParPhi[NGENPARMAX];
+   Float_t                genParE[NGENPARMAX];
+   Float_t                genParPt[NGENPARMAX];
+   Int_t                  genParId[NGENPARMAX];
+   Int_t     	          genParMotherId[NGENPARMAX];
+   Int_t                  genParCharge[NGENPARMAX];
+   Int_t                  eventRun;
+   Int_t                  eventNum;
+   Float_t                eventLumiblock;
 
    // List of branches
    TBranch        *b_numElePF2PAT;   //!
@@ -364,14 +367,11 @@ public :
    TBranch        *b_elePF2PATGsfPy;   //!
    TBranch        *b_elePF2PATGsfPz;   //!
    TBranch        *b_elePF2PATGsfE;   //!
-   TBranch        *b_elePF2PATEcalEnergy;   //!
    TBranch        *b_elePF2PATSCEta;   //!
    TBranch        *b_elePF2PATSCE;   //!
    TBranch        *b_elePF2PATSCPhi;   //!
-   TBranch        *b_elePF2PATSCEoverP;   //!
    TBranch        *b_elePF2PATSCSigmaEtaEta;   //!
    TBranch        *b_elePF2PATSCSigmaIEtaIEta;   //!
-   TBranch        *b_elePF2PATSCSigmaIEtaIEta5x5;   //!
    TBranch        *b_elePF2PATSCE1x5;   //!
    TBranch        *b_elePF2PATSCE5x5;   //!
    TBranch        *b_elePF2PATSCE2x5max;   //!
@@ -762,14 +762,11 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATGsfPy", elePF2PATGsfPy, &b_elePF2PATGsfPy);
    fChain->SetBranchAddress("elePF2PATGsfPz", elePF2PATGsfPz, &b_elePF2PATGsfPz);
    fChain->SetBranchAddress("elePF2PATGsfE", elePF2PATGsfE, &b_elePF2PATGsfE);
-   fChain->SetBranchAddress("elePF2PATEcalEnergy", elePF2PATEcalEnergy, &b_elePF2PATEcalEnergy);
    fChain->SetBranchAddress("elePF2PATSCEta", elePF2PATSCEta, &b_elePF2PATSCEta);
    fChain->SetBranchAddress("elePF2PATSCE", elePF2PATSCE, &b_elePF2PATSCE);
    fChain->SetBranchAddress("elePF2PATSCPhi", elePF2PATSCPhi, &b_elePF2PATSCPhi);
-   fChain->SetBranchAddress("elePF2PATSCEoverP", elePF2PATSCEoverP, &b_elePF2PATSCEoverP);
    fChain->SetBranchAddress("elePF2PATSCSigmaEtaEta", elePF2PATSCSigmaEtaEta, &b_elePF2PATSCSigmaEtaEta);
    fChain->SetBranchAddress("elePF2PATSCSigmaIEtaIEta", elePF2PATSCSigmaIEtaIEta, &b_elePF2PATSCSigmaIEtaIEta);
-   fChain->SetBranchAddress("elePF2PATSCSigmaIEtaIEta5x5", elePF2PATSCSigmaIEtaIEta5x5, &b_elePF2PATSCSigmaIEtaIEta5x5);
    fChain->SetBranchAddress("elePF2PATSCE1x5", elePF2PATSCE1x5, &b_elePF2PATSCE1x5);
    fChain->SetBranchAddress("elePF2PATSCE5x5", elePF2PATSCE5x5, &b_elePF2PATSCE5x5);
    fChain->SetBranchAddress("elePF2PATSCE2x5max", elePF2PATSCE2x5max, &b_elePF2PATSCE2x5max);

@@ -56,7 +56,7 @@ throw std::exception();
 
   // clean string values
   char chars[] = " \"\n";
-  for (unsigned int i = 0; i < strlen(chars); ++i) {
+  for (unsigned i = 0; i < strlen(chars); ++i) {
     vec[1].erase(remove(vec[1].begin(),vec[1].end(),chars[i]),vec[1].end());
     vec[2].erase(remove(vec[2].begin(),vec[2].end(),chars[i]),vec[2].end());
     vec[10].erase(remove(vec[10].begin(),vec[10].end(),chars[i]),vec[10].end());
