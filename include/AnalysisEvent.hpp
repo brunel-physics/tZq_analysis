@@ -66,11 +66,14 @@ public :
    Float_t                elePF2PATGsfPy[NELECTRONSMAX];
    Float_t                elePF2PATGsfPz[NELECTRONSMAX];
    Float_t                elePF2PATGsfE[NELECTRONSMAX];
+   Float_t                elePF2PATEcalEnergy[NELECTRONSMAX];
    Float_t                elePF2PATSCEta[NELECTRONSMAX];
    Float_t                elePF2PATSCE[NELECTRONSMAX];
+   Float_t                elePF2PATSCEoverp[NELECTRONSMAX];
    Float_t                elePF2PATSCPhi[NELECTRONSMAX];
    Float_t                elePF2PATSCSigmaEtaEta[NELECTRONSMAX];
    Float_t                elePF2PATSCSigmaIEtaIEta[NELECTRONSMAX];
+   Float_t                elePF2PATSCSigmaIEtaIEta5x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE1x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE5x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE2x5max[NELECTRONSMAX];
