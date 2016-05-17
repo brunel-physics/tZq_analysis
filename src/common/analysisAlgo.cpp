@@ -6,11 +6,10 @@
 #include "AnalysisEvent.hpp"
 
 #include <iomanip>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <stdlib.h> 
 
 AnalysisAlgo::AnalysisAlgo():
   config(""),
@@ -509,7 +508,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   
   if (channelsToRun && trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned int channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
+    for (unsigned channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelInd & 17){
 	std::cout << "eee ";
@@ -534,7 +533,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   
   if (channelsToRun && !trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned int channelInd = 1; channelInd != 4; channelInd = channelInd << 1){
+    for (unsigned channelInd = 1; channelInd != 4; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelInd & 1){
 	std::cout << "ee ";
@@ -645,10 +644,10 @@ void AnalysisAlgo::runMainAnalysis(){
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
-    uint channelIndMax = 256;
+    unsigned channelIndMax = 256;
 
     if ( !trileptonChannel_ ){ channelIndMax = 4; }
-    for (unsigned int channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
+    for (unsigned channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName = "";
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelsToRun && trileptonChannel_){
@@ -717,13 +716,13 @@ void AnalysisAlgo::runMainAnalysis(){
       if (!dataset->isMC() && skipData) continue;
       if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
 	int systMask = 1;
-	for (unsigned int systInd = 0; systInd < systNames.size(); systInd++){
+	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
 	  } 
 	  if (cutFlowMap.find(dataset->getFillHisto()+systNames[systInd]) == cutFlowMap.end()){
-	    const uint numCutFlowBins (stageNames.size());
+	    const unsigned numCutFlowBins (stageNames.size());
 	    cutFlowMap[dataset->getFillHisto()] = new TH1F((dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),numCutFlowBins,0,numCutFlowBins); //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
 	    if (systInd == 0 && datasetInfos.find(dataset->getFillHisto()) == datasetInfos.end()){
 	      legOrder.push_back(dataset->getFillHisto());
@@ -739,7 +738,7 @@ void AnalysisAlgo::runMainAnalysis(){
 		plotsVec.push_back(systNames[systInd]+channel);
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()] = std::map<std::string,Plots*>();
-	      for (unsigned int j = 0; j < stageNames.size(); j++){
+	      for (unsigned j = 0; j < stageNames.size(); j++){
 		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_);
 	      }
 	    }
@@ -782,8 +781,8 @@ void AnalysisAlgo::runMainAnalysis(){
       if (makeBTagEffPlots && dataset->isMC()){
 	int ptBins = 4, etaBins = 4;
 	float ptMin = 0., ptMax = 200., etaMin = 0., etaMax = 2.4;
-	for (int unsigned denNum = 0; denNum < denomNum.size(); denNum++){
-	  for (int unsigned type = 0; type < typesOfEff.size(); type++){
+	for (unsigned denNum = 0; denNum < denomNum.size(); denNum++){
+	  for (unsigned type = 0; type < typesOfEff.size(); type++){
 	    bTagEffPlots.push_back(new TH2D(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax));
 	  }
 	}
@@ -795,12 +794,12 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	TFile * datasetFileForHists = new TFile(("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	for (int unsigned denNum = 0; denNum < denomNum.size(); denNum++){
-	  for (int unsigned eff = 0; eff < typesOfEff.size(); eff++){
+	for (unsigned denNum = 0; denNum < denomNum.size(); denNum++){
+	  for (unsigned eff = 0; eff < typesOfEff.size(); eff++){
 	    bTagEffPlots.push_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
 	  }
 	}
-	for (int unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
+	for (unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
 	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
 	}
 	cutObj->setBTagPlots(bTagEffPlots,false);
@@ -860,7 +859,7 @@ void AnalysisAlgo::runMainAnalysis(){
         mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
 	int systMask = 1;
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
-	for (unsigned int systIn = 0; systIn < systNames.size(); systIn++){
+	for (unsigned systIn = 0; systIn < systNames.size(); systIn++){
 	  std::cout << systNames[systIn] << " ";
 	  //	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
 	  /*	if (systIn > 0 && !(systMask & systToRun)){
@@ -906,7 +905,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	event->GetEntry(i);
 	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
 	int systMask = 1;
-	for (unsigned int systInd = 0; systInd < systNames.size(); systInd++){
+	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
 	  if (!dataset->isMC() && systInd > 0) break;
 	  //	std::cout << systInd << " " << systMask << std::endl;
 	  if (systInd > 0 && !(systMask & systToRun)) {
@@ -962,7 +961,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
 	    bool tempBool = false;
-	    for (unsigned int j = 0; j < eventNumbers.size(); j++){
+	    for (unsigned j = 0; j < eventNumbers.size(); j++){
 	      if (eventNumbers[j] == event->eventNum) {
 		tempBool = true;
 		break;
@@ -1037,11 +1036,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	      wQuark1Index = event->wPairIndex.first;
 	      wQuark2Index = event->wPairIndex.second;
 	    }
-	    for (unsigned int jetIndexIt = 0; jetIndexIt < 15; jetIndexIt++){
+	    for (unsigned jetIndexIt = 0; jetIndexIt < 15; jetIndexIt++){
 	      if (jetIndexIt < event->jetIndex.size()) jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
 	      else jetInd[jetIndexIt] = -1;
 	    }
-	    for (unsigned int bJetIt = 0; bJetIt < 10; bJetIt++){
+	    for (unsigned bJetIt = 0; bJetIt < 10; bJetIt++){
 	      if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
 	      else bJetInd[bJetIt] = -1;
 	    }
@@ -1062,7 +1061,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	cloneTree->Write();
 	//If we're doing b-tag efficiencies, let's save them here.
 	if (makeBTagEffPlots){
-	  for (int unsigned i = 0; i < bTagEffPlots.size(); i++){
+	  for (unsigned i = 0; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
@@ -1099,7 +1098,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << std::endl;
 	int systMask = 1;
 	std::cout << "Saving Systematics: ";
-	for (unsigned int systInd = 0; systInd < systNames.size(); systInd++){
+	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
@@ -1112,12 +1111,12 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << std::endl;
 	//Save the efficiency plots for b-tagging here if we're doing that.
 	if (makeBTagEffPlots){
-	  for (int unsigned i = 0; i < bTagEffPlots.size(); i++){
+	  for (unsigned i = 0; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
 	mvaOutFile->Write();
-	for (unsigned int i = 0; i < mvaTree.size(); i++){
+	for (unsigned i = 0; i < mvaTree.size(); i++){
 	  delete mvaTree[i];
 	}
 	mvaOutFile->Close();
@@ -1131,7 +1130,7 @@ void AnalysisAlgo::runMainAnalysis(){
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
       //Delete plots from out btag vector. Avoid memory leaks, kids.
       if (makeBTagEffPlots){
-	for (int unsigned i = 0; i < bTagEffPlots.size(); i++){
+	for (unsigned i = 0; i < bTagEffPlots.size(); i++){
 	  delete bTagEffPlots[i];
 	}
       }
@@ -1154,7 +1153,7 @@ void AnalysisAlgo::savePlots()
     plotObj.setPostfix("");
     plotObj.setOutputFolder(outFolder);
 
-    for (unsigned int i = 0; i < plotsVec.size(); i++){
+    for (unsigned i = 0; i < plotsVec.size(); i++){
       std::cout << plotsVec[i] << std::endl;
       if (plots)
 	plotObj.plotHistos(plotsMap[plotsVec[i]]);
@@ -1172,7 +1171,7 @@ void AnalysisAlgo::savePlots()
   }
 
   /*    for (std::vector<Dataset>::iterator dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
-    for (unsigned int j = 0; j < stageNames.size(); j++){
+    for (unsigned j = 0; j < stageNames.size(); j++){
     plotsMap[dataset->getFillHisto()][stageNames[j]]->saveAllPlots();
     }
     //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.root").c_str());    
@@ -1188,9 +1187,9 @@ void AnalysisAlgo::savePlots()
       if (cutFlowMap.find(dataset->getFillHisto()) == cutFlowMap.end()) continue;
       delete cutFlowMap[dataset->getFillHisto()];
       if (!plots) continue;
-      for (unsigned int j = 0; j < stageNames.size(); j++){
+      for (unsigned j = 0; j < stageNames.size(); j++){
 	int systMask = 1;
-	for (unsigned int systInd = 0; systInd < systNames.size(); systInd++){
+	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systInd & systMask)) {
 	    systMask = systMask << 1;
 	    continue;

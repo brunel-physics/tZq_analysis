@@ -128,7 +128,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack.Draw("");
 
   if (xAxisLabels.size() > 0){
-    for (unsigned int i = 1; i <= xAxisLabels.size(); i++){
+    for (unsigned i = 1; i <= xAxisLabels.size(); i++){
       mcStack.GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
     }
   }
@@ -150,7 +150,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   legend_.Draw();
 
   // Save the plots.
-  for (unsigned int ext_it = 0; ext_it < extensions_.size(); ext_it++){
+  for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + extensions_[ext_it]).c_str());
   }
 
@@ -159,7 +159,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack.SetMaximum(max*10);
 
   //Save the log plots
-  for (unsigned int ext_it = 0; ext_it < extensions_.size(); ext_it++){
+  for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + "_log" + extensions_[ext_it]).c_str());
   }*/
   

@@ -21,18 +21,18 @@ class Dataset{
  
  public:
   Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName,long,int,std::string,std::string,std::string);
-  std::string name(){return name_;};
-  float lumi(){return lumi_;};
-  bool isMC(){return isMC_;};
-  std::string getFillHisto(){return fillName_;};
-  std::string treeName(){return treeName_;};
-  int getColour(){return colour_;};
-  std::string getPlotLabel(){return plotLabel_;};
-  std::string getPlotType(){return plotType_;};
+  std::string name(){return name_;}
+  float lumi(){return lumi_;}
+  bool isMC(){return isMC_;}
+  std::string getFillHisto(){return fillName_;}
+  std::string treeName(){return treeName_;}
+  int getColour(){return colour_;}
+  std::string getPlotLabel(){return plotLabel_;}
+  std::string getPlotType(){return plotType_;}
   int fillChain(TChain*, int);
   float getDatasetWeight(double);
   float getEventWeight();
-  std::string getTriggerFlag(){return triggerFlag_;};
+  std::string getTriggerFlag(){return triggerFlag_;}
 };
 
 #endif
