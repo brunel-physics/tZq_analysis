@@ -120,7 +120,7 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
 float Plots::fillLepton1Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATEta[event->electronIndexTight[0]]);
-  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
+  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
   return -10;
 }
 float Plots::fillLepton2Pt(AnalysisEvent* event){
@@ -133,7 +133,7 @@ float Plots::fillLepton2Pt(AnalysisEvent* event){
 float Plots::fillLepton2Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATEta[event->electronIndexTight[1]]);
-  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
+  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
   return -10;
 }
 float Plots::fillLepton3Pt(AnalysisEvent* event){
