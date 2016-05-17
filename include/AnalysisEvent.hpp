@@ -299,7 +299,6 @@ public :
    Double_t	              origWeightForNorm;
    // Int_t                  numVert;
 
-
    //2015 Data Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2;
    Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
