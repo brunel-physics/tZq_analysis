@@ -11,3 +11,4 @@
 bin/
 plots/
 configs/datasets/fileLists/*
+step*EventDump*.txt
