@@ -304,12 +304,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
-  if (event->electronIndexLoose.size() != numLooseEle_) return false;
+//  if (event->electronIndexLoose.size() != numLooseEle_) return false;
 
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
-  if (event->muonIndexLoose.size() != numLooseMu_) return false;
+//  if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
 
   //Should I make it return which leptons are the zMass candidate? Probably.
@@ -904,7 +904,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchNumMus_->Fill(event->muonIndexTight.size());
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
-  //  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
   synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
 
   //loose lepton veto
