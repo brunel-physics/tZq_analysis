@@ -506,8 +506,8 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  // set up the tlorentz vectors in the event. For plotting and jazz.
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
-	  event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
+	  event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]:event->elePF2PATComRelIsoRho[electrons[i]];
 	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
 	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 	  closestMass = invMass;
@@ -521,7 +521,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	    for (unsigned k = 0; k < electrons.size(); k++){
 	      if (k == i || k == j) continue;
 	      event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[k]],event->elePF2PATGsfPy[electrons[k]],event->elePF2PATGsfPz[electrons[k]],event->elePF2PATGsfE[electrons[k]]);
-	      event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[k]]/event->wLepton.Pt();
+	      event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[k]];
 	      event->wLepIndex = electrons[k];
 	    }
 	  }
@@ -548,7 +548,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  //Now set up W lepton 
 	  if (muons.size() == 2){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
-	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
+	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]];
 	    event->wLepIndex = electrons[0];
 	  }
 	  else {
@@ -582,8 +582,8 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 	if (std::abs(invMass) < std::abs(closestMass)){
         	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
-        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
+        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]:event->elePF2PATComRelIsoRho[electrons[i]];
         	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
         	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 		closestMass = invMass;
@@ -1506,8 +1506,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
@@ -1522,8 +1522,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
   }
 
