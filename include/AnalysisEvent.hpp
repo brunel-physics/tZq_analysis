@@ -652,7 +652,7 @@ public :
 #endif
 
 #ifdef AnalysisEvent_cxx
-AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : fChain(nullptr) 
+AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : fChain{nullptr}
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -661,9 +661,9 @@ AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : 
 #ifdef SINGLE_TREE
       // The following code should be used if you want this class to access
       // a single tree instead of a chain
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root");
+       TFile *f{(TFile*)gROOT->GetListOfFiles()->FindObject("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root")};
       if (!f || !f->IsOpen()) {
-         f = new TFile("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root");
+        f = new TFile{"/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root"};
       }
       f->GetObject("tree",tree);
 
@@ -671,7 +671,7 @@ AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : 
 
       // The following code should be used if you want this class to access a chain
       // of trees.
-      TChain * chain = new TChain("tree","");
+      TChain * chain{new TChain{"tree",""}};
       chain->Add("/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_100_0_Gu6_skim.root/tree");
       tree = chain;
 #endif // SINGLE_TREE
@@ -692,11 +692,12 @@ Int_t AnalysisEvent::GetEntry(Long64_t entry)
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
+
 Long64_t AnalysisEvent::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
-   Long64_t centry = fChain->LoadTree(entry);
+   Long64_t centry{fChain->LoadTree(entry)};
    if (centry < 0) return centry;
    if (fChain->GetTreeNumber() != fCurrent) {
       fCurrent = fChain->GetTreeNumber();
@@ -1047,6 +1048,7 @@ void AnalysisEvent::Show(Long64_t entry)
    if (!fChain) return;
    fChain->Show(entry);
 }
+
 Int_t AnalysisEvent::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
@@ -1054,5 +1056,5 @@ Int_t AnalysisEvent::Cut(Long64_t entry)
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef AnalysisEvent_cxx
 
+#endif // #ifdef AnalysisEvent_cxx

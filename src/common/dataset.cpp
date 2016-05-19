@@ -28,7 +28,7 @@ int Dataset::fillChain(TChain * chain , int nFiles){
     return 0;
   }
   std::string line;
-  int files = 0;
+  int files{0};
   while(getline(fileList,line)){
     chain->Add(line.c_str());
     if (nFiles > 0) {
