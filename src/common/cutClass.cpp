@@ -1518,8 +1518,10 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   }
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
+//      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+//      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
+      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first]);
+      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second]);
     }
     else if (numTightMu_ == 2){
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());

@@ -170,7 +170,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 24156124
+totalEvents = 262297381
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring
@@ -189,7 +189,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 30857572
+totalEvents = 169513672
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
