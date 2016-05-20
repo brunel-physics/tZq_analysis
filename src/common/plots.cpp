@@ -187,27 +187,27 @@ float Plots::fillWbosonQuark2Phi(AnalysisEvent* event){
 
 float Plots::fillLepton1RelIso(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return event->elePF2PATComRelIsoRho[event->electronIndexTight[0]]/event->elePF2PATPT[event->electronIndexTight[0]];
+    return event->elePF2PATComRelIsoRho[event->electronIndexTight[0]];
   else return  event->muonPF2PATComRelIsodBeta[event->muonIndexTight[0]];
   return -10;
 }
 
 float Plots::fillLepton2RelIso(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return event->elePF2PATComRelIsoRho[event->electronIndexTight[1]]/event->elePF2PATPT[event->electronIndexTight[1]];
+    return event->elePF2PATComRelIsoRho[event->electronIndexTight[1]];
   else return event->muonPF2PATComRelIsodBeta[event->muonIndexTight[1]];
   return -10;
 }
 
 float Plots::fillLepton3RelIso(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 2)
-    return event->elePF2PATComRelIsoRho[event->electronIndexTight[2]]/event->elePF2PATPT[event->electronIndexTight[2]];
+    return event->elePF2PATComRelIsoRho[event->electronIndexTight[2]];
   if (event->muonIndexTight.size() > 2)
     return event->muonPF2PATComRelIsodBeta[event->muonIndexTight[2]];
   if (event->electronIndexTight.size() > 1)
     return event->muonPF2PATComRelIsodBeta[event->muonIndexTight[0]];
   else
-    return event->elePF2PATComRelIsoRho[event->electronIndexTight[0]]/event->elePF2PATPT[event->electronIndexTight[0]];
+    return event->elePF2PATComRelIsoRho[event->electronIndexTight[0]];
   return -10;
 }
 
