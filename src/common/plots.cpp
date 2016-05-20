@@ -50,7 +50,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Phi",&Plots::fillLepton3Phi));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3RelIso",&Plots::fillLepton3RelIso));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3MVA",&Plots::fillLepton3MVA));
-  }/*
+  }
   else if (!trileptonChannel_){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Pt",&Plots::fillWbosonQuark1Pt));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Eta",&Plots::fillWbosonQuark1Eta));
@@ -58,7 +58,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Pt",&Plots::fillWbosonQuark2Pt));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Eta",&Plots::fillWbosonQuark2Eta));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark2Phi",&Plots::fillWbosonQuark2Phi));
-  }*/
+  }
 
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("met",&Plots::fillMetPlot));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("numbJets",&Plots::getNumberOfJets));
@@ -121,7 +121,7 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
 float Plots::fillLepton1Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATEta[event->electronIndexTight[0]]);
-  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
+  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
   return -10;
 }
 float Plots::fillLepton2Pt(AnalysisEvent* event){
@@ -134,7 +134,7 @@ float Plots::fillLepton2Pt(AnalysisEvent* event){
 float Plots::fillLepton2Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATEta[event->electronIndexTight[1]]);
-  else return  std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
+  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
   return -10;
 }
 float Plots::fillLepton3Pt(AnalysisEvent* event){

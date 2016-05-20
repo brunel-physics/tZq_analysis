@@ -59,60 +59,75 @@ def getBjets(tree,syst,jetUnc,met,jets):
 
 def getJetVec(tree, index, syst, jetUnc, metVec):
     #Gets a vector for a jet and applies jet corrections.
-    oldSmearCorr = 0.;
-    if (fabs(tree.jetPF2PATEta[index]) <= 1.1):
-        oldSmearCorr = 0.066
-    elif (fabs(tree.jetPF2PATEta[index]) <= 1.7):
-        oldSmearCorr = 0.191
-    elif (fabs(tree.jetPF2PATEta[index]) <= 2.3):
-        oldSmearCorr = 0.096;
-    else:
-        oldSmearCorr = 0.166;
-    oldSmearValue = 1.0;
-    if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        oldSmearValue = max(0.0, tree.jetPF2PATPtRaw[index] + (tree.jetPF2PATPtRaw[index] - tree.genJetPF2PATPT[index]) * oldSmearCorr)/tree.jetPF2PATPtRaw[index];
-    newJECCorr = 0.;
-    if (fabs(tree.jetPF2PATEta[index]) <= 0.5) :
-        newJECCorr = 1.079;
-        if (syst == 16): newJECCorr = 1.105;
-        elif (syst == 32): newJECCorr = 1.053;
-    elif (fabs(tree.jetPF2PATEta[index]) <= 1.1) :
-        newJECCorr = 1.099;
-        if (syst == 16): newJECCorr = 1.127;
-        elif (syst == 32): newJECCorr = 1.071;
-    elif (fabs(tree.jetPF2PATEta[index]) <= 1.7) :
-        newJECCorr = 1.121;
-        if (syst == 16): newJECCorr = 1.150;
-        elif (syst == 32): newJECCorr = 1.092
-    elif (fabs(tree.jetPF2PATEta[index]) <= 2.3) :
-        newJECCorr = 1.208;
-        if (syst == 16): newJECCorr = 1.254;
-        elif (syst == 32): newJECCorr = 1.162;
-    elif (fabs(tree.jetPF2PATEta[index]) <= 2.8):
-        newJECCorr = 1.254;
-        if (syst == 16): newJECCorr = 1.316;
-        elif (syst == 32): newJECCorr = 1.192;
-    elif (fabs(tree.jetPF2PATEta[index]) <= 3.2):
-        newJECCorr = 1.395;
-        if (syst == 16): newJECCorr = 1.458;
-        elif (syst == 32): newJECCorr = 1.332;
-    else :
-        newJECCorr = 1.056;
-        if (syst == 16): newJECCorr = 1.247;
-        elif (syst == 32): newJECCorr = 0.865;
+
     newSmearValue = 1.0;
-    if (jetUnc and tree.genJetPF2PATPT[index] > -990.): newSmearValue = max(0.0, tree.jetPF2PATPtRaw[index] + (tree.jetPF2PATPtRaw[index] - tree.genJetPF2PATPT[index]) * newJECCorr)/tree.jetPF2PATPtRaw[index];
-    returnJet = TLorentzVector(0);
-    if (newSmearValue < 0.01): returnJet.SetPxPyPzE(0.0001,0.0001,0.0001,0.0001);
+    jerSF = 0.0;
+    jerSigma = 0.0;
+
+    if (n.fabs(tree.jetPF2PATEta[index]) <= 0.5) :
+        jerSF = 1.095;
+        jerSigma = 0.018;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 0.8) :
+        jerSF = 1.120
+        jerSigma = 0.028;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.1) :
+        jerSF = 1.097;
+        jerSigma = 0.017;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.3) :
+        jerSF = 1.103;
+        jerSigma = 0.033;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.7) :
+        jerSF = 1.118;
+        jerSigma = 0.014;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.9) :
+        jerSF = 1.100;
+        jerSigma = 0.033;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
+        jerSF = 1.162;
+        jerSigma = 0.044;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.3) :
+        jerSF = 1.160;
+        jerSigma = 0.048;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.5) :
+        jerSF = 1.161;
+        jerSigma = 0.060;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.8) :
+        jerSF = 1.209;
+        jerSigma = 0.059;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.0) :
+        jerSF = 1.564
+        jerSigma = 0.321;
+    elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.2) :
+        jerSF = 1.384;
+        jerSigma = 0.033;
     else :
+        jerSF = 1.216;
+        jerSigma = 0.050;
+
+    if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
+        returnJet = TLorentzVector();
+        if ( DeltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index]) < 0.4/2.0 ):
+            if (syst == 16): jerSF += jerSigma;
+            elif (syst == 32): jerSF -= jerSigma;
+            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index];
+            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
+        else :
+           random.seed();
+           newSmearValue = 1.0+TRandom(random).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma);
+           returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
+
+    else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+
+    if (newSmearValue > 0.01):
         #Propogate through the met. But only do it if the smear jet isn't 0.
         metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
         metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
-        returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index]/oldSmearValue,newSmearValue*tree.jetPF2PATPy[index]/oldSmearValue,newSmearValue*tree.jetPF2PATPz[index]/oldSmearValue,newSmearValue*tree.jetPF2PATE[index]/oldSmearValue);
+
     if syst == 16:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
     elif syst == 32:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
+
     metVec.SetPx(metVec.Px()-returnJet.Px())
     metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
@@ -291,27 +306,27 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         totPx,totPy = 0,0
         totPx += zLep1.Px() + zLep2.Px() + wLep.Px()
         totPy += zLep1.Py() + zLep2.Py() + wLep.Py()
-        varMap["lepPt"][0] = sqrt(totPx * totPx + totPy * totPy)
+        varMap["lepPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
         totPx += metVec.Px()
         totPy += metVec.Py()
-        varMap["lepMetPt"][0] = sqrt(totPx * totPx + totPy * totPy)
+        varMap["lepMetPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
         totPx += jetVecs[0].Px()
         totPy += jetVecs[0].Py()
         if len(jetVecs) > 1:
             totPx += jetVecs[1].Px()
             totPy += jetVecs[1].Py()
-        varMap["totPt2Jet"][0] = sqrt(totPx * totPx + totPy * totPy)
+        varMap["totPt2Jet"][0] = n.sqrt(totPx * totPx + totPy * totPy)
         for i in range(2,len(jets)):
             totPx+=jetVecs[i].Px()
             totPy+=jetVecs[i].Py()
-        varMap["totPt"][0] = sqrt(totPx * totPx + totPy * totPy)
+        varMap["totPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
         totVec = (wLep + zLep1+zLep2)
         for i in range(len(jetVecs)):
             totVec += jetVecs[i]
         varMap["totEta"][0] = totVec.Eta()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
-        varMap["mTW"][0] = sqrt(2*metVec.Pt()*wLep.Pt() * (1-cos(metVec.Phi() - wLep.Phi())))
+        varMap["mTW"][0] = n.sqrt(2*metVec.Pt()*wLep.Pt() * (1-cos(metVec.Phi() - wLep.Phi())))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = metVec.Pt()
@@ -359,7 +374,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         varMap["lepMetHt"][0] = ht
         ht += jetHt
         varMap["totHt"][0] = ht
-        varMap["totHtOverPt"][0] = ht /  sqrt(totPx * totPx + totPy * totPy) 
+        varMap["totHtOverPt"][0] = ht / n.sqrt(totPx * totPx + totPy * totPy) 
         varMap["zMass"][0] = (zLep1+zLep2).M()
 
 
@@ -372,7 +387,8 @@ def main():
 #    zEnrichWeights = {"mumumu":0.057,"emumu":0.612,"eemu":0.0637,"eee":0.216}
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WW2l2nu":"WW","WZ3l1nu":"WZ","ZZ4l":"ZZ","sChannel":"TsChan","sbarChannel":"TbarsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tZq4Flavour3Lepton":"tZq4f", "ttW":"TTW","ttZ":"TTZ","ttbarDilepton":"TT","wPlusJets":"Wjets", "zPlusJets10To50Filter":"DYToLL_M10-50","zPlusJetsTuneZ2Star":"Zjets"}
+    listOfMCs = {"WW2l2nu":"WW","ZZ4l":"ZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","ttW":"TTW","ttZ":"TTZ","wPlusJets":"Wjets"}
+#    listOfMCs = {"WW2l2nu":"WW","WZ3l1nu":"WZ","ZZ4l":"ZZ","sChannel":"TsChan","sbarChannel":"TbarsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tZq4Flavour3Lepton":"tZq4f", "ttW":"TTW","ttZ":"TTZ","ttbarDilepton":"TT","wPlusJets":"Wjets", "zPlusJets10To50Filter":"DYToLL_M10-50","zPlusJetsTuneZ2Star":"Zjets"}
 #    listOfMCs = {"WW2l2nu":"WW","WZ3l1nu":"WZ","WZ2l2nu":"WZ","ZZ2l2q":"ZZ","ZZ4l":"ZZ","sChannel":"TsChan","sbarChannel":"TbarsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","ttW":"TTW","ttZ":"TTZ","ttbarDilepton":"TT","wPlusJets":"Wjets", "zPlusJets10To50Filter":"DYToLL_M10-50","zPlusJetsTuneZ2Star":"Zjets"}
 #    listOfMCs = {"ZZ4l":"ZZ"}
 #    listOfMCs = {"ttW":"TTW"}
@@ -427,10 +443,14 @@ def main():
                     tree = inFile.Get("tree")
                 else:
                     tree = inFile.Get("tree"+syst)
-                print syst + ": " + str(tree.GetEntriesFast()),
-                sys.stdout.flush()
+                    try:
+                        print syst + ": " + str(tree.GetEntriesFast())
+                        sys.stdout.flush()
+                        fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc, overRideWeight = overrideWeight)
+                    except AttributeError:
+                        print syst + ": " + "0",
+                        sys.stdout.flush()
                 #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does            
-                fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc, overRideWeight = overrideWeight)
                 inFile.Close()
             outFile.cd()
             outFile.Write()
@@ -443,7 +463,7 @@ def main():
         outFile.Write()
         outFile.Close()
         print
-    chanMap = {"eee":"eeRun2012","eemu":"emuRun2012","emumu":"emuRun2012","mumumu":"mumuRun2012"}
+    chanMap = {"eee":"eeRun2015","eemu":"emuRun2015","emumu":"emuRun2015","mumumu":"mumuRun2015"}
 
     outChannels = ["DataEG","DataMuEG","DataMu"]
     outChanToData = {}
@@ -458,7 +478,8 @@ def main():
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
-            for run in ["A","B","C","D"]:
+#            for run in ["A","B","C","D"]:
+            for run in ["C","D"]:
                 dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
             fillTree(outTree, inputVars, dataChain, outChan, chan, 0)
         outFile.cd()
@@ -476,7 +497,8 @@ def main():
             
             for chan in outChanToData[outChan]:
                 dataChainZ = TChain("tree")
-                for run in ["A","B","C","D"]:
+#                for run in ["A","B","C","D"]:
+                for run in ["C","D"]:
                     dataChainZ.Add(inputDir+chanMap[chan]+run+chan+"invIsomvaOut.root")
                 zPtSyst = 0.
                 if "plus" in systPost:

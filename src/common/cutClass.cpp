@@ -244,6 +244,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //  if (!isMC_) if (!triggerCuts(event)) return false;
   if (!triggerCuts(event)) return false;
+
   //Make lepton cuts. Does the inverted iso cuts if necessary.
   if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight, plotMap,cutFlow))) return false;
   //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
@@ -280,7 +281,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if (event->cTagIndex.size() < numcJets_) return false;
     if (event->cTagIndex.size() < maxcJets_) return false;
     if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
-    if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
+    if (doPlots_||fillCutFlow_) cutFlow->Fill(5.5,*eventWeight);
   }
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
@@ -299,11 +300,13 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
-      if (event->electronIndexLoose.size() != numLooseEle_) return false;
+//  if (event->electronIndexLoose.size() != numLooseEle_) return false;
+
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
-  if (event->muonIndexLoose.size() != numLooseMu_) return false;
+//  if (event->muonIndexLoose.size() != numLooseMu_) return false;
+
 
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass{9999};
@@ -339,65 +342,64 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 
     if (tempVec.Pt() <= tightElePt_) continue;
     if (std::abs(tempVec.Eta()) >= tightEleEta_)continue;
-    if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-
-//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
-      /*if ( event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_ ) continue;
-      if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
-      if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
-      if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;*/
-//	}
+    if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
     if (!synchCutFlow_) {
-	if ( event->elePF2PATIsBarrel[i] ){
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
+        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
+        if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
 	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0174 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0373 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
-	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0283 ) continue;
+        else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0283 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
 	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.0898 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0898 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
+	else continue;
     }
+
     else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
-	 // Barrel cut-based ID
-	if ( event->elePF2PATIsBarrel[i] ){
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0101 ) continue;
+ 	// Barrel cut-based ID
+      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
 	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.012 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
-	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0279 ) continue;
+      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
 	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.00999 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
+	else continue;
     }
+
     electrons.push_back(i);
+
   }
   return electrons;
 }
@@ -409,48 +411,37 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 
     if (tempVec.Pt() < tightElePt_) continue;
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
-    if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
+    if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
-//    if (!synchCutFlow_) { // If not synch cut flow, do triggering MVA
-//        if (std::abs(event->elePF2PATD0PV[i]) > tightEled0_)continue;
-//        if (event->elePF2PATComRelIsoRho[i]/tempVec.Pt() > tightEleRelIso_)continue;
-/*	if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < looseEleMVA0_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < looseEleMVA1_) ) continue;
-    	if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < looseEleMVA2_) ) continue;*/
-/*      if ( event->elePF2PATNonTrigMVAcategory[i] == 0 && (event->elePF2PATNonTrigMVA[i] < -0.083313) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 1 && (event->elePF2PATNonTrigMVA[i] < -0.235222) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 2 && (event->elePF2PATNonTrigMVA[i] < -0.67099) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 3 && (event->elePF2PATNonTrigMVA[i] < 0.913286) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 4 && (event->elePF2PATNonTrigMVA[i] < 0.805013) ) continue;
-      if ( event->elePF2PATNonTrigMVAcategory[i] == 5 && (event->elePF2PATNonTrigMVA[i] < 0.358969) ) continue;*/
-//	}
-    
     // Barrel cut-based Veto ID      
-    	if ( event->elePF2PATIsBarrel[i] ){
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0114 ) continue;
+	if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0114 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.181 ) continue;
 	  if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue; // Use same rel iso as tight
 	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue; // Use same rel iso as medium
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.207 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.207 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2  ) continue;
     	}
-    	else if ( !event->elePF2PATIsBarrel[i] ){ // Endcap cut-based Veto ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta[i] >= 0.0352 ) continue;
+	else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0352 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0113 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
 	  if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue; // Use same rel iso as tight
 	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue; // Use same rel iso as medium	  
-	  if ( (1/event->elePF2PATE[i] * 1/tempVec.P()) >= 0.174 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
 	  }
+	else continue;
+
     electrons.push_back(i);
+
   }
   return electrons;
 }
@@ -463,7 +454,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" << event->muonPF2PATEta[i] << "\t" << event->muonPF2PATComRelIsodBeta[i] << "\t" << event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" << event->muonPF2PATGlobalID[i] << "\t" << event->muonPF2PATIsPFMuon[i] << "\t" << event->muonPF2PATTrackID[i] << "\t" <<  event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    //    if (!event->muonPF2PATTrackID[i]) continue; // Apparently not needed in synch?
+    if (!event->muonPF2PATTrackID[i]) continue;
     if (!event->muonPF2PATGlobalID[i]) continue;
 
     if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
@@ -489,7 +480,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   std::vector<int> muons;
   for (int i{0}; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-//    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
+    //    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
     if (event->muonPF2PATPt[i] <= looseMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
@@ -514,8 +505,8 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  // set up the tlorentz vectors in the event. For plotting and jazz.
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
-	  event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
+	  event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]:event->elePF2PATComRelIsoRho[electrons[i]];
 	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
 	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 	  closestMass = invMass;
@@ -529,7 +520,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	    for (unsigned k{0}; k < electrons.size(); k++){
 	      if (k == i || k == j) continue;
 	      event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[k]],event->elePF2PATGsfPy[electrons[k]],event->elePF2PATGsfPz[electrons[k]],event->elePF2PATGsfE[electrons[k]]);
-	      event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[k]]/event->wLepton.Pt();
+	      event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[k]];
 	      event->wLepIndex = electrons[k];
 	    }
 	  }
@@ -556,7 +547,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
 	  //Now set up W lepton 
 	  if (muons.size() == 2){
 	    event->wLepton = TLorentzVector(event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]);
-	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]]/event->wLepton.Pt();
+	    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[electrons[0]];
 	    event->wLepIndex = electrons[0];
 	  }
 	  else {
@@ -590,8 +581,8 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 	if (std::abs(invMass) < std::abs(closestMass)){
         	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt():event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt();
-        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]/lepton2.Pt():event->elePF2PATComRelIsoRho[electrons[i]]/lepton1.Pt();
+        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
+        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]:event->elePF2PATComRelIsoRho[electrons[i]];
         	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
         	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
 		closestMass = invMass;
@@ -748,7 +739,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
       //for jets with eta <= 2.40
       if ( std::abs(jetVec.Eta()) <= 2.40 ) {
-	  if( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+	  if( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0.0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
 	}
     }
     else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
@@ -919,7 +910,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchNumMus_->Fill(event->muonIndexTight.size());
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
-  //  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
   synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
 
   //loose lepton veto
@@ -1524,8 +1515,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
@@ -1536,12 +1527,14 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   }
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
-      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
+//      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+//      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
+      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first]);
+      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second]);
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),std::abs(event->zPairLeptons.first.Eta()));
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),std::abs(event->zPairLeptons.second.Eta()));
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
   }
 

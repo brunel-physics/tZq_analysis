@@ -24,7 +24,7 @@ public :
    Int_t           fCurrent; //!current Tree number in a TChain
 
    // Declaration of leaf types
-   static constexpr Int_t NELECTRONSMAX{30};
+   static constexpr Int_t NELECTRONSMAX{20};
    Int_t                  numElePF2PAT;
    Float_t                elePF2PATE[NELECTRONSMAX];
    Float_t                elePF2PATET[NELECTRONSMAX];
@@ -66,11 +66,14 @@ public :
    Float_t                elePF2PATGsfPy[NELECTRONSMAX];
    Float_t                elePF2PATGsfPz[NELECTRONSMAX];
    Float_t                elePF2PATGsfE[NELECTRONSMAX];
-   Float_t                elePF2PATSCEta[NELECTRONSMAX];
-   Float_t                elePF2PATSCE[NELECTRONSMAX];
-   Float_t                elePF2PATSCPhi[NELECTRONSMAX];
-   Float_t                elePF2PATSCSigmaEtaEta[NELECTRONSMAX];
-   Float_t                elePF2PATSCSigmaIEtaIEta[NELECTRONSMAX];
+   Float_t         	  elePF2PATEcalEnergy[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCEta[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCE[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCPhi[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCEoverP[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCSigmaEtaEta[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCSigmaIEtaIEta[NELECTRONSMAX];
+   Float_t         	  elePF2PATSCSigmaIEtaIEta5x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE1x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE5x5[NELECTRONSMAX];
    Float_t                elePF2PATSCE2x5max[NELECTRONSMAX];
@@ -235,6 +238,7 @@ public :
    Double_t               metPF2PATPt;
    Double_t               metPF2PATPx;
    Double_t               metPF2PATPy;
+   Double_t               metPF2PATPz;
    Float_t                metPF2PATScalarEt;
    Float_t                metPF2PATEtUncorrected;
    Float_t                metPF2PATPhiUncorrected;
@@ -243,7 +247,8 @@ public :
    Float_t                genMetPF2PATPt;
    Float_t                genMetPF2PATPx;
    Float_t                genMetPF2PATPy;
-   static constexpr Int_t NTAUSMAX{20};
+   Float_t                genMetPF2PATPz;
+   static constexpr Int_t NTAUSMAX{1};
    Int_t                  numTauPF2PAT;
    Float_t                tauPF2PATE[NTAUSMAX];
    Float_t                tauPF2PATPt[NTAUSMAX];
@@ -312,18 +317,17 @@ public :
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
 
    //Gen info
-   static constexpr Int_t NGENPARMAX{50};
-   Int_t                  nGenPar;
-   Float_t                genParEta[NGENPARMAX];
-   Float_t                genParPhi[NGENPARMAX];
-   Float_t                genParE[NGENPARMAX];
-   Float_t                genParPt[NGENPARMAX];
-   Int_t                  genParId[NGENPARMAX];
-   Int_t     	          genParMotherId[NGENPARMAX];
-   Int_t                  genParCharge[NGENPARMAX];
-   Int_t                  eventRun;
-   Int_t                  eventNum;
-   Float_t                eventLumiblock;
+   Int_t           nGenPar;
+   Float_t         genParEta[50];   //[nGenPar]
+   Float_t         genParPhi[50];   //[nGenPar]
+   Float_t         genParE[50];   //[nGenPar]
+   Float_t         genParPt[50];   //[nGenPar]
+   Int_t           genParId[50];   //[nGenPar]
+   Int_t	   genParMotherId[50]; //[nGenPar]
+   Int_t           genParCharge[50];   //[nGenPar]
+   Int_t           eventRun;
+   Int_t           eventNum;
+   Float_t         eventLumiblock;
 
    // List of branches
    TBranch        *b_numElePF2PAT;   //!
@@ -367,11 +371,14 @@ public :
    TBranch        *b_elePF2PATGsfPy;   //!
    TBranch        *b_elePF2PATGsfPz;   //!
    TBranch        *b_elePF2PATGsfE;   //!
+   TBranch        *b_elePF2PATEcalEnergy;   //!
    TBranch        *b_elePF2PATSCEta;   //!
    TBranch        *b_elePF2PATSCE;   //!
    TBranch        *b_elePF2PATSCPhi;   //!
+   TBranch        *b_elePF2PATSCEoverP;   //!
    TBranch        *b_elePF2PATSCSigmaEtaEta;   //!
    TBranch        *b_elePF2PATSCSigmaIEtaIEta;   //!
+   TBranch        *b_elePF2PATSCSigmaIEtaIEta5x5;   //!
    TBranch        *b_elePF2PATSCE1x5;   //!
    TBranch        *b_elePF2PATSCE5x5;   //!
    TBranch        *b_elePF2PATSCE2x5max;   //!
@@ -534,6 +541,7 @@ public :
    TBranch        *b_metPF2PATPt;   //!
    TBranch        *b_metPF2PATPx;   //!
    TBranch        *b_metPF2PATPy;   //!
+   TBranch        *b_metPF2PATPz;   //!
    TBranch        *b_metPF2PATScalarEt;   //!
    TBranch        *b_metPF2PATEtUncorrected;   //!
    TBranch        *b_metPF2PATPhiUncorrected;   //!
@@ -542,6 +550,7 @@ public :
    TBranch        *b_genMetPF2PATPt;   //!
    TBranch        *b_genMetPF2PATPx;   //!
    TBranch        *b_genMetPF2PATPy;   //!
+   TBranch        *b_genMetPF2PATPz;   //!
    TBranch        *b_numTauPF2PAT;   //!
    TBranch        *b_tauPF2PATE;   //!
    TBranch        *b_tauPF2PATPt;   //!
@@ -763,11 +772,14 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("elePF2PATGsfPy", elePF2PATGsfPy, &b_elePF2PATGsfPy);
    fChain->SetBranchAddress("elePF2PATGsfPz", elePF2PATGsfPz, &b_elePF2PATGsfPz);
    fChain->SetBranchAddress("elePF2PATGsfE", elePF2PATGsfE, &b_elePF2PATGsfE);
+   fChain->SetBranchAddress("elePF2PATEcalEnergy", elePF2PATEcalEnergy, &b_elePF2PATEcalEnergy);
    fChain->SetBranchAddress("elePF2PATSCEta", elePF2PATSCEta, &b_elePF2PATSCEta);
    fChain->SetBranchAddress("elePF2PATSCE", elePF2PATSCE, &b_elePF2PATSCE);
    fChain->SetBranchAddress("elePF2PATSCPhi", elePF2PATSCPhi, &b_elePF2PATSCPhi);
+   fChain->SetBranchAddress("elePF2PATSCEoverP", elePF2PATSCEoverP, &b_elePF2PATSCEoverP);
    fChain->SetBranchAddress("elePF2PATSCSigmaEtaEta", elePF2PATSCSigmaEtaEta, &b_elePF2PATSCSigmaEtaEta);
    fChain->SetBranchAddress("elePF2PATSCSigmaIEtaIEta", elePF2PATSCSigmaIEtaIEta, &b_elePF2PATSCSigmaIEtaIEta);
+   fChain->SetBranchAddress("elePF2PATSCSigmaIEtaIEta5x5", elePF2PATSCSigmaIEtaIEta5x5, &b_elePF2PATSCSigmaIEtaIEta5x5);
    fChain->SetBranchAddress("elePF2PATSCE1x5", elePF2PATSCE1x5, &b_elePF2PATSCE1x5);
    fChain->SetBranchAddress("elePF2PATSCE5x5", elePF2PATSCE5x5, &b_elePF2PATSCE5x5);
    fChain->SetBranchAddress("elePF2PATSCE2x5max", elePF2PATSCE2x5max, &b_elePF2PATSCE2x5max);
@@ -936,6 +948,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("metPF2PATPt", &metPF2PATPt, &b_metPF2PATPt);
    fChain->SetBranchAddress("metPF2PATPx", &metPF2PATPx, &b_metPF2PATPx);
    fChain->SetBranchAddress("metPF2PATPy", &metPF2PATPy, &b_metPF2PATPy);
+   fChain->SetBranchAddress("metPF2PATPz", &metPF2PATPz, &b_metPF2PATPz);
    fChain->SetBranchAddress("metPF2PATScalarEt", &metPF2PATScalarEt, &b_metPF2PATScalarEt);
    fChain->SetBranchAddress("metPF2PATEtUncorrected", &metPF2PATEtUncorrected, &b_metPF2PATEtUncorrected);
    fChain->SetBranchAddress("metPF2PATPhiUncorrected", &metPF2PATPhiUncorrected, &b_metPF2PATPhiUncorrected);
@@ -945,6 +958,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
      fChain->SetBranchAddress("genMetPF2PATPt", &genMetPF2PATPt, &b_genMetPF2PATPt);
      fChain->SetBranchAddress("genMetPF2PATPx", &genMetPF2PATPx, &b_genMetPF2PATPx);
      fChain->SetBranchAddress("genMetPF2PATPy", &genMetPF2PATPy, &b_genMetPF2PATPy);
+     fChain->SetBranchAddress("genMetPF2PATPz", &genMetPF2PATPz, &b_genMetPF2PATPz);
    }
    fChain->SetBranchAddress("numTauPF2PAT", &numTauPF2PAT, &b_numTauPF2PAT);
    fChain->SetBranchAddress("tauPF2PATE", &tauPF2PATE, &b_tauPF2PATE);
