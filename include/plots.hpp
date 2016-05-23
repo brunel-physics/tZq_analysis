@@ -37,11 +37,14 @@ class Plots{
   float fillLeadingJetPt(AnalysisEvent*);
   float fillLeadingJetEta(AnalysisEvent*);
   float fillLeadingJetPhi(AnalysisEvent*);
+  float fillLeadingJetBDisc(AnalysisEvent*);
   float fillSecondJetPt(AnalysisEvent*);
   float fillSecondJetEta(AnalysisEvent*);
   float fillSecondJetPhi(AnalysisEvent*);
+  float fillSecondJetBDisc(AnalysisEvent*);
   float fillMetPlot(AnalysisEvent*);
   float numbBJets(AnalysisEvent*);
+  float FillBtagDisc(AnalysisEvent*);
   float fillZLep1Pt(AnalysisEvent*);
   float fillZLep1Eta(AnalysisEvent*);
   float fillZLep2Pt(AnalysisEvent*);
@@ -78,8 +81,19 @@ class Plots{
   float filljjDelR(AnalysisEvent*);
   float fillzLepDelR(AnalysisEvent*);
   float fillzLepDelPhi(AnalysisEvent*);
+  float fillzLep1BjetDelT(AnalysisEvent*);
+  float fillzLep1BjetDelPhi(AnalysisEvent*);
+  float fillzLep2BjetDelT(AnalysisEvent*);
+  float fillzLep2BjetDelPhi(AnalysisEvent*);
   float filllbDelR(AnalysisEvent*);
   float filllbDelPhi(AnalysisEvent*);
+  float fillLepHt(AnalysisEvent*);
+  float fillJetHt(AnalysisEvent*);
+  float fillTotHt(AnalysisEvent*);
+  float fillTotHtOverPt(AnalysisEvent*);
+  float fillTotPt(AnalysisEvent*);
+  float fillTotEta(AnalysisEvent*);
+  float fillTotM(AnalysisEvent*);
   const bool trileptonChannel_;
 
  public:
