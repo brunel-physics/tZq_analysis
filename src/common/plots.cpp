@@ -591,14 +591,6 @@ float Plots::filljjDelR(AnalysisEvent* event){
   return tempJet1.DeltaR(tempJet2);
 }
 
-float Plots::fillZLepDelR(AnalysisEvent* event){
-  return (event->zPairLeptons.first.DeltaR(event->zPairLeptons.second));
-}
-
-float Plots::fillZLepDelPhi(AnalysisEvent* event){
-  return (event->zPairLeptons.first.DeltaPhi(event->zPairLeptons.second));
-}
-
 float Plots::filllbDelR(AnalysisEvent* event){
   TLorentzVector tempJet1;
   if (event->bTagIndex.size() < 1) return -10.;
@@ -612,6 +604,42 @@ float Plots::filllbDelPhi(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
   return tempJet1.DeltaPhi(event->wLepton);
+}
+
+float Plots::fillZLepDelR(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaR(event->zPairLeptons.second));
+}
+
+float Plots::fillZLepDelPhi(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaPhi(event->zPairLeptons.second));
+}
+
+float Plots::fillZLep1BjetDelR(AnalysisEvent* event){
+  if (event->bTagIndex.size() < 1) return -10.;
+  TLorentzVector tempJet1;
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  return (event->zPairLeptons.first.DeltaR(tempJet1));
+}
+
+float Plots::fillZLep1BjetDelPhi(AnalysisEvent* event){
+  if (event->bTagIndex.size() < 1) return -10.;
+  TLorentzVector tempJet1;
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  return (event->zPairLeptons.first.DeltaPhi(tempJet1));
+}
+
+float Plots::fillZLep2BjetDelR(AnalysisEvent* event){
+  if (event->bTagIndex.size() < 1) return -10.;
+  TLorentzVector tempJet1;
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  return (event->zPairLeptons.second.DeltaR(tempJet1));
+}
+
+float Plots::fillZLep2BjetDelPhi(AnalysisEvent* event){
+  if (event->bTagIndex.size() < 1) return -10.;
+  TLorentzVector tempJet1;
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  return (event->zPairLeptons.second.DeltaPhi(tempJet1));
 }
 
 float Plots::fillLepHt(AnalysisEvent* event){
@@ -636,8 +664,8 @@ float Plots::fillJetHt(AnalysisEvent* event){
 float Plots::fillTotHt(AnalysisEvent* event){
 
   float totHt (0.0);
-  if ( trileptonChannel_ ) totHt += ( event->zPairLeptons.first + event->zPairLeptons.second + event->wLepton ).Pt();
-  else if ( !trileptonChannel_ ) totHt += ( event->zPairLeptons.first + event->zPairLeptons.second + event->wPairQuarks.first + event->wPairQuarks.second ).Pt();
+  totHt += ( event->zPairLeptons.first + event->zPairLeptons.second ).Pt();
+  if ( trileptonChannel_ ) totHt += ( event->wLepton ).Pt();
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       totHt += event->jetPF2PATPt[*jetIt];
@@ -649,8 +677,8 @@ float Plots::fillTotHt(AnalysisEvent* event){
 float Plots::fillTotHtOverPt(AnalysisEvent* event){
 
   float totHt (0.0);
-  if ( trileptonChannel_ ) totHt += ( event->zPairLeptons.first + event->zPairLeptons.second + event->wLepton ).Pt();
-  else if ( !trileptonChannel_ ) totHt += ( event->zPairLeptons.first + event->zPairLeptons.second + event->wPairQuarks.first + event->wPairQuarks.second ).Pt();
+  totHt += ( event->zPairLeptons.first + event->zPairLeptons.second ).Pt();
+  if ( trileptonChannel_ ) totHt += ( event->wLepton ).Pt();
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       totHt += event->jetPF2PATPt[*jetIt];
@@ -664,10 +692,6 @@ float Plots::fillTotHtOverPt(AnalysisEvent* event){
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     totPx += ( event->wLepton + tempMet ).Px(); 
     totPy += ( event->wLepton + tempMet ).Py(); 
-  }
-  else if ( !trileptonChannel_ ){
-    totPx += ( event->wPairQuarks.first + event->wPairQuarks.second ).Px();
-    totPy += ( event->wPairQuarks.first + event->wPairQuarks.second ).Py();
   }
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
@@ -690,10 +714,6 @@ float Plots::fillTotPt(AnalysisEvent* event){
     totPx += ( event->wLepton + tempMet ).Px(); 
     totPy += ( event->wLepton + tempMet ).Py(); 
   }
-  else if ( !trileptonChannel_ ){
-    totPx += ( event->wPairQuarks.first + event->wPairQuarks.second ).Px();
-    totPy += ( event->wPairQuarks.first + event->wPairQuarks.second ).Py();
-  }
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       totPx += event->jetPF2PATPx[*jetIt];
@@ -708,7 +728,6 @@ float Plots::fillTotEta(AnalysisEvent* event){
   TLorentzVector totVec;
   totVec = event->zPairLeptons.first + event->zPairLeptons.second;
   if ( trileptonChannel_ )  totVec += event->wLepton;
-  else if ( !trileptonChannel_ )  totVec += event->wPairQuarks.first + event->wPairQuarks.second;
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
@@ -724,7 +743,6 @@ float Plots::fillTotM(AnalysisEvent* event){
   TLorentzVector totVec;
   totVec = event->zPairLeptons.first + event->zPairLeptons.second;
   if ( trileptonChannel_ )  totVec += event->wLepton;
-  else if ( !trileptonChannel_ )  totVec += event->wPairQuarks.first + event->wPairQuarks.second;
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
