@@ -372,25 +372,25 @@ float Plots::fillLeptonMass(AnalysisEvent* event){
 
 float Plots::fillLepton1D0(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return (event->elePF2PATTrackD0[event->electronIndexTight[0]]);
- else return  (event->muonPF2PATD0[event->muonIndexTight[0]]);
+    return (event->elePF2PATD0PV[event->electronIndexTight[0]]);
+ else return  (event->muonPF2PATDBPV[event->muonIndexTight[0]]);
   return -10;
 }
 float Plots::fillLepton2D0(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
-    return (event->elePF2PATTrackD0[event->electronIndexTight[1]]);
-  else return  (event->muonPF2PATD0[event->muonIndexTight[1]]);
+    return (event->elePF2PATD0PV[event->electronIndexTight[1]]);
+  else return  (event->muonPF2PATDBPV[event->muonIndexTight[1]]);
   return -10;
 }
 float Plots::fillLepton3D0(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 2)
-    return (event->elePF2PATTrackD0[event->electronIndexTight[2]]);
+    return (event->elePF2PATD0PV[event->electronIndexTight[2]]);
   if (event->muonIndexTight.size() > 2)
-    return event->muonPF2PATD0[event->muonIndexTight[2]];
+    return event->muonPF2PATDBPV[event->muonIndexTight[2]];
   if (event->electronIndexTight.size() > 1)
-    return event->muonPF2PATD0[event->muonIndexTight[0]];
+    return event->muonPF2PATDBPV[event->muonIndexTight[0]];
   else
-    return event->elePF2PATTrackD0[event->electronIndexTight[0]];
+    return event->elePF2PATD0PV[event->electronIndexTight[0]];
   return -10;
 }
 
