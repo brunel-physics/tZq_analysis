@@ -174,11 +174,11 @@ float Plots::fillLepton3Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 2)
     return std::abs(event->elePF2PATEta[event->electronIndexTight[2]]);
   if (event->muonIndexTight.size() > 2)
-    return event->muonPF2PATEta[event->muonIndexTight[2]];
+    return std::abs(event->muonPF2PATEta[event->muonIndexTight[2]]);
   if (event->electronIndexTight.size() > 1)
-    return event->muonPF2PATEta[event->muonIndexTight[0]];
+    return std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
   else
-    return event->elePF2PATEta[event->electronIndexTight[0]];
+    return std::abs(event->elePF2PATEta[event->electronIndexTight[0]]);
   return -10;
 }
 
@@ -187,7 +187,7 @@ float Plots::fillWbosonQuark1Pt(AnalysisEvent* event){
 }
 
 float Plots::fillWbosonQuark1Eta(AnalysisEvent* event){
-  return event->wPairQuarks.first.Eta();
+  return std::abs(event->wPairQuarks.first.Eta());
 }
 
 float Plots::fillWbosonQuark1Phi(AnalysisEvent* event){
@@ -199,7 +199,7 @@ float Plots::fillWbosonQuark2Pt(AnalysisEvent* event){
 }
 
 float Plots::fillWbosonQuark2Eta(AnalysisEvent* event){
-  return event->wPairQuarks.second.Eta();
+  return std::abs(event->wPairQuarks.second.Eta());
 }
 
 float Plots::fillWbosonQuark2Phi(AnalysisEvent* event){
@@ -321,12 +321,12 @@ float Plots::fillSecondJetPhi(AnalysisEvent* event){
 
 float Plots::fillLeadingJetBDisc(AnalysisEvent* event){
   if (event->jetIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->jetIndex[0]];
-  return -10;
+  else return -10;
 }
 
 float Plots::fillSecondJetBDisc(AnalysisEvent* event){
   if (event->jetIndex.size() > 1) return event->jetPF2PATBDiscriminator[event->jetIndex[1]];
-  return -10;
+  else return -10;
 }
 
 float Plots::numbBJets(AnalysisEvent* event){
@@ -395,7 +395,7 @@ float Plots::fillZPairPt(AnalysisEvent* event){
 }
 
 float Plots::fillZPairEta(AnalysisEvent* event){
-  return (event->zPairLeptons.first + event->zPairLeptons.second).Eta();
+  return std::abs((event->zPairLeptons.first + event->zPairLeptons.second).Eta());
 }
 
 float Plots::fillZPairPhi(AnalysisEvent* event){
@@ -449,12 +449,12 @@ float Plots::fillTopEta(AnalysisEvent* event){
     TLorentzVector tempMet, tempBjet;
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-    return ( tempMet + tempBjet + event->wLepton ).Eta();
+    return std::abs(( tempMet + tempBjet + event->wLepton ).Eta());
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
-    return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Eta();
+    return std::abs(( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Eta());
   }
   else return -10;
 }
@@ -645,6 +645,7 @@ float Plots::fillZLep2BjetDelPhi(AnalysisEvent* event){
 float Plots::fillLepHt(AnalysisEvent* event){
   if ( trileptonChannel_ ) return ( event->zPairLeptons.first + event->zPairLeptons.second + event->wLepton ).Pt();
   else if ( !trileptonChannel_ ) return ( event->zPairLeptons.first + event->zPairLeptons.second ).Pt();
+  else return -10;
 }
 
 float Plots::fillWquarkHt(AnalysisEvent* event){
@@ -735,7 +736,7 @@ float Plots::fillTotEta(AnalysisEvent* event){
       totVec += tempJet;
     }
   }
-  return totVec.Eta();
+  return std::abs(totVec.Eta());
 }
 
 float Plots::fillTotM(AnalysisEvent* event){
