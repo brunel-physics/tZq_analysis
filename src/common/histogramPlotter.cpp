@@ -162,7 +162,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     plotMap["data"]->Draw("e x0, same");
   }
 
-  mcStack->SetMaximum(max*1.3);
+  mcStack->SetMaximum(max*1.25);
       
   legend_->Draw();
   
