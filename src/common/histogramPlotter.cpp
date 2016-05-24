@@ -50,9 +50,9 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
 
   gStyle->SetLabelFont(18,"");
   
-  for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
-    
-  }
+  //for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
+  //  
+  //}
   //I guess I should put in the plot style stuff here? Worry about that later on. Get it plotting something at all first I guess.
 }
 
@@ -99,16 +99,16 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
   std::cerr << "Making a plot called: " << plotName << std::endl;
   //Make the legend. This is clearly the first thing I should do.
-  TLegend legend_ = TLegend(0.7,0.7,0.94,0.94);
-  legend_.SetFillStyle(1001);
-  legend_.SetBorderSize(1);
-  legend_.SetFillColor(kWhite);
+  TLegend* legend_ = new TLegend(0.7,0.7,0.94,0.94);
+  legend_->SetFillStyle(1001);
+  legend_->SetBorderSize(1);
+  legend_->SetFillColor(kWhite);
   for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
-    legend_.AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
+    legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
     
   //Initialise the stack
-  THStack mcStack = THStack(plotName.c_str(),plotName.c_str());
+  THStack* mcStack = new THStack(plotName.c_str(),plotName.c_str());
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -120,34 +120,65 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
       plotMap["data"]->SetMarkerColor(kBlack);
       continue;
     }
-    mcStack.Add(plotMap[*plot_iter]);
+    mcStack->Add(plotMap[*plot_iter]);
   }
+
+  //Initialise ratio plots
+  TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
+  ratioHisto->GetTitle();
+  ratioHisto->Divide( (TH1F*)(mcStack->GetStack()->Last()) );
+
+  // Set up canvas
   TCanvas * canvy = new TCanvas((plotName + subLabel + postfix_).c_str(), (plotName + subLabel + postfix_).c_str());
   canvy->cd();
 
-  mcStack.Draw("");
+  // Top Histogram
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.33,0.99,0.99);
+  canvy_1->Draw(); 
+  canvy_1->cd();
+  canvy_1->SetTopMargin(0.1);
+  canvy_1->SetBottomMargin(0.01);
+  canvy_1->SetRightMargin(0.1);
+  canvy_1->SetFillStyle(0);
+
+  mcStack->Draw("");
 
   if (xAxisLabels.size() > 0){
     for (unsigned i = 1; i <= xAxisLabels.size(); i++){
-      mcStack.GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+      mcStack->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
     }
   }
   
-
   setLabelThree(subLabel);
   //labelThree_->Draw();
   //  labelTwo_->Draw();
   //  labelOne_->Draw();
 
-  float max = mcStack.GetMaximum();
+  float max = mcStack->GetMaximum();
   if (plotMap.find("data") != plotMap.end()){
-    max = TMath::Max(mcStack.GetMaximum(),plotMap["data"]->GetMaximum());
+    max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
   }
 
-  mcStack.SetMaximum(max*1.3);
+  mcStack->SetMaximum(max*1.3);
       
-  legend_.Draw();
+  legend_->Draw();
+  
+  // Bottom ratio plots
+  canvy->cd();
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.32);
+  canvy_2->Draw(); 
+  canvy_2->cd();
+  canvy_2->SetTopMargin(0.01);
+  canvy_2->SetBottomMargin(0.3);
+  canvy_2->SetRightMargin(0.1);
+  canvy_2->SetFillStyle(0);
+  
+  ratioHisto->SetMinimum(0.6);
+  ratioHisto->SetMaximum(1.4);
+  ratioHisto->SetLineWidth(1);
+  ratioHisto->SetLineColor(kBlack);
+  ratioHisto->Draw();
 
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){

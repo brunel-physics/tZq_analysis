@@ -10,6 +10,8 @@
 typedef struct plot plot;
 
 class Plots{
+
+ private:
   std::vector<plot> plotPoint;
   //Fill expressions here.
   float fillLepton1Pt(AnalysisEvent*);
