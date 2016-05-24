@@ -128,7 +128,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   ratioHisto->GetTitle();
   ratioHisto->Divide( (TH1F*)(mcStack->GetStack()->Last()) );
   ratioHisto->SetMarkerStyle(20);
-  ratioHisto->SetMarkerSize(1.2);
+  ratioHisto->SetMarkerSize(0.2);
   ratioHisto->SetMarkerColor(kBlack);
 
   // Set up canvas
@@ -136,7 +136,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy->cd();
 
   // Top Histogram
-  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.255,0.99,0.99);
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.25,0.99,0.99);
   canvy_1->Draw(); 
   canvy_1->cd();
   canvy_1->SetTopMargin(0.1);
@@ -169,7 +169,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   
   // Bottom ratio plots
   canvy->cd();
-  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.245);
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.175);
   canvy_2->Draw(); 
   canvy_2->cd();
   canvy_2->SetTopMargin(0.01);
@@ -179,7 +179,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   
   ratioHisto->SetMinimum(0.5);
   ratioHisto->SetMaximum(1.5);
-  ratioHisto->Draw("e x0");
+  ratioHisto->Draw("e x0, SCAT");
 
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
