@@ -98,6 +98,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
   std::cerr << "Making a plot called: " << plotName << std::endl;
+
   //Make the legend. This is clearly the first thing I should do.
   TLegend* legend_ = new TLegend(0.7,0.7,0.94,0.94);
   legend_->SetFillStyle(1001);
@@ -116,7 +117,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     plotMap[*plot_iter]->SetLineWidth(1);
     if( *plot_iter == "data"){
       plotMap["data"]->SetMarkerStyle(20);
-      plotMap["data"]->SetMarkerSize(1.2);
+      plotMap["data"]->SetMarkerSize(1.0);
       plotMap["data"]->SetMarkerColor(kBlack);
       continue;
     }
@@ -125,10 +126,9 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   //Initialise ratio plots
   TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
-  ratioHisto->GetTitle();
   ratioHisto->Divide( (TH1F*)(mcStack->GetStack()->Last()) );
   ratioHisto->SetMarkerStyle(20);
-  ratioHisto->SetMarkerSize(0.2);
+  ratioHisto->SetMarkerSize(0.5);
   ratioHisto->SetMarkerColor(kBlack);
 
   // Set up canvas
@@ -136,11 +136,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy->cd();
 
   // Top Histogram
-  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.25,0.99,0.99);
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.33,0.99,0.99);
   canvy_1->Draw(); 
   canvy_1->cd();
-  canvy_1->SetTopMargin(0.1);
-  canvy_1->SetBottomMargin(0.01);
+  canvy_1->SetTopMargin(0.08);
+  canvy_1->SetBottomMargin(0.05);
   canvy_1->SetRightMargin(0.1);
   canvy_1->SetFillStyle(0);
 
@@ -169,16 +169,19 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   
   // Bottom ratio plots
   canvy->cd();
-  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.175);
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.32);
+//  canvy_2->SetOptStat(0);
   canvy_2->Draw(); 
   canvy_2->cd();
-  canvy_2->SetTopMargin(0.01);
-  canvy_2->SetBottomMargin(0.3);
+  canvy_2->SetTopMargin(0.05);
+  canvy_2->SetBottomMargin(0.05);
   canvy_2->SetRightMargin(0.1);
   canvy_2->SetFillStyle(0);
-  
+
   ratioHisto->SetMinimum(0.5);
   ratioHisto->SetMaximum(1.5);
+  ratioHisto->SetTitle("");
+  ratioHisto->GetXaxis()->SetTitleSize(10.0);
   ratioHisto->Draw("e x0, SCAT");
 
   // Save the plots.
