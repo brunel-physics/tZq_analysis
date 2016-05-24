@@ -27,7 +27,6 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   gErrorIgnoreLevel = kInfo;
 
   extensions_.push_back(".root");
-  //  extensions_.push_back(".png");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
   labelOne_ = new TPaveText(0.16,0.88,0.5,0.94,"NDCBR");
@@ -174,14 +173,24 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy_2->Draw(); 
   canvy_2->cd();
   canvy_2->SetTopMargin(0.05);
-  canvy_2->SetBottomMargin(0.05);
+  canvy_2->SetBottomMargin(0.06);
   canvy_2->SetRightMargin(0.1);
   canvy_2->SetFillStyle(0);
 
-  ratioHisto->SetMinimum(0.5);
-  ratioHisto->SetMaximum(1.5);
-  ratioHisto->SetTitle("");
-  ratioHisto->GetXaxis()->SetTitleSize(10.0);
+  ratioHisto->SetMinimum(0.8);
+  ratioHisto->SetMaximum(1.2);
+  ratioHisto->SetTitle("; ; data/MC");
+  ratioHisto->GetXaxis()->SetLabelSize(0.08);
+  ratioHisto->GetYaxis()->SetLabelSize(0.06);
+  ratioHisto->GetYaxis()->SetTitleSize(0.09);
+  ratioHisto->GetYaxis()->SetTitleOffset(0.28);
+
+  if (xAxisLabels.size() > 0){
+    for (unsigned i = 1; i <= xAxisLabels.size(); i++){
+      ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+    }
+  }
+
   ratioHisto->Draw("e x0, SCAT");
 
   // Save the plots.
@@ -214,3 +223,4 @@ void HistogramPlotter::setOutputFolder(std::string output){
   mkdir(outputFolder_.c_str(),0700);
 
 }
+
