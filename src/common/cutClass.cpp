@@ -1248,6 +1248,12 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   event->muonIndexTight = getTightMuons(event);
 
   if ( step == 0 ) { // Used for 2015/2016 synch
+
+    jetInfoEventDump_.precision(6);
+    for ( int i = 0; i != event->numJetPF2PAT; i++ ){
+      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction[i] << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedMultiplicity[i] << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
+    }
+
     // Get trigger bit setup
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[2] = 1; // Set Z=1 if MuonEG trigger fires
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
@@ -1432,10 +1438,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     step0EventDump_.precision(3);
     int leadingJetIndex = getLeadingJet(event, event->jetIndex);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
-    jetInfoEventDump_.precision(6);
-    for ( int i = 0; i != event->numJetPF2PAT; i++ ){
-      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction[i] << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedMultiplicity[i] << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
-    }
     break;
   }
 
