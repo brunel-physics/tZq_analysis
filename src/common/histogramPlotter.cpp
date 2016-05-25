@@ -177,9 +177,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy_2->SetRightMargin(0.1);
   canvy_2->SetFillStyle(0);
 
+  ratioHisto->SetStats(false);
   ratioHisto->SetMinimum(0.8);
   ratioHisto->SetMaximum(1.2);
   ratioHisto->SetTitle("; ; data/MC");
+//  ratioHisto->GetYaxis()->SetNdivisions(5,25);
   ratioHisto->GetXaxis()->SetLabelSize(0.08);
   ratioHisto->GetYaxis()->SetLabelSize(0.06);
   ratioHisto->GetYaxis()->SetTitleSize(0.09);
