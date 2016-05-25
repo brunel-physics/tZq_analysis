@@ -1434,7 +1434,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
     jetInfoEventDump_.precision(6);
     for ( unsigned i = 0; i != event->jetIndex.size(); i++ ){
-      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedHadronEnergyFractionCorr << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
+      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction[i] << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedHadronEnergyFractionCorr << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
     }
     break;
   }
