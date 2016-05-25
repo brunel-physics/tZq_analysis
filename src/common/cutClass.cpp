@@ -153,6 +153,7 @@ Cuts::~Cuts(){
     delete synchCutTopMassHist_;
     if (makeEventDump_) {
       step0EventDump_.close();
+      jetInfoEventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
       step6EventDump_.close();
@@ -228,6 +229,7 @@ bool Cuts::parse_config(std::string confName){
 
   if (makeEventDump_) {
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
+    jetInfoEventDump_.open("jetInfoEventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
     step6EventDump_.open("step6EventDump"+postfixName_+".txt");
@@ -727,10 +729,10 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0
       
       // for all jets with eta <= 3.0
-      if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
+      if ( event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
       //for jets with eta <= 2.40
       if ( std::abs(jetVec.Eta()) <= 2.40 ) {
-	  if( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0.0 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+	  if( event->jetPF2PATChargedHadronEnergyFraction[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0.0 || event->jetPF2PATChargedEmEnergyFraction[i] >= 0.99 ) jetId = false;
 	}
     }
     else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
@@ -1430,6 +1432,10 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     step0EventDump_.precision(3);
     int leadingJetIndex = getLeadingJet(event, event->jetIndex);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
+    jetInfoEventDump_.precision(3);
+    for ( unsigned i = 0; i != event->jetIndex.size(); i++ ){
+      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedHadronEnergyFractionCorr << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
+    }
     break;
   }
 
