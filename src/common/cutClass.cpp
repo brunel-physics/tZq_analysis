@@ -626,10 +626,10 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] <= 0 ) continue;
 	// Now ensure that the leading b jet isn't one of these!
 	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
-	  if( getLeadingBjetPt(event,event->bTagIndex,jets) == event->jetPF2PATPt[jets[k]]) continue;
+	  if( event->jetPF2PATPt[getLeadingBjet(event)] == event->jetPF2PATPt[jets[k]]) continue;
 	}
 	else if ( event->jetPF2PATBDiscriminator[l] > bDiscCut_ ){
-	  if( getLeadingBjetPt(event,event->bTagIndex,jets) == event->jetPF2PATPt[jets[l]]) continue;
+	  if( event->jetPF2PATPt[getLeadingBjet(event)] == event->jetPF2PATPt[jets[l]]) continue;
 	}
 	TLorentzVector wQuark1 = TLorentzVector(event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]);
 	TLorentzVector wQuark2 = TLorentzVector(event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]);
@@ -648,40 +648,22 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
   return closestWmass;
 }
 
-float Cuts::getTopMass(AnalysisEvent *event, std::vector<int> bTagIndex, std::vector<int> jetIndex){
+float Cuts::getTopMass(AnalysisEvent *event){
   
-  float leadingBjetMass = getLeadingBjetMass( event, bTagIndex, jetIndex );
-  if (leadingBjetMass == -1.0) return -1.0;
-  float topMass = ((event->wLepton).M() + leadingBjetMass + event->metPF2PATEt );
+  int leadingBjet = getLeadingBjet( event );
+  if (leadingBjet == -1) return -1.0;
+  TLorentzVector metVec(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
+  TLorentzVector bVec(event->jetPF2PATPx[leadingBjet],event->jetPF2PATPy[leadingBjet],event->jetPF2PATPz[leadingBjet],event->jetPF2PATE[leadingBjet]);
+  float topMass = (event->wLepton + bVec + metVec).M();
   return topMass;
 }
 
-float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets, std::vector<int> jets){
-    
-    float leadingBjetPt = -1.0;
-    int tempIt = 9999;
-    float leadingBJetMass = -9999999.0;
-
-    for (auto lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
-
-      if ( event->jetPF2PATPtRaw[jets[*lIt]] > leadingBjetPt ){
-	leadingBjetPt = event->jetPF2PATPtRaw[jets[*lIt]];
-	tempIt = *lIt;
-      }
-    }
-    if ( tempIt == 9999 ) return -1.0;
-    //    if ( TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M() < leadingBJetMass ){
-    leadingBJetMass = TLorentzVector(event->jetPF2PATPx[tempIt],event->jetPF2PATPy[tempIt],event->jetPF2PATPz[tempIt],event->jetPF2PATE[tempIt]).M();
-      //      }
-    return leadingBJetMass;
-}
-
-int Cuts::getLeadingJet(AnalysisEvent *event, std::vector<int> jets){
+int Cuts::getLeadingJet(AnalysisEvent *event){
     
   float leadingJetPt = -1.0;
   int jetIndex = -1;
 
-  for ( auto jetIt = jets.begin(); jetIt != jets.end(); ++jetIt ){
+  for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
     if ( event->jetPF2PATPtRaw[*jetIt] > leadingJetPt ){
       leadingJetPt = event->jetPF2PATPtRaw[*jetIt];
       jetIndex = *jetIt;
@@ -691,19 +673,19 @@ int Cuts::getLeadingJet(AnalysisEvent *event, std::vector<int> jets){
   return jetIndex;
 }
 
-float Cuts::getLeadingBjetPt(AnalysisEvent *event, std::vector<int> bJets, std::vector<int> jets){
+int Cuts::getLeadingBjet(AnalysisEvent *event){
     
     float leadingBjetPt = -1.0;
     int tempIt = 9999;
 
-    for (std::vector<int>::const_iterator lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
-      if ( event->jetPF2PATPtRaw[jets[*lIt]] > leadingBjetPt ){
-	leadingBjetPt = event->jetPF2PATPtRaw[jets[*lIt]];
+    for (std::vector<int>::const_iterator lIt = event->bTagIndex.begin(); lIt != event->bTagIndex.end(); ++lIt){
+      if ( event->jetPF2PATPt[event->jetIndex[*lIt]] > leadingBjetPt ){
+	leadingBjetPt = event->jetPF2PATPt[event->jetIndex[*lIt]];
 	tempIt = *lIt;
       }
     }
-    if ( tempIt == 9999 ) return -1.0;    
-    return leadingBjetPt;
+    if ( tempIt == 9999 ) return -1;    
+    return tempIt;
 }
 
 
@@ -926,7 +908,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   
   // bTag selection
   event->bTagIndex = makeBCuts(event,event->jetIndex);
-  synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
+  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (event->bTagIndex.size() != 1) return false;
   synchCutFlowHist_->Fill(6.5); // b-jet selection - step 5
@@ -943,8 +925,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
-  if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event, event->jetIndex, event->jetIndex)  << std::endl;
-  if (getTopMass(event, event->bTagIndex,event->jetIndex) > TopMassCutUpper_ || getTopMass(event, event->bTagIndex,event->jetIndex) < TopMassCutLower_) return false;
+  if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
+  if (getTopMass(event) > TopMassCutUpper_ || getTopMass(event) < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
 
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
@@ -1430,7 +1412,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   switch (step){
   case 0:
     step0EventDump_.precision(3);
-    int leadingJetIndex = getLeadingJet(event, event->jetIndex);
+    int leadingJetIndex = getLeadingJet(event);
     step0EventDump_ << event->jetPF2PATPtRaw[leadingJetIndex] << "|" << event->jetPF2PATBDiscriminator[leadingJetIndex] << "|";
     break;
   }
@@ -1469,9 +1451,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     event->bTagIndex = makeBCuts(event,event->jetIndex);
     if ( event->bTagIndex.size() == 1 ) step0EventDump_ << "1"; // b-Tag selection, exactly one b-jet - step 5
     else step0EventDump_ << "0";
-    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCut_ ) step0EventDump_ << "1"; // MET selection, step 6
+    if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCutSynch_ ) step0EventDump_ << "1"; // MET selection, step 6
     else step0EventDump_ << "0";
-    if ( (getTopMass(event, event->bTagIndex,event->jetIndex) <= TopMassCutUpper_) && (getTopMass(event, event->bTagIndex,event->jetIndex) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
+    if ( (getTopMass(event) <= TopMassCutUpper_) && (getTopMass(event) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
     else step0EventDump_ << "0";
     step0EventDump_ << std::endl;
     break;

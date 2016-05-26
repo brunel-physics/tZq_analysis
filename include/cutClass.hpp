@@ -27,10 +27,9 @@ class Cuts{
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>);
-  float getTopMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getLeadingBjetMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getLeadingBjetPt(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  int getLeadingJet(AnalysisEvent *event, std::vector<int>);
+  float getTopMass(AnalysisEvent*);
+  int getLeadingJet(AnalysisEvent *event);
+  int getLeadingBjet(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*);
   
   //Method for running the synchronisation with Jeremy.
