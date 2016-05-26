@@ -135,7 +135,6 @@ class Cuts{
   TH1F* synchCutTopMassHist_;
 
   std::ofstream step0EventDump_;
-  std::ofstream jetInfoEventDump_;
   std::ofstream step2EventDump_;
   std::ofstream step4EventDump_;
   std::ofstream step6EventDump_;

@@ -153,7 +153,6 @@ Cuts::~Cuts(){
     delete synchCutTopMassHist_;
     if (makeEventDump_) {
       step0EventDump_.close();
-      jetInfoEventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
       step6EventDump_.close();
@@ -229,7 +228,6 @@ bool Cuts::parse_config(std::string confName){
 
   if (makeEventDump_) {
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
-    jetInfoEventDump_.open("jetInfoEventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
     step6EventDump_.open("step6EventDump"+postfixName_+".txt");
@@ -663,7 +661,7 @@ float Cuts::getLeadingBjetMass(AnalysisEvent *event, std::vector<int> bJets, std
     int tempIt = 9999;
     float leadingBJetMass = -9999999.0;
 
-    for (std::vector<int>::const_iterator lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
+    for (auto lIt = bJets.begin(); lIt != bJets.end(); ++lIt){
 
       if ( event->jetPF2PATPtRaw[jets[*lIt]] > leadingBjetPt ){
 	leadingBjetPt = event->jetPF2PATPtRaw[jets[*lIt]];
@@ -808,11 +806,10 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
   
   std::vector<int> bJets;
 
-  for (unsigned i = 0; i < jets.size(); i++){
-    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
+  for (uint i = 0; i != jets.size(); i++){
+    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ && !synchCutFlow_) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && synchCutFlow_) continue;
-
     bJets.push_back(i);
   }
   return bJets;
@@ -930,7 +927,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event, event->bTagIndex,  event->jetIndex)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
-  if (!event->bTagIndex.size() == 1) return false;
+  if (event->bTagIndex.size() != 1) return false;
   synchCutFlowHist_->Fill(6.5); // b-jet selection - step 5
 
   // MET cut
@@ -940,7 +937,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  if (std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) <= mTWCut_) return false;
+  if ( std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) ) < mTWCut_ ) return false;
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
@@ -1248,11 +1245,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   event->muonIndexTight = getTightMuons(event);
 
   if ( step == 0 ) { // Used for 2015/2016 synch
-
-    jetInfoEventDump_.precision(6);
-    for ( int i = 0; i != event->numJetPF2PAT; i++ ){
-      jetInfoEventDump_ << "EvtNb=" << event->eventNum << " jet_pt=" << event->jetPF2PATPtRaw[i] << " jet_eta=" << event->jetPF2PATEta[i] << " jet_phi=" << event->jetPF2PATPhi[i] << " NEMfraction="  << event->jetPF2PATNeutralEmEnergyFractionCorr[i] << " CEMfraction=" << event->jetPF2PATChargedEmEnergyFraction[i] << " NHfraction=" << event->jetPF2PATNeutralHadronEnergyFractionCorr[i] << " CHfraction=" << event->jetPF2PATChargedHadronEnergyFractionCorr[i] << " Cmult=" << event->jetPF2PATChargedMultiplicity[i] << " nConst=" << (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) << std::endl;
-    }
 
     // Get trigger bit setup
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[2] = 1; // Set Z=1 if MuonEG trigger fires
