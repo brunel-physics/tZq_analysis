@@ -102,8 +102,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   makeBTagEffPlots_(false),
   getBTagWeight_(false),
   //MET and mTW cuts go here.
-  metCut_(0.),
-  mTWCut_(20.),
+  metCut_(0.0),
+  mTWCut_(20.0),
+  mTWCutSynch_(20.0),
   TopMassCutLower_(95.),
   TopMassCutUpper_(200.)
 {
@@ -937,7 +938,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  if ( std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) ) < mTWCut_ ) return false;
+  double mtW = std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) );
+  if ( mtW < mTWCutSynch_ ) return false;
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut

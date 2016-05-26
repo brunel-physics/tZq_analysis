@@ -161,6 +161,7 @@ class Cuts{
   //met and mtw cut values
   float metCut_;
   float mTWCut_;
+  float mTWCutSynch_;
 
   // top mass cut values
   float TopMassCutLower_;
