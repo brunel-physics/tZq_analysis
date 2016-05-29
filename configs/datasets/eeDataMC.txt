@@ -30,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 97880991
+totalEvents = 344568106
 crossSection = 831.76
 runType = mc
 histoName = ttbar
