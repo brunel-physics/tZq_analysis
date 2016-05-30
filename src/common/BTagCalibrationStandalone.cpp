@@ -48,9 +48,10 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     vec.push_back(token);
   }
   if (vec.size() != 11) {
-std::cerr << "ERROR in BTagCalibration: "
-          << "Invalid csv line; num tokens != 11: "
-          << csvLine;
+std::cout << "\nERROR in BTagCalibration: "
+          << "\nInvalid csv line; num tokens != 11: "
+          << "\ncsvLine = " << csvLine
+	  << "\nnumTokens = " << vec.size();
 throw std::exception();
   }
 
@@ -66,7 +67,7 @@ throw std::exception();
   formula = vec[10];
   TF1 f1("", formula.c_str());  // compile formula to check validity
   if (f1.IsZombie()) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; formula does not compile: "
           << csvLine;
 throw std::exception();
@@ -75,14 +76,14 @@ throw std::exception();
   // make parameters
   unsigned op = stoi(vec[0]);
   if (op > 3) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; OperatingPoint > 3: "
           << csvLine;
 throw std::exception();
   }
   unsigned jf = stoi(vec[3]);
   if (jf > 2) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; JetFlavor > 2: "
           << csvLine;
 throw std::exception();
@@ -107,7 +108,7 @@ BTagEntry::BTagEntry(const std::string &func, BTagEntry::Parameters p):
 {
   TF1 f1("", formula.c_str());  // compile formula to check validity
   if (f1.IsZombie()) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid func string; formula does not compile: "
           << func;
 throw std::exception();
@@ -119,7 +120,7 @@ BTagEntry::BTagEntry(const TF1* func, BTagEntry::Parameters p):
   params(p)
 {
   if (func->IsZombie()) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid TF1 function; function is zombie: "
           << func->GetName();
 throw std::exception();
@@ -216,7 +217,7 @@ BTagEntry::BTagEntry(const TH1* hist, BTagEntry::Parameters p):
   // compile formula to check validity
   TF1 f1("", formula.c_str());
   if (f1.IsZombie()) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "Invalid histogram; formula does not compile (>150 bins?): "
           << hist->GetName();
 throw std::exception();
@@ -295,7 +296,7 @@ const std::vector<BTagEntry>& BTagCalibration::getEntries(
 {
   std::string tok = token(par);
   if (!data_.count(tok)) {
-std::cerr << "ERROR in BTagCalibration: "
+std::cout << "ERROR in BTagCalibration: "
           << "(OperatingPoint, measurementType, sysType) not available: "
           << tok;
 throw std::exception();
@@ -306,7 +307,7 @@ throw std::exception();
 void BTagCalibration::readCSV(const std::string &s)
 {
   std::stringstream buff(s);
-  readCSV(buff);
+ readCSV(buff);
 }
 
 void BTagCalibration::readCSV(std::istream &s)
@@ -413,7 +414,7 @@ void BTagCalibrationReader::BTagCalibrationReaderImpl::load(
                                              std::string measurementType)
 {
   if (tmpData_[jf].size()) {
-std::cerr << "ERROR in BTagCalibrationReader: "
+std::cout << "ERROR in BTagCalibrationReader: "
           << "Data for this jet-flavor is already loaded: "
           << jf;
 throw std::exception();
