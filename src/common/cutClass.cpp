@@ -153,6 +153,7 @@ Cuts::~Cuts(){
     delete synchMuonCutFlow_;
     delete synchCutTopMassHist_;
     if (makeEventDump_) {
+      topMassEventDump_.close();
       step0EventDump_.close();
       step2EventDump_.close();
       step4EventDump_.close();
@@ -228,6 +229,7 @@ bool Cuts::parse_config(std::string confName){
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
 
   if (makeEventDump_) {
+    topMassEventDump_.open("topMassEventDump"+postfixName_+".txt");
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
@@ -925,8 +927,12 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
+    topMassEventDump_.precision(6);
+    double topMass ( getTopMass(event) );
+    topMassEventDump_ << "EvtNb="<< event->eventNum << " Bjet_pt=" << event->jetPF2PATPt[ getLeadingBjet( event ) ] <<" Bjet_px=" << event->jetPF2PATPx	[ getLeadingBjet( event ) ] << " Bjet_py=" << event->jetPF2PATPy [ getLeadingBjet( event ) ] << " Bjet_pz=" << event->jetPF2PATPz [ getLeadingBjet( event ) ] << " Bjet_Energy=" << event->jetPF2PATE [ getLeadingBjet( event ) ] << " Wlep_pt=" << event->wLepton.Pt() <<" Wlep_px=" << event->wLepton.Px() << " Wlep_py=" << event->wLepton.Py() << " Wlep_pz=" << event->wLepton.Pz() << " Wlep_Energy=" << event->wLepton.E() << " met_Pt=" << event->metPF2PATPt <<" met_px=" << event->metPF2PATPx << " met_py=" << event->metPF2PATPy << " met_pz()=" << event->metPF2PATPz << " met_Energy=" << event->metPF2PATEt << " topmass= " <<  topMass << std::endl;
+
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
-  if (getTopMass(event) > TopMassCutUpper_ || getTopMass(event) < TopMassCutLower_) return false;
+  if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
 
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
@@ -1453,7 +1459,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     else step0EventDump_ << "0";
     if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCutSynch_ ) step0EventDump_ << "1"; // MET selection, step 6
     else step0EventDump_ << "0";
-    if ( (getTopMass(event) <= TopMassCutUpper_) && (getTopMass(event) >= TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
+    if ( (getTopMass(event) < TopMassCutUpper_) && (getTopMass(event) > TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
     else step0EventDump_ << "0";
     step0EventDump_ << std::endl;
     break;
@@ -1725,14 +1731,12 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   // setup calibration readers
-    std::cout << __LINE__ << "/" << __FILE__ << std::endl;
   BTagCalibration calib("csvv2", "scaleFactors/CSVv2.csv");
-  BTagCalibrationReader reader(&calib,               // calibration instance
-			       BTagEntry::OP_TIGHT,  // operating point
-			       "comb",               // measurement type
+
+  BTagCalibrationReader reader(BTagEntry::OP_TIGHT,  // operating point
 			       "central");           // systematics type
-  BTagCalibrationReader reader_up(&calib, BTagEntry::OP_TIGHT, "comb", "up");  // sys up
-  BTagCalibrationReader reader_do(&calib, BTagEntry::OP_TIGHT, "comb", "down");  // sys down
+  BTagCalibrationReader reader_up(BTagEntry::OP_TIGHT, "up"); // sys up
+  BTagCalibrationReader reader_do(BTagEntry::OP_TIGHT, "down"); // sys down
 
   //Get SF
   // Initalise variables.

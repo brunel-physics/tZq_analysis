@@ -133,6 +133,7 @@ class Cuts{
   TH1I* synchMuonCutFlow_;
   TH1F* synchCutTopMassHist_;
 
+  std::ofstream topMassEventDump_;
   std::ofstream step0EventDump_;
   std::ofstream step2EventDump_;
   std::ofstream step4EventDump_;
