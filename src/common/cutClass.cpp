@@ -1731,7 +1731,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   // setup calibration readers
-  BTagCalibration calib("csvv2", "scaleFactors/CSVv2.csv");
+  BTagCalibration calib("CSVv2", "scaleFactors/CSVv2.csv");
 
   BTagCalibrationReader reader(BTagEntry::OP_TIGHT,  // operating point
 			       "central");           // systematics type
