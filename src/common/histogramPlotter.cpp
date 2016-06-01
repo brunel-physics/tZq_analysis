@@ -127,7 +127,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
   ratioHisto->Divide( (TH1F*)(mcStack->GetStack()->Last()) );
   ratioHisto->SetMarkerStyle(20);
-  ratioHisto->SetMarkerSize(0.5);
+  ratioHisto->SetMarkerSize(0.85);
   ratioHisto->SetMarkerColor(kBlack);
 
   // Set up canvas
@@ -135,7 +135,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy->cd();
 
   // Top Histogram
-  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.33,0.99,0.99);
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.325,0.99,0.99);
   canvy_1->Draw(); 
   canvy_1->cd();
   canvy_1->SetTopMargin(0.08);
@@ -147,7 +147,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   if (xAxisLabels.size() > 0){
     for (unsigned i = 1; i <= xAxisLabels.size(); i++){
-      mcStack->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+      mcStack->GetXaxis()->SetBinLabel(i,"");
     }
   }
   
@@ -162,13 +162,13 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     plotMap["data"]->Draw("e x0, same");
   }
 
-  mcStack->SetMaximum(max*1.25);
+  mcStack->SetMaximum(max*1.1);
       
   legend_->Draw();
   
   // Bottom ratio plots
   canvy->cd();
-  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.32);
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.325);
 //  canvy_2->SetOptStat(0);
   canvy_2->Draw(); 
   canvy_2->cd();
@@ -178,8 +178,8 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   canvy_2->SetFillStyle(0);
 
   ratioHisto->SetStats(false);
-  ratioHisto->SetMinimum(0.8);
-  ratioHisto->SetMaximum(1.2);
+  ratioHisto->SetMinimum(0.5);
+  ratioHisto->SetMaximum(1.5);
   ratioHisto->SetTitle("; ; data/MC");
 //  ratioHisto->GetYaxis()->SetNdivisions(5,25);
   ratioHisto->GetXaxis()->SetLabelSize(0.08);
@@ -200,15 +200,6 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + extensions_[ext_it]).c_str());
   }
 
-/*  //Make log plots
-  canvy->SetLogy();
-  mcStack.SetMaximum(max*10);
-
-  //Save the log plots
-  for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
-    canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + "_log" + extensions_[ext_it]).c_str());
-  }*/
-  
   delete canvy;
 }
 
