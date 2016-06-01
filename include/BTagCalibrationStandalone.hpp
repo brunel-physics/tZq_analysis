@@ -179,4 +179,3 @@ protected:
 #endif  // BTagCalibrationReader_H
 
 
-
