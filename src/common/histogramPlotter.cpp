@@ -76,7 +76,7 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
 	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
-      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,"");
+      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel);
     }
   }
 }
@@ -108,7 +108,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
     
   //Initialise the stack
-  THStack* mcStack = new THStack(plotName.c_str(),plotName.c_str());
+  THStack* mcStack = new THStack(plotName.c_str(),(plotName+";"+subLabel).c_str());
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -125,33 +125,28 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   //Initialise ratio plots
   TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
-  ratioHisto->Divide( (TH1F*)(mcStack->GetStack()->Last()) );
+  ratioHisto->Divide( ratioHisto, (TH1F*)(mcStack->GetStack()->Last()),1,1, "B" );
   ratioHisto->SetMarkerStyle(20);
   ratioHisto->SetMarkerSize(0.85);
   ratioHisto->SetMarkerColor(kBlack);
+  ratioHisto->GetXaxis()->SetTitle("TSET");
 
   // Set up canvas
-  TCanvas * canvy = new TCanvas((plotName + subLabel + postfix_).c_str(), (plotName + subLabel + postfix_).c_str());
+  TCanvas * canvy = new TCanvas((plotName + postfix_).c_str(), (plotName + postfix_).c_str());
   canvy->cd();
 
   // Top Histogram
-  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.325,0.99,0.99);
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
   canvy_1->Draw(); 
   canvy_1->cd();
   canvy_1->SetTopMargin(0.08);
-  canvy_1->SetBottomMargin(0.05);
+  canvy_1->SetBottomMargin(0.08);
   canvy_1->SetRightMargin(0.1);
   canvy_1->SetFillStyle(0);
 
   mcStack->Draw("");
 
-  if (xAxisLabels.size() > 0){
-    for (unsigned i = 1; i <= xAxisLabels.size(); i++){
-      mcStack->GetXaxis()->SetBinLabel(i,"");
-    }
-  }
-  
-  setLabelThree(subLabel);
+  setLabelThree("");
   //labelThree_->Draw();
   //  labelTwo_->Draw();
   //  labelOne_->Draw();
@@ -168,12 +163,12 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   
   // Bottom ratio plots
   canvy->cd();
-  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.325);
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
 //  canvy_2->SetOptStat(0);
   canvy_2->Draw(); 
   canvy_2->cd();
   canvy_2->SetTopMargin(0.05);
-  canvy_2->SetBottomMargin(0.06);
+  canvy_2->SetBottomMargin(0.08);
   canvy_2->SetRightMargin(0.1);
   canvy_2->SetFillStyle(0);
 
@@ -197,7 +192,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
-    canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + extensions_[ext_it]).c_str());
+    canvy->SaveAs((outputFolder_ + plotName + postfix_ + extensions_[ext_it]).c_str());
   }
 
   delete canvy;
