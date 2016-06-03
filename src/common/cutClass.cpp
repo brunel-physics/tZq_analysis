@@ -100,7 +100,22 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   //Are we making b-tag efficiency plots?
   makeBTagEffPlots_(false),
   getBTagWeight_(false),
+
+  // bTag calib code
   calib("CSVv2", "scaleFactors/CSVv2.csv"),
+  // udsg jets
+  lightReader(BTagEntry::OP_TIGHT,		// operating point
+                               "central"),	// systematics type
+  lightReader_up(BTagEntry::OP_TIGHT, "up"),	// sys up
+  lightReader_do(BTagEntry::OP_TIGHT, "down"),	// sys down
+  // c/b jets
+  charmReader(BTagEntry::OP_TIGHT, "central"),	//central
+  charmReader_up(BTagEntry::OP_TIGHT, "up"), 	// sys up
+  charmReader_do(BTagEntry::OP_TIGHT, "down"),	// sys down
+  beautyReader(BTagEntry::OP_TIGHT, "central"),	//central
+  beautyReader_up(BTagEntry::OP_TIGHT, "up"), 	// sys up
+  beautyReader_do(BTagEntry::OP_TIGHT, "down"),	// sys down
+
   //MET and mTW cuts go here.
   metCut_(0.0),
   mTWCut_(20.0),
@@ -138,6 +153,19 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
   h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
   std::cout << "Got muon SFs!\n" << std::endl;
+
+  // if doing bTag SFs, load stuff here ...
+  if ( getBTagWeight_ ) {
+    lightReader.load(calib, BTagEntry::FLAV_UDSG, "incl");
+    lightReader_up.load(calib, BTagEntry::FLAV_UDSG, "incl");
+    lightReader_do.load(calib, BTagEntry::FLAV_UDSG, "incl");
+    charmReader.load(calib, BTagEntry::FLAV_C, "mujets");
+    charmReader_up.load(calib, BTagEntry::FLAV_C, "mujets");
+    charmReader_do.load(calib, BTagEntry::FLAV_C, "mujets");
+    beautyReader.load(calib, BTagEntry::FLAV_B, "mujets");
+    beautyReader_up.load(calib, BTagEntry::FLAV_B, "mujets");
+    beautyReader_do.load(calib, BTagEntry::FLAV_B, "mujets");
+  }
 }
 
 Cuts::~Cuts(){
@@ -1735,12 +1763,6 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     eff = bTagEffPlots_[7]->GetBinContent(bTagEffPlots_[7]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[7]->GetYaxis()->FindBin(std::abs(jet.Eta()))) / bTagEffPlots_[3]->GetBinContent(bTagEffPlots_[3]->GetXaxis()->FindBin(jet.Pt()),bTagEffPlots_[3]->GetYaxis()->FindBin(std::abs(jet.Eta())));
   }
 
-  // setup calibration readers
-  BTagCalibrationReader reader(BTagEntry::OP_TIGHT,  // operating point
-			       "central");           // systematics type
-  BTagCalibrationReader reader_up(BTagEntry::OP_TIGHT, "up"); // sys up
-  BTagCalibrationReader reader_do(BTagEntry::OP_TIGHT, "down"); // sys down
-
   //Get SF
   // Initalise variables.
   double jet_scalefactor (1.0); 
@@ -1757,9 +1779,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   //Do some things if it's a b or c
 
   if ( partonFlavour == 5 ){
-    jet_scalefactor = reader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
-    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor = beautyReader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    jet_scalefactor_up = beautyReader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor_do = beautyReader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
       doubleUncertainty = true;
@@ -1767,9 +1789,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   else if ( partonFlavour == 4 ){
-    jet_scalefactor = reader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
-    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor = charmReader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    jet_scalefactor_up = charmReader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor_do = charmReader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
       doubleUncertainty = true;
@@ -1778,9 +1800,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 
   //Light jets
   else {
-    jet_scalefactor = reader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
-    jet_scalefactor_up = reader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    jet_scalefactor_do = reader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor = lightReader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    jet_scalefactor_up = lightReader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor_do = lightReader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
     if (jetPt > maxLjetPt){
       jetPt = maxLjetPt;
       doubleUncertainty = true;

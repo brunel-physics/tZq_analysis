@@ -157,6 +157,18 @@ class Cuts{
   //And the efficiency plots.
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
+  //bTag callibration for SFs
+  BTagCalibration calib;
+  BTagCalibrationReader lightReader;
+  BTagCalibrationReader lightReader_up;
+  BTagCalibrationReader lightReader_do;
+  BTagCalibrationReader charmReader;
+  BTagCalibrationReader charmReader_up;
+  BTagCalibrationReader charmReader_do;
+  BTagCalibrationReader beautyReader;
+  BTagCalibrationReader beautyReader_up;
+  BTagCalibrationReader beautyReader_do;
+
   void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*);
 
   //met and mtw cut values
@@ -198,9 +210,6 @@ class Cuts{
 
   TFile* electronSFsFile;
   TH2F* h_eleSFs;
-
-  BTagCalibration calib;
-
   TFile* muonIDsFile;
   TFile* muonIsoFile;  
   TH2F* h_muonIDs;
