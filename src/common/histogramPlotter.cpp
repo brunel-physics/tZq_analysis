@@ -108,7 +108,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
     
   //Initialise the stack
-  THStack* mcStack = new THStack(plotName.c_str(),(plotName+";"+subLabel).c_str());
+  THStack* mcStack = new THStack(plotName.c_str(),(plotName+";"+subLabel+";Events (lumi scaled)").c_str());
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -125,11 +125,12 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   //Initialise ratio plots
   TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
+  ratioHisto->Sumw2();
   ratioHisto->Divide( ratioHisto, (TH1F*)(mcStack->GetStack()->Last()),1,1, "B" );
+  
   ratioHisto->SetMarkerStyle(20);
   ratioHisto->SetMarkerSize(0.85);
   ratioHisto->SetMarkerColor(kBlack);
-  ratioHisto->GetXaxis()->SetTitle("TSET");
 
   // Set up canvas
   TCanvas * canvy = new TCanvas((plotName + postfix_).c_str(), (plotName + postfix_).c_str());
