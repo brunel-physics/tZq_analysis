@@ -1,5 +1,4 @@
 #include "cutClass.hpp"
-#include "BTagCalibrationStandalone.hpp"
 
 #include "TLorentzVector.h"
 #include "TRandom.h"
@@ -101,6 +100,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   //Are we making b-tag efficiency plots?
   makeBTagEffPlots_(false),
   getBTagWeight_(false),
+  calib("CSVv2", "scaleFactors/CSVv2.csv"),
   //MET and mTW cuts go here.
   metCut_(0.0),
   mTWCut_(20.0),
@@ -656,6 +656,7 @@ float Cuts::getTopMass(AnalysisEvent *event){
   if (leadingBjet == -1) return -1.0;
   TLorentzVector metVec(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
   TLorentzVector bVec(event->jetPF2PATPx[leadingBjet],event->jetPF2PATPy[leadingBjet],event->jetPF2PATPz[leadingBjet],event->jetPF2PATE[leadingBjet]);
+//  TLorentzVector bVec(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   float topMass = (event->wLepton + bVec + metVec).M();
   return topMass;
 }
@@ -795,6 +796,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ && !synchCutFlow_) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && synchCutFlow_) continue;
+    if ( std::abs(event->jetPF2PATEta[jets[i]]) >= 2.40 ) continue;
     bJets.push_back(i);
   }
   return bJets;
@@ -927,11 +929,14 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
 
   // Top Mass cut
-    topMassEventDump_.precision(6);
-    double topMass ( getTopMass(event) );
-    topMassEventDump_ << "EvtNb="<< event->eventNum << " Bjet_pt=" << event->jetPF2PATPt[ getLeadingBjet( event ) ] <<" Bjet_px=" << event->jetPF2PATPx	[ getLeadingBjet( event ) ] << " Bjet_py=" << event->jetPF2PATPy [ getLeadingBjet( event ) ] << " Bjet_pz=" << event->jetPF2PATPz [ getLeadingBjet( event ) ] << " Bjet_Energy=" << event->jetPF2PATE [ getLeadingBjet( event ) ] << " Wlep_pt=" << event->wLepton.Pt() <<" Wlep_px=" << event->wLepton.Px() << " Wlep_py=" << event->wLepton.Py() << " Wlep_pz=" << event->wLepton.Pz() << " Wlep_Energy=" << event->wLepton.E() << " met_Pt=" << event->metPF2PATPt <<" met_px=" << event->metPF2PATPx << " met_py=" << event->metPF2PATPy << " met_pz()=" << event->metPF2PATPz << " met_Energy=" << event->metPF2PATEt << " topmass= " <<  topMass << std::endl;
-
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
+  double topMass (getTopMass(event));
+
+  if (event->bTagIndex.size() == 1) {
+    topMassEventDump_.precision(6);
+    topMassEventDump_ << "EvtNb="<< event->eventNum << " Bjet_pt=" << event->jetPF2PATPt[ getLeadingBjet( event ) ] <<" Bjet_px=" << event->jetPF2PATPx	[ getLeadingBjet( event ) ] << " Bjet_py=" << event->jetPF2PATPy [ getLeadingBjet( event ) ] << " Bjet_pz=" << event->jetPF2PATPz [ getLeadingBjet( event ) ] << " Bjet_Energy=" << event->jetPF2PATE [ getLeadingBjet( event ) ] << " Wlep_pt=" << event->wLepton.Pt() <<" Wlep_px=" << event->wLepton.Px() << " Wlep_py=" << event->wLepton.Py() << " Wlep_pz=" << event->wLepton.Pz() << " Wlep_Energy=" << event->wLepton.E() << " met_Pt=" << event->metPF2PATPt <<" met_px=" << event->metPF2PATPx << " met_py=" << event->metPF2PATPy << " met_pz()=" << event->metPF2PATPz << " met_Energy=" << event->metPF2PATEt << " topmass= " <<  topMass << std::endl;
+  }
+
   if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
 
@@ -1731,8 +1736,6 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   // setup calibration readers
-  BTagCalibration calib("CSVv2", "scaleFactors/CSVv2.csv");
-
   BTagCalibrationReader reader(BTagEntry::OP_TIGHT,  // operating point
 			       "central");           // systematics type
   BTagCalibrationReader reader_up(BTagEntry::OP_TIGHT, "up"); // sys up

@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TLorentzVector.h"
 
+#include "BTagCalibrationStandalone.hpp"
 
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
@@ -197,6 +198,8 @@ class Cuts{
 
   TFile* electronSFsFile;
   TH2F* h_eleSFs;
+
+  BTagCalibration calib;
 
   TFile* muonIDsFile;
   TFile* muonIsoFile;  
