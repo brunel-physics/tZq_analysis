@@ -1,11 +1,21 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2996000
-crossSection = 0.008188
+crossSection = 0.0758
 runType = mc
 histoName = tZq
 colour = kYellow
 label = tZq
+plotType = f
+
+[tHq]
+fileName = configs/datasets/fileLists/tHqFiles.txt
+totalEvents = 3498596
+crossSection = 0.07096
+runType = mc
+histoName = tHq
+colour = kRed2
+label = tHq
 plotType = f
 
 [ttW]
@@ -170,7 +180,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 24156124
+totalEvents = 262341358
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring

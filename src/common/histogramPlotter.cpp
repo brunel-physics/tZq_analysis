@@ -126,7 +126,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   //Initialise ratio plots
   TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
   ratioHisto->Sumw2();
-  ratioHisto->Divide( ratioHisto, (TH1F*)(mcStack->GetStack()->Last()),1,1, "B" );
+  ratioHisto->Divide( ratioHisto, (TH1F*)(mcStack->GetStack()->Last()),1,1 );
   
   ratioHisto->SetMarkerStyle(20);
   ratioHisto->SetMarkerSize(0.85);
