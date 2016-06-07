@@ -45,7 +45,7 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     if (token.empty()) {
       continue;
     }
-    vec.push_back(token);
+    vec.emplace_back(token);
   }
   if (vec.size() != 11) {
 std::cout << "\nERROR in BTagCalibration: "
@@ -288,7 +288,7 @@ BTagCalibration::BTagCalibration(const std::string &taggr,
 
 void BTagCalibration::addEntry(const BTagEntry &entry)
 {
-  data_[token(entry.params)].push_back(entry);
+  data_[token(entry.params)].emplace_back(entry);
 }
 
 const std::vector<BTagEntry>& BTagCalibration::getEntries(
@@ -444,7 +444,7 @@ throw std::exception();
                     be.params.ptMin, be.params.ptMax);
     }
 
-    tmpData_[be.params.jetFlavor].push_back(te);
+    tmpData_[be.params.jetFlavor].emplace_back(te);
     if (te.etaMin < 0) {
       useAbsEta_[be.params.jetFlavor] = false;
     }

@@ -419,7 +419,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss{argv[++i]};
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(std::stoi(item));
+	jetRegVars.emplace_back(std::stoi(item));
       }
     }
     else if (arg == "-g"){
@@ -464,7 +464,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       std::stringstream ss{argv[++i]};
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(std::stoi(item));
+	jetRegVars.emplace_back(std::stoi(item));
       }
       std::cout << "CAUTION! Using a custom jet region of "<< jetRegVars[0] << "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets" <<std::endl;
 
@@ -551,19 +551,19 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
 void AnalysisAlgo::setupSystematics()
 {
-  systNames.push_back("");
-  systNames.push_back("__trig__plus");
-  systNames.push_back("__trig__minus");
-  systNames.push_back("__jer__plus");
-  systNames.push_back("__jer__minus");
-  systNames.push_back("__jes__plus");
-  systNames.push_back("__jes__minus");
-  systNames.push_back("__pileup__plus");
-  systNames.push_back("__pileup__minus");
-  systNames.push_back("__bTag__plus");
-  systNames.push_back("__bTag__minus");
-  systNames.push_back("__pdf__plus");
-  systNames.push_back("__pdf__minus");
+  systNames.emplace_back("");
+  systNames.emplace_back("__trig__plus");
+  systNames.emplace_back("__trig__minus");
+  systNames.emplace_back("__jer__plus");
+  systNames.emplace_back("__jer__minus");
+  systNames.emplace_back("__jes__plus");
+  systNames.emplace_back("__jes__minus");
+  systNames.emplace_back("__pileup__plus");
+  systNames.emplace_back("__pileup__minus");
+  systNames.emplace_back("__bTag__plus");
+  systNames.emplace_back("__bTag__minus");
+  systNames.emplace_back("__pdf__plus");
+  systNames.emplace_back("__pdf__minus");
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};
@@ -626,12 +626,12 @@ void AnalysisAlgo::setupPlots()
 {
   //Do a little initialisation for the plots here. Will later on be done in a config file.  
   //Initialise plot stage names.
-  stageNames.push_back("lepSel");
-  stageNames.push_back("zMass");
-  stageNames.push_back("jetSel");
-  stageNames.push_back("bTag");
-  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.push_back("wMass");}
-  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.push_back("cTag");}
+  stageNames.emplace_back("lepSel");
+  stageNames.emplace_back("zMass");
+  stageNames.emplace_back("jetSel");
+  stageNames.emplace_back("bTag");
+  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back("wMass");}
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back("cTag");}
 }
 
 void AnalysisAlgo::runMainAnalysis(){
@@ -724,8 +724,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    const size_t numCutFlowBins{stageNames.size()};
 	    cutFlowMap[dataset->getFillHisto()] = new TH1F{(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
 	    if (systInd == 0 && datasetInfos.find(dataset->getFillHisto()) == datasetInfos.end()){
-	      legOrder.push_back(dataset->getFillHisto());
-	      plotOrder.push_back(dataset->getFillHisto());
+	      legOrder.emplace_back(dataset->getFillHisto());
+	      plotOrder.emplace_back(dataset->getFillHisto());
 	      datasetInfos[dataset->getFillHisto()] = datasetInfo();
 	      datasetInfos[dataset->getFillHisto()].colour = dataset->getColour();
 	      datasetInfos[dataset->getFillHisto()].legLabel = dataset->getPlotLabel();
@@ -734,7 +734,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (plots){ // Only make all the plots if it's entirely necessary.
 	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl; 
 	      if (plotsMap.find(channel) == plotsMap.end()){
-		plotsVec.push_back(systNames[systInd]+channel);
+		plotsVec.emplace_back(systNames[systInd]+channel);
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
 	      for (unsigned j{0}; j < stageNames.size(); j++){
@@ -786,7 +786,7 @@ void AnalysisAlgo::runMainAnalysis(){
         float etaMax{2.4};
         for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
           for (unsigned type{0}; type < typesOfEff.size(); type++){
-	    bTagEffPlots.push_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
+	    bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
 	  }
 	}
 	cutObj->setBTagPlots(bTagEffPlots,true);
@@ -799,7 +799,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
 	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
 	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.push_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
 	  }
 	}
 	for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
@@ -869,7 +869,7 @@ void AnalysisAlgo::runMainAnalysis(){
 		if (systIn > 0) systMask = systMask << 1;
 		continue;
 		}*/
-	  mvaTree.push_back(datasetChain->CloneTree(0));
+	  mvaTree.emplace_back(datasetChain->CloneTree(0));
 	  mvaTree[systIn]->SetDirectory(mvaOutFile);
 	  mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
 	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
@@ -1011,7 +1011,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      double weight{1};
 	      if( (xpdf1 * xpdf2) > 0.00001)
 		weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
-	      pdf_weights.push_back(weight);
+	      pdf_weights.emplace_back(weight);
 	      if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
 	      if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
 	      if (weight > max) max = weight;
@@ -1165,7 +1165,7 @@ void AnalysisAlgo::savePlots()
     
     std::vector<std::string> cutFlowLabels;
     for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-    	cutFlowLabels.push_back(*lIt);
+    	cutFlowLabels.emplace_back(*lIt);
     }
 
     plotObj.makePlot(cutFlowMap,"cutFlow",cutFlowLabels);

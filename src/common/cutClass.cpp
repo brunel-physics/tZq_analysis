@@ -429,7 +429,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	else continue;
     }
 
-    electrons.push_back(i);
+    electrons.emplace_back(i);
 
   }
   return electrons;
@@ -471,7 +471,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  }
 	else continue;
 
-    electrons.push_back(i);
+    electrons.emplace_back(i);
 
   }
   return electrons;
@@ -501,7 +501,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (event->muonPF2PATVldPixHits[i] < 1) continue;
     if (event->muonPF2PATMatchedStations[i] < 2) continue;
 
-    muons.push_back(i);
+    muons.emplace_back(i);
   }
   //  std::cout << muons.size() << std::endl;
   return muons;
@@ -516,7 +516,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
     if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
     if (event->muonPF2PATGlobalID[i] || event->muonPF2PATTrackID[i])
-	muons.push_back(i);
+	muons.emplace_back(i);
     else continue;
   }
   return muons;
@@ -795,7 +795,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
 	  bTagEffPlots_[7]->Fill(jetVec.Pt(),jetVec.Eta());
       }
     }
-    jets.push_back(i);
+    jets.emplace_back(i);
 
     if (getBTagWeight_ && !synchCutFlow_){
       getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&err1,&err2,&err3,&err4);
@@ -830,7 +830,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ && !synchCutFlow_) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && synchCutFlow_) continue;
     if ( std::abs(event->jetPF2PATEta[jets[i]]) >= 2.40 ) continue;
-    bJets.push_back(i);
+    bJets.emplace_back(i);
   }
   return bJets;
 }
@@ -843,7 +843,7 @@ std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
 //      if (event->jetPF2PATJetCharge[jets[i]] <= 0) continue; // If a negatively charged jet ... I.e. if not a  u or c ...
     if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
     if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
-    cJets.push_back(i);
+    cJets.emplace_back(i);
   }
   return cJets;
 
@@ -1125,7 +1125,7 @@ std::vector<int> Cuts::getInvIsoEles(AnalysisEvent* event) {
     if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
     if (event->elePF2PATComRelIsoRho[i] < tightEleRelIso_)continue;
 
-    electrons.push_back(i);
+    electrons.emplace_back(i);
   }
   return electrons;
 }
@@ -1143,7 +1143,7 @@ std::vector<int> Cuts::getInvIsoMuons(AnalysisEvent* event){
     if (std::abs(event->muonPF2PATDBInnerTrackD0[i]) > 0.2) continue;
     if (event->muonPF2PATNChambers[i] < 2) continue;
 
-    muons.push_back(i);
+    muons.emplace_back(i);
   }
   return muons;
 }
@@ -1344,19 +1344,19 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 
   if ( step > 2 && trileptonChannel_ == true){
     if (event->zPairLeptons.first.Pt() < event->wLepton.Pt()){
-      tempLepVec.push_back(event->wLepton);
-      tempLepVec.push_back(event->zPairLeptons.first);
-      tempLepVec.push_back(event->zPairLeptons.second);
+      tempLepVec.emplace_back(event->wLepton);
+      tempLepVec.emplace_back(event->zPairLeptons.first);
+      tempLepVec.emplace_back(event->zPairLeptons.second);
     }
     else if (event->wLepton.Pt() > event->zPairLeptons.second.Pt()){
-      tempLepVec.push_back(event->zPairLeptons.first);
-      tempLepVec.push_back(event->wLepton);
-      tempLepVec.push_back(event->zPairLeptons.second);
+      tempLepVec.emplace_back(event->zPairLeptons.first);
+      tempLepVec.emplace_back(event->wLepton);
+      tempLepVec.emplace_back(event->zPairLeptons.second);
     }
     else {
-      tempLepVec.push_back(event->zPairLeptons.first);
-      tempLepVec.push_back(event->zPairLeptons.second);
-      tempLepVec.push_back(event->wLepton);
+      tempLepVec.emplace_back(event->zPairLeptons.first);
+      tempLepVec.emplace_back(event->zPairLeptons.second);
+      tempLepVec.emplace_back(event->wLepton);
     }
   }
   if (step==2 && trileptonChannel_ == true){
@@ -1365,11 +1365,11 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
       TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
       for (int j{muUsed}; j < event->numMuonPF2PAT; j++){
 	if (tempVec.Pt() > event->muonPF2PATPt[i]){
-	  tempLepVec.push_back(tempVec);
+	  tempLepVec.emplace_back(tempVec);
 	  break;
 	}
 	else {
-	  tempLepVec.push_back(TLorentzVector(event->muonPF2PATPX[j],event->muonPF2PATPY[j],event->muonPF2PATPZ[j],event->muonPF2PATE[j]));
+	  tempLepVec.emplace_back(event->muonPF2PATPX[j],event->muonPF2PATPY[j],event->muonPF2PATPZ[j],event->muonPF2PATE[j]);
 	  muUsed++;
 	  if (tempLepVec.size() > 2) break;
 	}
@@ -1378,7 +1378,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     }
     if (tempLepVec.size() < 3){
       for (int j{0}; j < 3; j++){
-	tempLepVec.push_back(TLorentzVector(event->muonPF2PATPX[j],event->muonPF2PATPY[j],event->muonPF2PATPZ[j],event->muonPF2PATE[j]));
+	tempLepVec.emplace_back(event->muonPF2PATPX[j],event->muonPF2PATPY[j],event->muonPF2PATPZ[j],event->muonPF2PATE[j]);
       }
     }
   }
@@ -1609,24 +1609,24 @@ void Cuts::initialiseJECCors(){
     std::stringstream lineStream{line};
     std::string item;
     while (std::getline(lineStream,item,' ')){
-      tempVec.push_back(item);
+      tempVec.emplace_back(item);
     }
     std::vector<float> tempUp;
     std::vector<float> tempDown;
 
-    etaMinJEC_.push_back(std::stof(tempVec[0]));
-    etaMaxJEC_.push_back(std::stof(tempVec[1]));
+    etaMinJEC_.emplace_back(std::stof(tempVec[0]));
+    etaMaxJEC_.emplace_back(std::stof(tempVec[1]));
     for (unsigned i{1}; i < tempVec.size()/3; i++){
       unsigned ind{i * 3};
       if (first){
-      	ptMinJEC_.push_back(std::stof(tempVec[ind]));
-	ptMaxJEC_.push_back((ind+3 >= tempVec.size()?10000.:std::stof(tempVec[ind+3])));
+      	ptMinJEC_.emplace_back(std::stof(tempVec[ind]));
+	ptMaxJEC_.emplace_back((ind+3 >= tempVec.size()?10000.:std::stof(tempVec[ind+3])));
       }
-      tempUp.push_back(std::stof(tempVec[ind+1]));
-      tempDown.push_back(std::stof(tempVec[ind+2]));
+      tempUp.emplace_back(std::stof(tempVec[ind+1]));
+      tempDown.emplace_back(std::stof(tempVec[ind+2]));
     }
-    jecSFUp_.push_back(tempUp);
-    jecSFDown_.push_back(tempDown);
+    jecSFUp_.emplace_back(tempUp);
+    jecSFDown_.emplace_back(tempDown);
     first = false;
   }
 }

@@ -26,7 +26,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
 
   gErrorIgnoreLevel = kInfo;
 
-  extensions_.push_back(".root");
+  extensions_.emplace_back(".root");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
   labelOne_ = new TPaveText{0.16,0.88,0.5,0.94,"NDCBR"};
@@ -66,7 +66,7 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
   auto firstIt = plotMap.begin();
   std::vector<std::string> stageNameVec;
   for (auto stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
-    stageNameVec.push_back(stageNameIt->first);
+    stageNameVec.emplace_back(stageNameIt->first);
   }
   //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
   unsigned long plotNumb{firstIt->second.begin()->second->getPlotPoint().size()};

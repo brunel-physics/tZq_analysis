@@ -73,8 +73,8 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       if (datasetName != ""){
 	std::cerr << "  " << datasetName << std::endl;
 	std::cerr << "   " << isMC << "\t" << file << "\n   " << crossSection << "\t" << totalEvents << "\t" << histoFill << std::endl;
-	if (isMC) datasets->push_back(Dataset(datasetName, 0.,isMC,crossSection,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag));
-	else datasets->push_back(Dataset(datasetName, lumi,isMC,0.,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag));
+	if (isMC) datasets->emplace_back(datasetName, 0.,isMC,crossSection,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag);
+	else datasets->emplace_back(datasetName, lumi,isMC,0.,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag);
       }
       treeLabel = "tree";
       triggerFlag = "";
@@ -182,19 +182,19 @@ int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames
   for (int i{0}; i < plots.getLength(); i++){
     const libconfig::Setting &plot{plots[i]};
     plot.lookupValue("name",nameT);
-    plotNames->push_back(nameT);
+    plotNames->emplace_back(nameT);
     plot.lookupValue("xMin",xMinT);
-    xMin->push_back(xMinT);
+    xMin->emplace_back(xMinT);
     plot.lookupValue("xMax",xMaxT);
-    xMax->push_back(xMaxT);
+    xMax->emplace_back(xMaxT);
     plot.lookupValue("nBins",nBinsT);
-    nBins->push_back(nBinsT);
+    nBins->emplace_back(nBinsT);
     plot.lookupValue("fillExp",fillExpT);
-    fillExp->push_back(fillExpT);
+    fillExp->emplace_back(fillExpT);
     plot.lookupValue("xAxisLabel",xAxisLabelT);
-    xAxisLabels->push_back(xAxisLabelT);
+    xAxisLabels->emplace_back(xAxisLabelT);
     plot.lookupValue("cutStage",cutStageT);
-    cutStage->push_back(cutStageT);
+    cutStage->emplace_back(cutStageT);
   }
 
 

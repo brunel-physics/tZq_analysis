@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
     continue;
     TFile *inputFile{new TFile ((inputDir+line).c_str())};
     TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
-    inputTrees.push_back(lTempTree);
+    inputTrees.emplace_back(lTempTree);
   }
 
   std::cout << "Attached all files to TTree!" << std::endl;
