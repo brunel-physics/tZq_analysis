@@ -16,7 +16,7 @@ class JetCorrectionUncertainty:
             partialLine = line.split(" ")
             self.angleMinJES.append(partialLine[0])
             self.angleMaxJES.append(partialLine[1])
-            for i in range(1,len(partialLine)/3.):
+            for i in range(1,len(partialLine)/3):
                 ind = i*3-1
                 self.ptMinJES.append(partialLine[ind])
                 self.ptMaxJES.append(partialLine[ind + 3])
