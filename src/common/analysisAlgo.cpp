@@ -564,8 +564,6 @@ void AnalysisAlgo::setupSystematics()
   systNames.push_back("__bTag__minus");
   systNames.push_back("__pdf__plus");
   systNames.push_back("__pdf__minus");
-  if (isFCNC_ && isCtag_)   systNames.push_back("__cTag__plus");
-  if (isFCNC_ && isCtag_)   systNames.push_back("__cTag__minus");
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};

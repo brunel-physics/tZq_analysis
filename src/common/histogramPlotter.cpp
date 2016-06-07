@@ -27,7 +27,6 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   gErrorIgnoreLevel = kInfo;
 
   extensions_.push_back(".root");
-  //  extensions_.push_back(".png");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
   labelOne_ = new TPaveText{0.16,0.88,0.5,0.94,"NDCBR"};
@@ -50,9 +49,9 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
 
   gStyle->SetLabelFont(18,"");
   
-  for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
-    
-  }
+  //for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
+  //  
+  //}
   //I guess I should put in the plot style stuff here? Worry about that later on. Get it plotting something at all first I guess.
 }
 
@@ -77,7 +76,7 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
 	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
-      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,"");
+      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel);
     }
   }
 }
@@ -98,17 +97,18 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
   std::cerr << "Making a plot called: " << plotName << std::endl;
+
   //Make the legend. This is clearly the first thing I should do.
-  TLegend legend_{0.7,0.7,0.94,0.94};
-  legend_.SetFillStyle(1001);
-  legend_.SetBorderSize(1);
-  legend_.SetFillColor(kWhite);
+  TLegend* legend_{new TLegend{0.7,0.7,0.94,0.94}};
+  legend_->SetFillStyle(1001);
+  legend_->SetBorderSize(1);
+  legend_->SetFillColor(kWhite);
   for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
-    legend_.AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
+    legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
     
   //Initialise the stack
-  THStack mcStack{plotName.c_str(),plotName.c_str()};
+  THStack* mcStack{new THStack{plotName.c_str(),(plotName+";"+subLabel+";Events (lumi scaled)").c_str()}};
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -116,53 +116,86 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     plotMap[*plot_iter]->SetLineWidth(1);
     if( *plot_iter == "data"){
       plotMap["data"]->SetMarkerStyle(20);
-      plotMap["data"]->SetMarkerSize(1.2);
+      plotMap["data"]->SetMarkerSize(1.0);
       plotMap["data"]->SetMarkerColor(kBlack);
       continue;
     }
-    mcStack.Add(plotMap[*plot_iter]);
+    mcStack->Add(plotMap[*plot_iter]);
   }
-  TCanvas * canvy{new TCanvas{(plotName + subLabel + postfix_).c_str(), (plotName + subLabel + postfix_).c_str()}};
+
+  //Initialise ratio plots
+  TH1F* ratioHisto{dynamic_cast<TH1F*>(plotMap["data"]->Clone())};
+  ratioHisto->Sumw2();
+  ratioHisto->Divide(ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()),1,1 );
+  
+  ratioHisto->SetMarkerStyle(20);
+  ratioHisto->SetMarkerSize(0.85);
+  ratioHisto->SetMarkerColor(kBlack);
+
+  // Set up canvas
+  TCanvas * canvy{new TCanvas{(plotName + postfix_).c_str(), (plotName + postfix_).c_str()}};
   canvy->cd();
 
-  mcStack.Draw("");
+  // Top Histogram
+  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
+  canvy_1->Draw(); 
+  canvy_1->cd();
+  canvy_1->SetTopMargin(0.08);
+  canvy_1->SetBottomMargin(0.08);
+  canvy_1->SetRightMargin(0.1);
+  canvy_1->SetFillStyle(0);
 
-  if (xAxisLabels.size() > 0){
-    for (unsigned i{1}; i <= xAxisLabels.size(); i++){
-      mcStack.GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
-    }
-  }
-  
+  mcStack->Draw("");
 
-  setLabelThree(subLabel);
+  setLabelThree("");
   //labelThree_->Draw();
   //  labelTwo_->Draw();
   //  labelOne_->Draw();
 
-  double max{mcStack.GetMaximum()};
+  float max{mcStack->GetMaximum()};
   if (plotMap.find("data") != plotMap.end()){
-    max = TMath::Max(mcStack.GetMaximum(),plotMap["data"]->GetMaximum());
+    max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
   }
 
-  mcStack.SetMaximum(max*1.3);
+  mcStack->SetMaximum(max*1.1);
       
-  legend_.Draw();
+  legend_->Draw();
+  
+  // Bottom ratio plots
+  canvy->cd();
+  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
+//  canvy_2->SetOptStat(0);
+  canvy_2->Draw(); 
+  canvy_2->cd();
+  canvy_2->SetTopMargin(0.05);
+  canvy_2->SetBottomMargin(0.08);
+  canvy_2->SetRightMargin(0.1);
+  canvy_2->SetFillStyle(0);
 
-  // Save the plots.
-  for (unsigned ext_it{0}; ext_it < extensions_.size(); ext_it++){
-    canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + extensions_[ext_it]).c_str());
+  ratioHisto->SetStats(false);
+  ratioHisto->SetMinimum(0.5);
+  ratioHisto->SetMaximum(1.5);
+  ratioHisto->SetTitle("; ; data/MC");
+//  ratioHisto->GetYaxis()->SetNdivisions(5,25);
+  ratioHisto->GetXaxis()->SetLabelSize(0.08);
+  ratioHisto->GetYaxis()->SetLabelSize(0.06);
+  ratioHisto->GetYaxis()->SetTitleSize(0.09);
+  ratioHisto->GetYaxis()->SetTitleOffset(0.28);
+
+  if (xAxisLabels.size() > 0){
+    for (unsigned i{1}; i <= xAxisLabels.size(); i++){
+      ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+    }
   }
 
-/*  //Make log plots
-  canvy->SetLogy();
-  mcStack.SetMaximum(max*10);
+  ratioHisto->Draw("e x0, SCAT");
 
-  //Save the log plots
+  // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
-    canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + "_log" + extensions_[ext_it]).c_str());
-  }*/
-  
+    canvy->SaveAs((outputFolder_ + plotName + postfix_ + extensions_[ext_it]).c_str());
+  }
+
   delete canvy;
 }
 
@@ -179,3 +212,4 @@ void HistogramPlotter::setOutputFolder(std::string output){
   mkdir(outputFolder_.c_str(),0700);
 
 }
+

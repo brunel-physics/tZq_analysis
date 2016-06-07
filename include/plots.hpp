@@ -10,6 +10,8 @@
 typedef struct plot plot;
 
 class Plots{
+
+ private:
   std::vector<plot> plotPoint;
   //Fill expressions here.
   float fillLepton1Pt(AnalysisEvent*);
@@ -37,11 +39,14 @@ class Plots{
   float fillLeadingJetPt(AnalysisEvent*);
   float fillLeadingJetEta(AnalysisEvent*);
   float fillLeadingJetPhi(AnalysisEvent*);
+  float fillLeadingJetBDisc(AnalysisEvent*);
   float fillSecondJetPt(AnalysisEvent*);
   float fillSecondJetEta(AnalysisEvent*);
   float fillSecondJetPhi(AnalysisEvent*);
+  float fillSecondJetBDisc(AnalysisEvent*);
   float fillMetPlot(AnalysisEvent*);
   float numbBJets(AnalysisEvent*);
+  float fillBtagDisc(AnalysisEvent*);
   float fillZLep1Pt(AnalysisEvent*);
   float fillZLep1Eta(AnalysisEvent*);
   float fillZLep2Pt(AnalysisEvent*);
@@ -59,9 +64,15 @@ class Plots{
   float fillWLepMVA(AnalysisEvent*);
   float fillZPairMass(AnalysisEvent*);
   float fillZPairPt(AnalysisEvent*);
+  float fillZPairEta(AnalysisEvent*);
+  float fillZPairPhi(AnalysisEvent*);
   float fillWPair1Mass(AnalysisEvent*);
   float fillWPair2Mass(AnalysisEvent*);
   float fillLeptonMass(AnalysisEvent*);
+  float fillTopMass(AnalysisEvent*);
+  float fillTopPt(AnalysisEvent*);
+  float fillTopEta(AnalysisEvent*);
+  float fillTopPhi(AnalysisEvent*);
   float fillLepton1D0(AnalysisEvent*);
   float fillLepton2D0(AnalysisEvent*);
   float fillLepton3D0(AnalysisEvent*);
@@ -76,10 +87,22 @@ class Plots{
   float fillLepton3InnerTrackD0(AnalysisEvent*);
   float fillwTransverseMass(AnalysisEvent*);
   float filljjDelR(AnalysisEvent*);
-  float fillzLepDelR(AnalysisEvent*);
-  float fillzLepDelPhi(AnalysisEvent*);
+  float fillZLepDelR(AnalysisEvent*);
+  float fillZLepDelPhi(AnalysisEvent*);
+  float fillZLep1BjetDelR(AnalysisEvent*);
+  float fillZLep1BjetDelPhi(AnalysisEvent*);
+  float fillZLep2BjetDelR(AnalysisEvent*);
+  float fillZLep2BjetDelPhi(AnalysisEvent*);
   float filllbDelR(AnalysisEvent*);
   float filllbDelPhi(AnalysisEvent*);
+  float fillLepHt(AnalysisEvent*);
+  float fillWquarkHt(AnalysisEvent*);
+  float fillJetHt(AnalysisEvent*);
+  float fillTotHt(AnalysisEvent*);
+  float fillTotHtOverPt(AnalysisEvent*);
+  float fillTotPt(AnalysisEvent*);
+  float fillTotEta(AnalysisEvent*);
+  float fillTotM(AnalysisEvent*);
   const bool trileptonChannel_;
 
  public:

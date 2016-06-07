@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TLorentzVector.h"
 
+#include "BTagCalibrationStandalone.hpp"
 
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
@@ -27,10 +28,9 @@ class Cuts{
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>);
-  float getTopMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getLeadingBjetMass(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getLeadingBjetPt(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  int getLeadingJet(AnalysisEvent *event, std::vector<int>);
+  float getTopMass(AnalysisEvent*);
+  int getLeadingJet(AnalysisEvent *event);
+  int getLeadingBjet(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*);
   
   //Method for running the synchronisation with Jeremy.
@@ -134,6 +134,7 @@ class Cuts{
   TH1I* synchMuonCutFlow_;
   TH1F* synchCutTopMassHist_;
 
+  std::ofstream topMassEventDump_;
   std::ofstream step0EventDump_;
   std::ofstream step2EventDump_;
   std::ofstream step4EventDump_;
@@ -156,11 +157,24 @@ class Cuts{
   //And the efficiency plots.
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
-  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*, float*, float* /*, float*,float*,float*,float* */);
+  //bTag callibration for SFs
+  BTagCalibration calib;
+  BTagCalibrationReader lightReader;
+  BTagCalibrationReader lightReader_up;
+  BTagCalibrationReader lightReader_do;
+  BTagCalibrationReader charmReader;
+  BTagCalibrationReader charmReader_up;
+  BTagCalibrationReader charmReader_do;
+  BTagCalibrationReader beautyReader;
+  BTagCalibrationReader beautyReader_up;
+  BTagCalibrationReader beautyReader_do;
+
+  void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*);
 
   //met and mtw cut values
   float metCut_;
   float mTWCut_;
+  float mTWCutSynch_;
 
   // top mass cut values
   float TopMassCutLower_;
@@ -196,7 +210,6 @@ class Cuts{
 
   TFile* electronSFsFile;
   TH2F* h_eleSFs;
-
   TFile* muonIDsFile;
   TFile* muonIsoFile;  
   TH2F* h_muonIDs;

@@ -12,6 +12,8 @@
 typedef struct datasetInfo datasetInfo;
 
 class HistogramPlotter{
+
+ private:
   //A few things that govern the appearance of the plots.
   std::string lumiStr_;
   std::string outputFolder_; //Where the plots will be saved. Make sure to inclue the final /...
@@ -26,7 +28,6 @@ class HistogramPlotter{
   TPaveText * labelOne_;
   TPaveText * labelTwo_;
   TPaveText * labelThree_;
-
 
  public:
  //Constructor

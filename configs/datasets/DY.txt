@@ -1,21 +1,11 @@
 [tZq]
 fileName = configs/datasets/fileLists/tZqFiles.txt
 totalEvents = 2996000
-crossSection = 0.0758
+crossSection = 0.008188
 runType = mc
 histoName = tZq
 colour = kYellow
 label = tZq
-plotType = f
-
-[tHq]
-fileName = configs/datasets/fileLists/tHqFiles.txt
-totalEvents = 3498596
-crossSection = 0.07096
-runType = mc
-histoName = tHq
-colour = kRed2
-label = tHq
 plotType = f
 
 [ttW]
@@ -40,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 344568106
+totalEvents = 285529842
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -180,7 +170,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 262341358
+totalEvents = 262297381
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring
@@ -188,8 +178,8 @@ label = w+jets
 plotType = f
 
 [DYJetsToLL_MM-50]
-fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
-totalEvents = 255738508
+fileName = configs/datasets/fileLists/DYJets50Files.txt
+totalEvents = 149963618
 crossSection = 6025.2
 runType = mc
 histoName = zPlusJets
@@ -199,13 +189,33 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 169551982
+totalEvents = 169513672
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
 colour = kBlue
 label = zPlusJets
 plotType = f
+
+[eeRun2015C]
+fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
+luminosity = 17.227
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[eeRun2015D]
+fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
+luminosity = 2095.17
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
 
 []
 
