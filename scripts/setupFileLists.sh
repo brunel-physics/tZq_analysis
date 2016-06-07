@@ -14,6 +14,8 @@ rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/emuRun2015CFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/emuRun2015DFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015CFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015DFiles.txt
+rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015CFiles.txt
+rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015DFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/sChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarWInclusiveFiles.txt
@@ -59,6 +61,8 @@ ls /scratch/data/tZqSkimsRun2015/emuRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/da
 ls /scratch/data/tZqSkimsRun2015/emuRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/emuRun2015DFiles.txt
 ls /scratch/data/tZqSkimsRun2015/mumuRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015CFiles.txt
 ls /scratch/data/tZqSkimsRun2015/mumuRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015DFiles.txt
+ls /scratch/data/tZqSkimsRun2015/metRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015CFiles.txt
+ls /scratch/data/tZqSkimsRun2015/metRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015DFiles.txt
 ls /scratch/data/tZqSkimsRun2015/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/sChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2015/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2015/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarWInclusiveFiles.txt
