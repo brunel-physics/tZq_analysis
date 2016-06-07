@@ -6,6 +6,33 @@
 #include <vector>
 #include <libconfig.h++>
 
+int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, double * lumi){
+  //Re-write config parser here.
+  libconfig::Config config;
+
+  try{ //Attempt to open the configuration file.
+    config.readFile(conf.c_str());
+  }
+  catch (const libconfig::FileIOException &exep){ //No file error
+    std::cerr << "Error opening file" << std::endl;
+    return 0;
+  }
+  catch(const libconfig::ParseException &e){ //Parsing the file error
+    std::cerr << "Parse error at " << e.getFile() << ":" << e.getLine() << " - " << e.getError() << std::endl;
+    return 0;
+  }
+  libconfig::Setting &root = config.getRoot();
+  std::string datasetConf;
+  root.lookupValue("datasets",datasetConf);
+  std::cerr << root.exists("datasets");
+  if (!parse_files(datasetConf,datasets,lumi)){
+    std::cerr << "Dataset parsing failed!" << std::endl;
+    return 0;
+  }
+  //Succesfully parsed everything.
+  return 1;
+}
+
 int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, double * lumi,std::vector<std::string>*plotNames,std::vector<float>*xMin,std::vector<float>*xMax,std::vector<int>*nBins,std::vector<std::string>*fillExp,std::vector<std::string>*xAxisLabels,std::vector<int>*cutStage,std::string* cutsConfName,std::string* plotConfName, std::string* outFolder, std::string* postfix, std::string* channel){
   //Re-write config parser here.
   libconfig::Config config;
