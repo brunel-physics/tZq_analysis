@@ -147,8 +147,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 {
   gErrorIgnoreLevel = kInfo;
   //Set up environment a little.
-  std::cerr << std::setprecision(1) << std::fixed;
-  std::cout << std::setprecision(1) << std::fixed;
+  std::cout << std::setprecision(6) << std::fixed;
   // "This is the main function. It basically just loads a load of other stuff.";
   //Parse command line arguments - looking for config file.
   if (argc < 3){
@@ -278,7 +277,6 @@ void TriggerScaleFactors::runMainAnalysis(){
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
     int numberOfEvents = datasetChain->GetEntries();
-    std::cout << numberOfEvents << std::endl;
     if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
     auto  lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
     lEventTimer->DrawProgressBar(0, "");
