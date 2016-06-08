@@ -39,7 +39,6 @@ class TriggerScaleFactors{
 	std::string outFolder;
 	std::string postfix;
 	int numFiles;
-	std::vector<int> emptyVector;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;
@@ -61,7 +60,7 @@ class TriggerScaleFactors{
 	// lepton selection
 	std::vector<int> getTightElectrons(AnalysisEvent*);
 	std::vector<int> getTightMuons(AnalysisEvent*);
-	bool passDileptonSelection(AnalysisEvent*,std::vector<int>,std::vector<int>);
+	bool passDileptonSelection(AnalysisEvent*,std::vector<int>,bool isElectron = true);
 
 	// trigger cuts
 	bool doubleElectronTriggerCut(AnalysisEvent*);
@@ -69,10 +68,10 @@ class TriggerScaleFactors{
 	bool doubleMuonTriggerCut(AnalysisEvent*);
 
 	//
-	unsigned numberPassedElectrons[2];
-	unsigned numberTriggeredElectrons[2];
-	unsigned numberPassedMuons[2];
-	unsigned numberTriggeredMuons[2];
+	int numberPassedElectrons[2];
+	int numberTriggeredElectrons[2];
+	int numberPassedMuons[2];
+	int numberTriggeredMuons[2];
 };
 
 #endif
