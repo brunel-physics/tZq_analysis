@@ -278,7 +278,7 @@ void TriggerScaleFactors::runMainAnalysis(){
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
 
     double pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
-    eventWeight *= pileupWeight;
+    if ( dataset->isMC() ) eventWeight *= pileupWeight;
 
     int numberOfEvents = datasetChain->GetEntries();
     if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
@@ -477,5 +477,25 @@ void TriggerScaleFactors::savePlots()
   std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " / " << muonEfficiencyMC << std::endl;
   std::cout << "electron/muon trigger SFs: " << electronSF << " / " << muonSF << std::endl;
 
+  TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
+  histEfficiencies->Fill(0.5,0.5, electronEfficiencyData);
+  histEfficiencies->Fill(1.5,0.5, electronEfficiencyMC);
+  histEfficiencies->Fill(2.5,0.5, electronSF);
+
+  histEfficiencies->Fill(0.5,1.5, muonEfficiencyData);
+  histEfficiencies->Fill(1.5,1.5, muonEfficiencyMC);
+  histEfficiencies->Fill(2.5,1.5, muonSF);
+
+  histEfficiencies->GetXaxis()->SetBinLabel(1,"Data #epsilon");
+  histEfficiencies->GetXaxis()->SetBinLabel(2,"MC #epsilon");
+  histEfficiencies->GetXaxis()->SetBinLabel(2,"SF");
+  histEfficiencies->GetYaxis()->SetBinLabel(1,"ee trigger");
+  histEfficiencies->GetYaxis()->SetBinLabel(2,"#mu#mu trigger");
+
+  histEfficiencies->SetStats(kFALSE);
+
+  TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
+  histEfficiencies->Write();
+  outFile->Close();
 }
 
