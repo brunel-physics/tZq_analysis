@@ -104,9 +104,9 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
         jerSF = 1.216;
         jerSigma = 0.050;
 
+    returnJet = TLorentzVector();
     if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        returnJet = TLorentzVector();
-        if ( DeltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index]) < 0.4/2.0 ):
+        if (tree.DeltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index]) < 0.4/2.0 ):
             if (syst == 16): jerSF += jerSigma;
             elif (syst == 32): jerSF -= jerSigma;
             newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index];
@@ -326,7 +326,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         varMap["totEta"][0] = totVec.Eta()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
-        varMap["mTW"][0] = n.sqrt(2*metVec.Pt()*wLep.Pt() * (1-cos(metVec.Phi() - wLep.Phi())))
+        varMap["mTW"][0] = n.sqrt(2*metVec.Pt()*wLep.Pt() * (1-n.cos(metVec.Phi() - wLep.Phi())))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = metVec.Pt()
