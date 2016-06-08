@@ -68,10 +68,10 @@ class TriggerScaleFactors{
 	bool doubleMuonTriggerCut(AnalysisEvent*);
 
 	//
-	int numberPassedElectrons[2];
-	int numberTriggeredElectrons[2];
-	int numberPassedMuons[2];
-	int numberTriggeredMuons[2];
+	double numberPassedElectrons[2];
+	double  numberTriggeredElectrons[2];
+	double numberPassedMuons[2];
+	double numberTriggeredMuons[2];
 };
 
 #endif

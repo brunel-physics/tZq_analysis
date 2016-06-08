@@ -290,6 +290,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     }
   }
 
+  if( !skipTrigger_ || isMC_ )  *eventWeight *= getTriggerSF (systToRun);
+
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
@@ -332,13 +334,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
-//  if (event->electronIndexLoose.size() != numLooseEle_) return false;
+  if (event->electronIndexLoose.size() != numLooseEle_) return false;
 
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
-//  if (event->muonIndexLoose.size() != numLooseMu_) return false;
-
+  if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass (9999.);
@@ -848,7 +849,6 @@ void Cuts::setTightEle(float,float,float)
 {
 }
 
-//This is only called if the thing is data. There's also a little clause to run over certain triggers if they exist. Because I failed miserably to get them all first time through processing...
 bool Cuts::triggerCuts(AnalysisEvent* event){
   if (skipTrigger_) return true;
 
@@ -856,7 +856,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0)
       return true;
   }
-
 
   //MuEG triggers
   bool muEGTrig = false;
@@ -870,7 +869,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
   bool mumuTrig = false;
   if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
 
-  if (cutConfTrigLabel_.find("d") != std::string::npos){if (muEGTrig) return true;}
+  if (cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos){if (muEGTrig) return true;}
   if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
   if (cutConfTrigLabel_.find("m") != std::string::npos){if (mumuTrig && !(eeTrig || muEGTrig)) return true;}
 
@@ -1556,7 +1555,68 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   }
 
   return leptonWeight;
-  
+
+}
+
+float Cuts::getTriggerSF(int syst, double pt, double eta){
+
+  std::string channel = "";
+
+  //Dilepton channels
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
+  //Trilepton channels
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
+
+  //If using SFs based on pT or eta?
+  //  if ( pt >= 0.0 && std::abs(eta) >= 0.0 ) {
+  //  }
+
+  //If no pT or eta dependancy ...
+  //  else {
+  //Dilepton channels
+  if (channel == "ee"){
+    float twgt = 0.958;
+    if (syst == 1) twgt += 0.009;
+    if (syst == 2) twgt -= 0.009;
+    return twgt;
+  }
+  if (channel == "mumu"){
+    float twgt = 0.931;
+    if (syst == 1) twgt += 0.007;
+    if (syst == 2) twgt -= 0.007;
+    return twgt;
+  }
+  //Trilepton channels
+  if (channel == "eee"){
+    float twgt = 0.987;
+    if (syst == 1) twgt += 0.036;
+    if (syst == 2) twgt -= 0.036;
+    return twgt;
+  }
+  if (channel == "eemu"){
+    float twgt = 0.987;
+    if (syst == 1) twgt += 0.035;
+    if (syst == 2) twgt -= 0.035;
+    return twgt;
+  }
+  if (channel == "emumu"){
+    float twgt = 0.886;
+    if (syst == 1) twgt += 0.042;
+    if (syst == 2) twgt -= 0.042;
+    return twgt;
+  }
+  if (channel == "mumumu"){
+    float twgt = 0.9871;
+    if (syst == 1) twgt += 0.0242;
+    if (syst == 2) twgt -= 0.0212;
+    return twgt;
+  }
+  //  }
+
 }
 
 float Cuts::eleSF(double pt, double eta){

@@ -43,6 +43,9 @@ class Cuts{
   double deltaR(float,float,float,float);
   void dumpToFile(AnalysisEvent * event, int);
 
+  //Function to get trigger SF
+  float getTriggerSF(int syst = 0, double pt = 0.0, double eta = 0.0);
+
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*);
   float eleSF(double, double);

@@ -251,8 +251,6 @@ void TriggerScaleFactors::runMainAnalysis(){
   mcPileupFile->Close();
   systUpFile->Close();
   systDownFile->Close();
-
-  double eventWeight = 1.0;
   
   bool datasetFilled = false;
 
@@ -276,9 +274,12 @@ void TriggerScaleFactors::runMainAnalysis(){
     //float datasetWeight = dataset->getDatasetWeight(totalLumi);
 
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
+    double eventWeight = 1.0;
 
     double pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
+    std::cout << "pileupWeight: " << pileupWeight << std::endl;
     if ( dataset->isMC() ) eventWeight *= pileupWeight;
+    std::cout << "eventWeight: " << eventWeight << std::endl;
 
     int numberOfEvents = datasetChain->GetEntries();
     if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;

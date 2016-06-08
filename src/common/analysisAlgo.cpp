@@ -658,14 +658,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	if (channelInd & 34){ //eemu channels
 	  cutObj->setNumLeps(1,1,2,2);
-	  cutObj->setCutConfTrigLabel("d");
+	  cutObj->setCutConfTrigLabel("d1");
 	  channel = "eemu";
 	  postfix = "eemu";
 	  chanName += "eemu";
 	}
 	if (channelInd & 68){ // emumu channels
 	  cutObj->setNumLeps(2,2,1,1);
-	  cutObj->setCutConfTrigLabel("d");
+	  cutObj->setCutConfTrigLabel("d3");
 	  channel = "emumu";
 	  postfix = "emumu";
 	  chanName += "emumu";
@@ -911,12 +911,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	    continue;
 	  }
 	  eventWeight = 1;
-	  //apply trigger weights here.
+	  //apply pileup/trigger weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
 	    float pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
+	    /* // Depracated - moved to cutClass
 	    // trilepton stuff - not updated since Run2012
 	    if (channel == "eee"){
 	      float twgt = 0.987;
@@ -954,7 +955,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
 	      eventWeight *= twgt;
-	    }
+	      }*/
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
