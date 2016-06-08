@@ -17,16 +17,16 @@ BTagEntry::Parameters::Parameters(
   float discr_min,
   float discr_max
 ):
-  operatingPoint{op},
-  measurementType{measurement_type},
-  sysType{sys_type},
-  jetFlavor{jf},
-  etaMin{eta_min},
-  etaMax{eta_max},
-  ptMin{pt_min},
-  ptMax{pt_max},
-  discrMin{discr_min},
-  discrMax{discr_max}
+  operatingPoint(op),
+  measurementType(measurement_type),
+  sysType(sys_type),
+  jetFlavor(jf),
+  etaMin(eta_min),
+  etaMax(eta_max),
+  ptMin(pt_min),
+  ptMax(pt_max),
+  discrMin(discr_min),
+  discrMax(discr_max)
 {
   std::transform(measurementType.begin(), measurementType.end(),
                  measurementType.begin(), ::tolower);
@@ -37,7 +37,7 @@ BTagEntry::Parameters::Parameters(
 BTagEntry::BTagEntry(const std::string &csvLine)
 {
   // make tokens
-  std::stringstream buff{csvLine};
+  std::stringstream buff(csvLine);
   std::vector<std::string> vec;
   std::string token;
   while (std::getline(buff, token, ","[0])) {
@@ -45,7 +45,7 @@ BTagEntry::BTagEntry(const std::string &csvLine)
     if (token.empty()) {
       continue;
     }
-    vec.emplace_back(token);
+    vec.push_back(token);
   }
   if (vec.size() != 11) {
 std::cout << "\nERROR in BTagCalibration: "
@@ -56,8 +56,8 @@ throw std::exception();
   }
 
   // clean string values
-  char chars[]{" \"\n"};
-  for (unsigned int i{0}; i < strlen(chars); ++i) {
+  char chars[] = " \"\n";
+  for (unsigned int i = 0; i < strlen(chars); ++i) {
     vec[1].erase(remove(vec[1].begin(),vec[1].end(),chars[i]),vec[1].end());
     vec[2].erase(remove(vec[2].begin(),vec[2].end(),chars[i]),vec[2].end());
     vec[10].erase(remove(vec[10].begin(),vec[10].end(),chars[i]),vec[10].end());
@@ -65,7 +65,7 @@ throw std::exception();
 
   // make formula
   formula = vec[10];
-  TF1 f1{"", formula.c_str()};  // compile formula to check validity
+  TF1 f1("", formula.c_str());  // compile formula to check validity
   if (f1.IsZombie()) {
 std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; formula does not compile: "
@@ -74,14 +74,14 @@ throw std::exception();
   }
 
   // make parameters
-  unsigned long op{std::stoul(vec[0])};
+  unsigned op = stoi(vec[0]);
   if (op > 3) {
 std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; OperatingPoint > 3: "
           << csvLine;
 throw std::exception();
   }
-  unsigned long jf{std::stoul(vec[3])};
+  unsigned jf = stoi(vec[3]);
   if (jf > 2) {
 std::cout << "ERROR in BTagCalibration: "
           << "Invalid csv line; JetFlavor > 2: "
@@ -93,20 +93,20 @@ throw std::exception();
     vec[1],
     vec[2],
     BTagEntry::JetFlavor(jf),
-    std::stof(vec[4]),
-    std::stof(vec[5]),
-    std::stof(vec[6]),
-    std::stof(vec[7]),
-    std::stof(vec[8]),
-    std::stof(vec[9])
+    stof(vec[4]),
+    stof(vec[5]),
+    stof(vec[6]),
+    stof(vec[7]),
+    stof(vec[8]),
+    stof(vec[9])
   );
 }
 
 BTagEntry::BTagEntry(const std::string &func, BTagEntry::Parameters p):
-  formula{func},
-  params{p}
+  formula(func),
+  params(p)
 {
-  TF1 f1{"", formula.c_str()};  // compile formula to check validity
+  TF1 f1("", formula.c_str());  // compile formula to check validity
   if (f1.IsZombie()) {
 std::cout << "ERROR in BTagCalibration: "
           << "Invalid func string; formula does not compile: "
@@ -116,8 +116,8 @@ throw std::exception();
 }
 
 BTagEntry::BTagEntry(const TF1* func, BTagEntry::Parameters p):
-  formula{std::string(func->GetExpFormula("p").Data())},
-  params{p}
+  formula(std::string(func->GetExpFormula("p").Data())),
+  params(p)
 {
   if (func->IsZombie()) {
 std::cout << "ERROR in BTagCalibration: "
@@ -131,11 +131,11 @@ throw std::exception();
 // "<prevous_bin> : x<bin_high_bound ? bin_value : <next_bin>"
 // e.g. "x<0 ? 1 : x<1 ? 2 : x<2 ? 3 : 4"
 std::string th1ToFormulaLin(const TH1* hist) {
-  int nbins{hist->GetNbinsX()};
-  TAxis const* axis{hist->GetXaxis()};
+  int nbins = hist->GetNbinsX();
+  TAxis const* axis = hist->GetXaxis();
   std::stringstream buff;
   buff << "x<" << axis->GetBinLowEdge(1) << " ? 0. : ";  // default value
-  for (int i{1}; i<nbins+1; ++i) {
+  for (int i=1; i<nbins+1; ++i) {
     char tmp_buff[50];
     sprintf(tmp_buff,
             "x<%g ? %g : ",  // %g is the smaller one of %e or %f
@@ -154,17 +154,17 @@ std::string th1ToFormulaBinTree(const TH1* hist, int start=0, int end=-1) {
   if (end == -1) {                      // initialize
     start = 0.;
     end = hist->GetNbinsX()+1;
-    TH1* h2{dynamic_cast<TH1*>(hist->Clone())};
+    TH1* h2 = (TH1*) hist->Clone();
     h2->SetBinContent(start, 0);  // kill underflow
     h2->SetBinContent(end, 0);    // kill overflow
-    std::string res{th1ToFormulaBinTree(h2, start, end)};
+    std::string res = th1ToFormulaBinTree(h2, start, end);
     delete h2;
     return res;
   }
   if (start == end) {                   // leave is reached
     char tmp_buff[20];
     sprintf(tmp_buff, "%g", hist->GetBinContent(start));
-    return tmp_buff;
+    return std::string(tmp_buff);
   }
   if (start == end - 1) {               // no parenthesis for neighbors
     char tmp_buff[70];
@@ -173,12 +173,12 @@ std::string th1ToFormulaBinTree(const TH1* hist, int start=0, int end=-1) {
             hist->GetXaxis()->GetBinUpEdge(start),
             hist->GetBinContent(start),
             hist->GetBinContent(end));
-    return tmp_buff;
+    return std::string(tmp_buff);
   }
 
   // top-down recursion
   std::stringstream buff;
-  int mid{(end-start)/2 + start};
+  int mid = (end-start)/2 + start;
   char tmp_buff[25];
   sprintf(tmp_buff,
           "x<%g ? (",
@@ -192,10 +192,10 @@ std::string th1ToFormulaBinTree(const TH1* hist, int start=0, int end=-1) {
 }
 
 BTagEntry::BTagEntry(const TH1* hist, BTagEntry::Parameters p):
-  params{p}
+  params(p)
 {
-  int nbins{hist->GetNbinsX()};
-  TAxis const* axis{hist->GetXaxis()};
+  int nbins = hist->GetNbinsX();
+  TAxis const* axis = hist->GetXaxis();
 
   // overwrite bounds with histo values
   if (params.operatingPoint == BTagEntry::OP_RESHAPING) {
@@ -215,7 +215,7 @@ BTagEntry::BTagEntry(const TH1* hist, BTagEntry::Parameters p):
   }
 
   // compile formula to check validity
-  TF1 f1{"", formula.c_str()};
+  TF1 f1("", formula.c_str());
   if (f1.IsZombie()) {
 std::cout << "ERROR in BTagCalibration: "
           << "Invalid histogram; formula does not compile (>150 bins?): "
@@ -258,8 +258,8 @@ std::string BTagEntry::makeCSVLine() const
 }
 
 std::string BTagEntry::trimStr(std::string str) {
-  size_t s{str.find_first_not_of(" \n\r\t")};
-  size_t e{str.find_last_not_of (" \n\r\t")};
+  size_t s = str.find_first_not_of(" \n\r\t");
+  size_t e = str.find_last_not_of (" \n\r\t");
 
   if((std::string::npos == s) || (std::string::npos == e))
     return "";
@@ -274,27 +274,27 @@ std::string BTagEntry::trimStr(std::string str) {
 
 
 BTagCalibration::BTagCalibration(const std::string &taggr):
-  tagger_{taggr}
+  tagger_(taggr)
 {}
 
 BTagCalibration::BTagCalibration(const std::string &taggr,
                                  const std::string &filename):
-  tagger_{taggr}
+  tagger_(taggr)
 {
-  std::ifstream ifs{filename};
+  std::ifstream ifs(filename);
   readCSV(ifs);
   ifs.close();
 }
 
 void BTagCalibration::addEntry(const BTagEntry &entry)
 {
-  data_[token(entry.params)].emplace_back(entry);
+  data_[token(entry.params)].push_back(entry);
 }
 
 const std::vector<BTagEntry>& BTagCalibration::getEntries(
   const BTagEntry::Parameters &par) const
 {
-  std::string tok{token(par)};
+  std::string tok = token(par);
   if (!data_.count(tok)) {
 std::cout << "ERROR in BTagCalibration: "
           << "(OperatingPoint, measurementType, sysType) not available: "
@@ -306,8 +306,8 @@ throw std::exception();
 
 void BTagCalibration::readCSV(const std::string &s)
 {
-  std::stringstream buff{s};
-  readCSV(buff);
+  std::stringstream buff(s);
+ readCSV(buff);
 }
 
 void BTagCalibration::readCSV(std::istream &s)
@@ -402,10 +402,10 @@ private:
 BTagCalibrationReader::BTagCalibrationReaderImpl::BTagCalibrationReaderImpl(
                                              BTagEntry::OperatingPoint op,
                                              std::string sysType):
-  op_{op},
-  sysType_{sysType},
-  tmpData_{3},
-  useAbsEta_{3, true}
+  op_(op),
+  sysType_(sysType),
+  tmpData_(3),
+  useAbsEta_(3, true)
 {}
 
 void BTagCalibrationReader::BTagCalibrationReaderImpl::load(
@@ -444,7 +444,7 @@ throw std::exception();
                     be.params.ptMin, be.params.ptMax);
     }
 
-    tmpData_[be.params.jetFlavor].emplace_back(te);
+    tmpData_[be.params.jetFlavor].push_back(te);
     if (te.etaMin < 0) {
       useAbsEta_[be.params.jetFlavor] = false;
     }
@@ -457,7 +457,7 @@ double BTagCalibrationReader::BTagCalibrationReaderImpl::eval(
                                              float pt,
                                              float discr) const
 {
-  bool use_discr{op_ == BTagEntry::OP_RESHAPING};
+  bool use_discr = (op_ == BTagEntry::OP_RESHAPING);
   if (useAbsEta_[jf] && eta < 0) {
     eta = -eta;
   }
@@ -489,7 +489,7 @@ std::pair<float, float> BTagCalibrationReader::BTagCalibrationReaderImpl::min_ma
                                                float eta, 
                                                float discr) const
 {
-  bool use_discr{op_ == BTagEntry::OP_RESHAPING};
+  bool use_discr = (op_ == BTagEntry::OP_RESHAPING);
   if (useAbsEta_[jf] && eta < 0) {
     eta = -eta;
   }
