@@ -8,7 +8,7 @@
 #include "TH2F.h"
 #include "TMVA/Timer.h"
 
-#include <stdlib.h> 
+#include <boost/numeric/conversion/cast.hpp>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -25,12 +25,12 @@ static void show_usage(std::string name){
 
 int main(int argc, char* argv[]) {
 
-  std::string inputDir = "";
-  std::string outFileString = "plots/distributions/output.root";
-  bool inputFlag (false);
+  std::string inputDir;
+  std::string outFileString{"plots/distributions/output.root"};
+  bool inputFlag{false};
 
-  for (int i = 1; i < argc; ++i){
-    std::string arg = argv[i];
+  for (int i{1}; i < argc; ++i){
+    std::string arg{argv[i]};
     if ((arg=="-h") || (arg == "--help")){ // Display help stuff
       show_usage(argv[0]);
       return 0;
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 
   if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
-    std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
+    std::cout << inputDir << " is not a valid directory" << std::endl;
     return 0;
   }
 
@@ -78,70 +78,70 @@ int main(int argc, char* argv[]) {
   std::cout << "Attaching files to TTree ... " << std::endl;
 
   while ( (dirp = readdir(dp)) != nullptr) {
-    std::string line (dirp->d_name);
+    std::string line{dirp->d_name};
     if ( line == "." || line == "..")
     continue;
-    TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
-    TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
-    inputTrees.push_back(lTempTree);
+    TFile *inputFile{new TFile ((inputDir+line).c_str())};
+    TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
+    inputTrees.emplace_back(lTempTree);
   }
 
   std::cout << "Attached all files to TTree!" << std::endl;
 
-  const int discriminatorIncrement (100);
+  constexpr int discriminatorIncrement{100};
 
   // Initialise Histograms.
-  auto  h_CvsBjetPassEfficiency = new TH2F ("h_CvsBjetPassEfficiency", "c/b jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
-  auto  h_CvsLjetPassEfficiency = new TH2F ("h_CvsLjetPassEfficiency", "c/l jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  TH2F* h_CvsBjetPassEfficiency{new TH2F {"h_CvsBjetPassEfficiency", "c/b jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0}};
+  TH2F* h_CvsLjetPassEfficiency{new TH2F {"h_CvsLjetPassEfficiency", "c/l jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0}};
 
-  auto  h_CvsB_cJetPassEfficiency = new TH2F ("h_CvsBcJetPassEfficiency", "c-jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
-  auto  h_CvsL_cJetPassEfficiency = new TH2F ("h_CvsLcJetPassEfficiency", "c-jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0);
+  TH2F* h_CvsB_cJetPassEfficiency{new TH2F {"h_CvsBcJetPassEfficiency", "c-jet (vs b) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0}};
+  TH2F* h_CvsL_cJetPassEfficiency{new TH2F {"h_CvsLcJetPassEfficiency", "c-jet (vs l) Pass Effifiency", discriminatorIncrement, -1.0, 1.0, 100, 0.0, 1.0}};
 
   // Setup counters.
   //  int lTotalNumJets (0);
-  int lTotalNumLjets (0);
-  int lTotalNumBjets (0);
-  int lTotalNumCjets (0);
-  int lTotalNumLjetsCvsL [discriminatorIncrement] = {0};
-  int lTotalNumBjetsCvsB [discriminatorIncrement] = {0};
-  int lTotalNumCjetsCvsL [discriminatorIncrement] = {0};
-  int lTotalNumCjetsCvsB [discriminatorIncrement] = {0};
+  int lTotalNumLjets{0};
+  int lTotalNumBjets{0};
+  int lTotalNumCjets{0};
+  int lTotalNumLjetsCvsL[discriminatorIncrement] {0};
+  int lTotalNumBjetsCvsB[discriminatorIncrement] {0};
+  int lTotalNumCjetsCvsL[discriminatorIncrement] {0};
+  int lTotalNumCjetsCvsB[discriminatorIncrement] {0};
 
-  double lPassedCvsBjets [discriminatorIncrement] = {0.0};
-  double lPassedCvsLjets [discriminatorIncrement] = {0.0};
-  double lPassedCvsBjetFraction [discriminatorIncrement] = {0.0};
-  double lPassedCvsLjetFraction [discriminatorIncrement] = {0.0};
-  double lPassedCvsB_cJetFraction [discriminatorIncrement] = {0.0};
-  double lPassedCvsL_cJetFraction [discriminatorIncrement] = {0.0};
+  double lPassedCvsBjets[discriminatorIncrement] {0};
+  double lPassedCvsLjets[discriminatorIncrement] {0};
+  double lPassedCvsBjetFraction[discriminatorIncrement] {0};
+  double lPassedCvsLjetFraction[discriminatorIncrement] {0};
+  double lPassedCvsB_cJetFraction[discriminatorIncrement] {0};
+  double lPassedCvsL_cJetFraction[discriminatorIncrement] {0};
 
   // Initial progress bar.
-  auto  lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", true );
-  auto  lTimer2 = new TMVA::Timer ( discriminatorIncrement, "Filling plots", true );
+  TMVA::Timer *lTimer{new TMVA::Timer {boost::numeric_cast<int>(inputTrees.size()), "Running over trees", true }};
+  TMVA::Timer *lTimer2{new TMVA::Timer {discriminatorIncrement, "Filling plots", true}};
   lTimer->DrawProgressBar(0, "");
 
-  Int_t lCounter (1);
+  Int_t lCounter{1};
 
   // Start looping over jets.
 
-  for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
+  for ( std::vector<TTree*>::const_iterator lIt{inputTrees.begin()}; lIt != inputTrees.end(); ++lIt ){
     
-    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", *lIt);
+    AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt}};
 
-    Int_t lNumEvents = (*lIt)->GetEntries();
+    Long64_t lNumEvents{(*lIt)->GetEntries()};
     
-    for ( Int_t j = 0; j < lNumEvents; j++ ){
+    for ( Int_t j{0}; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
       
-      for (Int_t k = 0; k < lEvent->numJetPF2PAT; k++){
+      for (Int_t k{0}; k < lEvent->numJetPF2PAT; k++){
 
-	Double_t lPt = (lEvent->jetPF2PATPt[k]);
-	Double_t lEta = (lEvent->jetPF2PATEta[k]);
-	Int_t lFlavour = (lEvent->genJetPF2PATPID[k]);
-	Double_t lCvsBdisc = (lEvent->jetPF2PATCvsBDiscriminator[k]);
-	Double_t lCvsLdisc = (lEvent->jetPF2PATCvsLDiscriminator[k]);
+        Double_t lPt{lEvent->jetPF2PATPt[k]};
+        Double_t lEta{lEvent->jetPF2PATEta[k]};
+        Int_t lFlavour{lEvent->genJetPF2PATPID[k]};
+        Double_t lCvsBdisc{lEvent->jetPF2PATCvsBDiscriminator[k]};
+        Double_t lCvsLdisc{(lEvent->jetPF2PATCvsLDiscriminator[k])};
 
 	if ( lPt < 30.0 && std::abs( lEta > 5.0 )) continue; // Check it isn't out of eta range or is too soft.
-	bool jetID (false);
+	bool jetID{false};
 
 	if (
 	    ( std::abs(lEta<=3.0) && lEvent->jetPF2PATNeutralHadronEnergyFraction[k] < 0.99 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.99 &&  (lEvent->jetPF2PATNeutralMultiplicity[k] && lEvent->jetPF2PATChargedMultiplicity[k]) > 1 && 
@@ -157,8 +157,8 @@ int main(int argc, char* argv[]) {
 	if ( std::abs(lFlavour) == 5 ) ++lTotalNumBjets;
 
 
-	int lArrayIt(0);
-	for (float lDiscIt = -1.0; lDiscIt <= 1.0; lDiscIt += (discriminatorIncrement/2.0), ++lArrayIt){
+	int lArrayIt{0};
+	for (float lDiscIt{-1}; lDiscIt <= 1.0; lDiscIt += (discriminatorIncrement/2.0), ++lArrayIt){
 
 	  if (lCvsBdisc >= lArrayIt) ++lPassedCvsBjets[lArrayIt];
 	  if (lCvsLdisc >= lArrayIt) ++lPassedCvsLjets[lArrayIt];
@@ -175,12 +175,12 @@ int main(int argc, char* argv[]) {
   lTimer->DrawProgressBar(lCounter++, "");
   }
 
-  double lTempDiscr (-1.0);
+  double lTempDiscr{-1};
   std::cout << "\n" << std::endl;
   lTimer2->DrawProgressBar(0, "");
-  Int_t lCounter2 (1);
+  Int_t lCounter2{1};
 
-  for (int i = 0; i != discriminatorIncrement; i++, lTempDiscr += 2/discriminatorIncrement){
+  for (int i{0}; i != discriminatorIncrement; i++, lTempDiscr += 2/discriminatorIncrement){
 
     lPassedCvsBjetFraction[i] = lPassedCvsBjets[i]/(lTotalNumBjets+lTotalNumCjets);
     lPassedCvsLjetFraction[i] = lPassedCvsLjets[i]/(lTotalNumLjets+lTotalNumCjets);
@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
     lTimer2->DrawProgressBar(lCounter2++, "");
   }
 
-  auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
+  TFile *outFile{new TFile{outFileString.c_str(), "RECREATE"}};
    
   h_CvsBjetPassEfficiency->Write();
   h_CvsLjetPassEfficiency->Write();

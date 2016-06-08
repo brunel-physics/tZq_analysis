@@ -9,6 +9,7 @@
 #include "TH2F.h"
 #include "TMVA/Timer.h"
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -26,12 +27,12 @@ static void show_usage(std::string name){
 
 int main(int argc, char* argv[]) {
 
-  std::string inputDir = "";
-  std::string outFileString = "plots/distributions/output.root";
-  bool inputFlag (false);
+  std::string inputDir{};
+  std::string outFileString{"plots/distributions/output.root"};
+  bool inputFlag{false};
 
-  for (int i = 1; i < argc; ++i){
-    std::string arg = argv[i];
+  for (int i{1}; i < argc; ++i){
+    std::string arg{argv[i]};
     if ((arg=="-h") || (arg == "--help")){ // Display help stuff
       show_usage(argv[0]);
       return 0;
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]) {
 
   if((dp  = opendir( inputDir.c_str() )) == nullptr) {
     std::cout << "Error opening Directory" << std::endl;
-    std::cout << inputDir.c_str() << " is not a valid directory" << std::endl;
+    std::cout << inputDir << " is not a valid directory" << std::endl;
     return 0;
   }
 
@@ -79,12 +80,12 @@ int main(int argc, char* argv[]) {
   std::cout << "Attaching files to TTree" << std::flush;
 
   while ( (dirp = readdir(dp)) != nullptr) {
-    std::string line (dirp->d_name);
+    std::string line{dirp->d_name};
     if ( line == "." || line == "..")
     continue;
-    TFile *inputFile = new TFile ((inputDir+line).c_str()) ;
-    TTree *lTempTree = dynamic_cast<TTree*>(inputFile->Get("tree"));
-    inputTrees.push_back(lTempTree);
+    TFile *inputFile{new TFile {(inputDir+line).c_str()}};
+    TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
+    inputTrees.emplace_back(lTempTree);
 
     std::cout << '.' << std::flush;
   }
@@ -92,26 +93,26 @@ int main(int argc, char* argv[]) {
 
   std::cout << "Attached all files to TTree!" << std::endl;
 
-  auto  histElePt      = new TH1F ("histElePt"    , "Distribution of reco-electron p_{T}" , 500, 0.0  , 500.0);
-  auto  histEleEta     = new TH1F ("histEleEta"   , "Distribution of reco-electron #eta"  , 500, -2.50, 2.5);
-  auto  histEleGenPt   = new TH1F ("histEleGenPt" , "Distribution of gen-electron p_{T}"  , 500, 0.0  , 500.0);
-  auto  histEleGenEta  = new TH1F ("histEleGenEta", "Distribution of gen-electron #eta"   , 500, -2.5 , 2.5);
+  TH1F *histElePt    {new TH1F{"histElePt"    , "Distribution of reco-electron p_{T}", 500, 0.0  , 500.0}};
+  TH1F *histEleEta   {new TH1F{"histEleEta"   , "Distribution of reco-electron #eta" , 500, -2.50, 2.5}};
+  TH1F *histEleGenPt {new TH1F{"histEleGenPt" , "Distribution of gen-electron p_{T}" , 500, 0.0  , 500.0}};
+  TH1F *histEleGenEta{new TH1F{"histEleGenEta", "Distribution of gen-electron #eta"  , 500, -2.5 , 2.5}};
 
-  auto  histMuPt       = new TH1F ("histMuPt"     , "Distribution of reco-muon p_{T}"     , 500, 0.0  , 500.0);
-  auto  histMuEta      = new TH1F ("histMuEta"    , "Distribution of reco-muon #eta"      , 500, -2.50, 2.5);
-  auto  histMuGenPt    = new TH1F ("histMuGenPt"  , "Distribution of gen-muon p_{T}"      , 500, 0.0  , 500.0);
-  auto  histMuGenEta   = new TH1F ("histMuGenEta" , "Distribution of gen-muon #eta"       , 500, -2.5 , 2.5);
+  TH1F *histMuPt     {new TH1F{"histMuPt"     , "Distribution of reco-muon p_{T}"    , 500, 0.0  , 500.0}};
+  TH1F *histMuEta    {new TH1F{"histMuEta"    , "Distribution of reco-muon #eta"     , 500, -2.50, 2.5}};
+  TH1F *histMuGenPt  {new TH1F{"histMuGenPt"  , "Distribution of gen-muon p_{T}"     , 500, 0.0  , 500.0}};
+  TH1F *histMuGenEta {new TH1F{"histMuGenEta" , "Distribution of gen-muon #eta"      , 500, -2.5 , 2.5}};
 
-  auto histEleGenPtEta = new TH2F{"histEleGenPtEta",
-      "Distribution of reco-electron p_{T} against #eta", 500, 0, 300, 500, -3, 3};
-  auto histMuGenPtEta = new TH2F{"histMuGenPtEta",
-      "Distribution of reco-muon p_{T} against #eta", 500, 0, 300, 500, -3, 3};
+  TH2F *histEleGenPtEta{new TH2F{"histEleGenPtEta",
+        "Distribution of reco-electron p_{T} against #eta", 500, 0, 300, 500, -3, 3}};
+  TH2F *histMuGenPtEta{new TH2F{"histMuGenPtEta",
+        "Distribution of reco-muon p_{T} against #eta", 500, 0, 300, 500, -3, 3}};
 
-  auto  lTimer = new TMVA::Timer ( inputTrees.size(), "Running over trees", false );
+  TMVA::Timer *lTimer{new TMVA::Timer{boost::numeric_cast<int>(inputTrees.size()), "Running over trees", false}};
 
   lTimer->DrawProgressBar(0, "");
 
-  Int_t lCounter (1);
+  Int_t lCounter{1};
 
   // pT thresholds
   const Float_t ele1PtThresh{17};
@@ -137,15 +138,15 @@ int main(int argc, char* argv[]) {
 
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
     
-    AnalysisEvent* lEvent = new AnalysisEvent(true, "null", *lIt);
+    AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt}};
 
-    Int_t lNumEvents = (*lIt)->GetEntries();
+    Long64_t lNumEvents{(*lIt)->GetEntries()};
     totalEvents += lNumEvents;
     
-    for ( Int_t j = 0; j < lNumEvents; j++ ){
+    for ( Int_t j{0}; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
       
-      for ( Int_t k = 0; k < lEvent->numElePF2PAT; k++){
+      for ( Int_t k{0}; k < lEvent->numElePF2PAT; k++){
 	histElePt->Fill(lEvent->elePF2PATPT[k]);
 	histEleEta->Fill(lEvent->elePF2PATEta[k]);
 	histEleGenPt->Fill(lEvent->genElePF2PATPT[k]);
@@ -155,7 +156,7 @@ int main(int argc, char* argv[]) {
             lEvent->elePF2PATEta[k]);
 
       }
-      for ( Int_t k = 0; k < lEvent->numMuonPF2PAT; k++){
+      for ( Int_t k{0}; k < lEvent->numMuonPF2PAT; k++){
 	histMuPt->Fill(lEvent->muonPF2PATPt[k]);
 	histMuEta->Fill(lEvent->muonPF2PATEta[k]);
   	histMuGenPt->Fill(lEvent->genMuonPF2PATPT[k]);
@@ -291,7 +292,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Total no. of cut events\t\t\t" << totalCut << std::endl;
   std::cout << "Change due to new proposals:\t\t" << newlyCut << std::endl;
 
-  auto outFile = new TFile ( outFileString.c_str(), "RECREATE" );
+  TFile *outFile{new TFile{outFileString.c_str(), "RECREATE"}};
 
   histElePt->Write();
   histEleEta->Write();

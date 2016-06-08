@@ -7,25 +7,26 @@
 
 Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned thisCutStage, std::string postfixName, const bool trileptonChannel):
 
-  trileptonChannel_(trileptonChannel)
+  trileptonChannel_{trileptonChannel}
 
 {
   //Get the function pointer map for later custopmisation. This is gonna be great, I promise.
-  std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap = getFncPtrMap();
+  std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap{getFncPtrMap()};
+
   plotPoint = std::vector<plot>(names.size());
-  for (unsigned i = 0; i < names.size(); i++){
+  for (unsigned i{0}; i < names.size(); i++){
     std::string plotName = names[i] + "_" + postfixName;
     plotPoint[i].name = plotName;
     plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
     plotPoint[i].xAxisLabel = xAxisLabels[i];
-    plotPoint[i].plotHist = new TH1F(plotName.c_str(),(plotName + ";" + plotPoint[i].xAxisLabel).c_str(),nBins[i],xMins[i],xMaxs[i]);
+    plotPoint[i].plotHist = new TH1F{plotName.c_str(),(plotName + ";" + plotPoint[i].xAxisLabel).c_str(),nBins[i],xMins[i],xMaxs[i]};
     plotPoint[i].fillPlot = boost::numeric_cast<unsigned>(cutStage[i]) <= thisCutStage;
   }
   
 }
 
 Plots::~Plots(){
-  for (unsigned i = 0; i < plotPoint.size(); i++){
+  for (unsigned i{0}; i < plotPoint.size(); i++){
     delete plotPoint[i].plotHist;
   }
 }
@@ -573,10 +574,10 @@ float Plots::fillwTransverseMass(AnalysisEvent* event){
   if ( trileptonChannel_ ) {
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-  return std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())));
+  return std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())));
   }
   else if ( !trileptonChannel_ ) {
-  return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
+  return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-std::cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
   }
   else
     return -10;
@@ -755,7 +756,7 @@ float Plots::fillTotM(AnalysisEvent* event){
 }
 
 void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
-  for (unsigned i = 0; i < plotPoint.size(); i++){
+  for (unsigned i{0}; i < plotPoint.size(); i++){
     if (plotPoint[i].fillPlot){
       plotPoint[i].plotHist->Fill((this->*plotPoint[i].fillExp)(event),eventWeight);
     }
@@ -763,7 +764,7 @@ void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
 }
 
 void Plots::saveAllPlots(){
-  for (unsigned i = 0; i < plotPoint.size(); i++){
+  for (unsigned i{0}; i < plotPoint.size(); i++){
     plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".root").c_str());
 //    plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".png").c_str());
   }

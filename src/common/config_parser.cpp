@@ -48,7 +48,7 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
     std::cerr << "Parse error at " << e.getFile() << ":" << e.getLine() << " - " << e.getError() << std::endl;
     return 0;
   }
-  libconfig::Setting &root = config.getRoot();
+  libconfig::Setting &root{config.getRoot()};
   std::string datasetConf;
   root.lookupValue("datasets",datasetConf);
   std::cerr << root.exists("datasets");
@@ -74,34 +74,34 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
 //For reading the file config. 
 int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, double * totalLumi){
   std::cout << "file config: " << fileConf << std::endl;
-  std::ifstream conf(fileConf.c_str());
+  std::ifstream conf{fileConf};
   if (!conf.is_open()){
     std::cerr << "Couldn't open file config! Exiting!\n";
     return 0;
   }
-  std::map<std::string,int> colourMap = getColourMap();
+  std::map<std::string,int> colourMap{getColourMap()};
   std::string line;
   //Main config loop. Every time it finds a new section name it should add a dataset to the datasets vector passed.
-  std::string datasetName= "";
-  std::string file = "";
-  bool isMC = false;
-  long totalEvents = 0;
-  std::string histoFill = "";
-  double crossSection = 0.;
-  double lumi = 0.;
-  std::string treeLabel = "tree";
-  std::string plotLabel = "";
-  std::string plotType = "";
-  int colourInt = 0;
-  std::string triggerFlag = "";
+  std::string datasetName;
+  std::string file;
+  bool isMC{false};
+  long totalEvents{0};
+  std::string histoFill;
+  double crossSection{0};
+  double lumi{0};
+  std::string treeLabel{"tree"};
+  std::string plotLabel;
+  std::string plotType;
+  int colourInt{0};
+  std::string triggerFlag;
   std::cerr << "Adding datasets: \n";
   while (getline(conf,line)){
     if (line.find("[")==0) {
       if (datasetName != ""){
 	std::cerr << "  " << datasetName << std::endl;
 	std::cerr << "   " << isMC << "\t" << file << "\n   " << crossSection << "\t" << totalEvents << "\t" << histoFill << std::endl;
-	if (isMC) datasets->push_back(Dataset(datasetName, 0.,isMC,crossSection,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag));
-	else datasets->push_back(Dataset(datasetName, lumi,isMC,0.,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag));
+	if (isMC) datasets->emplace_back(datasetName, 0.,isMC,crossSection,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag);
+	else datasets->emplace_back(datasetName, lumi,isMC,0.,file,histoFill,treeLabel,totalEvents,colourInt,plotLabel,plotType,triggerFlag);
       }
       treeLabel = "tree";
       triggerFlag = "";
@@ -114,17 +114,17 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
     }
     //Add lumi (if data)
     if (line.find("luminosity") == 0){
-      std::string temp = line.substr(11);
+      std::string temp{line.substr(11)};
       temp = temp.substr(temp.find_first_not_of(" ="));
-      //      lumi = temp.c_str().atof();
-      lumi = atof(temp.c_str());
+      //      lumi = temp.c_str().std::stof();
+      lumi = std::stof(temp);
       *totalLumi+=lumi;
     }
     //Get cross section info (if mc)
     if (line.find("crossSection") == 0){
-      std::string temp = line.substr(13);
+      std::string temp{line.substr(13)};
       temp = temp.substr(temp.find_first_not_of(" ="));
-      crossSection = atof(temp.c_str());
+      crossSection = std::stof(temp);
     }
     //MC or data
     if (line.find("runType") == 0){
@@ -135,10 +135,10 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
     }
     //get total events in MC
     if (line.find("totalEvents") == 0){
-      std::string temp = line.substr(12);
+      std::string temp{line.substr(12)};
       temp = temp.substr(temp.find_first_not_of(" ="));
       //      std::cout << temp;
-      totalEvents = atol(temp.c_str());
+      totalEvents = std::stol(temp);
     }
     if (line.find("histoName") == 0){
       histoFill = line.substr(10);
@@ -149,7 +149,7 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       treeLabel = treeLabel.substr(treeLabel.find_first_not_of(" ="));
     }
     if (line.find("colour") == 0){
-      std::string tempString = line.substr(7);
+      std::string tempString{line.substr(7)};
       tempString = tempString.substr(tempString.find_first_not_of(" ="));
       colourInt = colourMap[tempString];
     }
@@ -192,32 +192,36 @@ int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames
     std::cerr << "Parse error at " << e.getFile() << ":" << e.getLine() << " - " << e.getError() << std::endl;
     return 0;
   }
-  const libconfig::Setting& root = plotCfg.getRoot();
+  const libconfig::Setting& root{plotCfg.getRoot()};
   
   if (! root.exists("plots")){
     std::cerr << "No plots setting in the config file! What the hell are you doing?!?" << std::endl;
     return 0;
   }
-  libconfig::Setting& plots = root["plots"];
-  std::string nameT,fillExpT,xAxisLabelT;
-  float xMinT,xMaxT;
-  int nBinsT,cutStageT;
-  for (int i = 0; i < plots.getLength(); i++){
-    const libconfig::Setting &plot = plots[i];
+  libconfig::Setting& plots{root["plots"]};
+  std::string nameT;
+  std::string fillExpT;
+  std::string xAxisLabelT;
+  float xMinT;
+  float xMaxT;
+  int nBinsT;
+  int cutStageT;
+  for (int i{0}; i < plots.getLength(); i++){
+    const libconfig::Setting &plot{plots[i]};
     plot.lookupValue("name",nameT);
-    plotNames->push_back(nameT);
+    plotNames->emplace_back(nameT);
     plot.lookupValue("xMin",xMinT);
-    xMin->push_back(xMinT);
+    xMin->emplace_back(xMinT);
     plot.lookupValue("xMax",xMaxT);
-    xMax->push_back(xMaxT);
+    xMax->emplace_back(xMaxT);
     plot.lookupValue("nBins",nBinsT);
-    nBins->push_back(nBinsT);
+    nBins->emplace_back(nBinsT);
     plot.lookupValue("fillExp",fillExpT);
-    fillExp->push_back(fillExpT);
+    fillExp->emplace_back(fillExpT);
     plot.lookupValue("xAxisLabel",xAxisLabelT);
-    xAxisLabels->push_back(xAxisLabelT);
+    xAxisLabels->emplace_back(xAxisLabelT);
     plot.lookupValue("cutStage",cutStageT);
-    cutStage->push_back(cutStageT);
+    cutStage->emplace_back(cutStageT);
   }
 
 
