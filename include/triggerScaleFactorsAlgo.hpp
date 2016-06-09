@@ -66,12 +66,18 @@ class TriggerScaleFactors{
 	bool doubleElectronTriggerCut(AnalysisEvent*);
 	bool muonElectronTriggerCut(AnalysisEvent*);
 	bool doubleMuonTriggerCut(AnalysisEvent*);
+	bool metTriggerCut(AnalysisEvent*);
 
-	//
+	//Efficiencies
 	double numberPassedElectrons[2];
-	double  numberTriggeredElectrons[2];
+	double numberTriggeredElectrons[2];
 	double numberPassedMuons[2];
 	double numberTriggeredMuons[2];
+	//Systematic variables
+	double numberSelectedElectrons[2];
+	double numberSelectedMuons[2];
+        double numberSelectedElectronsTriggered[2];
+	double numberSelectedMuonsTriggered[2];
 };
 
 #endif

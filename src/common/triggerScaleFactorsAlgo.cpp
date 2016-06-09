@@ -23,7 +23,11 @@ TriggerScaleFactors::TriggerScaleFactors():
   numberPassedElectrons(),
   numberTriggeredElectrons(),
   numberPassedMuons(),
-  numberTriggeredMuons()
+  numberTriggeredMuons(),
+  numberSelectedElectrons(),
+  numberSelectedMuons(),
+  numberSelectedElectronsTriggered(),
+  numberSelectedMuonsTriggered()
 {}
 
 TriggerScaleFactors::~TriggerScaleFactors(){}
@@ -127,6 +131,14 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
   }
+
+  chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
+  chain->SetBranchStatus("HLT_PFMET170_JetIdCleaned_v2",1);
+  chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
+  chain->SetBranchStatus("HLT_PFHT350_PFMET100_v1",1);
+  chain->SetBranchStatus("HLT_PFHT800_v2",1);
+  chain->SetBranchStatus("HLT_MET250_v1",1);
+  chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
 
 }
 
@@ -271,7 +283,7 @@ void TriggerScaleFactors::runMainAnalysis(){
     }
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
-    AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
+    AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain, true);
 
     double eventWeight = 1.0;
 
@@ -297,25 +309,37 @@ void TriggerScaleFactors::runMainAnalysis(){
       event->muonIndexTight = getTightMuons( event );
       bool passDoubleMuonSelection ( passDileptonSelection( event, event->muonIndexTight, false ) );
 
-      int triggerDoubleEG (0), triggerDoubleMuon (0);
+      int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0);
+      int triggerMetElectronSelection (0), triggerMetMuonSelection (0);
 
       //Does event pass Double EG trigger and the electron selection?
-      if ( passDoubleElectronSelection ) triggerDoubleEG = ( doubleElectronTriggerCut( event ) );
+      if ( passDoubleElectronSelection ) triggerDoubleEG 	= ( doubleElectronTriggerCut( event ) );
+      if ( passDoubleElectronSelection ) triggerMetDoubleEG 	= ( doubleElectronTriggerCut( event )*metTriggerCut( event ) );
       //Does event pass Double Muon trigger and the muon selection?
       if ( passDoubleMuonSelection )  triggerDoubleMuon = ( doubleMuonTriggerCut( event ) );
+      if ( passDoubleMuonSelection )  triggerMetDoubleMuon = ( doubleMuonTriggerCut( event )*metTriggerCut( event ) );
+      //Does event pass either double lepton seletion and the MET triggers?
+      if ( passDoubleElectronSelection ) triggerMetElectronSelection = ( metTriggerCut( event ) );
+      if ( passDoubleMuonSelection ) triggerMetMuonSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) {
+	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
+	numberTriggeredElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
+	numberPassedMuons[0] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
+	numberTriggeredMuons[0] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
+	
+	// Systematic stuff
+	numberSelectedElectrons[0] += passDoubleElectronSelection*eventWeight;
+	numberSelectedMuons[0] += passDoubleMuonSelection*eventWeight;
+	numberSelectedElectronsTriggered[0] += triggerDoubleEG*eventWeight;;
+	numberSelectedMuonsTriggered[0] += triggerDoubleMuon*eventWeight;;
 
-	numberPassedElectrons[0] += passDoubleElectronSelection*eventWeight;
-	numberTriggeredElectrons[0] += triggerDoubleEG*eventWeight;
-	numberPassedMuons[0] += passDoubleMuonSelection*eventWeight;
-	numberTriggeredMuons[0] += triggerDoubleMuon*eventWeight;
       }
       else {
-	numberPassedElectrons[1] += passDoubleElectronSelection*eventWeight;
-	numberTriggeredElectrons[1] += triggerDoubleEG*eventWeight;
-	numberPassedMuons[1] += passDoubleMuonSelection*eventWeight;
-	numberTriggeredMuons[1] += triggerDoubleMuon*eventWeight;
+	numberPassedElectrons[1] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
+	numberTriggeredElectrons[1] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
+	numberPassedMuons[1] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
+	numberTriggeredMuons[1] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
       }
 
     }
@@ -325,6 +349,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 
 std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
   std::vector<int> electrons;
+
   for (int i = 0; i < event->numElePF2PAT; i++){
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
@@ -454,6 +479,11 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
   else return false;
 }
 
+bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
+  if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
+  else return false;
+}
+
 void TriggerScaleFactors::savePlots()
 {
   // Calculate MC efficiency
@@ -471,11 +501,17 @@ void TriggerScaleFactors::savePlots()
   double electronSF 	= electronEfficiencyData/(electronEfficiencyMC+1.0e-6);
   double muonSF 	= muonEfficiencyData/(muonEfficiencyMC+1.0e-6);
 
+  // Calculate alphas
+  double alphaElectron = (numberSelectedElectrons[0]*numberPassedElectrons[0])/(numberTriggeredElectrons[0]+1.0e-6);
+  double electronSystUncert = std::abs(electronSF * (1.0 - alphaElectron ));
+  double alphaMuon = (numberSelectedMuons[0]*numberPassedMuons[0])/(numberTriggeredMuons[0]+1.0e-6);
+  double muonSystUncert = std::abs(muonSF * (1.0 - alphaMuon ));
+
   // Save output
 
   std::cout << "electron/muon data efficiencies: " << electronEfficiencyData << " / " << muonEfficiencyData << std::endl;
   std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " / " << muonEfficiencyMC << std::endl;
-  std::cout << "electron/muon trigger SFs: " << electronSF << " / " << muonSF << std::endl;
+  std::cout << "electron/muon trigger SFs: " << electronSF << " +/- " << electronSystUncert << " / " << muonSF << " +/- " << muonSystUncert << std::endl;
 
   TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
   histEfficiencies->Fill(0.5,0.5, electronEfficiencyData);
