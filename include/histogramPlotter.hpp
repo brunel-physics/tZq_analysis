@@ -35,13 +35,13 @@ class HistogramPlotter{
   ~HistogramPlotter();
   //methods to set various bits of information in the class. This is so that it doesn't have to set in the constructor. Defaults to current stuff, but can be changed outside.
   void setLabelTextSize(float size);
-  void setLabelOne(std::string label){labelOne_->SetLabel(label.c_str());};
-  void setLabelTwo(std::string label){labelTwo_->SetLabel(label.c_str());};
-  void setLabelThree(std::string label){labelThree_->SetLabel(label.c_str());};
-  void setLumiStr(std::string lumiStr){lumiStr_ = lumiStr;};
-  void setPostfix(std::string postfix){postfix_ = postfix;};
+  void setLabelOne(std::string label){labelOne_->SetLabel(label.c_str());}
+  void setLabelTwo(std::string label){labelTwo_->SetLabel(label.c_str());}
+  void setLabelThree(std::string label){labelThree_->SetLabel(label.c_str());}
+  void setLumiStr(std::string lumiStr){lumiStr_ = lumiStr;}
+  void setPostfix(std::string postfix){postfix_ = postfix;}
   void setOutputFolder(std::string output);
-  void changeExtensions(std::vector<std::string> extentions){extensions_ = extentions;};
+  void changeExtensions(std::vector<std::string> extentions){extensions_ = extentions;}
   //Actual plotting commands
   void plotHistos(std::map<std::string, std::map<std::string, Plots*> >);
   void plotCutFlows(std::map<std::string, TH1F*>);

@@ -5,6 +5,7 @@
 #include "config_parser.hpp"
 #include "AnalysisEvent.hpp"
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -12,47 +13,47 @@
 #include <sstream>
 
 AnalysisAlgo::AnalysisAlgo():
-  config(""),
-  plots(false),
-  usePreLumi(2095.17),
-  nEvents(0.),
-  outFolder("plots/"),
-  postfix("default"),
-  channel(""),
-  infoDump(false),
-  invertIsoCut(false), //For z+jets background estimation
-  synchCutFlow(false), // For synch
-  skipData(false), //utility stuff. True if flags are set and will skip either data or mc
-  skipMC(false),
-  cutConfName(new std::string("")),
-  plotConfName(new std::string("")),
-  numFiles(-1),
-  readEventList(false),
-  dumpEventNumbers(false),
-  makePostLepTree(false),
-  makeMVATree(false),
-  usePostLepTree(false),
-  usebTagWeight(false),
-  systToRun(0),
-  makeBTagEffPlots(false),
-  channelsToRun(0), //0 makes it run the one in the config, I guess.
-  skipTrig(false),
-  mvaDir("mvaTest/"),
-  customJetRegion(false),
-  metCut(0.),
-  mtwCut(0.),
-  trileptonChannel_(true),
-  isFCNC_(false),
-  isCtag_(false)
+  config{},
+  plots{false},
+  usePreLumi{2095.17},
+  nEvents{0},
+  outFolder{"plots/"},
+  postfix{"default"},
+  channel{},
+  infoDump{false},
+  invertIsoCut{false}, //For z+jets background estimation
+  synchCutFlow{false}, // For synch
+  skipData{false}, //utility stuff. True if flags are set and will skip either data or mc
+  skipMC{false},
+  cutConfName{new std::string{}},
+  plotConfName{new std::string{}},
+  numFiles{-1},
+  readEventList{false},
+  dumpEventNumbers{false},
+  makePostLepTree{false},
+  makeMVATree{false},
+  usePostLepTree{false},
+  usebTagWeight{false},
+  systToRun{0},
+  makeBTagEffPlots{false},
+  channelsToRun{0}, //0 makes it run the one in the config, I guess.
+  skipTrig{false},
+  mvaDir{"mvaTest/"},
+  customJetRegion{false},
+  metCut{0.},
+  mtwCut{0.},
+  trileptonChannel_{true},
+  isFCNC_{false},
+  isCtag_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
 
 double AnalysisAlgo::zptSF(std::string channel, float zpt){
 
-  double param1 = 0;
-  double param2 = 0;
-  double param3 = 0;
+  double param1{0};
+  double param2{0};
+  double param3{0};
 
   if(channel == "mumumu"){
     //mumumu
@@ -130,7 +131,7 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
     param3 = 1.64031e-01;
   }
 
-  return  (exp(param1+param2*zpt) +param3 );
+  return  (std::exp(param1+param2*zpt) +param3 );
 }
 
 
@@ -311,8 +312,8 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   }
 
   // Loop for parsing command line arguments.
-  for (int i = 1; i < argc; ++i){
-    std::string arg = argv[i];
+  for (int i {1}; i < argc; ++i){
+    std::string arg{argv[i]};
     if ((arg=="-h") || (arg == "--help")){ // Display help stuff
       AnalysisAlgo::show_usage(argv[0]);
       exit(0);
@@ -336,7 +337,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg=="-n") { // using this option sets the number of entries to run over.
       if (i+1 < argc){
-	nEvents = atol(argv[++i]);
+      nEvents = std::stol(argv[++i]);
       }else{
 	std::cerr << "-n requires a number of events to run over! You idiot!";
       }
@@ -360,7 +361,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg=="-l"){
       if (i+1 < argc){
-	usePreLumi = atof(argv[++i]);
+	usePreLumi = std::stof(argv[++i]);
       }else{
 	std::cerr << "-l requries a float!";
 	exit(0);
@@ -407,7 +408,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-f" || arg == "--nFiles"){
       if (i+1 < argc){
-	numFiles = atoi(argv[++i]);
+	numFiles = std::stoi(argv[++i]);
       }else{
 	 std::cerr << "-f requires an int";
 	 exit(0);
@@ -415,10 +416,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-e"){
       readEventList = true;
-      std::stringstream ss(argv[++i]);
+      std::stringstream ss{argv[++i]};
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(atoi(item.c_str()));
+	jetRegVars.emplace_back(std::stoi(item));
       }
     }
     else if (arg == "-g"){
@@ -432,7 +433,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-v" || arg == "--syst"){
       if (i+1 < argc){
-	systToRun = atoi(argv[++i]);
+	systToRun = std::stoi(argv[++i]);
       }
       else{
 	std::cerr << "-v requires an int";
@@ -444,7 +445,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-k"){
       if (i+1 < argc){
-	channelsToRun = atoi(argv[++i]);
+	channelsToRun = std::stoi(argv[++i]);
       }
       else{
 	std::cerr << "-k needs a config file!";
@@ -460,20 +461,20 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "--jetRegion"){
       customJetRegion = true;
-      std::stringstream ss(argv[++i]);
+      std::stringstream ss{argv[++i]};
       std::string item;
       while (std::getline(ss,item,',')){
-	jetRegVars.push_back(atoi(item.c_str()));
+	jetRegVars.emplace_back(std::stoi(item));
       }
       std::cout << "CAUTION! Using a custom jet region of "<< jetRegVars[0] << "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets" <<std::endl;
 
     }
     else if (arg == "--metCut"){
-      metCut = atof(argv[++i]);
+      metCut = std::stof(argv[++i]);
       std::cout << "Non zero MET cut! Applied " << metCut << " cut." << std::endl;
     }
     else if (arg == "--mtwCut"){
-      mtwCut = atof(argv[++i]);
+      mtwCut = std::stof(argv[++i]);
       std::cout << "Non zero mTW cut! Applied " << mtwCut << " cut." << std::endl;
     }
     
@@ -550,30 +551,30 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
 void AnalysisAlgo::setupSystematics()
 {
-  systNames.push_back("");
-  systNames.push_back("__trig__plus");
-  systNames.push_back("__trig__minus");
-  systNames.push_back("__jer__plus");
-  systNames.push_back("__jer__minus");
-  systNames.push_back("__jes__plus");
-  systNames.push_back("__jes__minus");
-  systNames.push_back("__pileup__plus");
-  systNames.push_back("__pileup__minus");
-  systNames.push_back("__bTag__plus");
-  systNames.push_back("__bTag__minus");
-  systNames.push_back("__pdf__plus");
-  systNames.push_back("__pdf__minus");
+  systNames.emplace_back("");
+  systNames.emplace_back("__trig__plus");
+  systNames.emplace_back("__trig__minus");
+  systNames.emplace_back("__jer__plus");
+  systNames.emplace_back("__jer__minus");
+  systNames.emplace_back("__jes__plus");
+  systNames.emplace_back("__jes__minus");
+  systNames.emplace_back("__pileup__plus");
+  systNames.emplace_back("__pileup__minus");
+  systNames.emplace_back("__bTag__plus");
+  systNames.emplace_back("__bTag__minus");
+  systNames.emplace_back("__pdf__plus");
+  systNames.emplace_back("__pdf__minus");
 
   //Make pileupReweighting stuff here
-  dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
+  dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};
   dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-  mcPileupFile = new TFile("pileup/pileupMC.root","READ");
+  mcPileupFile = new TFile{"pileup/pileupMC.root","READ"};
   mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
   //Get systematic files too.
-  systUpFile = new TFile("pileup/truePileupUp.root","READ");
+  systUpFile = new TFile{"pileup/truePileupUp.root","READ"};
   pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-  systDownFile = new TFile("pileup/truePileupDown.root","READ");
+  systDownFile = new TFile{"pileup/truePileupDown.root","READ"};
   pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
 
   puReweight = (TH1F*)(dataPU->Clone());
@@ -609,7 +610,7 @@ void AnalysisAlgo::setupSystematics()
 void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts(plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_, isCtag_);
+  cutObj = new Cuts{plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_, isCtag_};
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
     exit(0);
@@ -625,28 +626,28 @@ void AnalysisAlgo::setupPlots()
 {
   //Do a little initialisation for the plots here. Will later on be done in a config file.  
   //Initialise plot stage names.
-  stageNames.push_back("lepSel");
-  stageNames.push_back("zMass");
-  stageNames.push_back("jetSel");
-  stageNames.push_back("bTag");
-  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.push_back("wMass");}
-  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.push_back("cTag");}
+  stageNames.emplace_back("lepSel");
+  stageNames.emplace_back("zMass");
+  stageNames.emplace_back("jetSel");
+  stageNames.emplace_back("bTag");
+  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back("wMass");}
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back("cTag");}
 }
 
 void AnalysisAlgo::runMainAnalysis(){
   
-  bool datasetFilled = false;
+  bool datasetFilled{false};
 
   if (totalLumi == 0.) totalLumi = usePreLumi;
   std::cout << "Using lumi: " << totalLumi << std::endl;
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
-    TChain * datasetChain = new TChain(dataset->treeName().c_str());
-    unsigned channelIndMax = 256;
+    TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
+    unsigned channelIndMax{256};
 
     if ( !trileptonChannel_ ){ channelIndMax = 4; }
-    for (unsigned channelInd = 1; channelInd != channelIndMax; channelInd = channelInd << 1){
-      std::string chanName = "";
+    for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1){
+      std::string chanName{};
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelsToRun && trileptonChannel_){
 	if (channelInd & 17){ // eee channels
@@ -713,31 +714,31 @@ void AnalysisAlgo::runMainAnalysis(){
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
       if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
-	int systMask = 1;
-	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
+        int systMask{1};
+	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
 	  } 
 	  if (cutFlowMap.find(dataset->getFillHisto()+systNames[systInd]) == cutFlowMap.end()){
-	    const unsigned numCutFlowBins (stageNames.size());
-	    cutFlowMap[dataset->getFillHisto()] = new TH1F((dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),numCutFlowBins,0,numCutFlowBins); //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
+	    const size_t numCutFlowBins{stageNames.size()};
+	    cutFlowMap[dataset->getFillHisto()] = new TH1F{(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
 	    if (systInd == 0 && datasetInfos.find(dataset->getFillHisto()) == datasetInfos.end()){
-	      legOrder.push_back(dataset->getFillHisto());
-	      plotOrder.push_back(dataset->getFillHisto());
+	      legOrder.emplace_back(dataset->getFillHisto());
+	      plotOrder.emplace_back(dataset->getFillHisto());
 	      datasetInfos[dataset->getFillHisto()] = datasetInfo();
 	      datasetInfos[dataset->getFillHisto()].colour = dataset->getColour();
 	      datasetInfos[dataset->getFillHisto()].legLabel = dataset->getPlotLabel();
 	      datasetInfos[dataset->getFillHisto()].legType = dataset->getPlotType();
 	    }
 	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << (dataset->getFillHisto()).c_str() << " : " << (systNames[systInd]+channel).c_str() << std::endl; 
+	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl; 
 	      if (plotsMap.find(channel) == plotsMap.end()){
-		plotsVec.push_back(systNames[systInd]+channel);
+		plotsVec.emplace_back(systNames[systInd]+channel);
 	      }
-	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()] = std::map<std::string,Plots*>();
-	      for (unsigned j = 0; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][(dataset->getFillHisto()).c_str()][stageNames[j]] = new Plots(plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_);
+	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
+	      for (unsigned j{0}; j < stageNames.size(); j++){
+		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j]] = new Plots{plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_};
 	      }
 	    }
 	  }//end cutFlow find loop
@@ -757,14 +758,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       }
       else{
-	std::string inputPostfix = "";
+    std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	std::cout << "skims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-	std::ifstream secondTree(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+	std::ifstream secondTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
 	if (secondTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	std::ifstream thirdTree(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+	std::ifstream thirdTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
 	if (thirdTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
       }
       cutObj->setMC(dataset->isMC());
@@ -777,27 +778,31 @@ void AnalysisAlgo::runMainAnalysis(){
       std::vector<std::string> denomNum {"Denom","Num"};
       std::vector<std::string> typesOfEff {"b","c","uds","g"};
       if (makeBTagEffPlots && dataset->isMC()){
-	int ptBins = 4, etaBins = 4;
-	float ptMin = 0., ptMax = 200., etaMin = 0., etaMax = 2.4;
-	for (unsigned denNum = 0; denNum < denomNum.size(); denNum++){
-	  for (unsigned type = 0; type < typesOfEff.size(); type++){
-	    bTagEffPlots.push_back(new TH2D(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax));
+        int ptBins{4};
+        int etaBins{4};
+        float ptMin{0};
+        float ptMax{200};
+        float etaMin{0};
+        float etaMax{2.4};
+        for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+          for (unsigned type{0}; type < typesOfEff.size(); type++){
+	    bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
 	  }
 	}
 	cutObj->setBTagPlots(bTagEffPlots,true);
       }//end btag eff plots.
       if (usePostLepTree && usebTagWeight && dataset->isMC()){
 	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
-	std::string inputPostfix = "";
+    std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
-	TFile * datasetFileForHists = new TFile(("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	for (unsigned denNum = 0; denNum < denomNum.size(); denNum++){
-	  for (unsigned eff = 0; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.push_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
+	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
+	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
 	  }
 	}
-	for (unsigned plotIt = 0; plotIt < bTagEffPlots.size(); plotIt++){
+	for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
 	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
 	}
 	cutObj->setBTagPlots(bTagEffPlots,false);
@@ -805,7 +810,7 @@ void AnalysisAlgo::runMainAnalysis(){
       }
 
       //extract the dataset weight.
-      float datasetWeight = dataset->getDatasetWeight(totalLumi);
+      float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 
       if (infoDump) datasetWeight = 1;
       std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
@@ -814,17 +819,17 @@ void AnalysisAlgo::runMainAnalysis(){
         std::cout << "No entries in tree, skipping..." << std::endl;
         continue;
       }
-      AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
+      AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain}};
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TFile * outFile1 = nullptr;
-      TTree * cloneTree = nullptr;
+      TFile * outFile1{nullptr};
+      TTree * cloneTree{nullptr};
 
-      TFile * outFile2 = nullptr;
-      TTree * cloneTree2 = nullptr;
+      TFile * outFile2{nullptr};
+      TTree * cloneTree2{nullptr};
 
-      TFile * outFile3 = nullptr;
-      TTree * cloneTree3 = nullptr;
+      TFile * outFile3{nullptr};
+      TTree * cloneTree3{nullptr};
 
       if (makePostLepTree){
 	outFile1 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
@@ -839,31 +844,31 @@ void AnalysisAlgo::runMainAnalysis(){
 	cutObj->setCloneTree(cloneTree,cloneTree2,cloneTree3);
       }
       //If we're making the MVA tree, set it up here.
-      TFile * mvaOutFile = nullptr;
+      TFile * mvaOutFile{nullptr};
       std::vector<TTree *> mvaTree;
       //Add a few variables into the MVA tree for easy access of stuff like lepton index etc
-      float eventWeight = 0;
-      int zLep1Index = -1; // Addresses in elePF2PATWhatever of the z lepton
-      int zLep2Index = -1;
-      int wLepIndex = -1;
-      int wQuark1Index = -1;
-      int wQuark2Index = -1;
+      float eventWeight{0};
+      int zLep1Index{-1}; // Addresses in elePF2PATWhatever of the z lepton
+      int zLep2Index{-1};
+      int wLepIndex{-1};
+      int wQuark1Index{-1};
+      int wQuark2Index{-1};
       int jetInd[15];  // The index of the selected jets;
       int bJetInd[10]; // Index of selected b-jets;
       //Now add in the branches:
     
       if (makeMVATree){
         mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
-	int systMask = 1;
+        int systMask{1};
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
-	for (unsigned systIn = 0; systIn < systNames.size(); systIn++){
+	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
 	  std::cout << systNames[systIn] << " ";
 	  //	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
 	  /*	if (systIn > 0 && !(systMask & systToRun)){
 		if (systIn > 0) systMask = systMask << 1;
 		continue;
 		}*/
-	  mvaTree.push_back(datasetChain->CloneTree(0));
+	  mvaTree.emplace_back(datasetChain->CloneTree(0));
 	  mvaTree[systIn]->SetDirectory(mvaOutFile);
 	  mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
 	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
@@ -886,23 +891,24 @@ void AnalysisAlgo::runMainAnalysis(){
 	    setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
 	    }*/
 
-      int numberOfEvents = datasetChain->GetEntries();
+      long long numberOfEvents{datasetChain->GetEntries()};
       if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
       //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
-      int foundEvents = 0;
-      auto  lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
+      int foundEvents{0};
+      TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
       lEventTimer->DrawProgressBar(0, "");
-      for (int i = 0; i < numberOfEvents; i++) {
-	std::stringstream lSStrFoundLeptons, lSStrFoundEvents;
+      for (int i{0}; i < numberOfEvents; i++) {
+    std::stringstream lSStrFoundLeptons;
+    std::stringstream lSStrFoundEvents;
 	lSStrFoundLeptons <<  event->numElePF2PAT;
 	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
 	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
 	event->GetEntry(i);
 	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
-	int systMask = 1;
-	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
+	int systMask{1};
+	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
 	  if (!dataset->isMC() && systInd > 0) break;
 	  //	std::cout << systInd << " " << systMask << std::endl;
 	  if (systInd > 0 && !(systMask & systToRun)) {
@@ -912,15 +918,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	  eventWeight = 1;
 	  //apply pileup weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
-	    float pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
+	    double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
-	    bool tempBool = false;
-	    for (unsigned j = 0; j < eventNumbers.size(); j++){
+	    bool tempBool{false};
+	    for (unsigned j{0}; j < eventNumbers.size(); j++){
 	      if (eventNumbers[j] == event->eventNum) {
 		tempBool = true;
 		break;
@@ -943,31 +949,31 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (systMask == 1024 || systMask == 2048){
 	    //std::cout << std::setprecision(15) << eventWeight << " ";
 	    LHAPDF::usePDFMember(1,0);
-	    float q = event->genPDFScale;
-	    float x1 = event->genPDFx1;
-	    float x2 = event->genPDFx2;
-	    int id1 = event->genPDFf1;
-	    int id2 = event->genPDFf2;
+	    float q{event->genPDFScale};
+	    float x1{event->genPDFx1};
+	    float x2{event->genPDFx2};
+	    int id1{event->genPDFf1};
+	    int id2{event->genPDFf2};
 	    if (id2 == 21) id2 = 0;
 	    if (id1 == 21) id1 = 0;
-	    double xpdf1 = LHAPDF::xfx(1, x1, q, id1);
-	    double xpdf2 = LHAPDF::xfx(1, x2, q, id2);
+	    double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
+	    double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
 	    std::vector<float> pdf_weights;
 	    //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
 	    //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
-	    float min = 1.0;
-	    float max = 1.0;
-	    float pdfWeightUp = 0.0;
-	    float pdfWeightDown = 0.0;
-	    for (int j = 1; j <= 50; j++){
+	    float min{1};
+	    float max{1};
+	    float pdfWeightUp{0};
+	    float pdfWeightDown{0};
+	    for (int j{1}; j <= 50; j++){
 	      LHAPDF::usePDFMember(1,j);
-	      double xpdf1_new = LHAPDF::xfx(1, x1, q, id1);
-	      double xpdf2_new = LHAPDF::xfx(1, x2, q, id2);
+	      double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
+	      double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
 	      //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
-	      double weight = 1.;
+	      double weight{1};
 	      if( (xpdf1 * xpdf2) > 0.00001)
 		weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
-	      pdf_weights.push_back(weight);
+	      pdf_weights.emplace_back(weight);
 	      if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
 	      if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
 	      if (weight > max) max = weight;
@@ -985,7 +991,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //}
 	  //Do the Zpt reweighting here
 	  if (invertIsoCut){
-	    float zPT = (event->zPairLeptons.first+event->zPairLeptons.second).Pt();
+	    double zPT{(event->zPairLeptons.first + event->zPairLeptons.second).Pt()};
 	    eventWeight *= zptSF(channel,zPT);
 	  }
 	  if (makeMVATree){
@@ -996,11 +1002,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	      wQuark1Index = event->wPairIndex.first;
 	      wQuark2Index = event->wPairIndex.second;
 	    }
-	    for (unsigned jetIndexIt = 0; jetIndexIt < 15; jetIndexIt++){
+	    for (unsigned jetIndexIt{0}; jetIndexIt < 15; jetIndexIt++){
 	      if (jetIndexIt < event->jetIndex.size()) jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
 	      else jetInd[jetIndexIt] = -1;
 	    }
-	    for (unsigned bJetIt = 0; bJetIt < 10; bJetIt++){
+	    for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++){
 	      if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
 	      else bJetInd[bJetIt] = -1;
 	    }
@@ -1021,7 +1027,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	cloneTree->Write();
 	//If we're doing b-tag efficiencies, let's save them here.
 	if (makeBTagEffPlots){
-	  for (unsigned i = 0; i < bTagEffPlots.size(); i++){
+	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
@@ -1056,9 +1062,9 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << (mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root") << std::endl;
 	mvaOutFile->cd();
 	std::cout << std::endl;
-	int systMask = 1;
+	int systMask{1};
 	std::cout << "Saving Systematics: ";
-	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
+	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
@@ -1071,26 +1077,26 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << std::endl;
 	//Save the efficiency plots for b-tagging here if we're doing that.
 	if (makeBTagEffPlots){
-	  for (unsigned i = 0; i < bTagEffPlots.size(); i++){
+	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
 	mvaOutFile->Write();
-	for (unsigned i = 0; i < mvaTree.size(); i++){
+	for (unsigned i{0}; i < mvaTree.size(); i++){
 	  delete mvaTree[i];
 	}
 	mvaOutFile->Close();
       }
       if (infoDump){
 	std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
-	for (int i = 0; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
+	for (int i{0}; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
 	  std::cout << stageNames[i] << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
 	}
       }
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
       //Delete plots from out btag vector. Avoid memory leaks, kids.
       if (makeBTagEffPlots){
-	for (unsigned i = 0; i < bTagEffPlots.size(); i++){
+        for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	  delete bTagEffPlots[i];
 	}
       }
@@ -1113,7 +1119,7 @@ void AnalysisAlgo::savePlots()
     plotObj.setPostfix("");
     plotObj.setOutputFolder(outFolder);
 
-    for (unsigned i = 0; i < plotsVec.size(); i++){
+    for (unsigned i{0};  i < plotsVec.size(); i++){
       std::cout << plotsVec[i] << std::endl;
       if (plots)
 	plotObj.plotHistos(plotsMap[plotsVec[i]]);
@@ -1121,7 +1127,7 @@ void AnalysisAlgo::savePlots()
     
     std::vector<std::string> cutFlowLabels;
     for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-    	cutFlowLabels.push_back(*lIt);
+    	cutFlowLabels.emplace_back(*lIt);
     }
 
     plotObj.makePlot(cutFlowMap,"cutFlow",cutFlowLabels);

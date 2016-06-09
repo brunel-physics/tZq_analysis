@@ -13,35 +13,35 @@
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap):
   //Initialise a load of variables. Labels are empty by default, but this can be changed by calling set label routines.
-  lumiStr_(""),
-  outputFolder_(""),
-  postfix_("defaultPostfix"),
+  lumiStr_{},
+  outputFolder_{},
+  postfix_{"defaultPostfix"},
   
 
   //Some things that actually need to be set. plot order, legend order and dataset information map.
-  plotOrder_(plotOrder),
-  legOrder_(legOrder),
-  dsetMap_(dsetMap)
+  plotOrder_{plotOrder},
+  legOrder_{legOrder},
+  dsetMap_{dsetMap}
 {
 
   gErrorIgnoreLevel = kInfo;
 
-  extensions_.push_back(".root");
+  extensions_.emplace_back(".root");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
-  labelOne_ = new TPaveText(0.16,0.88,0.5,0.94,"NDCBR");
+  labelOne_ = new TPaveText{0.16,0.88,0.5,0.94,"NDCBR"};
   labelOne_->SetTextAlign(12);
   labelOne_->SetTextSize(0.045);
   labelOne_->SetFillColor(kWhite);
   labelOne_->SetBorderSize(0);
 
-  labelTwo_ = new TPaveText(0.16,0.85,0.5,0.88,"NDCBR");
+  labelTwo_ = new TPaveText{0.16,0.85,0.5,0.88,"NDCBR"};
   labelTwo_->SetTextAlign(12);
   labelTwo_->SetTextSize(0.045);
   labelTwo_->SetFillColor(kWhite);
   labelTwo_->SetBorderSize(0);
 
-  labelThree_ = new TPaveText(0.16,0.88,0.5,0.94,"NDCBR");
+  labelThree_ = new TPaveText{0.16,0.88,0.5,0.94,"NDCBR"};
   labelThree_->SetTextAlign(12);
   labelThree_->SetTextSize(0.045);
   labelThree_->SetFillColor(kWhite);
@@ -66,11 +66,11 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
   auto firstIt = plotMap.begin();
   std::vector<std::string> stageNameVec;
   for (auto stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
-    stageNameVec.push_back(stageNameIt->first);
+    stageNameVec.emplace_back(stageNameIt->first);
   }
   //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
-  int plotNumb = firstIt->second.begin()->second->getPlotPoint().size();
-  for (int i = 0; i < plotNumb; i++){
+  unsigned long plotNumb{firstIt->second.begin()->second->getPlotPoint().size()};
+  for (int i{0}; i < plotNumb; i++){
     for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
       std::map<std::string, TH1F*> tempPlotMap;
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
@@ -99,7 +99,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
-  TLegend* legend_ = new TLegend(0.7,0.7,0.94,0.94);
+  TLegend* legend_{new TLegend{0.7,0.7,0.94,0.94}};
   legend_->SetFillStyle(1001);
   legend_->SetBorderSize(1);
   legend_->SetFillColor(kWhite);
@@ -108,7 +108,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
     
   //Initialise the stack
-  THStack* mcStack = new THStack(plotName.c_str(),(plotName+";"+subLabel+";Events (lumi scaled)").c_str());
+  THStack* mcStack{new THStack{plotName.c_str(),(plotName+";"+subLabel+";Events (lumi scaled)").c_str()}};
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -124,16 +124,16 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   //Initialise ratio plots
-  TH1F* ratioHisto = (TH1F*) plotMap["data"]->Clone();
+  TH1F* ratioHisto{dynamic_cast<TH1F*>(plotMap["data"]->Clone())};
   ratioHisto->Sumw2();
-  ratioHisto->Divide( ratioHisto, (TH1F*)(mcStack->GetStack()->Last()),1,1 );
+  ratioHisto->Divide(ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()),1,1 );
   
   ratioHisto->SetMarkerStyle(20);
   ratioHisto->SetMarkerSize(0.85);
   ratioHisto->SetMarkerColor(kBlack);
 
   // Set up canvas
-  TCanvas * canvy = new TCanvas((plotName + postfix_).c_str(), (plotName + postfix_).c_str());
+  TCanvas * canvy{new TCanvas{(plotName + postfix_).c_str(), (plotName + postfix_).c_str()}};
   canvy->cd();
 
   // Top Histogram
@@ -152,7 +152,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   //  labelTwo_->Draw();
   //  labelOne_->Draw();
 
-  float max = mcStack->GetMaximum();
+  float max{mcStack->GetMaximum()};
   if (plotMap.find("data") != plotMap.end()){
     max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
@@ -184,7 +184,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   ratioHisto->GetYaxis()->SetTitleOffset(0.28);
 
   if (xAxisLabels.size() > 0){
-    for (unsigned i = 1; i <= xAxisLabels.size(); i++){
+    for (unsigned i{1}; i <= xAxisLabels.size(); i++){
       ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
     }
   }

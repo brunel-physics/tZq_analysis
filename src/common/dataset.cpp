@@ -22,13 +22,13 @@ Dataset::Dataset(std::string name, float lumi, bool isMC, float crossSection, st
 //Method that fills a TChain with the files that will be used for the analysis. Returns 1 if succesful, otherwise returns 0. This can probably be largely ignored.
 int Dataset::fillChain(TChain * chain , int nFiles){
   std::cerr <<  fileList_ << "\n";
-  std::ifstream fileList(fileList_.c_str());
+  std::ifstream fileList(fileList_);
   if (!fileList.is_open()){
     std::cerr << "Couldn't read file list for " << name_ <<  std::endl;
     return 0;
   }
   std::string line;
-  int files = 0;
+  int files{0};
   while(getline(fileList,line)){
     chain->Add(line.c_str());
     if (nFiles > 0) {
