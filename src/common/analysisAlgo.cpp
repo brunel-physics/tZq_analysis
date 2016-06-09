@@ -938,7 +938,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    cutObj->dumpLeptonInfo(event);
 	
 	  }
-	  if ( dataset->isMC() ) eventWeight *= (1.0/event->processMCWeight);
+	  if ( dataset->isMC() ) eventWeight *= (event->processMCWeight/std::abs(event->processMCWeight));
 	  eventWeight*=datasetWeight;
 	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {

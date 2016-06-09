@@ -278,8 +278,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (!triggerCuts(event)) return false;
 
   //Make lepton cuts. Does the inverted iso cuts if necessary.
-  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight, plotMap,cutFlow))) return false;
-  //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
+  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
+  //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun)) return false;
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_) {
     if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
@@ -289,8 +289,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
     }
   }
-
-  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
@@ -328,7 +326,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
-bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow){
+bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
 
   //Do lepton selection. 
   event->electronIndexTight = getTightEles(event);
@@ -342,7 +340,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //Should I make it return which leptons are the zMass candidate? Probably.
-  float invZmass{9999};
+  float invZmass{9999.};
 
   if (trileptonChannel_ == true){
     invZmass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
@@ -356,7 +354,11 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     exit(0);
   }
   
+  if (invZmass > invZMassCut_ ) std::cout << invZmass << std::endl;
+
   * eventWeight *= getLeptonWeight(event);
+  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
+
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
@@ -377,7 +379,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (std::abs(tempVec.Eta()) >= tightEleEta_)continue;
     if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
-    if (!synchCutFlow_) {
+/*    if (!synchCutFlow_) {
 //        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
         if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
@@ -403,8 +405,8 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  }
 	else continue;
     }
-
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+*/
+//    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
  	// Barrel cut-based ID
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
@@ -429,7 +431,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
 	else continue;
-    }
+  //  }
 
     electrons.emplace_back(i);
 
@@ -525,7 +527,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
 }
 
 float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
-  float closestMass{9999};
+  float closestMass{9999.};
   //Use electrons if there are at least 2. Otherwise use muons.
   if (electrons.size() > 1){ // electrons.size() == number of electrons for selected channel
     for (unsigned i{0}; i < electrons.size(); i++){
@@ -648,7 +650,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 }
 
 float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
-  float closestWmass {9999};
+  float closestWmass {9999.};
   if ( jets.size() > 3 )
     for ( unsigned k{0}; k < jets.size(); k++ ){
       for ( unsigned l{k + 1}; l < jets.size(); l++ ){
@@ -723,15 +725,15 @@ int Cuts::getLeadingBjet(AnalysisEvent *event){
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
 
   std::vector<int> jets;
-  float mcTag{1};
-  float mcNoTag{1};
-  float dataTag{1};
-  float dataNoTag{1};
+  float mcTag{1.};
+  float mcNoTag{1.};
+  float dataTag{1.};
+  float dataNoTag{1.};
   // b-tagging errors
-  float err1{0};
-  float err2{0};
-  float err3{0};
-  float err4{0};
+  float err1{0.};
+  float err2{0.};
+  float err3{0.};
+  float err4{0.};
 
   //  std::cout << event->eventNum << std::endl << "Jets: " << std::endl;
   for (int i{0}; i < event->numJetPF2PAT; i++){
@@ -933,7 +935,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   synchCutFlowHist_->Fill(4.5); // Z veto - step 3
 
   //Add in extra steps here.
-  float tempWeight{1};
+  float tempWeight{1.};
 
   // Jet selection
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
@@ -1045,7 +1047,7 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::st
   if (event->electronIndexTight.size() == 1) return false;
   
   //Check they are a valid zCandidate. (Just call the zCand method here? - No, that won't actually work.)
-  float invMass{100};
+  float invMass{100.};
   if (numTightEle_ > 1){
     if (event->electronIndexTight.size() < 2) return false;
     if (event->elePF2PATCharge[event->electronIndexTight[0]] * event->elePF2PATCharge[event->electronIndexTight[1]] > 0) return false;
@@ -1451,7 +1453,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     break;
   }*/
 
-  float tempWeight{1};
+  float tempWeight{1.};
   event->jetIndex = makeJetCuts(event, 0, &tempWeight);
 
   switch (step){
@@ -1521,7 +1523,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
 float Cuts::getLeptonWeight(AnalysisEvent * event){
   //If number of electrons is > 1  then both z pair are electrons, so get their weight
   if (!isMC_) return 1.;
-  float leptonWeight{1};
+  float leptonWeight{1.};
   if (trileptonChannel_ == true){
     if (numTightEle_ > 1){
 //      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
@@ -1565,7 +1567,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 
 }
 
-float Cuts::getTriggerSF(int syst, double pt, double eta){
+float Cuts::getTriggerSF(int syst, double eta1, double eta2){
 
   std::string channel = "";
 
@@ -1578,51 +1580,53 @@ float Cuts::getTriggerSF(int syst, double pt, double eta){
   if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
   if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
 
-  //If using SFs based on pT or eta?
-  //  if ( pt >= 0.0 && std::abs(eta) >= 0.0 ) {
-  //  }
+  //If using SFs based on eta?
+  if ( std::abs(eta1) <= 5.0 && std::abs(eta2) <= 5.0 ) {
+	std::cout << "Not implemented yet. Don't pass eta values!" << std::endl;
+	exit(999);
+  }
 
   //If no pT or eta dependancy ...
-  //  else {
-  //Dilepton channels
-  if (channel == "ee"){
-    float twgt = 0.958;
-    if (syst == 1) twgt += 0.009;
-    if (syst == 2) twgt -= 0.009;
-    return twgt;
+  else {
+    //Dilepton channels
+    if (channel == "ee"){
+      float twgt = 0.958;
+      if (syst == 1) twgt += 0.009;
+      if (syst == 2) twgt -= 0.009;
+      return twgt;
+    }
+    if (channel == "mumu"){
+      float twgt = 0.931;
+      if (syst == 1) twgt += 0.007;
+      if (syst == 2) twgt -= 0.007;
+      return twgt;
+    }
+    //Trilepton channels
+    if (channel == "eee"){
+      float twgt = 0.987;
+      if (syst == 1) twgt += 0.036;
+      if (syst == 2) twgt -= 0.036;
+      return twgt;
+    }
+    if (channel == "eemu"){
+      float twgt = 0.987;
+      if (syst == 1) twgt += 0.035;
+      if (syst == 2) twgt -= 0.035;
+      return twgt;
+    }
+    if (channel == "emumu"){
+      float twgt = 0.886;
+      if (syst == 1) twgt += 0.042;
+      if (syst == 2) twgt -= 0.042;
+      return twgt;
+    }
+    if (channel == "mumumu"){
+      float twgt = 0.9871;
+      if (syst == 1) twgt += 0.0242;
+      if (syst == 2) twgt -= 0.0212;
+      return twgt;
+    }
   }
-  if (channel == "mumu"){
-    float twgt = 0.931;
-    if (syst == 1) twgt += 0.007;
-    if (syst == 2) twgt -= 0.007;
-    return twgt;
-  }
-  //Trilepton channels
-  if (channel == "eee"){
-    float twgt = 0.987;
-    if (syst == 1) twgt += 0.036;
-    if (syst == 2) twgt -= 0.036;
-    return twgt;
-  }
-  if (channel == "eemu"){
-    float twgt = 0.987;
-    if (syst == 1) twgt += 0.035;
-    if (syst == 2) twgt -= 0.035;
-    return twgt;
-  }
-  if (channel == "emumu"){
-    float twgt = 0.886;
-    if (syst == 1) twgt += 0.042;
-    if (syst == 2) twgt -= 0.042;
-    return twgt;
-  }
-  if (channel == "mumumu"){
-    float twgt = 0.9871;
-    if (syst == 1) twgt += 0.0242;
-    if (syst == 2) twgt -= 0.0212;
-    return twgt;
-  }
-  //  }
 
 }
 
@@ -1729,10 +1733,10 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 	return returnJet;
   }
 
-  float jerSF{0};
-  float jerSigma{0};
+  float jerSF{0.};
+  float jerSigma{0.};
 
-  float newSmearValue{1};  
+  float newSmearValue{1.};  
 
   // JER Scaling Factors and uncertainities
   if (std::abs(event->jetPF2PATEta[index]) <= 0.5) {
@@ -1816,7 +1820,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * err1, float * err2, float * err3, float * err4){
   //Use b-tagging efficiencies and scale factors.
   //Firstly get efficiency for pt/eta bin here.
-  float eff{1};
+  float eff{1.};
   int partonFlavour{std::abs(event->jetPF2PATPID[index])};
 
   if (partonFlavour == 0) return;
@@ -1835,11 +1839,11 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 
   //Get SF
   // Initalise variables.
-  double jet_scalefactor{1};
-  double jet_scalefactor_up{1};
-  double jet_scalefactor_do{1};
+  double jet_scalefactor{1.};
+  double jet_scalefactor_up{1.};
+  double jet_scalefactor_do{1.};
 
-  float SFerr{0};
+  float SFerr{0.};
   
   double jetPt{jet.Pt()};
   float maxBjetPt{670};
