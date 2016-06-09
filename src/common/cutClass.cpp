@@ -290,7 +290,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     }
   }
 
-  if( !skipTrigger_ || isMC_ )  *eventWeight *= getTriggerSF (systToRun);
+  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;

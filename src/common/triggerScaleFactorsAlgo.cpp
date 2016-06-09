@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <sys/stat.h>
 
 TriggerScaleFactors::TriggerScaleFactors():
   config(""),
@@ -270,10 +271,8 @@ void TriggerScaleFactors::runMainAnalysis(){
     }
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
-    //extract the dataset weight.
-    //float datasetWeight = dataset->getDatasetWeight(totalLumi);
-
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain);
+
     double eventWeight = 1.0;
 
     double pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
@@ -495,6 +494,7 @@ void TriggerScaleFactors::savePlots()
 
   histEfficiencies->SetStats(kFALSE);
 
+  mkdir( (outFolder+postfix).c_str(),0700);
   TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
   histEfficiencies->Write();
   outFile->Close();

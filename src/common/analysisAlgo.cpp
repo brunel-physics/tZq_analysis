@@ -807,7 +807,6 @@ void AnalysisAlgo::runMainAnalysis(){
       //extract the dataset weight.
       float datasetWeight = dataset->getDatasetWeight(totalLumi);
 
-      //Apply trigger SF here. Also does systematic for trigger +-
       if (infoDump) datasetWeight = 1;
       std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
       if (datasetChain->GetEntries() == 0)
@@ -911,51 +910,12 @@ void AnalysisAlgo::runMainAnalysis(){
 	    continue;
 	  }
 	  eventWeight = 1;
-	  //apply pileup/trigger weights here.
+	  //apply pileup weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
 	    float pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
-	    /* // Depracated - moved to cutClass
-	    // trilepton stuff - not updated since Run2012
-	    if (channel == "eee"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
-	      eventWeight *= twgt;
-	    }
-	    else if (channel == "eemu"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.035;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.035;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "emumu"){
-	      float twgt = 0.886;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.042;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.042;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "mumumu"){
-	      float twgt = 0.9871;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.0242;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.0212;
-	      eventWeight *= twgt;
-	    }
-	    // dilepton stuff, updated for Run2015 MC
-	    if (channel == "ee"){
-	      float twgt = 0.958;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.009;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.009;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "mumu"){
-	      float twgt = 0.931;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
-	      eventWeight *= twgt;
-	      }*/
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
@@ -972,6 +932,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    cutObj->dumpLeptonInfo(event);
 	
 	  }
+	  if ( dataset->isMC() ) eventWeight *= (1.0/event->processMCWeight);
 	  eventWeight*=datasetWeight;
 	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
