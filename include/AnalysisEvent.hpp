@@ -309,12 +309,21 @@ public :
    Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3;
 
-    //MC Triggers
+   //MC Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
    Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
    Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
+
+   //MET Triggers
+   Int_t           HLT_PFMET120_PFMHT120_IDTight_v2;
+   Int_t           HLT_PFMET170_JetIdCleaned_v2;
+   Int_t           HLT_PFMET170_HBHECleaned_v2;
+   Int_t           HLT_PFHT350_PFMET100_v1;
+   Int_t           HLT_PFHT800_v2;
+   Int_t           HLT_MET250_v1;
+   Int_t           HLT_PFHT750_4JetPt50_v3;
 
    //Gen info
    Int_t           nGenPar;
@@ -612,6 +621,13 @@ public :
    TBranch	  *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
+   TBranch        *b_HLT_PFMET120_PFMHT120_IDTight_v2;
+   TBranch        *b_HLT_PFMET170_JetIdCleaned_v2;
+   TBranch        *b_HLT_PFMET170_HBHECleaned_v2;
+   TBranch        *b_HLT_PFHT350_PFMET100_v1;
+   TBranch        *b_HLT_PFHT800_v2;
+   TBranch        *b_HLT_MET250_v1;
+   TBranch        *b_HLT_PFHT750_4JetPt50_v3;
    TBranch        *b_nGenPar;   //!
    TBranch        *b_genParEta;   //!
    TBranch        *b_genParPhi;   //!
@@ -646,12 +662,12 @@ public :
    Int_t numVert;
    TBranch * b_numVert;
 
-   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr);
+   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr, bool hasMetTriggers = false);
    virtual ~AnalysisEvent();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(bool isMC, std::string triggerFlag, TTree *tree);
+   virtual void     Init(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers);
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -661,7 +677,7 @@ public :
 #endif
 
 #ifdef AnalysisEvent_cxx
-AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : fChain(nullptr) 
+AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers) : fChain(nullptr) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -686,7 +702,7 @@ AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree) : 
 #endif // SINGLE_TREE
 
    }
-   Init(isMC,triggerFlag,tree);
+   Init(isMC,triggerFlag,tree,hasMetTriggers);
 }
 
 AnalysisEvent::~AnalysisEvent()
@@ -714,7 +730,7 @@ Long64_t AnalysisEvent::LoadTree(Long64_t entry)
    return centry;
 }
 
-void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
+void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1025,6 +1041,15 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree)
    fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1);
    fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1);
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1", &HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1, &b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1);
+   if (hasMetTriggers) {
+   fChain->SetBranchAddress("HLT_PFMET120_PFMHT120_IDTight_v2", &HLT_PFMET120_PFMHT120_IDTight_v2, &b_HLT_PFMET120_PFMHT120_IDTight_v2);
+   fChain->SetBranchAddress("HLT_PFMET170_JetIdCleaned_v2", &HLT_PFMET170_JetIdCleaned_v2, &b_HLT_PFMET170_JetIdCleaned_v2);
+   fChain->SetBranchAddress("HLT_PFMET170_HBHECleaned_v2", &HLT_PFMET170_HBHECleaned_v2, &b_HLT_PFMET170_HBHECleaned_v2);
+   fChain->SetBranchAddress("HLT_PFHT350_PFMET100_v1", &HLT_PFHT350_PFMET100_v1, &b_HLT_PFHT350_PFMET100_v1);
+   fChain->SetBranchAddress("HLT_PFHT800_v2", &HLT_PFHT800_v2, &b_HLT_PFHT800_v2);
+   fChain->SetBranchAddress("HLT_MET250_v1", &HLT_MET250_v1, &b_HLT_MET250_v1);
+   fChain->SetBranchAddress("HLT_PFHT750_4JetPt50_v3", &HLT_PFHT750_4JetPt50_v3, &b_HLT_PFHT750_4JetPt50_v3);
+   }
    if (isMC) {
      fChain->SetBranchAddress("nGenPar", &nGenPar, &b_nGenPar);
      fChain->SetBranchAddress("genParEta", genParEta, &b_genParEta);
