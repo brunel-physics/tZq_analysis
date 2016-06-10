@@ -280,15 +280,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   //Make lepton cuts. Does the inverted iso cuts if necessary.
   if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
   //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun)) return false;
-  //This is to make some skims for faster running. Do lepSel and save some files.
-  if(postLepSelTree_) {
-    if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
-    else {
-      if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
-      else postLepSelTree3_->Fill();
-
-    }
-  }
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
@@ -338,6 +329,16 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
+
+  //This is to make some skims for faster running. Do lepSel and save some files.
+  if(postLepSelTree_) {
+    if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
+    else {
+      if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
+      else postLepSelTree3_->Fill();
+
+    }
+  }
 
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass{9999.};
