@@ -9,8 +9,9 @@ EXECUTABLE_OBJECT_FILES = $(patsubst src/common/%.cxx,obj/%.o,${EXECUTABLE_SOURC
 EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
-		-Llib \
 		-L/scratch/shared/lib \
+		-L/usr/lib64/include/boost \
+		-Llib \
 
 LIBRARIES = 	$(shell root-config --libs) \
 		-lLHAPDF \
@@ -19,8 +20,9 @@ LIBRARIES = 	$(shell root-config --libs) \
 		-lz \
 
 INCLUDE_PATH = 	-Iinclude  \
-		-I/usr/include \
 		-isystem/scratch/shared/include \
+		-isystem/usr/include/boost148 \
+		-I/usr/include \
 		-isystem$(shell root-config --incdir) \
 
 CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
