@@ -38,7 +38,13 @@ class TriggerScaleFactors{
 	long nEvents;
 	std::string outFolder;
 	std::string postfix;
+	bool makePostLepTree;
+	bool usePostLepTree;
 	int numFiles;
+	//For producing post-lepsel skims
+	TTree* postLepSelTree_;
+	TTree* postLepSelTree2_;
+	TTree* postLepSelTree3_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;

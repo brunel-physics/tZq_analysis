@@ -19,6 +19,11 @@ TriggerScaleFactors::TriggerScaleFactors():
   outFolder("plots/scaleFactors/"),
   postfix("default"),
   numFiles(-1),
+  makePostLepTree(false),
+  usePostLepTree(false),
+  postLepSelTree_{nullptr},
+  postLepSelTree2_{nullptr},
+  postLepSelTree3_{nullptr},
 
   numberPassedElectrons(),
   numberTriggeredElectrons(),
@@ -206,6 +211,12 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 	std::cerr << "requires a string for plot postfix.";
       }
     }
+    else if (arg == "-g"){
+      makePostLepTree = true;
+    }
+    else if (arg == "-u"){
+      usePostLepTree = true;
+    }
     else if (arg == "-f" || arg == "--nFiles"){
       if (i+1 < argc){
 	numFiles = atoi(argv[++i]);
@@ -274,16 +285,56 @@ void TriggerScaleFactors::runMainAnalysis(){
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
 
     std::cerr << "Processing dataset " << dataset->name() << std::endl;
-    if (!datasetFilled){
-      if (!dataset->fillChain(datasetChain,numFiles)){
-	std::cerr << "There was a problem constructing the chain for " << dataset->name() << ". Continuing with next dataset.\n";
-	continue;
+    if (!usePostLepTree){
+      if (!datasetFilled){
+	if (!dataset->fillChain(datasetChain,numFiles)){
+	  std::cerr << "There was a problem constructing the chain for " << dataset->name() << ". Continuing with next dataset.\n";
+	  continue;
+	}
+	datasetFilled = true;
       }
-      datasetFilled = true;
     }
+
+    else{
+      std::string inputPostfix{};
+      inputPostfix += postfix;
+      std::cout << "skims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+      datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+      std::ifstream secondTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+      if (secondTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+      std::ifstream thirdTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+      if (thirdTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+
+    }
+
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain, true);
+
+    //Adding in some stuff here to make a skim file out of post lep sel stuff
+    TFile * outFile1{nullptr};
+    TTree * cloneTree{nullptr};
+
+    TFile * outFile2{nullptr};
+    TTree * cloneTree2{nullptr};
+
+    TFile * outFile3{nullptr};
+    TTree * cloneTree3{nullptr};
+
+    if (makePostLepTree){
+      outFile1 = new TFile{("skims/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+      outFile2 = new TFile{("skims/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
+      outFile3 = new TFile{("skims/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
+      cloneTree = datasetChain->CloneTree(0);
+      cloneTree->SetDirectory(outFile1);
+      cloneTree2 = datasetChain->CloneTree(0);
+      cloneTree2->SetDirectory(outFile2);
+      cloneTree3 = datasetChain->CloneTree(0);
+      cloneTree3->SetDirectory(outFile3);
+      postLepSelTree_ = cloneTree;
+      postLepSelTree2_ = cloneTree2;
+      postLepSelTree3_ = cloneTree3;
+    }
 
     double eventWeight = 1.0;
 
@@ -308,6 +359,16 @@ void TriggerScaleFactors::runMainAnalysis(){
       //Create muon index
       event->muonIndexTight = getTightMuons( event );
       bool passDoubleMuonSelection ( passDileptonSelection( event, event->muonIndexTight, false ) );
+
+      if ( (passDoubleElectronSelection || passDoubleMuonSelection) && makePostLepTree ) {
+	if(postLepSelTree_) {
+	  if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
+	  else {
+	    if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
+	    else postLepSelTree3_->Fill();
+	  }
+	}
+      }
 
       int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0);
       int triggerMetElectronSelection (0), triggerMetMuonSelection (0);
@@ -343,6 +404,40 @@ void TriggerScaleFactors::runMainAnalysis(){
       }
 
     }
+
+    if (makePostLepTree){
+      outFile1->cd();
+      std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
+      std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
+      cloneTree->Write();
+
+      delete cloneTree;
+      cloneTree = nullptr;
+      outFile1->Write();
+      outFile1->Close();
+
+      //If we have any events in the second tree:
+      if (cloneTree2->GetEntries() > 0){
+	std::cout << "There are " << cloneTree2->GetEntries() << " entries in the second tree!" << std::endl;
+	outFile2->cd();
+	cloneTree2->Write();
+	outFile2->Write();
+      }
+      if (cloneTree3->GetEntries() > 0){
+	std::cout << "There are " << cloneTree3->GetEntries() << " entries in the third tree! What a lot of trees we've made." << std::endl;
+	outFile3->cd();
+	cloneTree3->Write();
+	outFile3->Write();
+      }
+      delete cloneTree2;
+      delete cloneTree3;
+      cloneTree2 = nullptr;
+      cloneTree3 = nullptr;
+      outFile2->Close();
+      outFile3->Close();
+    }
+
+
     delete datasetChain;
   } //end dataset loop
 }
