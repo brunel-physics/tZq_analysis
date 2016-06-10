@@ -354,8 +354,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     exit(0);
   }
   
-  if (invZmass > invZMassCut_ ) std::cout << invZmass << std::endl;
-
   * eventWeight *= getLeptonWeight(event);
   if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
 

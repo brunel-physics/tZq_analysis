@@ -38,9 +38,19 @@ colour = kGreen
 label = ttZ
 plotType = f
 
-[ttbarInclusivePowerheg]
-fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 344568106
+[ttbarInclusivePowerheg_ext3]
+fileName = configs/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+totalEvents = 97994442
+crossSection = 831.76
+runType = mc
+histoName = ttbar
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_ext4]
+fileName = configs/datasets/fileLists/ttbarInclusivePowerhegExt4Files.txt
+totalEvents = 187548000
 crossSection = 831.76
 runType = mc
 histoName = ttbar

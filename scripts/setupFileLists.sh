@@ -21,7 +21,8 @@ rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarWInclusiveFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarDileptonFiles.txt
-rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegExt4Files.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttWFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttZFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/tWInclusiveFiles.txt
@@ -68,7 +69,8 @@ ls /scratch/data/tZqSkimsRun2015/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs
 ls /scratch/data/tZqSkimsRun2015/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tbarWInclusiveFiles.txt
 ls /scratch/data/tZqSkimsRun2015/tChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2015/ttbarDilepton/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarDileptonFiles.txt
-ls /scratch/data/tZqSkimsRun2015/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+ls /scratch/data/tZqSkimsRun2015/ttbarInclusive_powerheg_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+ls /scratch/data/tZqSkimsRun2015/ttbarInclusive_powerheg_ext4/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttbarInclusivePowerhegExt4Files.txt
 ls /scratch/data/tZqSkimsRun2015/ttW/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttWFiles.txt
 ls /scratch/data/tZqSkimsRun2015/ttZ/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/ttZFiles.txt
 ls /scratch/data/tZqSkimsRun2015/tW_top_5f/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/tWInclusiveFiles.txt
