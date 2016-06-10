@@ -164,7 +164,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 {
   gErrorIgnoreLevel = kInfo;
   //Set up environment a little.
-  std::cout << std::setprecision(6) << std::fixed;
+  std::cout << std::setprecision(3) << std::fixed;
   // "This is the main function. It basically just loads a load of other stuff.";
   //Parse command line arguments - looking for config file.
   if (argc < 3){
