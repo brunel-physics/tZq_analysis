@@ -28,7 +28,8 @@ CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 	 -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast \
 	 -Woverloaded-virtual -Wredundant-decls -Wshadow \
 	 -Wstrict-null-sentinel -Wuseless-cast -Wzero-as-null-pointer-constant \
-	 -pedantic -MMD -MP -m64 -fPIC -pthread ${INCLUDE_PATH}
+	 -pedantic -MMD -MP -m64 -fPIC -pthread -fdiagnostics-color=auto \
+	 ${INCLUDE_PATH}
 
 LINK_LIBRARY_FLAGS = -shared -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
 LINK_EXECUTABLE_FLAGS = -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
