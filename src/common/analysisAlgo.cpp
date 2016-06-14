@@ -666,7 +666,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	if (channelInd & 68){ // emumu channels
 	  cutObj->setNumLeps(2,2,1,1);
-	  cutObj->setCutConfTrigLabel("d3");
+	  cutObj->setCutConfTrigLabel("d2");
 	  channel = "emumu";
 	  postfix = "emumu";
 	  chanName += "emumu";
@@ -847,7 +847,7 @@ void AnalysisAlgo::runMainAnalysis(){
       TFile * mvaOutFile{nullptr};
       std::vector<TTree *> mvaTree;
       //Add a few variables into the MVA tree for easy access of stuff like lepton index etc
-      float eventWeight{0};
+      float eventWeight{0.};
       int zLep1Index{-1}; // Addresses in elePF2PATWhatever of the z lepton
       int zLep2Index{-1};
       int wLepIndex{-1};
@@ -897,11 +897,24 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents{0};
+
+/*      //If event is amc@nlo, need to sum number of positive and negative weights first.
+      event->GetEntry(0);
+      event->sumPositiveWeights = 0;
+      event->sumNegativeWeights = 0;
+      if ( dataset->isMC() && event->processMCWeight != 1.0 ) {
+	for (int i{0}; i < numberOfEvents; i++) {
+	  event->GetEntry(i);
+	  if ( event->processMCWeight >= 0.0 ) event->sumPositiveWeights++;
+	  else event->sumNegativeWeights++;
+	}
+      }
+*/
       TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
       lEventTimer->DrawProgressBar(0, "");
       for (int i{0}; i < numberOfEvents; i++) {
-    std::stringstream lSStrFoundLeptons;
-    std::stringstream lSStrFoundEvents;
+	std::stringstream lSStrFoundLeptons;
+	std::stringstream lSStrFoundEvents;
 	lSStrFoundLeptons <<  event->numElePF2PAT;
 	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
 	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
@@ -916,12 +929,56 @@ void AnalysisAlgo::runMainAnalysis(){
 	    continue;
 	  }
 	  eventWeight = 1;
+	  //apply generator weights here.
+//	  double generatorWeight{1.0};
+//	  if ( dataset->isMC() && event->sumPositiveWeights != 0 && event->sumNegativeWeights != 0 ){
+//	    generatorWeight = (event->sumPositiveWeights + event->sumNegativeWeights)/(event->sumPositiveWeights - event->sumNegativeWeights) * std::abs(event->processMCWeight);
+//	  }
+//	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
 	    double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
+	    // trilepton stuff - not updated since Run2012
+	    if (channel == "eee"){
+	      float twgt = 0.987;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
+	      eventWeight *= twgt;
+	    }
+	    else if (channel == "eemu"){
+	      float twgt = 0.987;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.035;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.035;
+	      eventWeight *= twgt;
+	    }
+	    if (channel == "emumu"){
+	      float twgt = 0.886;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.042;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.042;
+	      eventWeight *= twgt;
+	    }
+	    if (channel == "mumumu"){
+	      float twgt = 0.9871;
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.0242;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.0212;
+	      eventWeight *= twgt;
+	    }
+	    // dilepton stuff, updated for Run2015 MC
+	    if (channel == "ee"){
+	      float twgt = 0.958; // tight=0.953; medium=0.958
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.009;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.009;
+	      eventWeight *= twgt;
+	    }
+	    if (channel == "mumu"){
+	      float twgt = 0.937; // tight=0.937; medium=0.931
+	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
+	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
+	      eventWeight *= twgt;
+	      }
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
@@ -936,9 +993,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << datasetChain->GetFile()->GetName() << std::endl;
 	    cutObj->dumpLooseLepInfo(event);
 	    cutObj->dumpLeptonInfo(event);
-	
 	  }
-	  if ( dataset->isMC() ) eventWeight *= (event->processMCWeight/std::abs(event->processMCWeight));
 	  eventWeight*=datasetWeight;
 	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {

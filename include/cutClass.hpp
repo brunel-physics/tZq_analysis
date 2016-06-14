@@ -44,7 +44,7 @@ class Cuts{
   void dumpToFile(AnalysisEvent * event, int);
 
   //Function to get trigger SF
-  float getTriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
+//  float getTriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
 
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*);
