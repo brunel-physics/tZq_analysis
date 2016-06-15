@@ -381,7 +381,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (std::abs(tempVec.Eta()) >= tightEleEta_)continue;
     if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
-    if (!synchCutFlow_) {
+    if (postLepSelTree_) { //If post-lep tree creation, keep more info
 //        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
         if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
@@ -408,7 +408,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	else continue;
     }
 
-    else if (synchCutFlow_){ // Else do cut-based ID for synchornisation
+    else { // Else do tight cut-based ID
  	// Barrel cut-based ID
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
