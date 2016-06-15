@@ -373,6 +373,7 @@ void TriggerScaleFactors::runMainAnalysis(){
       int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0);
       int triggerMetElectronSelection (0), triggerMetMuonSelection (0);
 
+
       //Does event pass Double EG trigger and the electron selection?
       if ( passDoubleElectronSelection ) triggerDoubleEG 	= ( doubleElectronTriggerCut( event ) );
       if ( passDoubleElectronSelection ) triggerMetDoubleEG 	= ( doubleElectronTriggerCut( event )*metTriggerCut( event ) );
@@ -459,24 +460,24 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (event->elePF2PATPhotonConversionTag[i]) continue;
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0174 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.373 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
       else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0283 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0898 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
       else continue;
@@ -597,16 +598,16 @@ void TriggerScaleFactors::savePlots()
   double muonSF 	= muonEfficiencyData/(muonEfficiencyMC+1.0e-6);
 
   // Calculate alphas
-  double alphaElectron = (numberSelectedElectrons[0]*numberPassedElectrons[0])/(numberTriggeredElectrons[0]+1.0e-6);
-  double electronSystUncert = std::abs(electronSF * (1.0 - alphaElectron ));
-  double alphaMuon = (numberSelectedMuons[0]*numberPassedMuons[0])/(numberTriggeredMuons[0]+1.0e-6);
-  double muonSystUncert = std::abs(muonSF * (1.0 - alphaMuon ));
+  double alphaElectron = ( (numberSelectedElectronsTriggered[0]/numberSelectedElectrons[0])*(numberPassedElectrons[0]/numberSelectedElectrons[0]) )/(numberTriggeredElectrons[0]/numberSelectedElectrons[0]+1.0e-6);
+  double electronSystUncert = (1.0-alphaElectron);
+  double alphaMuon = ( (numberSelectedMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredMuons[0]/numberSelectedMuons[0]+1.0e-6); 
+  double muonSystUncert = (1.0-alphaMuon);
 
   // Save output
 
   std::cout << "electron/muon data efficiencies: " << electronEfficiencyData << " / " << muonEfficiencyData << std::endl;
   std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " / " << muonEfficiencyMC << std::endl;
-  std::cout << "electron/muon trigger SFs: " << electronSF << " +/- " << electronSystUncert << " / " << muonSF << " +/- " << muonSystUncert << std::endl;
+  std::cout << "electron/muon trigger SFs: " << electronSF << " / " << muonSF << std::endl;
 
   TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
   histEfficiencies->Fill(0.5,0.5, electronEfficiencyData);
