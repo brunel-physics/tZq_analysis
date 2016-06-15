@@ -143,6 +143,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 //  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
   electronSFsFile = new TFile{"scaleFactors/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root"}; // Electron cut-based Medium ID
   h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
+  electronRecoFile = new TFile{"scaleFactors/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
+  h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
   std::cout << "Got electron SFs!\n" << std::endl;
 
   std::cout << "Load muon SFs from root file ... " << std::endl;
@@ -171,6 +173,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 Cuts::~Cuts(){
 
   electronSFsFile->Close();
+  electronRecoFile->Close();
   muonIDsFile->Close();
   muonIsoFile->Close();
 
@@ -1632,12 +1635,18 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 float Cuts::eleSF(double pt, double eta){
 
   double maxPt{h_eleSFs->GetYaxis()->GetXmax()};
-  unsigned bin{0};
+  unsigned bin1{0}, bin2{0};
 
   // If cut-based, std::abs eta, else just eta
-  if ( pt <= maxPt ) bin = h_eleSFs->FindBin(std::abs(eta),pt);
-  else bin = h_eleSFs->FindBin(std::abs(eta),maxPt);
-  return h_eleSFs->GetBinContent(bin);
+  if ( pt <= maxPt ){
+    bin1 = h_eleSFs->FindBin(std::abs(eta),pt);
+    bin2 = h_eleReco->FindBin(eta,pt);
+  }
+  else {
+    bin1 = h_eleSFs->FindBin(std::abs(eta),maxPt);
+    bin2 = h_eleReco->FindBin(eta,maxPt);
+  }
+  return h_eleSFs->GetBinContent(bin1)*h_eleReco->GetBinContent(bin2);
 }
 
 float Cuts::muonSF(double pt, double eta){

@@ -212,7 +212,9 @@ class Cuts{
   private:
 
   TFile* electronSFsFile;
+  TFile* electronRecoFile;
   TH2F* h_eleSFs;
+  TH2F* h_eleReco;
   TFile* muonIDsFile;
   TFile* muonIsoFile;  
   TH2F* h_muonIDs;
