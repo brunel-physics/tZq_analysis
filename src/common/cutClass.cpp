@@ -901,10 +901,6 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
   if (!triggerCuts(event)) return false; 
    
-  for ( auto i = 0; i!=event->numMuonPF2PAT; i++ ){
-  topMassEventDump_ << "EvtNb="<< event->eventNum << " mu_pt=" << event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] << " mu_phi=" << event->muonPF2PATPhi[i]<< " mu_iso=" << event->muonPF2PATComRelIsodBeta[i] << std::endl;
-  }
-
   synchCutFlowHist_->Fill(1.5); // Trigger cuts - Step 0
 
   // Check number of leptons is correct
@@ -921,6 +917,10 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
   synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
 
+//  for ( int i = 0; i != event->numMuonPF2PAT; i++ ) {
+//    topMassEventDump_ << "EvtNb="<< event->eventNum << "mu_pt=" << event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] << " mu_phi=" << event->muonPF2PATPhi[i] << " mu_iso=" << event->muonPF2PATComRelIsodBeta[i] << std::endl;
+//  }
+
   //loose lepton veto
   //  int looseLeps = getLooseLepsNum(event);
   //  if (isMC_ && looseLeps < 2) return false;
@@ -930,6 +930,8 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
   if ( makeEventDump_ ) dumpToFile(event,2);
   synchCutFlowHist_->Fill(3.5); // Lepton Veto - step 2
+  
+//  topMassEventDump_ << "EvtNb="<< event->eventNum << " wLep_pt=" << event->wLepton.Pt() <<" wLep_eta=" << event->wLepton.Eta() << " wLep_phi=" << event->wLepton.Phi() << " wLep_iso=" << event->wLeptonRelIso << std::endl;
 
   // Z selection
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
@@ -968,11 +970,6 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   // Top Mass cut
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
   double topMass (getTopMass(event));
-
-  if (event->bTagIndex.size() == 1) {
-    topMassEventDump_.precision(6);
-//    topMassEventDump_ << "EvtNb="<< event->eventNum << " Bjet_pt=" << event->jetPF2PATPt[ getLeadingBjet( event ) ] <<" Bjet_px=" << event->jetPF2PATPx	[ getLeadingBjet( event ) ] << " Bjet_py=" << event->jetPF2PATPy [ getLeadingBjet( event ) ] << " Bjet_pz=" << event->jetPF2PATPz [ getLeadingBjet( event ) ] << " Bjet_Energy=" << event->jetPF2PATE [ getLeadingBjet( event ) ] << " Wlep_pt=" << event->wLepton.Pt() <<" Wlep_px=" << event->wLepton.Px() << " Wlep_py=" << event->wLepton.Py() << " Wlep_pz=" << event->wLepton.Pz() << " Wlep_Energy=" << event->wLepton.E() << " met_Pt=" << event->metPF2PATPt <<" met_px=" << event->metPF2PATPx << " met_py=" << event->metPF2PATPy << " met_pz()=" << event->metPF2PATPz << " met_Energy=" << event->metPF2PATEt << " topmass= " <<  topMass << std::endl;
-  }
 
   if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
@@ -1091,7 +1088,7 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::st
   if (invIsoEle.size() == 1){
     event->wLepton = TLorentzVector(event->elePF2PATGsfPx[invIsoEle[0]],event->elePF2PATGsfPy[invIsoEle[0]],event->elePF2PATGsfPz[invIsoEle[0]],event->elePF2PATGsfE[invIsoEle[0]]);
     event->wLepIndex = invIsoEle[0];
-    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[invIsoEle[0]]/event->wLepton.Pt();;
+    event->wLeptonRelIso = event->elePF2PATComRelIsoRho[invIsoEle[0]];
   }
   else{
     event->wLepton = TLorentzVector(event->muonPF2PATPX[invIsoMus[0]],event->muonPF2PATPY[invIsoMus[0]],event->muonPF2PATPZ[invIsoMus[0]],event->muonPF2PATE[invIsoMus[0]]);
