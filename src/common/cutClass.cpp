@@ -140,8 +140,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   std::cout << "\nLoad electron SFs from root file ... " << std::endl;
 //  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root"); // Electron triggering MVA ID
-//  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
-  electronSFsFile = new TFile{"scaleFactors/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root"}; // Electron cut-based Medium ID
+  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
+//  electronSFsFile = new TFile{"scaleFactors/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root"}; // Electron cut-based Medium ID
   h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
   electronRecoFile = new TFile{"scaleFactors/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
   h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
