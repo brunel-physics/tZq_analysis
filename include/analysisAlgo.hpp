@@ -2,10 +2,6 @@
 #define _analysisAlgo_hpp_
 
 #include <vector>
-#include "TH1.h"
-#include "TH2.h"
-#include "TCanvas.h"
-#include "TPad.h"
 
 #include "cutClass.hpp"
 #include "histogramPlotter.hpp"
@@ -15,6 +11,8 @@
 #include <LHAPDF/LHAPDF.h>
 
 #include <map>
+
+class TH1F;
 
 class AnalysisAlgo{
 

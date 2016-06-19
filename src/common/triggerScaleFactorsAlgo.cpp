@@ -12,6 +12,9 @@
 #include <sstream>
 #include <sys/stat.h>
 
+#include "TTree.h"
+#include "TFile.h"
+
 TriggerScaleFactors::TriggerScaleFactors():
   config(""),
   plots(false),

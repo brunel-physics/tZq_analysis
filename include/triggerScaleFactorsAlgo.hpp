@@ -15,6 +15,8 @@
 #include <map>
 
 class AnalysisEvent;
+class TTree;
+class TFile;
 
 class TriggerScaleFactors{
 

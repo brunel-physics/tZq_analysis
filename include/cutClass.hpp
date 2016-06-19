@@ -5,11 +5,14 @@
 #include <vector>
 #include <map>
 #include "plots.hpp"
-#include "TH2.h"
 #include <fstream>
 #include "TLorentzVector.h"
 
 #include "BTagCalibrationStandalone.hpp"
+
+class TH1F;
+class TH2F;
+class TH2D;
 
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*, int);

@@ -1,5 +1,10 @@
 #include "TTree.h"
 #include "TMVA/Timer.h"
+#include "TCanvas.h"
+#include "TPad.h"
+#include "TH1F.h"
+#include "TH1I.h"
+#include "TH2D.h"
 
 #include "analysisAlgo.hpp"
 #include "config_parser.hpp"
@@ -822,7 +827,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  datasetFileForHists->Close();
 	}
         else {
-//	  generatorWeightPlot = dynamic_cast<TH1I*>(("sumNumPosMinusNegWeights")->Clone());
+//	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetChainPlots->FindObject("sumNumPosMinusNegWeights")->Clone());
 	}
       }
 

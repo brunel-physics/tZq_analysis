@@ -2,7 +2,9 @@
 #define _dataset_hpp_
 
 #include <string>
-#include "TChain.h"
+
+class TChain;
+class TH1I;
 
 //class to hold information about the dataset. This will be extracted during config parsing.
 class Dataset{
@@ -34,6 +36,7 @@ class Dataset{
   float getEventWeight();
   std::string getTriggerFlag(){return triggerFlag_;}
   long long getTotalEvents(){return totalEvents_;} // Function to return total number of events
+  TH1I* getGeneratorWeightHistogram( int nFiles );
 };
 
 #endif

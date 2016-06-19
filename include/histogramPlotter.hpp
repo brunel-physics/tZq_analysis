@@ -1,13 +1,14 @@
 #ifndef _histogramPlotter_hpp_
 #define _histogramPlotter_hpp_
 
-#include "TH1.h"
 #include <vector>
 #include <map>
 #include <string>
-#include "plots.hpp"
-#include "TColor.h"
 #include "TPaveText.h"
+
+#include "plots.hpp"
+
+class TH1F;
 
 typedef struct datasetInfo datasetInfo;
 

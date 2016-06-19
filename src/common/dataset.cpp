@@ -2,6 +2,10 @@
 #include <fstream>
 #include <iostream>
 
+#include "TFile.h"
+#include "TChain.h"
+#include "TH1.h"
+
 Dataset::Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName, long long totalEvents, int colourInt, std::string plotLabel, std::string plotType, std::string triggerFlag){
   name_ = name;
   lumi_ = lumi;
@@ -49,4 +53,34 @@ float Dataset::getDatasetWeight(double lumi){
 float Dataset::getEventWeight(){
   return 1.;
   
+}
+
+//Function that constructs a histogram of all the generator level weights from across the entire dataset
+TH1I* Dataset::getGeneratorWeightHistogram( int nFiles ){
+  std::cerr <<  fileList_ << "\n";
+  std::ifstream fileList(fileList_);
+
+  TH1I* generatorWeightPlot{nullptr};
+
+  if (!fileList.is_open()){
+    std::cerr << "Couldn't read file list for " << name_ <<  std::endl;
+    return generatorWeightPlot;
+  }
+  std::string line;
+  int files{0};
+  bool firstFile{true};
+  while(getline(fileList,line)){
+    TFile* tempFile {new TFile {line.c_str(), "READ"} };
+    if (firstFile){ 
+	generatorWeightPlot = dynamic_cast<TH1I*>( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights")->Clone() );
+	firstFile = false;
+    }
+    else generatorWeightPlot->Add( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights") );
+    if (nFiles > 0) {
+      files ++;
+      if (files > nFiles) break;
+    }
+  }
+  return generatorWeightPlot;
+
 }

@@ -5,6 +5,9 @@
 #include "THStack.h"
 #include "TLegend.h"
 #include "TMath.h"
+#include "TColor.h"
+#include "TH1F.h"
+
 #include <sys/stat.h>
 
 //For debugging. *sigh*

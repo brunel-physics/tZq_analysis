@@ -2,12 +2,13 @@
 #define _plots_hpp_
 
 #include <string>
-#include "TH1.h"
 #include "AnalysisEvent.hpp"
 #include <map>
 #include <vector>
 
 typedef struct plot plot;
+
+class TH1F;
 
 class Plots{
 

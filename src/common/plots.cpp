@@ -5,6 +5,8 @@
 #include <boost/numeric/conversion/cast.hpp> 
 #include "TLorentzVector.h"
 
+#include "TH1F.h"
+
 Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned thisCutStage, std::string postfixName, const bool trileptonChannel):
 
   trileptonChannel_{trileptonChannel}

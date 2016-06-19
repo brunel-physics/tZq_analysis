@@ -10,6 +10,10 @@
 #include <fstream>
 #include <random>
 
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TH2D.h"
+
 #include <libconfig.h++>
 
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC, const bool isCtag ):
