@@ -822,7 +822,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  datasetFileForHists->Close();
 	}
         else {
-	  generatorWeightPlot = dynamic_cast<TH1I*>(("sumNumPosMinusNegWeights")->Clone());
+//	  generatorWeightPlot = dynamic_cast<TH1I*>(("sumNumPosMinusNegWeights")->Clone());
 	}
       }
 
