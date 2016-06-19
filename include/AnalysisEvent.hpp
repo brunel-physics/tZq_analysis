@@ -292,12 +292,14 @@ public :
    Float_t                mhtSignif;
    Int_t                  nTriggerBits;
    Int_t                  TriggerBits[1];   //[nTriggerBits]
-   Double_t	              weight_muF0p5;
-   Double_t	              weight_muF2;
-   Double_t	              weight_muR0p5;
-   Double_t	              weight_muR2;
-   Double_t	              origWeightForNorm;
-   // Int_t                  numVert;
+   Double_t	          weight_muF0p5;
+   Double_t	          weight_muF2;
+   Double_t	          weight_muR0p5;
+   Double_t	          weight_muR2;
+   Double_t	   	  weight_muF0p5muR0p5;
+   Double_t	   	  weight_muF2muR2;
+   Double_t	          origWeightForNorm;
+   // Int_t               numVert;
 
    //2015 Data Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2;
@@ -324,6 +326,15 @@ public :
    Int_t           HLT_PFHT800_v2;
    Int_t           HLT_MET250_v1;
    Int_t           HLT_PFHT750_4JetPt50_v3;
+
+   //MET Filters
+   Int_t	   Flag_HBHENoiseFilter;
+   Int_t	   Flag_HBHENoiseIsoFilter;
+   Int_t	   Flag_CSCTightHalo2015Filter;
+   Int_t	   Flag_EcalDeadCellTriggerPrimitiveFilter;
+   Int_t	   Flag_goodVertices;
+   Int_t	   Flag_eeBadScFilter;
+
 
    //Gen info
    Int_t           nGenPar;
@@ -606,6 +617,8 @@ public :
    TBranch	  *b_weight_muF2;   //!
    TBranch	  *b_weight_muR0p5;   //!
    TBranch	  *b_weight_muR2;   //!
+   TBranch	  *b_weight_muF0p5muR0p5;   //!
+   TBranch	  *b_weight_muF2muR2;   //!
    TBranch	  *b_origWeightForNorm;   //!
    //   TBranch        *b_numVert;    //!
    TBranch        *b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2;
@@ -628,6 +641,12 @@ public :
    TBranch        *b_HLT_PFHT800_v2;
    TBranch        *b_HLT_MET250_v1;
    TBranch        *b_HLT_PFHT750_4JetPt50_v3;
+   TBranch	  *b_Flag_HBHENoiseFilter;
+   TBranch	  *b_Flag_HBHENoiseIsoFilter;
+   TBranch	  *b_Flag_CSCTightHalo2015Filter;
+   TBranch	  *b_Flag_EcalDeadCellTriggerPrimitiveFilter;
+   TBranch	  *b_Flag_goodVertices;
+   TBranch	  *b_Flag_eeBadScFilter;
    TBranch        *b_nGenPar;   //!
    TBranch        *b_genParEta;   //!
    TBranch        *b_genParPhi;   //!
@@ -1025,6 +1044,8 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool h
      fChain->SetBranchAddress("weight_muF2", &weight_muF2, &b_weight_muF2);
      fChain->SetBranchAddress("weight_muR0p5", &weight_muR0p5, &b_weight_muR0p5);
      fChain->SetBranchAddress("weight_muR2", &weight_muR2, &b_weight_muR2);
+     fChain->SetBranchAddress("weight_muF0p5muR0p5", &weight_muF0p5muR0p5, &b_weight_muF0p5muR0p5);
+     fChain->SetBranchAddress("weight_muF2muR2", &weight_muF2muR2, &b_weight_muF2muR2);
      fChain->SetBranchAddress("origWeightForNorm", &origWeightForNorm, &b_origWeightForNorm);
    }
    //Data trigger branches
@@ -1051,6 +1072,13 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool h
    fChain->SetBranchAddress("HLT_MET250_v1", &HLT_MET250_v1, &b_HLT_MET250_v1);
    fChain->SetBranchAddress("HLT_PFHT750_4JetPt50_v3", &HLT_PFHT750_4JetPt50_v3, &b_HLT_PFHT750_4JetPt50_v3);
    }
+   //MET filter branches
+   fChain->SetBranchAddress("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter, &b_Flag_HBHENoiseFilter);
+   fChain->SetBranchAddress("Flag_HBHENoiseIsoFilter", &Flag_HBHENoiseIsoFilter, &b_Flag_HBHENoiseIsoFilter);
+   fChain->SetBranchAddress("Flag_CSCTightHalo2015Filter", &Flag_CSCTightHalo2015Filter, &b_Flag_CSCTightHalo2015Filter);
+   fChain->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter", &Flag_EcalDeadCellTriggerPrimitiveFilter, &b_Flag_EcalDeadCellTriggerPrimitiveFilter);
+   fChain->SetBranchAddress("Flag_goodVertices", &Flag_goodVertices, &b_Flag_goodVertices);
+   fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
    if (isMC) {
      fChain->SetBranchAddress("nGenPar", &nGenPar, &b_nGenPar);
      fChain->SetBranchAddress("genParEta", genParEta, &b_genParEta);
