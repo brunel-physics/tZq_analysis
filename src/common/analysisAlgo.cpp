@@ -815,7 +815,7 @@ void AnalysisAlgo::runMainAnalysis(){
       }
 
       //Here we will initialise the generator level weight histograms
-      TH1I* generatorWeightPlot;
+      TH1I* generatorWeightPlot {nullptr};
       if ( dataset->isMC() ) {
 	if ( usePostLepTree ) { // If using post-lep skims
 	  std::string inputPostfix{};
@@ -827,7 +827,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  datasetFileForHists->Close();
 	}
         else {
-//	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetChainPlots->FindObject("sumNumPosMinusNegWeights")->Clone());
+  	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone()); 
 	}
       }
 

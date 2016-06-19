@@ -57,7 +57,7 @@ float Dataset::getEventWeight(){
 
 //Function that constructs a histogram of all the generator level weights from across the entire dataset
 TH1I* Dataset::getGeneratorWeightHistogram( int nFiles ){
-  std::cerr <<  fileList_ << "\n";
+//  std::cerr <<  fileList_ << "\n";
   std::ifstream fileList(fileList_);
 
   TH1I* generatorWeightPlot{nullptr};
