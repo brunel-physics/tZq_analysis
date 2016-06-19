@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-Dataset::Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName, long totalEvents, int colourInt, std::string plotLabel, std::string plotType, std::string triggerFlag){
+Dataset::Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName, long long totalEvents, int colourInt, std::string plotLabel, std::string plotType, std::string triggerFlag){
   name_ = name;
   lumi_ = lumi;
   isMC_ = isMC;

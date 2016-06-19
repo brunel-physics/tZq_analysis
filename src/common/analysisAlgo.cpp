@@ -758,7 +758,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       }
       else{
-    std::string inputPostfix{};
+        std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	std::cout << "skims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
@@ -793,7 +793,7 @@ void AnalysisAlgo::runMainAnalysis(){
       }//end btag eff plots.
       if (usePostLepTree && usebTagWeight && dataset->isMC()){
 	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
-    std::string inputPostfix{};
+        std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
@@ -807,6 +807,23 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	cutObj->setBTagPlots(bTagEffPlots,false);
 	datasetFileForHists->Close();
+      }
+
+      //Here we will initialise the generator level weight histograms
+      TH1I* generatorWeightPlot;
+      if ( dataset->isMC() ) {
+	if ( usePostLepTree ) { // If using post-lep skims
+	  std::string inputPostfix{};
+	  inputPostfix += postfix;
+	  inputPostfix += invertIsoCut?"invIso":"";
+	  TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
+	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
+	  generatorWeightPlot->SetDirectory(nullptr);
+	  datasetFileForHists->Close();
+	}
+        else {
+	  generatorWeightPlot = dynamic_cast<TH1I*>(("sumNumPosMinusNegWeights")->Clone());
+	}
       }
 
       //extract the dataset weight.
@@ -897,16 +914,14 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents{0};
-
-/*      //If event is amc@nlo, need to sum number of positive and negative weights first.
-      event->GetEntry(0);
-      event->sumPositiveWeights = 0;
-      event->sumNegativeWeights = 0;
-      if ( dataset->isMC() && event->processMCWeight != 1.0 ) {
-	for (int i{0}; i < numberOfEvents; i++) {
-	  event->GetEntry(i);
-	  if ( event->processMCWeight >= 0.0 ) event->sumPositiveWeights++;
-	  else event->sumNegativeWeights++;
+/*
+      //If event is amc@nlo, need to sum number of positive and negative weights first.
+      if ( dataset->isMC() ) {
+	// Load in plots
+       if ()
+        sumPositiveWeights_ = datasetChain->getTotalEvents();
+        sumNegativeWeights_ = 0;
+	if ( sumNegativeWeights_ <= 0) continue; // If no LHE files or not amc@nlo sample, don't bother with the following
 	}
       }
 */
@@ -930,10 +945,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  eventWeight = 1;
 	  //apply generator weights here.
-//	  double generatorWeight{1.0};
-//	  if ( dataset->isMC() && event->sumPositiveWeights != 0 && event->sumNegativeWeights != 0 ){
-//	    generatorWeight = (event->sumPositiveWeights + event->sumNegativeWeights)/(event->sumPositiveWeights - event->sumNegativeWeights) * std::abs(event->processMCWeight);
-//	  }
+	  double generatorWeight{1.0};/*
+	  if ( dataset->isMC() && sumPositiveWeights != 0 && event->sumNegativeWeights != 0 ){
+	    generatorWeight = (event->sumPositiveWeights + event->sumNegativeWeights)/(event->sumPositiveWeights - event->sumNegativeWeights) * (event->processMCWeight);
+	    //	  }*/
 //	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
@@ -968,7 +983,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }
 	    // dilepton stuff, updated for Run2015 MC
 	    if (channel == "ee"){
-	      float twgt = 0.958; // tight=0.953; medium=0.958
+	      float twgt = 0.953; // tight=0.953; medium=0.958
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.009;
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.009;
 	      eventWeight *= twgt;
@@ -1080,12 +1095,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
 	std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
 	cloneTree->Write();
+	//Write out mc generator level info
+	if ( dataset->isMC() ) generatorWeightPlot->Write();
 	//If we're doing b-tag efficiencies, let's save them here.
 	if (makeBTagEffPlots){
 	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
+	
         delete cloneTree;
         cloneTree = nullptr;
 	outFile1->Write();

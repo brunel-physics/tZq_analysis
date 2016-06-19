@@ -13,14 +13,14 @@ class Dataset{
   std::string fillName_;
   std::string treeName_;
   std::string fileList_;
-  long totalEvents_;
+  long long totalEvents_;
   int colour_;
   std::string plotLabel_;
   std::string plotType_;
   std::string triggerFlag_;
  
  public:
-  Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName,long,int,std::string,std::string,std::string);
+  Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName,long long,int,std::string,std::string,std::string);
   std::string name(){return name_;}
   float lumi(){return lumi_;}
   bool isMC(){return isMC_;}
@@ -33,6 +33,7 @@ class Dataset{
   float getDatasetWeight(double);
   float getEventWeight();
   std::string getTriggerFlag(){return triggerFlag_;}
+  long long getTotalEvents(){return totalEvents_;} // Function to return total number of events
 };
 
 #endif
