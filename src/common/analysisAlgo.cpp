@@ -919,17 +919,23 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents{0};
-/*
+
       //If event is amc@nlo, need to sum number of positive and negative weights first.
       if ( dataset->isMC() ) {
 	// Load in plots
-       if ()
-        sumPositiveWeights_ = datasetChain->getTotalEvents();
-        sumNegativeWeights_ = 0;
+        sumPositiveWeights_ = dataset->getTotalEvents();
+        sumNegativeWeights_ = generatorWeightPlot->GetBinContent(0);
+        sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(3);
+        sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(-3);
+	// Systematic Scale up
+	// Systematic Scale down
 	if ( sumNegativeWeights_ <= 0) continue; // If no LHE files or not amc@nlo sample, don't bother with the following
+	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
+	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
+	  exit(999);
 	}
       }
-*/
+
       TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
       lEventTimer->DrawProgressBar(0, "");
       for (int i{0}; i < numberOfEvents; i++) {
@@ -950,11 +956,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  eventWeight = 1;
 	  //apply generator weights here.
-	  double generatorWeight{1.0};/*
-	  if ( dataset->isMC() && sumPositiveWeights != 0 && event->sumNegativeWeights != 0 ){
-	    generatorWeight = (event->sumPositiveWeights + event->sumNegativeWeights)/(event->sumPositiveWeights - event->sumNegativeWeights) * (event->processMCWeight);
-	    //	  }*/
-//	  eventWeight *= generatorWeight;
+	  double generatorWeight{1.0};
+	  if ( dataset->isMC() && sumPositiveWeights_ != 0 ){
+	    generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
+	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
+	    if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
+	  }
+	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
 	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
 	    double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
