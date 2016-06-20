@@ -1143,7 +1143,7 @@ void AnalysisAlgo::runMainAnalysis(){
       }
     
       //Save mva outputs
-      if (makeMVATree){
+      if (makeMVATree) {
 	std::cout << (mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root") << std::endl;
 	mvaOutFile->cd();
 	std::cout << std::endl;
@@ -1181,6 +1181,7 @@ void AnalysisAlgo::runMainAnalysis(){
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
       //Delete generator level plot. Avoid memory leaks, kids.
       delete generatorWeightPlot;
+      generatorWeightPlot = nullptr;
       //Delete plots from out btag vector. Avoid memory leaks, kids.
       if (makeBTagEffPlots){
         for (unsigned i{0}; i < bTagEffPlots.size(); i++){

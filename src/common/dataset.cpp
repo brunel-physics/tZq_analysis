@@ -66,16 +66,22 @@ TH1I* Dataset::getGeneratorWeightHistogram( int nFiles ){
     std::cerr << "Couldn't read file list for " << name_ <<  std::endl;
     return generatorWeightPlot;
   }
+
   std::string line;
   int files{0};
   bool firstFile{true};
-  while(getline(fileList,line)){
+
+  while(getline(fileList,line)) {
     TFile* tempFile {new TFile {line.c_str(), "READ"} };
-    if (firstFile){ 
-	generatorWeightPlot = dynamic_cast<TH1I*>( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights")->Clone() );
-	firstFile = false;
+    if (firstFile){
+      generatorWeightPlot = dynamic_cast<TH1I*>( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights")->Clone() );
+      firstFile = false;
     }
-    else generatorWeightPlot->Add( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights") );
+    else {
+      generatorWeightPlot->Add( (TH1I*)tempFile->Get("sumNumPosMinusNegWeights") );
+      tempFile->Close();
+      delete tempFile;
+    }
     if (nFiles > 0) {
       files ++;
       if (files > nFiles) break;
