@@ -131,9 +131,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
-    synchCutFlowHist_ = new TH1F{"synchCutFlow","synchCutFlow",10,0,10};
-    synchNumEles_ = new TH1I{"synchNumEles","synchNumEles",10,0,10};
-    synchNumMus_ = new TH1I{"synchNumMuos","synchNumMuos",10,0,10};
+    synchCutFlowHist_ = new TH1F{"synchCutFlow","synchCutFlow",11,0,11};
+    synchNumEles_ = new TH1I{"synchNumEles","synchNumEles",11,0,11};
+    synchNumMus_ = new TH1I{"synchNumMuos","synchNumMuos",11,0,11};
     synchMuonCutFlow_ = new TH1I{"synchMuonCutFlow","synchMuonCutFlow",11,0,11};
     synchCutTopMassHist_ = new TH1F{"synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.};
   }
@@ -283,6 +283,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //  if (!isMC_) if (!triggerCuts(event)) return false;
   if (!triggerCuts(event)) return false;
+  if (!metFilters(event)) return false;
 
   //Make lepton cuts. Does the inverted iso cuts if necessary.
   if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
@@ -889,6 +890,12 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
   return false;
 }
 
+// Does event pass MET Filter
+bool Cuts::metFilters(AnalysisEvent* event){
+  if ( event->Flag_HBHENoiseFilter > 0 && event->Flag_HBHENoiseIsoFilter > 0 && event->Flag_CSCTightHalo2015Filter && event->Flag_EcalDeadCellTriggerPrimitiveFilter > 0 && event->Flag_goodVertices > 0 && event->Flag_eeBadScFilter > 0 ) return true;
+  else return false;
+}
+
 //Does the cuts required for the synchronisation.
 bool Cuts::synchCuts(AnalysisEvent* event){
   //Trigger stuff would go first, but in MC at least (what I'm starting with) I don't have that saved. Idiot.
@@ -981,6 +988,9 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
   synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
 
+  if (!metFilters(event)) return false;
+  synchCutFlowHist_->Fill(10.5);
+
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_) dumpToFile(event,6);
   if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
@@ -989,13 +999,13 @@ bool Cuts::synchCuts(AnalysisEvent* event){
 
 TH1F* Cuts::getSynchCutFlow(){
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
-  char const *names[] {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass"};
-  for (unsigned i{1}; i < 11; ++i){
+  char const *names[] {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass", "metFilters"};
+  for (unsigned i{1}; i < 12; ++i){
     std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
   }
   std::cout << "The number of leptons in the passing trigger events:" << std::endl;
   std::cout << "Leps\tEle\tMuon" << std::endl;
-  for (unsigned i{0}; i < 10; i++){
+  for (unsigned i{0}; i < 12; i++){
     std::cout << i << "\t" << synchNumEles_->GetBinContent(i) << "\t" << synchNumMus_->GetBinContent(i) << std::endl;
   }
   char const *labels[] = {"In", "ID", "PtEtaIso", "chi2","tklay","DBPV","TrackHit","MuHits","PixHits","MtStats","DZPV"};

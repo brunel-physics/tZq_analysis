@@ -923,7 +923,7 @@ void AnalysisAlgo::runMainAnalysis(){
       int foundEvents{0};
 
       //If event is amc@nlo, need to sum number of positive and negative weights first.
-      if ( dataset->isMC() ) {
+      if ( dataset->isMC() && !synchCutFlow ) {
 	// Load in plots
         sumPositiveWeights_ = dataset->getTotalEvents();
         sumNegativeWeights_ = generatorWeightPlot->GetBinContent(0);
@@ -959,7 +959,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  eventWeight = 1;
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && event->origWeightForNorm != 999.0 ){
+	  if ( dataset->isMC() && event->origWeightForNorm != 999.0 && !synchCutFlow ){
 	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleUp_)/(sumPositiveWeights_ - sumNegativeWeightsScaleUp_) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleDown_)/(sumPositiveWeights_ - sumNegativeWeightsScaleDown_) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
 	    else generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
