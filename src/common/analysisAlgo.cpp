@@ -6,6 +6,7 @@
 #include "AnalysisEvent.hpp"
 
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/filesystem.hpp>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -858,9 +859,10 @@ void AnalysisAlgo::runMainAnalysis(){
       //Now add in the branches:
     
       if (makeMVATree){
+        boost::filesystem::create_directory(mvaDir);
         mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
         if (!mvaOutFile->IsOpen()) {
-          throw std::runtime_error("TFile could not be opened! Make sure the directory exists!");
+          throw std::runtime_error("MVA Tree TFile could not be opened!");
         }
         int systMask{1};
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
