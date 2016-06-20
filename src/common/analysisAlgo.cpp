@@ -927,10 +927,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	// Load in plots
         sumPositiveWeights_ = dataset->getTotalEvents();
         sumNegativeWeights_ = generatorWeightPlot->GetBinContent(0);
-        sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(3);
-        sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(-3);
-	// Systematic Scale up
-	// Systematic Scale down
+        sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(3);	// Systematic Scale up
+        sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(-3);	// Systematic Scale down
 	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
 	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
 	  exit(999);
@@ -1181,12 +1179,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       }
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
+      //Delete generator level plot. Avoid memory leaks, kids.
+      delete generatorWeightPlot;
       //Delete plots from out btag vector. Avoid memory leaks, kids.
       if (makeBTagEffPlots){
         for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	  delete bTagEffPlots[i];
 	}
       }
+      
       //datasetChain->MakeClass("AnalysisEvent");
     } // end channel loop.
     delete datasetChain;
