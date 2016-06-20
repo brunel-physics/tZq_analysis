@@ -569,6 +569,8 @@ void AnalysisAlgo::setupSystematics()
   systNames.emplace_back("__bTag__minus");
   systNames.emplace_back("__pdf__plus");
   systNames.emplace_back("__pdf__minus");
+  systNames.emplace_back("__ME_PS__plus");
+  systNames.emplace_back("__ME_PS__minus");
 
   //Make pileupReweighting stuff here
   dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};
@@ -957,10 +959,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	  eventWeight = 1;
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && sumPositiveWeights_ != 0 ){
-	    generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
-	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
-	    if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * (event->origWeightForNorm);
+	  if ( dataset->isMC() && event->origWeightForNorm != 999.0 ){
+	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleUp_)/(sumPositiveWeights_ - sumNegativeWeightsScaleUp_) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
+	    else if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleDown_)/(sumPositiveWeights_ - sumNegativeWeightsScaleDown_) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
+	    else generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
 	  }
 	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
