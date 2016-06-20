@@ -931,7 +931,6 @@ void AnalysisAlgo::runMainAnalysis(){
         sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(-3);
 	// Systematic Scale up
 	// Systematic Scale down
-	if ( sumNegativeWeights_ <= 0) continue; // If no LHE files or not amc@nlo sample, don't bother with the following
 	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
 	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
 	  exit(999);
