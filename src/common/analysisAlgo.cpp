@@ -859,6 +859,9 @@ void AnalysisAlgo::runMainAnalysis(){
     
       if (makeMVATree){
         mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
+        if (!mvaOutFile->IsOpen()) {
+          throw std::runtime_error("TFile could not be opened! Make sure the directory exists!");
+        }
         int systMask{1};
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
 	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
