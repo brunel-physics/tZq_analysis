@@ -10,7 +10,7 @@ EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-L/scratch/shared/lib \
-		-L/usr/lib64/include/boost \
+		-L/usr/lib64/boost148 \
 		-Llib \
 
 LIBRARIES = 	$(shell root-config --libs) \
@@ -18,6 +18,8 @@ LIBRARIES = 	$(shell root-config --libs) \
 		-lTMVA  \
 		-lconfig++ \
 		-lz \
+		-lboost_system-mt \
+		-lboost_filesystem-mt \
 
 INCLUDE_PATH = 	-Iinclude  \
 		-isystem/scratch/shared/include \
