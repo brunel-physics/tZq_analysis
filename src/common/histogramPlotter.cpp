@@ -9,6 +9,7 @@
 #include "TH1F.h"
 
 #include <sys/stat.h>
+#include <boost/filesystem.hpp>
 
 //For debugging. *sigh*
 #include <iostream>
@@ -212,7 +213,7 @@ void HistogramPlotter::setLabelTextSize(float size){
 void HistogramPlotter::setOutputFolder(std::string output){
   outputFolder_ = output;
 
-  mkdir(outputFolder_.c_str(),0700);
+  boost::filesystem::create_directory(outputFolder_.c_str());
 
 }
 
