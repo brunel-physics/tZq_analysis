@@ -13,9 +13,9 @@ fileName = configs/datasets/fileLists/tHqFiles.txt
 totalEvents = 3498596
 crossSection = 0.07096
 runType = mc
-histoName = tHq
-colour = kRed2
-label = tHq
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [ttW]
@@ -23,9 +23,9 @@ fileName = configs/datasets/fileLists/ttWFiles.txt
 totalEvents = 250307
 crossSection = 0.2043
 runType = mc
-histoName = ttW
-colour = kGreen - 4
-label = ttW
+histoName = ttV
+colour = kGreen
+label = ttV
 plotType = f
 
 [ttZ]
@@ -33,9 +33,9 @@ fileName = configs/datasets/fileLists/ttZFiles.txt
 totalEvents = 394200
 crossSection = 0.2529
 runType = mc
-histoName = ttZ
+histoName = ttV
 colour = kGreen
-label = ttZ
+label = ttV
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -53,9 +53,9 @@ fileName = configs/datasets/fileLists/sChannelFiles.txt
 totalEvents = 998400
 crossSection = 10.32
 runType = mc
-histoName = sChannel
-colour = kTeal
-label = s-channel
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [tChannel]
@@ -63,9 +63,9 @@ fileName = configs/datasets/fileLists/tChannelFiles.txt
 totalEvents = 3299200
 crossSection = 137.60
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = Single Top
 plotType = f
 
 [tbarChannel]
@@ -73,9 +73,9 @@ fileName = configs/datasets/fileLists/tbarChannelFiles.txt
 totalEvents = 1630900
 crossSection = 82.6669
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = Single Top
 plotType = f
 
 [tWInclusive]
@@ -83,9 +83,9 @@ fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 1000000
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [tbarWInclusive]
@@ -93,9 +93,9 @@ fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 999400
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [WZ1l1nu2q]
@@ -163,7 +163,7 @@ totalEvents = 8920400
 crossSection = 49.997
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -173,7 +173,7 @@ totalEvents = 1979988
 crossSection = 12.178
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -183,7 +183,7 @@ runType = mc
 totalEvents = 262341358
 crossSection = 61526.7
 histoName = wJets
-colour = kSpring
+colour = kGray
 label = w+jets
 plotType = f
 
@@ -199,7 +199,7 @@ plotType = f
 
 [DYJetsToLL_MM-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 169346620 
+totalEvents = 169346620
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
@@ -207,4 +207,25 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
+[mumuRun2015C]
+fileName = configs/datasets/fileLists/mumuRun2015CFiles.txt
+luminosity = 17.227
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = mCt
+
+[mumuRun2015D]
+fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
+luminosity = 2186.175
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = mCt
+
 []
+
