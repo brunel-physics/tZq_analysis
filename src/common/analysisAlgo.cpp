@@ -769,12 +769,12 @@ void AnalysisAlgo::runMainAnalysis(){
         std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
-	std::cout << "skims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-	datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-	std::ifstream secondTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-	if (secondTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	std::ifstream thirdTree{"skims/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-	if (thirdTree.good()) datasetChain->Add(("skims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+	std::cout << "/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+	datasetChain->Add(("/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+	std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+	if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+	std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+	if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
       }
       cutObj->setMC(dataset->isMC());
       cutObj->setEventInfoFlag(readEventList);
@@ -804,7 +804,7 @@ void AnalysisAlgo::runMainAnalysis(){
         std::string inputPostfix{};
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
-	TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
+	TFile * datasetFileForHists{new TFile{("/scratch/data/TopPhysics/miniSkims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
 	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
 	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
 	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
@@ -824,7 +824,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  std::string inputPostfix{};
 	  inputPostfix += postfix;
 	  inputPostfix += invertIsoCut?"invIso":"";
-	  TFile * datasetFileForHists{new TFile{("skims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
+	  TFile * datasetFileForHists{new TFile{("/scratch/data/TopPhysics/miniSkims/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ"}};
 	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	  datasetFileForHists->Close();
@@ -857,9 +857,9 @@ void AnalysisAlgo::runMainAnalysis(){
       TTree * cloneTree3{nullptr};
 
       if (makePostLepTree){
-	outFile1 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
-	outFile2 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
-	outFile3 = new TFile{("skims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
+	outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
+	outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
+	outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree->SetDirectory(outFile1);
 	cloneTree2 = datasetChain->CloneTree(0);
@@ -931,9 +931,10 @@ void AnalysisAlgo::runMainAnalysis(){
       if ( dataset->isMC() && !synchCutFlow ) {
 	// Load in plots
         sumPositiveWeights_ = dataset->getTotalEvents();
-        sumNegativeWeights_ = generatorWeightPlot->GetBinContent(0);
-        sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(3);	// Systematic Scale up
-        sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(-3);	// Systematic Scale down
+        sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
+        sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(7);	// Systematic Scale up
+        sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
+	std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "/" << sumNegativeWeightsScaleUp_ <<"/" << sumNegativeWeightsScaleDown_ << std::endl;
 	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
 	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
 	  exit(999);
@@ -964,7 +965,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( dataset->isMC() && event->origWeightForNorm != 999.0 && !synchCutFlow ){
 	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleUp_)/(sumPositiveWeights_ - sumNegativeWeightsScaleUp_) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleDown_)/(sumPositiveWeights_ - sumNegativeWeightsScaleDown_) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
-	    else generatorWeight = (sumPositiveWeights_ + sumNegativeWeights_)/(sumPositiveWeights_ - sumNegativeWeights_) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
+	else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
 	  }
 	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
@@ -1026,7 +1027,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    cutObj->dumpLooseLepInfo(event);
 	    cutObj->dumpLeptonInfo(event);
 	  }
-	  eventWeight*=datasetWeight;
+	  if (!synchCutFlow ) eventWeight*=datasetWeight; // If not synch, scale according to lumi
 	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
 	    if (systInd) systMask = systMask << 1;
