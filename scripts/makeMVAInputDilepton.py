@@ -11,28 +11,18 @@ from jetCorrectionUncertainty import JetCorrectionUncertainty
 def sortOutLeptons(tree,channel):
     ###Returns three TLorentzVectors containing the two z leptons and the w lepton. This will be VERY useful for making all of the plots.
     #Reads the position of the w and z leptons from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
-    zMass = 100
-    zLep1,zLep2,wLep = 0,0,0
+    zMass = 91.1
+    zLep1,zLep2 = 0,0
     #Let's try commenting this out and see if everything breaks? Hopefully it won't do...
     #if tree.numElePF2PAT < 3:
     #    return (0,0,0)
-    if channel == "eee":
-        wLep = TLorentzVector(tree.elePF2PATGsfPx[tree.wLepIndex],tree.elePF2PATGsfPy[tree.wLepIndex],tree.elePF2PATGsfPz[tree.wLepIndex],tree.elePF2PATGsfE[tree.wLepIndex])
+    if channel == "ee":
         zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
-    if channel == "eemu":
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
-        wLep = TLorentzVector(tree.muonPF2PATPx[tree.wLepIndex],tree.muonPF2PATPy[tree.wLepIndex],tree.muonPF2PATPz[tree.wLepIndex],tree.muonPF2PATE[tree.wLepIndex])
-    if channel == "emumu":
+    if channel == "mumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
-        wLep = TLorentzVector(tree.elePF2PATGsfPx[tree.wLepIndex],tree.elePF2PATGsfPy[tree.wLepIndex],tree.elePF2PATGsfPz[tree.wLepIndex],tree.elePF2PATGsfE[tree.wLepIndex])
-    if channel == "mumumu":
-        zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
-        wLep = TLorentzVector(tree.muonPF2PATPx[tree.wLepIndex],tree.muonPF2PATPy[tree.wLepIndex],tree.muonPF2PATPz[tree.wLepIndex],tree.muonPF2PATE[tree.wLepIndex])
-    return (zLep1,zLep2,wLep)
+    return (zLep1,zLep2)
 
 def getJets(tree,syst,jetUnc,met):
     #Makes a short list of indices of the jets in the event
@@ -152,7 +142,7 @@ def setupInputVars():
     inputVars = {}
     inputVars["eventWeight"] = array('f',[0.])
     inputVars["mTW"] = array('f',[0.])
-    inputVars["leptWPt"] = array('f',[0.])
+#    inputVars["leptWPt"] = array('f',[0.])
     inputVars["leadJetPt"] = array('f',[0.])
     inputVars["totPt"] = array('f',[0.])
     inputVars["totEta"] = array('f',[0.])
@@ -200,7 +190,7 @@ def setupInputVars():
 def setupBranches(tree,varMap):
     tree.Branch("tree_EvtWeight", varMap["eventWeight"], "tree_EvtWeight/F")
     tree.Branch("tree_mTW", varMap["mTW"], "tree_mTW/F")
-    tree.Branch("tree_leptWPt", varMap["leptWPt"], "tree_leptWPt/F")
+#    tree.Branch("tree_leptWPt", varMap["leptWPt"], "tree_leptWPt/F")
     tree.Branch("tree_leadJetPt",varMap["leadJetPt"],"tree_leadJetPt/F")
     tree.Branch("tree_totPt",varMap["totPt"],"tree_totPt/F")
     tree.Branch("tree_totEta",varMap["totEta"],"tree_totEta/F")
@@ -246,9 +236,8 @@ def setupBranches(tree,varMap):
 
 
 
-def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1., zPtEventWeight = 0.):
+def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
-
     syst = 0
     if "__jer__plus" in label:
         syst = 4
@@ -262,6 +251,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         syst = 1024
     if "__met__minus" in label:
         syst = 2048
+#    if "__
     if channel == "ee":
         varMap["chan"][0] = 1
     if channel == "mumu":
@@ -283,8 +273,6 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
             continue
         if tree.eventWeight == tree.eventWeight:
             varMap["eventWeight"][0] = tree.eventWeight
-            if overRideWeight > 0.:
-                varMap["eventWeight"][0] = tree.eventWeight * overRideWeight
             if zPtEventWeight > 0.1:
                 varMap["eventWeight"][0] *= tree.eventWeight
             if zPtEventWeight < -0.1:
@@ -377,30 +365,23 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
 
 def main():
 
-    zEnrichWeights = {"mumumu":-1.,"emumu":-1.,"eemu":-1.,"eee":-1.}
+    zEnrichWeights = {"mumu":-1.,"ee":-1.}
 #    zEnrichWeights = {"mumumu":0.0001,"emumu":0.496,"eemu":0.0283,"eee":0.211}
     #lepton selection stage weights
 #    zEnrichWeights = {"mumumu":0.057,"emumu":0.612,"eemu":0.0637,"eee":0.216}
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WW2l2nu":"WW","ZZ4l":"ZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","ttW":"TTW","ttZ":"TTZ","wPlusJets":"Wjets"}
-#    listOfMCs = {"WW2l2nu":"WW","WZ3l1nu":"WZ","ZZ4l":"ZZ","sChannel":"TsChan","sbarChannel":"TbarsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tZq4Flavour3Lepton":"tZq4f", "ttW":"TTW","ttZ":"TTZ","ttbarDilepton":"TT","wPlusJets":"Wjets", "zPlusJets10To50Filter":"DYToLL_M10-50","zPlusJetsTuneZ2Star":"Zjets"}
-#    listOfMCs = {"WW2l2nu":"WW","WZ3l1nu":"WZ","WZ2l2nu":"WZ","ZZ2l2q":"ZZ","ZZ4l":"ZZ","sChannel":"TsChan","sbarChannel":"TbarsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","ttW":"TTW","ttZ":"TTZ","ttbarDilepton":"TT","wPlusJets":"Wjets", "zPlusJets10To50Filter":"DYToLL_M10-50","zPlusJetsTuneZ2Star":"Zjets"}
-#    listOfMCs = {"ZZ4l":"ZZ"}
-#    listOfMCs = {"ttW":"TTW"}
-#    listOfMCs = {"WZ3l1nu":"WZ"}
-#    listOfMCs = {"WZ3l1nu":"WZ","zPlusJetsTuneZ2Star":"Zjets"}
-#    listOfMCs = {"zPlusJets10To50Filter":"DYToLL_M10-50"}
+    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZJets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq_ll_4Flavour3Lepton":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusive_powerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50_madgraph":"DYToLL_M-50","DYJetsToLL_M-10to50":"DYToLL_M10-50"}
 #    listOfMCs = {}
 
     #Set-up JEC corrections
     jetUnc = JetCorrectionUncertainty("scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
-    channelToDataset = {"eee":"DataEG","eemu":"DataMuEG","emumu":"DataMuEG","mumumu":"DataMu"}
+    channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__met__plus","__met__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__met__plus","__met__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
@@ -417,13 +398,13 @@ def main():
 
     #Loop over samples
     for sample in listOfMCs.keys():
-        overrideWeight = -1.
-        if sample == "WZ2l2nu" or sample == "ZZ2l2p":
-            continue
-        print "Doing " + sample + ": ",
-        sys.stdout.flush()
-        if "WZ" in sample:
-            overrideWeight = 1286770./2133868.
+#        overrideWeightDYToLL_M10-50 = -1.
+#        if sample == "WZ2l2nu" or sample == "ZZ2l2p":
+#            continue
+#       print "Doing " + sample + ": ",
+#        sys.stdout.flush()
+#        if "WZ" in sample:
+#            overrideWeight = 1286770./2133868.
         
         outFile = 0
         #update the appropriate root file
@@ -442,7 +423,7 @@ def main():
                     try:
                         print syst + ": " + str(tree.GetEntriesFast())
                         sys.stdout.flush()
-                        fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc, overRideWeight = overrideWeight)
+                        fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
                     except AttributeError:
                         print syst + ": " + "0",
                         sys.stdout.flush()
