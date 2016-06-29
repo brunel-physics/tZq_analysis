@@ -307,11 +307,31 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             varMap["eventWeight"][0] = 0.
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
+        varMap["leadJetPhi"][0] = jetVecs[0].Phi()
         #Make all the random Pt variables I'm saving for some reason
         totPx,totPy = 0,0
         totPx += zLep1.Px() + zLep2.Px()
         totPy += zLep1.Py() + zLep2.Py()
+	varMap["lep1Pt"][0] = zLep1.Pt()
+	varMap["lep1Eta"][0] = zLep1.Eta()
+	varMap["lep1Phi"][0] = zLep1.Phi()
+	varMap["lep1RelIso"][0] = tree.zPairRelIso[tree.electronIndexTight[0]]
+	varMap["lep1D0"][0] = tree.elePF2PATD0PV[tree.electronIndexTight[0]]
+	varMap["lep2Pt"][0] = zLep2.Pt()
+	varMap["lep2Eta"][0] = zLep2.Eta()
+	varMap["lep2Phi"][0] = zLep2.Phi()
+	varMap["lep2RelIso"][0] = tree.zPairRelIso[tree.electronIndexTight[1]]
+	varMap["lep2D0"][0] = tree.elePF2PATD0PV[tree.electronIndexTight[1]]
+	varMap["lepMass"][0] = ( zLep1 + zLep2 ).M()
         varMap["lepPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
+	varMap["lepEta"][0] = ( zLep1 + zLep2 ).Eta()
+	varMap["lepPhi"][0] = ( zLep1 + zLep2 ).Phi()
+	varMap["wQuark1Pt"][0] = wQuark1.Pt()
+	varMap["wQuark1Eta"][0] = wQuark1.Eta()
+	varMap["wQuark1Phi"][0] = wQuark1.Phi()
+	varMap["wQuark2Pt"][0] = wQuark2.Pt()
+	varMap["wQuark2Eta"][0] = wQuark2.Eta()
+	varMap["wQuark2Phi"][0] = wQuark2.Phi()
         totPx += jetVecs[0].Px()
         totPy += jetVecs[0].Py()
         if len(jetVecs) > 1:
@@ -333,25 +353,28 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = tree.metPF2PATEt
         varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]
-        varMap["leadJetbTag"][0] = -1.
+        varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
         varMap["secJetbTag"][0] = -1.
         varMap["secJetPt"][0] = -1.
         varMap["secJetEta"][0] = -500.
+        varMap["secJetPhi"][0] = -500.
         if len(jetVecs) > 1:
-            varMap["secJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[1]]
             varMap["secJetPt"][0] = jetVecs[1].Pt()
             varMap["secJetEta"][0] = jetVecs[1].Eta()
+            varMap["secJetPhi"][0] = jetVecs[1].Phi()
+            varMap["secJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[1]]
 
 #        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
 #        varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()
         varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt()
         varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta()
-        varMap["zPt"][0] = (zLep2 + zLep1).Pt()
-        varMap["zEta"][0] = (zLep2 + zLep1).Eta()
+        varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi()
         varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2)
         varMap["j1j2delR"][0] = -1.
         if len(jetVecs) > 1:
             varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1])
+	varMap["zLepdelR"] = (zLep1).DeltaR(zLep2)
+	varMap["zLepdelPhi"] = (zLep1).DeltaPhi(zLep2)
         varMap["minZJetR"][0] = 3.0
         jetHt = 0.
         for i in range(len(jetVecs)):
@@ -371,7 +394,9 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["totHt"][0] = ht
         varMap["totHtOverPt"][0] = ht / n.sqrt(totPx * totPx + totPy * totPy) 
         varMap["zMass"][0] = (zLep1+zLep2).M()
-
+        varMap["zPt"][0] = (zLep2 + zLep1).Pt()
+        varMap["zEta"][0] = (zLep2 + zLep1).Eta()
+        varMap["zPhi"][0] = (zLep2 + zLep1).Phi()
 
 
 def main():
