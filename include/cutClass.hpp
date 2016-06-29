@@ -38,7 +38,7 @@ class Cuts{
   bool metFilters(AnalysisEvent*);
   
   //Method for running the synchronisation with Jeremy.
-  bool synchCuts(AnalysisEvent * event);
+  bool synchCuts(AnalysisEvent* event, float *eventWeight);
   int getLooseLepsNum(AnalysisEvent * event); //Mimic preselection skims
   int getLooseElecs(AnalysisEvent* event);
   int getLooseMus(AnalysisEvent* event);

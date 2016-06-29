@@ -820,7 +820,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //Here we will initialise the generator level weight histograms
       TH1I* generatorWeightPlot {nullptr};
       if ( dataset->isMC() ) {
-	if ( usePostLepTree ) { // If using post-lep skims
+	if ( usePostLepTree ) { 
 	  std::string inputPostfix{};
 	  inputPostfix += postfix;
 	  inputPostfix += invertIsoCut?"invIso":"";
@@ -831,6 +831,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
         else {
   	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone()); 
+	  generatorWeightPlot->SetDirectory(nullptr);
 	}
       }
 
@@ -928,13 +929,12 @@ void AnalysisAlgo::runMainAnalysis(){
       int foundEvents{0};
 
       //If event is amc@nlo, need to sum number of positive and negative weights first.
-      if ( dataset->isMC() && !synchCutFlow ) {
+      if ( dataset->isMC() ) {
 	// Load in plots
         sumPositiveWeights_ = dataset->getTotalEvents();
         sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
         sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(7);	// Systematic Scale up
         sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
-	std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "/" << sumNegativeWeightsScaleUp_ <<"/" << sumNegativeWeightsScaleDown_ << std::endl;
 	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
 	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
 	  exit(999);
@@ -962,10 +962,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	  eventWeight = 1;
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && event->origWeightForNorm != 999.0 && !synchCutFlow ){
+	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
 	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleUp_)/(sumPositiveWeights_ - sumNegativeWeightsScaleUp_) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleDown_)/(sumPositiveWeights_ - sumNegativeWeightsScaleDown_) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
-	else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
+	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
 	  }
 	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
@@ -1011,7 +1011,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
 	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
 	      eventWeight *= twgt;
-	      }
+	    }
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {

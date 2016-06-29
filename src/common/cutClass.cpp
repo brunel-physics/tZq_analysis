@@ -278,7 +278,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //If we're doing synchronisation, do this function.
   if (synchCutFlow_){
-    return synchCuts(event);
+    return synchCuts(event, eventWeight);
   }
 
   //  if (!isMC_) if (!triggerCuts(event)) return false;
@@ -339,7 +339,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //This is to make some skims for faster running. Do lepSel and save some files.
-  if(postLepSelTree_) {
+  if(postLepSelTree_ && !synchCutFlow_) {
     if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
     else {
       if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
@@ -362,8 +362,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     std::cout << "HOW?! Well done for breaking this ..." << std::endl;
     exit(0);
   }
-  
-  * eventWeight *= getLeptonWeight(event);
+
+    * eventWeight *= getLeptonWeight(event);
+
 //  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
 
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
@@ -815,10 +816,8 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
   //Evaluate b-tag weight for event here.
   if (getBTagWeight_){
     float bWeight{(dataNoTag * dataTag)/(mcNoTag * mcTag)};
-//    float cWeight = (dataNoTag * dataTag)/(mcNoTag * mcTag);
     if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag){
       bWeight = 1.;
-//      cWeight = 1.;
     }
     float bWeightErr{std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight};
 
@@ -828,6 +827,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       bWeight -= bWeightErr;
 
     *eventWeight *= bWeight;
+
   }
   return jets;
 }
@@ -840,6 +840,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ && !synchCutFlow_) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && synchCutFlow_) continue;
+    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
   }
   return bJets;
@@ -897,7 +898,7 @@ bool Cuts::metFilters(AnalysisEvent* event){
 }
 
 //Does the cuts required for the synchronisation.
-bool Cuts::synchCuts(AnalysisEvent* event){
+bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   //Trigger stuff would go first, but in MC at least (what I'm starting with) I don't have that saved. Idiot.
 
   if ( trileptonChannel_ == false ){
@@ -905,17 +906,28 @@ bool Cuts::synchCuts(AnalysisEvent* event){
     exit(2);
   }
 
+  //This is to make some skims for faster running. Do lepSel and save some files.
+  if(postLepSelTree_ && synchCutFlow_) {
+    if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
+    else {
+      if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
+      else postLepSelTree3_->Fill();
+
+    }
+  }
+
   if (singleEventInfoDump_){
     std::cout << std::setprecision(6) << std::fixed;
   }
 
-  synchCutFlowHist_->Fill(0.5); // Total events
+  synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+    std::cout << std::setprecision(6) << std::fixed;
 
   if (makeEventDump_) dumpToFile(event,0);
 
   if (!triggerCuts(event)) return false; 
    
-  synchCutFlowHist_->Fill(1.5); // Trigger cuts - Step 0
+  synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
 
   // Check number of leptons is correct
   if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
@@ -929,7 +941,7 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if (event->electronIndexTight.size() != numTightEle_) return false;
   if (event->muonIndexTight.size() != numTightMu_) return false;
   if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
-  synchCutFlowHist_->Fill(2.5); // 3 Tight Leptons - step 1
+  synchCutFlowHist_->Fill(2.5, *eventWeight); // 3 Tight Leptons - step 1
 
 //  for ( int i = 0; i != event->numMuonPF2PAT; i++ ) {
 //    topMassEventDump_ << "EvtNb="<< event->eventNum << "mu_pt=" << event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] << " mu_phi=" << event->muonPF2PATPhi[i] << " mu_iso=" << event->muonPF2PATComRelIsodBeta[i] << std::endl;
@@ -943,53 +955,52 @@ bool Cuts::synchCuts(AnalysisEvent* event){
   if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
   if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
   if ( makeEventDump_ ) dumpToFile(event,2);
-  synchCutFlowHist_->Fill(3.5); // Lepton Veto - step 2
-  
-//  topMassEventDump_ << "EvtNb="<< event->eventNum << " wLep_pt=" << event->wLepton.Pt() <<" wLep_eta=" << event->wLepton.Eta() << " wLep_phi=" << event->wLepton.Phi() << " wLep_iso=" << event->wLeptonRelIso << std::endl;
+  synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2  
 
   // Z selection
   if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
   if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
-  synchCutFlowHist_->Fill(4.5); // Z veto - step 3
+  synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
+
+//  *eventWeight *= getLeptonWeight(event);
 
   //Add in extra steps here.
-  float tempWeight{1.};
 
   // Jet selection
-  event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+  event->jetIndex = makeJetCuts(event, 0, eventWeight);
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
   if (event->jetIndex.size() < 1) return false;
   if (makeEventDump_) dumpToFile(event,4);
   //  std::cout << event->jetIndex.size() << std::endl;
-  synchCutFlowHist_->Fill(5.5); // jet selection - step 4
-  
+  synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+
   // bTag selection
   event->bTagIndex = makeBCuts(event,event->jetIndex);
   synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (event->bTagIndex.size() != 1) return false;
-  synchCutFlowHist_->Fill(6.5); // b-jet selection - step 5
+  synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
 
   // MET cut
   if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
   //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not currently applied
-  synchCutFlowHist_->Fill(7.5);
+  synchCutFlowHist_->Fill(7.5, *eventWeight);
 
   // mTW cut
   if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
   double mtW{std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) )};
   if ( mtW < mTWCutSynch_ ) return false;
-  synchCutFlowHist_->Fill(8.5); // mWT cut - step 6
+  synchCutFlowHist_->Fill(8.5, *eventWeight); // mWT cut - step 6
 
   // Top Mass cut
   if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
   double topMass (getTopMass(event));
 
   if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
-  synchCutFlowHist_->Fill(9.5); // top mass cut - step 7
+  synchCutFlowHist_->Fill(9.5, *eventWeight); // top mass cut - step 7
 
   if (!metFilters(event)) return false;
-  synchCutFlowHist_->Fill(10.5);
+  synchCutFlowHist_->Fill(10.5, *eventWeight);
 
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_) dumpToFile(event,6);
