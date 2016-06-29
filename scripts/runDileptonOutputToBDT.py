@@ -1,0 +1,26 @@
+#Quick script to loop over all channels to make fitting plots
+
+#from ROOT import *
+
+import subprocess
+import sys
+
+channels = {"ee":"1","mumu":"2"}
+
+channelList = {"ee":"1","mumu":"2"}
+
+metCut = sys.argv[1]
+metStr = metCut.split(".")[0]
+
+mtwCut = sys.argv[2]
+mtwStr = mtwCut.split(".")[0]
+
+#Make the skim directory
+subprocess.call("mkdir mvaDirs/skims/met"+metStr+"mtw"+mtwStr,shell=True)
+
+#Make the mvaInput directory
+subprocess.call("mkdir mvaDirs/inputs/met"+metStr+"mtw"+mtwStr,shell=True)
+
+print "python scripts/makeMVAInput.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/met"+metStr+"mtw"+mtwStr+"/"
+subprocess.call("python scripts/makeMVAInput.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/met"+metStr+"mtw"+mtwStr+"/",shell=True)
+
