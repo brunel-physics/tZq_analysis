@@ -963,8 +963,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
 	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
-	    if ( systMask == 4096 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleUp_)/(sumPositiveWeights_ - sumNegativeWeightsScaleUp_) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
-	    else if ( systMask == 8192 ) generatorWeight = (sumPositiveWeights_ + sumNegativeWeightsScaleDown_)/(sumPositiveWeights_ - sumNegativeWeightsScaleDown_) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
+	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
+	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
 	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
 	  }
 	  eventWeight *= generatorWeight;
