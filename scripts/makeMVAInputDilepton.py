@@ -9,9 +9,8 @@ from array import array
 from jetCorrectionUncertainty import JetCorrectionUncertainty
 
 def sortOutLeptons(tree,channel):
-    ###Returns three TLorentzVectors containing the two z leptons and the w lepton. This will be VERY useful for making all of the plots.
-    #Reads the position of the w and z leptons from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
-    zMass = 91.1
+    ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
+    #Reads the position of the z leptons from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
     zLep1,zLep2 = 0,0
     #Let's try commenting this out and see if everything breaks? Hopefully it won't do...
     #if tree.numElePF2PAT < 3:
@@ -23,6 +22,20 @@ def sortOutLeptons(tree,channel):
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
     return (zLep1,zLep2)
+
+def sortOutHadronicW(tree,channel):
+
+    ###Returns two LorentzVectors containing the two w quarks. This will be VERY useful for making all of the plots.
+    #Reads the position of the w quarks from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
+    wQuark1,wQuark2 = 0,0
+
+    if channel == "ee":
+        wQuark1 = TLorentzVector(tree.elePF2PATGsfPx[tree.wQuark1Index],tree.elePF2PATGsfPy[tree.wQuark1Index],tree.elePF2PATGsfPz[tree.wQuark1Index ],tree.elePF2PATGsfE[tree.wQuark1Index])
+        wQuark2 = TLorentzVector(tree.elePF2PATGsfPx[tree.wQuark2Index],tree.elePF2PATGsfPy[tree.wQuark2Index],tree.elePF2PATGsfPz[tree.wQuark2Index],tree.elePF2PATGsfE[tree.wQuark2Index])
+    if channel == "mumu":
+        wQuark1 = TLorentzVector(tree.muonPF2PATPx[tree.wQuark1Index],tree.muonPF2PATPy[tree.wQuark1Index],tree.muonPF2PATPz[tree.wQuark1Index],tree.muonPF2PATE[tree.wQuark1Index])
+        wQuark2 = TLorentzVector(tree.muonPF2PATPx[tree.wQuark2Index],tree.muonPF2PATPy[tree.wQuark2Index],tree.muonPF2PATPz[tree.wQuark2Index],tree.muonPF2PATE[tree.wQuark2Index])
+    return (wQuark1,wQuark)
 
 def getJets(tree,syst,jetUnc,met):
     #Makes a short list of indices of the jets in the event
@@ -122,117 +135,135 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
     metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
 
-def doUncMet(tree,met,zLep1,zLep2,wLep,jetVecs,syst):
-    #Subtracts all items from met and then varies what's left by 10% for systematic purposes.
-    uncMetX = met.Px() + zLep1.Px() + zLep2.Px() + wLep.Px()
-    uncMetY = met.Py() + zLep1.Py() + zLep2.Py() + wLep.Py()
-    for i in range(len(jetVecs)):
-        uncMetX += jetVecs[i].Px()
-        uncMetY += jetVecs[i].Py()
-    if syst == 1028:
-        met.SetPx(met.Px() + 0.1*uncMetX)
-        met.SetPy(met.Py() + 0.1*uncMetY)
-    else:
-        met.SetPx(met.Px() - 0.1*uncMetX)
-        met.SetPy(met.Py() - 0.1*uncMetY)
-    return met
-
 def setupInputVars():
     #Make the variables we want to save
     inputVars = {}
     inputVars["eventWeight"] = array('f',[0.])
     inputVars["mTW"] = array('f',[0.])
-#    inputVars["leptWPt"] = array('f',[0.])
+    inputVars["wQuark1Pt"] = array('f',[0.])
+    inputVars["wQuark1Eta"] = array('f',[0.])
+    inputVars["wQuark1Phi"] = array('f',[0.])
+    inputVars["wQuark2Pt"] = array('f',[0.])
+    inputVars["wQuark2Eta"] = array('f',[0.])
+    inputVars["wQuark2Phi"] = array('f',[0.])
+    inputVars["met"] = array('f',[0.])
+    inputVars["nJets"] = array('f',[0.])
     inputVars["leadJetPt"] = array('f',[0.])
+    inputVars["leadJetPhi"] = array('f',[0.])
+    inputVars["leadJetEta"] = array('f',[0.])
+    inputVars["leadJetbTag"] = array('f',[0.])
+    inputVars["secJetPt"] = array('f',[0.])
+    inputVars["secJetPhi"] = array('f',[0.])
+    inputVars["secJetEta"] = array('f',[0.])
+    inputVars["secJetbTag"] = array('f',[0.])
+    inputVars["nBjets"] = array('f',[0.])
+    inputVars["bTagDisc"] = array('f',[0.])
+    inputVars["lep1Pt"] = array('f',[0.])
+    inputVars["lep1Eta"] = array('f',[0.])
+    inputVars["lep1Phi"] = array('f',[0.])
+    inputVars["lep1RelIso"] = array('f',[0.])
+    inputVars["lep1D0"] = array('f',[0.])
+    inputVars["lep2Pt"] = array('f',[0.])
+    inputVars["lep2Eta"] = array('f',[0.])
+    inputVars["lep2Phi"] = array('f',[0.])
+    inputVars["lep2RelIso"] = array('f',[0.])
+    inputVars["lep2D0"] = array('f',[0.])
+    inputVars["lepMass"] = array('f',[0.])
+    inputVars["lepPt"] = array('f',[0.])
+    inputVars["lepEta"] = array('f',[0.])
+    inputVars["lepPhi"] = array('f',[0.])
+    inputVars["zMass"] = array('f',[0.])
+    inputVars["zPt"] = array('f',[0.])
+    inputVars["zEta"] = array('f',[0.])
+    inputVars["zPhi"] = array('f',[0.])
+    inputVars["topMass"] = array('f',[0.])
+    inputVars["topPt"] = array('f',[0.])
+    inputVars["topEta"] = array('f',[0.])
+    inputVars["topPhi"] = array('f',[0.])
+    inputVars["j1j2delR"] = array('f',[0.])
+    inputVars["zLepdelR"] = array('f',[0.])
+    inputVars["zLepdelPhi"] = array('f',[0.])
+    inputVars["zlb1DelR"] = array('f',[0.])
+    inputVars["zlb1DelPhi"] = array('f',[0.])
+    inputVars["zlb2DelR"] = array('f',[0.])
+    inputVars["zlb2DelPhi"] = array('f',[0.])
+    inputVars["lepHt"] = array('f',[0.])
     inputVars["totPt"] = array('f',[0.])
     inputVars["totEta"] = array('f',[0.])
     inputVars["totPtVec"] = array('f',[0.])
     inputVars["totVecM"] = array('f',[0.])
     inputVars["chan"] = array('i',[0])
-    inputVars["nJets"] = array('f',[0.])
-    inputVars["nBjets"] = array('f',[0.])
-    inputVars["met"] = array('f',[0.])
-    inputVars["lepPt"] = array('f',[0.])
-    inputVars["lepMetPt"] = array('f',[0.])
     inputVars["totPt2Jet"] = array('f',[0.])
-    inputVars["leadJetbTag"] = array('f',[0.])
-    inputVars["leadJetEta"] = array('f',[0.])
-    inputVars["secJetbTag"] = array('f',[0.])
-    inputVars["secJetPt"] = array('f',[0.])
-    inputVars["secJetEta"] = array('f',[0.])
-    inputVars["bTagDisc"] = array('f',[0.])
-    inputVars["topMass"] = array('f',[0.])
-    inputVars["topPt"] = array('f',[0.])
-    inputVars["topEta"] = array('f',[0.])
-    inputVars["zPt"] = array('f',[0.])
-    inputVars["zEta"] = array('f',[0.])
-    inputVars["wLepEta"] = array('f',[0.])
     inputVars["wZdelR"] = array('f',[0.])
-    inputVars["j1j2delR"] = array('f',[0.])
     inputVars["minZJetR"] = array('f',[0.])
-    inputVars["zWLepdelR"] = array('f',[0.])
-    inputVars["zmetdelPhi"] = array('f',[0.])
-    inputVars["zWLepdelPhi"] = array('f',[0.])
-    inputVars["lbDelR"] = array('f',[0.])
-    inputVars["lbDelPhi"] = array('f',[0.])
-    inputVars["zlb1DelR"] = array('f',[0.])
-    inputVars["zlb1DelPhi"] = array('f',[0.])
-    inputVars["zlb2DelR"] = array('f',[0.])
-    inputVars["zlb2DelPhi"] = array('f',[0.])
     inputVars["totHt"] = array('f',[0.])
-    inputVars["lepHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
-    inputVars["lepMetHt"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
-    inputVars["zMass"] = array('f',[0.])
     return inputVars
 
 def setupBranches(tree,varMap):
     tree.Branch("tree_EvtWeight", varMap["eventWeight"], "tree_EvtWeight/F")
     tree.Branch("tree_mTW", varMap["mTW"], "tree_mTW/F")
-#    tree.Branch("tree_leptWPt", varMap["leptWPt"], "tree_leptWPt/F")
+    tree.Branch("tree_wQuark1Pt", varMap["wQuark1Pt"], "tree_wQuark1Pt/F")
+    tree.Branch("tree_wQuark1Eta", varMap["wQuark1Eta"], "tree_wQuark1Eta/F")
+    tree.Branch("tree_wQuark1Phi", varMap["wQuark1Phi"], "tree_wQuark1Phi/F")
+    tree.Branch("tree_wQuark2Pt", varMap["wQuark2Pt"], "tree_wQuark2Pt/F")
+    tree.Branch("tree_wQuark2Eta", varMap["wQuark2Eta"], "tree_wQuark2Eta/F")
+    tree.Branch("tree_wQuark2Phi", varMap["wQuark2Phi"], "tree_wQuark2Phi/F")
+    tree.Branch("tree_met",varMap["met"],"tree_met/F")
+    tree.Branch("tree_NJets",varMap["nJets"],"tree_NJets/F")
     tree.Branch("tree_leadJetPt",varMap["leadJetPt"],"tree_leadJetPt/F")
+    tree.Branch("tree_leadJetEta",varMap["leadJetEta"],"leadJetEta/F")
+    tree.Branch("tree_leadJetPhi",varMap["leadJetPhi"],"leadJetPhi/F")
+    tree.Branch("tree_leadJetbTag",varMap["leadJetbTag"],"leadJetbTag/F")
+    tree.Branch("tree_secJetPt",varMap["secJetPt"],"secJetPt/F")
+    tree.Branch("tree_secJetEta",varMap["secJetEta"],"secJetEta/F")
+    tree.Branch("tree_secJetPhi",varMap["secJetPhi"],"secJetPhi/F")
+    tree.Branch("tree_secJetbTag",varMap["secJetbTag"],"secJetbTag/F")
+    tree.Branch("tree_NBJets",varMap["nBjets"],"tree_NBJets/F")
+    tree.Branch("tree_btagDiscri",varMap["bTagDisc"],"btagDiscri/F")
+    tree.Branch("tree_lep1Pt",varMap["lep1Pt"],"tree_lep1Pt/F")
+    tree.Branch("tree_lep1Eta",varMap["lep1Eta"],"tree_lep1Eta/F")
+    tree.Branch("tree_lep1Phi",varMap["lep1Phi"],"tree_lep1Phi/F")
+    tree.Branch("tree_lep1RelIso",varMap["lep1RelIso"],"tree_lep1RelIso/F")
+    tree.Branch("tree_lep1D0",varMap["lep1D0"],"tree_lep1D0/F")
+    tree.Branch("tree_lep2Pt",varMap["lep2Pt"],"tree_lep2Pt/F")
+    tree.Branch("tree_lep2Eta",varMap["lep2Eta"],"tree_lep2Eta/F")
+    tree.Branch("tree_lep2Phi",varMap["lep2Phi"],"tree_lep2Phi/F")
+    tree.Branch("tree_lep2RelIso",varMap["lep2RelIso"],"tree_lep2RelIso/F")
+    tree.Branch("tree_lep2D0",varMap["lep2D0"],"tree_lep2D0/F")
+    tree.Branch("tree_lepMass",varMap["lepMass"],"tree_lepMass/F")
+    tree.Branch("tree_lepPt",varMap["lepPt"],"tree_lepPt/F")
+    tree.Branch("tree_lepEta",varMap["lepEta"],"tree_lepEta/F")
+    tree.Branch("tree_lepPhi",varMap["lepPhi"],"tree_lepPhi/F")
+    tree.Branch("tree_zMass",varMap["zMass"],"tree_zMass/F")
+    tree.Branch("tree_Zpt",varMap["zPt"],"tree_Zpt/F")
+    tree.Branch("tree_Zeta",varMap["zEta"],"tree_Zeta/F")
+    tree.Branch("tree_Zphi",varMap["zPhi"],"tree_Zphi/F")
+    tree.Branch("tree_topMass",varMap["topMass"],"tree_topMass/F")
+    tree.Branch("tree_topPt",varMap["topPt"],"tree_topPt/F")
+    tree.Branch("tree_topEta",varMap["topEta"],"tree_topEta/F")
+    tree.Branch("tree_topPhi",varMap["topPhi"],"tree_topPhi/F")
+    tree.Branch("tree_jjdelR",varMap["j1j2delR"],"tree_jjdelR/F")
+    tree.Branch("tree_zLepdelR",varMap["zLepdelR"],"tree_zLepdelR/F")
+    tree.Branch("tree_zLepdelPhi",varMap["zLepdelPhi"],"tree_zLepdelPhi/F")
+    tree.Branch("tree_zlb1DelR",varMap["zlb1DelR"],"tree_zlb1DelR/F")
+    tree.Branch("tree_zlb1DelPhi",varMap["zlb1DelPhi"],"tree_zlb1DelPhi/F")
+    tree.Branch("tree_zlb2DelR",varMap["zlb2DelR"],"tree_zlb2DelR/F")
+    tree.Branch("tree_zlb2DelPhi",varMap["zlb2DelPhi"],"tree_zlb2DelPhi/F")
+    tree.Branch("tree_lepHt",varMap["lepHt"],"tree_lepHt/F")
+    tree.Branch("tree_wQuarkHt",varMap["wQuarkHt"],"tree_wQuarkHt/F")
+    tree.Branch("tree_jetHt",varMap["jetHt"],"tree_jetHt/F")
+    tree.Branch("tree_totHt",varMap["totHt"],"tree_totHt/F")
+    tree.Branch("tree_totHtOverPt",varMap["totHtOverPt"],"tree_totHtOverPt/F")
     tree.Branch("tree_totPt",varMap["totPt"],"tree_totPt/F")
     tree.Branch("tree_totEta",varMap["totEta"],"tree_totEta/F")
     tree.Branch("tree_totPtVec",varMap["totPtVec"],"tree_totPtVec/F")
     tree.Branch("tree_totVecM",varMap["totVecM"],"tree_totVecM/F")
     tree.Branch("tree_Channel",varMap["chan"],"tree_Channel/I")
-    tree.Branch("tree_NJets",varMap["nJets"],"tree_NJets/F")
-    tree.Branch("tree_NBJets",varMap["nBjets"],"tree_NBJets/F")
-    tree.Branch("tree_met",varMap["met"],"tree_met/F")
-    tree.Branch("tree_lepPt",varMap["lepPt"],"tree_lepPt/F")
-    tree.Branch("tree_lepMetPt",varMap["lepMetPt"],"tree_lepMetPt/F")
     tree.Branch("tree_totPt2Jet",varMap["totPt2Jet"],"tree_totPt2Jet/F")
-    tree.Branch("tree_btagDiscri",varMap["bTagDisc"],"btagDiscri/F")
-    tree.Branch("tree_leadJetbTag",varMap["leadJetbTag"],"leadJetbTag/F")
-    tree.Branch("tree_leadJetEta",varMap["leadJetEta"],"leadJetEta/F")
-    tree.Branch("tree_secJetbTag",varMap["secJetbTag"],"secJetbTag/F")
-    tree.Branch("tree_secJetPt",varMap["secJetPt"],"secJetPt/F")
-    tree.Branch("tree_secJetEta",varMap["secJetEta"],"secJetEta/F")
-    tree.Branch("tree_topMass",varMap["topMass"],"tree_topMass/F")
-    tree.Branch("tree_topPt",varMap["topPt"],"tree_topPt/F")
-    tree.Branch("tree_topEta",varMap["topEta"],"tree_topEta/F")
-    tree.Branch("tree_Zpt",varMap["zPt"],"tree_Zpt/F")
-    tree.Branch("tree_Zeta",varMap["zEta"],"tree_Zeta/F")
-    tree.Branch("tree_leptWEta",varMap["wLepEta"],"tree_leptWEta/F")
     tree.Branch("tree_wzdelR",varMap["wZdelR"],"tree_wzdelR/F")
-    tree.Branch("tree_jjdelR",varMap["j1j2delR"],"tree_jjdelR/F")
     tree.Branch("tree_zjminR",varMap["minZJetR"],"tree_zjminR/F")
-    tree.Branch("tree_ZlepWdelPhi",varMap["zWLepdelPhi"],"tree_ZlepWdelPhi/F")
-    tree.Branch("tree_ZmetdelPhi",varMap["zmetdelPhi"],"tree_ZmetdelPhi/F")
-    tree.Branch("tree_ZlepWdelR",varMap["zWLepdelR"],"tree_ZlepWdelR/F")
-    tree.Branch("tree_lbDelR",varMap["lbDelR"],"tree_lbDelR/F")
-    tree.Branch("tree_lbDelPhi",varMap["lbDelPhi"],"tree_lbDelPhi/F")
-    tree.Branch("tree_zlb1DelR",varMap["zlb1DelR"],"tree_zlb1DelR/F")
-    tree.Branch("tree_zlb1DelPhi",varMap["zlb1DelPhi"],"tree_zlb1DelPhi/F")
-    tree.Branch("tree_zlb2DelR",varMap["zlb2DelR"],"tree_zlb2DelR/F")
-    tree.Branch("tree_zlb2DelPhi",varMap["zlb2DelPhi"],"tree_zlb2DelPhi/F")
-    tree.Branch("tree_totHt",varMap["totHt"],"tree_totHt/F")
-    tree.Branch("tree_lepHt",varMap["lepHt"],"tree_lepHt/F")
-    tree.Branch("tree_jetHt",varMap["jetHt"],"tree_jetHt/F")
-    tree.Branch("tree_lepMetHt",varMap["lepMetHt"],"tree_lepMetHt/F")
-    tree.Branch("tree_totHtOverPt",varMap["totHtOverPt"],"tree_totHtOverPt/F")
-    tree.Branch("tree_zMass",varMap["zMass"],"tree_zMass/F")
 
 
 
@@ -247,11 +278,6 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         syst = 16
     if "__jes__minus" in label:
         syst = 32
-    if "__met__plus" in label:
-        syst = 1024
-    if "__met__minus" in label:
-        syst = 2048
-#    if "__
     if channel == "ee":
         varMap["chan"][0] = 1
     if channel == "mumu":
@@ -262,15 +288,12 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             #Fill some plots here. Let's make an example mTW plot.
             #Make a config that'll do this for me? I've done these before so should be easy. Fill expressions could be a pain?
         tree.GetEntry(event)
-        (zLep1,zLep2,wLep) = sortOutLeptons(tree,channel)
+        (zLep1,zLep2) = sortOutLeptons(tree,channel)
+        (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
-        if syst == 1024 or syst == 2048:
-            metVec = doUncMet(tree,metVec,zLep1,zLep2,wLep,jetVecs,syst)
-        if wLep == 0:
-            continue
         if tree.eventWeight == tree.eventWeight:
             varMap["eventWeight"][0] = tree.eventWeight
             if zPtEventWeight > 0.1:
@@ -282,18 +305,13 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
 
         if varMap["eventWeight"][0] < 0.:
             varMap["eventWeight"][0] = 0.
-        varMap["leptWPt"][0] = wLep.Pt()
-        varMap["wLepEta"][0] = wLep.Eta()
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
         #Make all the random Pt variables I'm saving for some reason
         totPx,totPy = 0,0
-        totPx += zLep1.Px() + zLep2.Px() + wLep.Px()
-        totPy += zLep1.Py() + zLep2.Py() + wLep.Py()
+        totPx += zLep1.Px() + zLep2.Px()
+        totPy += zLep1.Py() + zLep2.Py()
         varMap["lepPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
-        totPx += metVec.Px()
-        totPy += metVec.Py()
-        varMap["lepMetPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
         totPx += jetVecs[0].Px()
         totPy += jetVecs[0].Py()
         if len(jetVecs) > 1:
@@ -304,19 +322,19 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             totPx+=jetVecs[i].Px()
             totPy+=jetVecs[i].Py()
         varMap["totPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
-        totVec = (wLep + zLep1+zLep2)
+        totVec = (zLep1+zLep2)
         for i in range(len(jetVecs)):
             totVec += jetVecs[i]
         varMap["totEta"][0] = totVec.Eta()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
-        varMap["mTW"][0] = n.sqrt(2*metVec.Pt()*wLep.Pt() * (1-n.cos(metVec.Phi() - wLep.Phi())))
+        varMap["mTW"][0] = n.sqrt(2*tree.jetPF2PATPt[wQuark1Index]*tree.jetPF2PATPt[wQuark2Index] * (1-n.cos(tree.jetPF2PATPhi[wQuark1Index] - tree.jetPF2PATPhi[wQuark2Index])))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
-        varMap["met"][0] = metVec.Pt()
+        varMap["met"][0] = tree.metPF2PATEt
         varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]
-        varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
-        varMap["secJetbTag"][0] = -10.
+        varMap["leadJetbTag"][0] = -1.
+        varMap["secJetbTag"][0] = -1.
         varMap["secJetPt"][0] = -1.
         varMap["secJetEta"][0] = -500.
         if len(jetVecs) > 1:
@@ -325,12 +343,12 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             varMap["secJetEta"][0] = jetVecs[1].Eta()
 
 #        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
-        varMap["topMass"][0] = (bJetVecs[0] + metVec + wLep).M()
-        varMap["topPt"][0] = (bJetVecs[0] + metVec + wLep).Pt()
-        varMap["topEta"][0] = (bJetVecs[0] + metVec + wLep).Eta()
+#        varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()
+        varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt()
+        varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta()
         varMap["zPt"][0] = (zLep2 + zLep1).Pt()
         varMap["zEta"][0] = (zLep2 + zLep1).Eta()
-        varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(metVec + wLep)
+        varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2)
         varMap["j1j2delR"][0] = -1.
         if len(jetVecs) > 1:
             varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1])
@@ -341,21 +359,14 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             if jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
         outTree.Fill()
-        varMap["zWLepdelR"][0] = (zLep2 + zLep1).DeltaR(wLep)
-        varMap["zmetdelPhi"][0] = (zLep2+zLep1).DeltaPhi(metVec)
-        varMap["zWLepdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wLep)        
-        varMap["lbDelR"][0] = wLep.DeltaR(jetVecs[bJets[0]])
-        varMap["lbDelPhi"][0] = wLep.DeltaPhi(jetVecs[bJets[0]])
         varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
         varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
         varMap["zlb2DelR"][0] = zLep2.DeltaR(jetVecs[bJets[0]])
         varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(jetVecs[bJets[0]])
         ht = 0.
-        ht += zLep1.Pt() + zLep2.Pt() + wLep.Pt()
+        ht += zLep1.Pt() + zLep2.Pt()
         varMap["lepHt"][0] = ht
-        ht += metVec.Pt()
         varMap["jetHt"][0] = jetHt
-        varMap["lepMetHt"][0] = ht
         ht += jetHt
         varMap["totHt"][0] = ht
         varMap["totHtOverPt"][0] = ht / n.sqrt(totPx * totPx + totPy * totPy) 
