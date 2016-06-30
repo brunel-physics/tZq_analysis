@@ -188,6 +188,7 @@ def setupInputVars():
     inputVars["zlb2DelR"] = array('f',[0.])
     inputVars["zlb2DelPhi"] = array('f',[0.])
     inputVars["lepHt"] = array('f',[0.])
+    inputVars["wQuarkHt"] = array('f',[0.])
     inputVars["totPt"] = array('f',[0.])
     inputVars["totEta"] = array('f',[0.])
     inputVars["totPtVec"] = array('f',[0.])
@@ -498,7 +499,7 @@ def main():
 
     zEnrichSyst = ["","__zPt__plus","__zPt__minus"]
     for outChan in outChannels:
-        print "And finally z-enriched data ",outChan
+#        print "And finally z-enriched data ",outChan
         outFileZ = TFile(outputDir+"histofile_"+outChan+"Zenriched.root","RECREATE")
         for systPost in zEnrichSyst:
             outTreeZ = TTree("Ttree_"+outChan+"Zenriched"+systPost,"Ttree_"+outChan+"Zenriched"+systPost)
@@ -514,7 +515,7 @@ def main():
                     zPtSyst = 1.
                 if "minus" in systPost:
                     zPtSyst = -1.
-                fillTree(outTreeZ, inputVars, dataChainZ, outChan, chan, 0, zEnrichWeights[chan],zPtEventWeight = zPtSyst)
+#                fillTree(outTreeZ, inputVars, dataChainZ, outChan, chan, 0, zEnrichWeights[chan],zPtEventWeight = zPtSyst)
             outFileZ.cd()
             outFileZ.Write()
             outTreeZ.Write()
