@@ -405,7 +405,7 @@ def main():
     zEnrichWeights = {"mumu":-1.,"ee":-1.}
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZJets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq_ll_4Flavour3Lepton":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusive_powerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50_madgraph":"DYToLL_M-50","DYJetsToLL_M-10to50":"DYToLL_M10-50"}
+    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M-50","DYJetsToLL_M-10to50":"DYToLL_M10-50"}
 #    listOfMCs = {}
 
     #Set-up JEC corrections
