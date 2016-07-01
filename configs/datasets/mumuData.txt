@@ -18,6 +18,5 @@ plotType = p
 colour = kBlack
 triggerFlag = mCt
 
-
 []
 

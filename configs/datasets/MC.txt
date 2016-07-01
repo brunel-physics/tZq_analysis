@@ -187,7 +187,7 @@ colour = kSpring
 label = w+jets
 plotType = f
 
-[DYJetsToLL_MM-50]
+[DYJetsToLL_M-50]
 fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 255972775
 crossSection = 6025.2
@@ -197,7 +197,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_MM-10To50]
+[DYJetsToLL_M-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 169346620 
 crossSection = 18610.0
