@@ -308,8 +308,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
-        if varMap["eventWeight"][0] < 0.:
-            varMap["eventWeight"][0] = 0.
+        varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
         varMap["leadJetPhi"][0] = jetVecs[0].Phi()
