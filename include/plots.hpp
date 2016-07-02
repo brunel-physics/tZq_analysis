@@ -88,6 +88,7 @@ class Plots{
   float fillLepton3InnerTrackD0(AnalysisEvent*);
   float fillwTransverseMass(AnalysisEvent*);
   float filljjDelR(AnalysisEvent*);
+  float filljjDelPhi(AnalysisEvent*);
   float fillZLepDelR(AnalysisEvent*);
   float fillZLepDelPhi(AnalysisEvent*);
   float fillZLep1BjetDelR(AnalysisEvent*);

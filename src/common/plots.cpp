@@ -111,6 +111,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3InnerTrackD0",&Plots::fillLepton3InnerTrackD0));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wTransverseMass",&Plots::fillwTransverseMass));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("jjDelR",&Plots::filljjDelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("jjDelPhi",&Plots::filljjDelPhi));  
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lbDelR",&Plots::filllbDelR));  
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lbDelPhi",&Plots::filllbDelPhi));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepDelR",&Plots::fillZLepDelR));  
@@ -592,6 +593,15 @@ float Plots::filljjDelR(AnalysisEvent* event){
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]],event->jetPF2PATPy[event->jetIndex[0]],event->jetPF2PATPz[event->jetIndex[0]],event->jetPF2PATE[event->jetIndex[0]]);
   tempJet2.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]],event->jetPF2PATPy[event->jetIndex[1]],event->jetPF2PATPz[event->jetIndex[1]],event->jetPF2PATE[event->jetIndex[1]]);
   return tempJet1.DeltaR(tempJet2);
+}
+
+float Plots::filljjDelPhi(AnalysisEvent* event){
+  TLorentzVector tempJet1;
+  TLorentzVector tempJet2;
+  if (event->jetIndex.size() < 2) return -1.;
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]],event->jetPF2PATPy[event->jetIndex[0]],event->jetPF2PATPz[event->jetIndex[0]],event->jetPF2PATE[event->jetIndex[0]]);
+  tempJet2.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]],event->jetPF2PATPy[event->jetIndex[1]],event->jetPF2PATPz[event->jetIndex[1]],event->jetPF2PATE[event->jetIndex[1]]);
+  return tempJet1.DeltaPhi(tempJet2);
 }
 
 float Plots::filllbDelR(AnalysisEvent* event){
