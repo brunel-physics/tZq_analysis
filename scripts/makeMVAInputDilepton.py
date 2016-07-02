@@ -379,8 +379,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["j1j2delR"][0] = -1.
         if len(jetVecs) > 1:
             varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1])
-	varMap["zLepdelR"] = (zLep1).DeltaR(zLep2)
-	varMap["zLepdelPhi"] = (zLep1).DeltaPhi(zLep2)
+	varMap["zLepdelR"][0] = (zLep1).DeltaR(zLep2)
+	varMap["zLepdelPhi"][0] = (zLep1).DeltaPhi(zLep2)
         varMap["minZJetR"][0] = 3.0
         jetHt = 0.
         for i in range(len(jetVecs)):
@@ -468,7 +468,7 @@ def main():
     #next do the data files
         outFile.Write()
         outFile.Close()
-    print
+        print
     chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
     outChannels = ["DataEG","DataMu"]
