@@ -3,10 +3,22 @@
 from ROOT import *
 
 import numpy as n
+import random
 import sys
 import os
 from array import array
 from jetCorrectionUncertainty import JetCorrectionUncertainty
+
+def deltaR(eta1, phi1, eta2, phi2):
+    ###Returns the delta R from the eta and phi of two particles.
+    dEta = eta1-eta2
+    dPhi = phi1-phi2
+    while ( n.fabs(dPhi) > n.pi ):
+	if (dPhi > 0.0):
+	    dPhi += -2*n.pi
+	else:
+	    dPhi += 2*n.pi
+    return n.sqrt( dEta*dEta + dPhi*dPhi )
 
 def sortOutLeptons(tree,channel):
     ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
@@ -14,7 +26,6 @@ def sortOutLeptons(tree,channel):
     zLep1,zLep2 = 0,0
     #Let's try commenting this out and see if everything breaks? Hopefully it won't do...
     #if tree.numElePF2PAT < 3:
-    #    return (0,0,0)
     if channel == "ee":
         zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
@@ -29,13 +40,9 @@ def sortOutHadronicW(tree,channel):
     #Reads the position of the w quarks from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
     wQuark1,wQuark2 = 0,0
 
-    if channel == "ee":
-        wQuark1 = TLorentzVector(tree.elePF2PATGsfPx[tree.wQuark1Index],tree.elePF2PATGsfPy[tree.wQuark1Index],tree.elePF2PATGsfPz[tree.wQuark1Index ],tree.elePF2PATGsfE[tree.wQuark1Index])
-        wQuark2 = TLorentzVector(tree.elePF2PATGsfPx[tree.wQuark2Index],tree.elePF2PATGsfPy[tree.wQuark2Index],tree.elePF2PATGsfPz[tree.wQuark2Index],tree.elePF2PATGsfE[tree.wQuark2Index])
-    if channel == "mumu":
-        wQuark1 = TLorentzVector(tree.muonPF2PATPx[tree.wQuark1Index],tree.muonPF2PATPy[tree.wQuark1Index],tree.muonPF2PATPz[tree.wQuark1Index],tree.muonPF2PATE[tree.wQuark1Index])
-        wQuark2 = TLorentzVector(tree.muonPF2PATPx[tree.wQuark2Index],tree.muonPF2PATPy[tree.wQuark2Index],tree.muonPF2PATPz[tree.wQuark2Index],tree.muonPF2PATE[tree.wQuark2Index])
-    return (wQuark1,wQuark)
+    wQuark1 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark1Index],tree.jetPF2PATPx[tree.wQuark1Index],tree.jetPF2PATPz[tree.wQuark1Index ],tree.jetPF2PATE[tree.wQuark1Index])
+    wQuark2 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPz[tree.wQuark2Index ],tree.jetPF2PATE[tree.wQuark2Index])
+    return (wQuark1,wQuark2)
 
 def getJets(tree,syst,jetUnc,met):
     #Makes a short list of indices of the jets in the event
@@ -109,15 +116,15 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
 
     returnJet = TLorentzVector();
     if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        if (tree.DeltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index]) < 0.4/2.0 ):
-            if (syst == 16): jerSF += jerSigma;
-            elif (syst == 32): jerSF -= jerSigma;
-            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index];
-            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
+        if ( deltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index] ) < 0.4/2.0 ):
+            if (syst == 16): jerSF += jerSigma
+            elif (syst == 32): jerSF -= jerSigma
+            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index]
+            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
         else :
-           random.seed();
-           newSmearValue = 1.0+TRandom(random).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma);
-           returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
+           random.seed()
+           newSmearValue = 1.0+TRandom(random.randint(0,65539)).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma)
+           returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
 
     else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
 
@@ -290,20 +297,11 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             #Make a config that'll do this for me? I've done these before so should be easy. Fill expressions could be a pain?
         tree.GetEntry(event)
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
-        (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets)
+        (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
-        if tree.eventWeight == tree.eventWeight:
-            varMap["eventWeight"][0] = tree.eventWeight
-            if zPtEventWeight > 0.1:
-                varMap["eventWeight"][0] *= tree.eventWeight
-            if zPtEventWeight < -0.1:
-                varMap["eventWeight"][0] = 1.
-        else:
-            varMap["eventWeight"][0] = 0.
-
         if varMap["eventWeight"][0] < 0.:
             varMap["eventWeight"][0] = 0.
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
@@ -316,13 +314,20 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
 	varMap["lep1Pt"][0] = zLep1.Pt()
 	varMap["lep1Eta"][0] = zLep1.Eta()
 	varMap["lep1Phi"][0] = zLep1.Phi()
-	varMap["lep1RelIso"][0] = tree.zPairRelIso[tree.electronIndexTight[0]]
-	varMap["lep1D0"][0] = tree.elePF2PATD0PV[tree.electronIndexTight[0]]
+        if channel == "ee":
+            varMap["lep1RelIso"][0] = tree.elePF2PATComRelIsoRho[tree.zLep1Index]
+	    varMap["lep1D0"][0] = tree.elePF2PATD0PV[tree.zLep1Index]
+	    varMap["lep2RelIso"][0] = tree.elePF2PATComRelIsoRho[tree.zLep2Index]
+	    varMap["lep2D0"][0] = tree.elePF2PATD0PV[tree.zLep2Index]
+	if channel == "mumu":
+            varMap["lep1RelIso"][0] = tree.muonPF2PATComRelIsodBeta[tree.zLep1Index]
+	    varMap["lep1D0"][0] = tree.muonPF2PATDBPV[tree.zLep1Index]
+	    varMap["lep2RelIso"][0] = tree.muonPF2PATComRelIsodBeta[tree.zLep2Index]
+	    varMap["lep2D0"][0] = tree.muonPF2PATDBPV[tree.zLep2Index]
+
 	varMap["lep2Pt"][0] = zLep2.Pt()
 	varMap["lep2Eta"][0] = zLep2.Eta()
 	varMap["lep2Phi"][0] = zLep2.Phi()
-	varMap["lep2RelIso"][0] = tree.zPairRelIso[tree.electronIndexTight[1]]
-	varMap["lep2D0"][0] = tree.elePF2PATD0PV[tree.electronIndexTight[1]]
 	varMap["lepMass"][0] = ( zLep1 + zLep2 ).M()
         varMap["lepPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
 	varMap["lepEta"][0] = ( zLep1 + zLep2 ).Eta()
@@ -349,7 +354,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["totEta"][0] = totVec.Eta()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
-        varMap["mTW"][0] = n.sqrt(2*tree.jetPF2PATPt[wQuark1Index]*tree.jetPF2PATPt[wQuark2Index] * (1-n.cos(tree.jetPF2PATPhi[wQuark1Index] - tree.jetPF2PATPhi[wQuark2Index])))
+        varMap["mTW"][0] = n.sqrt(2*tree.jetPF2PATPt[tree.wQuark1Index]*tree.jetPF2PATPt[tree.wQuark2Index] * (1-n.cos(tree.jetPF2PATPhi[tree.wQuark1Index] - tree.jetPF2PATPhi[tree.wQuark2Index])))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = tree.metPF2PATEt
@@ -366,7 +371,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             varMap["secJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[1]]
 
 #        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
-#        varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()
+        varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()
         varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt()
         varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta()
         varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi()
@@ -402,10 +407,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
 
 def main():
 
-    zEnrichWeights = {"mumu":-1.,"ee":-1.}
-
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M-50","DYJetsToLL_M-10to50":"DYToLL_M10-50"}
+    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M-50","DYJetsToLL_M-10To50":"DYToLL_M10-50"}
 #    listOfMCs = {}
 
     #Set-up JEC corrections
@@ -415,7 +418,7 @@ def main():
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__met__plus","__met__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
@@ -432,13 +435,8 @@ def main():
 
     #Loop over samples
     for sample in listOfMCs.keys():
-#        overrideWeightDYToLL_M10-50 = -1.
-#        if sample == "WZ2l2nu" or sample == "ZZ2l2p":
-#            continue
-#       print "Doing " + sample + ": ",
-#        sys.stdout.flush()
-#        if "WZ" in sample:
-#            overrideWeight = 1286770./2133868.
+        print "Doing " + sample + ": ",
+        sys.stdout.flush()
         
         outFile = 0
         #update the appropriate root file
@@ -450,18 +448,15 @@ def main():
             setupBranches(outTree,inputVars)
             for channel in channels:
                 inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
-                if "met" in syst:
-                    tree = inFile.Get("tree")
-                else:
-                    tree = inFile.Get("tree"+syst)
-                    try:
-                        print syst + ": " + str(tree.GetEntriesFast())
-                        sys.stdout.flush()
-                        fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
-                    except AttributeError:
-                        print syst + ": " + "0",
-                        sys.stdout.flush()
-                #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does            
+                tree = inFile.Get("tree"+syst)
+                try:
+                    print syst +  " : " + str(tree.GetEntriesFast())
+                    sys.stdout.flush()
+                    fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
+                except AttributeError:
+                    print syst + " : " + "0",
+                    sys.stdout.flush()
+                    #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does            
                 inFile.Close()
             outFile.cd()
             outFile.Write()
@@ -473,7 +468,7 @@ def main():
     #next do the data files
         outFile.Write()
         outFile.Close()
-        print
+    print
     chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
     outChannels = ["DataEG","DataMu"]
@@ -488,7 +483,6 @@ def main():
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
-#            for run in ["A","B","C","D"]:
             for run in ["C","D"]:
                 dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
             fillTree(outTree, inputVars, dataChain, outChan, chan, 0)
@@ -496,30 +490,6 @@ def main():
         outFile.Write()
         outTree.Write()
         outFile.Close()
-
-    zEnrichSyst = ["","__zPt__plus","__zPt__minus"]
-    for outChan in outChannels:
-#        print "And finally z-enriched data ",outChan
-        outFileZ = TFile(outputDir+"histofile_"+outChan+"Zenriched.root","RECREATE")
-        for systPost in zEnrichSyst:
-            outTreeZ = TTree("Ttree_"+outChan+"Zenriched"+systPost,"Ttree_"+outChan+"Zenriched"+systPost)
-            setupBranches(outTreeZ,inputVars)
-            
-            for chan in outChanToData[outChan]:
-                dataChainZ = TChain("tree")
-#                for run in ["A","B","C","D"]:
-                for run in ["C","D"]:
-                    dataChainZ.Add(inputDir+chanMap[chan]+run+chan+"invIsomvaOut.root")
-                zPtSyst = 0.
-                if "plus" in systPost:
-                    zPtSyst = 1.
-                if "minus" in systPost:
-                    zPtSyst = -1.
-#                fillTree(outTreeZ, inputVars, dataChainZ, outChan, chan, 0, zEnrichWeights[chan],zPtEventWeight = zPtSyst)
-            outFileZ.cd()
-            outFileZ.Write()
-            outTreeZ.Write()
-        outFileZ.Close()        
 
 if __name__ == "__main__":
     main()
