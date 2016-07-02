@@ -5,10 +5,6 @@
 import subprocess
 import sys
 
-channels = {"ee":"1","mumu":"2"}
-
-channelList = {"ee":"1","mumu":"2"}
-
 metCut = sys.argv[1]
 metStr = metCut.split(".")[0]
 
