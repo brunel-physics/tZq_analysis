@@ -188,6 +188,7 @@ def setupInputVars():
     inputVars["topEta"] = array('f',[0.])
     inputVars["topPhi"] = array('f',[0.])
     inputVars["j1j2delR"] = array('f',[0.])
+    inputVars["j1j2delPhi"] = array('f',[0.])
     inputVars["zLepdelR"] = array('f',[0.])
     inputVars["zLepdelPhi"] = array('f',[0.])
     inputVars["zlb1DelR"] = array('f',[0.])
@@ -203,7 +204,9 @@ def setupInputVars():
     inputVars["chan"] = array('i',[0])
     inputVars["totPt2Jet"] = array('f',[0.])
     inputVars["wZdelR"] = array('f',[0.])
+    inputVars["wZdelPhi"] = array('f',[0.])
     inputVars["minZJetR"] = array('f',[0.])
+    inputVars["minZJetPhi"] = array('f',[0.])
     inputVars["totHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
@@ -253,6 +256,7 @@ def setupBranches(tree,varMap):
     tree.Branch("tree_topEta",varMap["topEta"],"tree_topEta/F")
     tree.Branch("tree_topPhi",varMap["topPhi"],"tree_topPhi/F")
     tree.Branch("tree_jjdelR",varMap["j1j2delR"],"tree_jjdelR/F")
+    tree.Branch("tree_jjdelPhi",varMap["j1j2delPhi"],"tree_jjdelPhi/F")
     tree.Branch("tree_zLepdelR",varMap["zLepdelR"],"tree_zLepdelR/F")
     tree.Branch("tree_zLepdelPhi",varMap["zLepdelPhi"],"tree_zLepdelPhi/F")
     tree.Branch("tree_zlb1DelR",varMap["zlb1DelR"],"tree_zlb1DelR/F")
@@ -271,7 +275,9 @@ def setupBranches(tree,varMap):
     tree.Branch("tree_Channel",varMap["chan"],"tree_Channel/I")
     tree.Branch("tree_totPt2Jet",varMap["totPt2Jet"],"tree_totPt2Jet/F")
     tree.Branch("tree_wzdelR",varMap["wZdelR"],"tree_wzdelR/F")
+    tree.Branch("tree_wzdelPhi",varMap["wZdelPhi"],"tree_wzdelPhi/F")
     tree.Branch("tree_zjminR",varMap["minZJetR"],"tree_zjminR/F")
+    tree.Branch("tree_zjminPhi",varMap["minZJetPhi"],"tree_zjminPhi/F")
 
 
 
@@ -376,9 +382,12 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta()
         varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi()
         varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2)
+        varMap["wZdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark1 + wQuark2)
         varMap["j1j2delR"][0] = -1.
+        varMap["j1j2delPhi"][0] = -10.
         if len(jetVecs) > 1:
             varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1])
+            varMap["j1j2delPhi"][0] = jetVecs[0].DeltaPhi(jetVecs[1])
 	varMap["zLepdelR"][0] = (zLep1).DeltaR(zLep2)
 	varMap["zLepdelPhi"][0] = (zLep1).DeltaPhi(zLep2)
         varMap["minZJetR"][0] = 3.0
@@ -387,6 +396,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             jetHt += jetVecs[i].Pt()
             if jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
+            if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
+                varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1)
         outTree.Fill()
         varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
         varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
