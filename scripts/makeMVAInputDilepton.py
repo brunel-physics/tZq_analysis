@@ -231,8 +231,8 @@ def setupBranches(tree,varMap):
     tree.Branch("secJetEta",varMap["secJetEta"],"secJetEta/F")
     tree.Branch("secJetPhi",varMap["secJetPhi"],"secJetPhi/F")
     tree.Branch("secJetbTag",varMap["secJetbTag"],"secJetbTag/F")
-    tree.Branch("NBJets",varMap["nBjets"],"NBJets/F")
-    tree.Branch("btagDiscri",varMap["bTagDisc"],"btagDiscri/F")
+    tree.Branch("nBjets",varMap["nBjets"],"nBjets/F")
+    tree.Branch("btagDisc",varMap["bTagDisc"],"btagDisc/F")
     tree.Branch("lep1Pt",varMap["lep1Pt"],"lep1Pt/F")
     tree.Branch("lep1Eta",varMap["lep1Eta"],"lep1Eta/F")
     tree.Branch("lep1Phi",varMap["lep1Phi"],"lep1Phi/F")
@@ -248,9 +248,9 @@ def setupBranches(tree,varMap):
     tree.Branch("lepEta",varMap["lepEta"],"lepEta/F")
     tree.Branch("lepPhi",varMap["lepPhi"],"lepPhi/F")
     tree.Branch("zMass",varMap["zMass"],"zMass/F")
-    tree.Branch("Zpt",varMap["zPt"],"Zpt/F")
-    tree.Branch("Zeta",varMap["zEta"],"Zeta/F")
-    tree.Branch("Zphi",varMap["zPhi"],"Zphi/F")
+    tree.Branch("zPt",varMap["zPt"],"zPt/F")
+    tree.Branch("zEta",varMap["zEta"],"zEta/F")
+    tree.Branch("zPhi",varMap["zPhi"],"zPhi/F")
     tree.Branch("topMass",varMap["topMass"],"topMass/F")
     tree.Branch("topPt",varMap["topPt"],"topPt/F")
     tree.Branch("topEta",varMap["topEta"],"topEta/F")
@@ -406,6 +406,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         ht += zLep1.Pt() + zLep2.Pt()
         varMap["lepHt"][0] = ht
         varMap["jetHt"][0] = jetHt
+	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
         ht += jetHt
         varMap["totHt"][0] = ht
         varMap["totHtOverPt"][0] = ht / n.sqrt(totPx * totPx + totPy * totPy) 
