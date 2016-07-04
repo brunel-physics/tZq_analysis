@@ -232,7 +232,7 @@ def setupBranches(tree,varMap):
     tree.Branch("secJetPhi",varMap["secJetPhi"],"secJetPhi/F")
     tree.Branch("secJetbTag",varMap["secJetbTag"],"secJetbTag/F")
     tree.Branch("nBjets",varMap["nBjets"],"nBjets/F")
-    tree.Branch("btagDisc",varMap["bTagDisc"],"btagDisc/F")
+    tree.Branch("bTagDisc",varMap["bTagDisc"],"bTagDisc/F")
     tree.Branch("lep1Pt",varMap["lep1Pt"],"lep1Pt/F")
     tree.Branch("lep1Eta",varMap["lep1Eta"],"lep1Eta/F")
     tree.Branch("lep1Phi",varMap["lep1Phi"],"lep1Phi/F")
