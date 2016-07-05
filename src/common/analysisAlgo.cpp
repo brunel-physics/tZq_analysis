@@ -893,8 +893,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
 	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
 	  std::cout << systNames[systIn] << " ";
-	  //	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
-	  /*	if (systIn > 0 && !(systMask & systToRun)){
+	//  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
+	/*  	if (systIn > 0 && !(systMask & systToRun)){
 		if (systIn > 0) systMask = systMask << 1;
 		continue;
 		}*/
@@ -974,44 +974,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
-	    // trilepton stuff - not updated since Run2012
-	    if (channel == "eee"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.036;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.036;
-	      eventWeight *= twgt;
-	    }
-	    else if (channel == "eemu"){
-	      float twgt = 0.987;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.035;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.035;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "emumu"){
-	      float twgt = 0.886;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.042;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.042;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "mumumu"){
-	      float twgt = 0.9871;
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.0242;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.0212;
-	      eventWeight *= twgt;
-	    }
-	    // dilepton stuff, updated for Run2015 MC
-	    if (channel == "ee"){
-	      float twgt = 0.953; // tight=0.953; medium=0.958
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.009;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.009;
-	      eventWeight *= twgt;
-	    }
-	    if (channel == "mumu"){
-	      float twgt = 0.937; // tight=0.937; medium=0.931
-	      if (systInd > 0 && (systMask == 1)) twgt += 0.007;
-	      if (systInd > 0 && (systMask == 2)) twgt -= 0.007;
-	      eventWeight *= twgt;
-	    }
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {
@@ -1027,7 +989,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    cutObj->dumpLooseLepInfo(event);
 	    cutObj->dumpLeptonInfo(event);
 	  }
-	  if (!synchCutFlow ) eventWeight*=datasetWeight; // If not synch, scale according to lumi
+	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
 	  //std::cout << "channel: " << channel << std::endl;
 	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
 	    if (systInd) systMask = systMask << 1;

@@ -283,11 +283,14 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //  if (!isMC_) if (!triggerCuts(event)) return false;
   if (!triggerCuts(event)) return false;
+
+  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
+
   if (!metFilters(event)) return false;
 
   //Make lepton cuts. Does the inverted iso cuts if necessary.
-  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
-  //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun)) return false;
+  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow))) return false;
+  //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
@@ -325,7 +328,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
-bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
+bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow){
 
   //Do lepton selection. 
   event->electronIndexTight = getTightEles(event);
@@ -364,8 +367,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   }
 
     * eventWeight *= getLeptonWeight(event);
-
-//  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
 
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
@@ -926,7 +927,8 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   if (makeEventDump_) dumpToFile(event,0);
 
   if (!triggerCuts(event)) return false; 
-   
+//  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF();
+
   synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
 
   // Check number of leptons is correct
@@ -1553,8 +1555,6 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
   float leptonWeight{1.};
   if (trileptonChannel_ == true){
     if (numTightEle_ > 1){
-//      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
-//      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first]);
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second]);
     }
@@ -1563,18 +1563,14 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
-//      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
       leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],event->elePF2PATSCEta[event->wLepIndex]);
     }
     else{
-//      leptonWeight *= eleSF(event->wLepton.Pt(),event->wLepton.Eta());
       leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],event->elePF2PATSCEta[event->wLepIndex]);
     }
   }
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-//      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta());
-//      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta());
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first]);
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second]);
     }
@@ -1594,7 +1590,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
 
 }
 
-/*float Cuts::getTriggerSF(int syst, double eta1, double eta2){
+float Cuts::getTriggerSF(int syst, double eta1, double eta2){
 
   std::string channel = "";
 
@@ -1655,7 +1651,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event){
     }
   }
 
-}*/
+}
 
 float Cuts::eleSF(double pt, double eta){
 
@@ -1687,9 +1683,7 @@ float Cuts::muonSF(double pt, double eta){
   if ( pt <= maxIsoPt ) binIso = h_muonPFiso->FindBin(std::abs(eta),pt);
   else binIso = h_muonPFiso->FindBin(std::abs(eta),maxIsoPt);
 
-  double muSF{h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso)};
-
-  return (muSF);
+  return {h_muonIDs->GetBinContent(binId)*h_muonPFiso->GetBinContent(binIso)};
 }
 
 void Cuts::initialiseJECCors(){
