@@ -163,6 +163,14 @@ def setupInputVars():
     inputVars["secJetPhi"] = array('f',[0.])
     inputVars["secJetEta"] = array('f',[0.])
     inputVars["secJetbTag"] = array('f',[0.])
+    inputVars["thirdJetPt"] = array('f',[0.])
+    inputVars["thirdJetPhi"] = array('f',[0.])
+    inputVars["thirdJetEta"] = array('f',[0.])
+    inputVars["thirdJetbTag"] = array('f',[0.])
+    inputVars["fourthJetPt"] = array('f',[0.])
+    inputVars["fourthJetPhi"] = array('f',[0.])
+    inputVars["fourthJetEta"] = array('f',[0.])
+    inputVars["fourthJetbTag"] = array('f',[0.])
     inputVars["nBjets"] = array('f',[0.])
     inputVars["bTagDisc"] = array('f',[0.])
     inputVars["lep1Pt"] = array('f',[0.])
@@ -231,6 +239,14 @@ def setupBranches(tree,varMap):
     tree.Branch("secJetEta",varMap["secJetEta"],"secJetEta/F")
     tree.Branch("secJetPhi",varMap["secJetPhi"],"secJetPhi/F")
     tree.Branch("secJetbTag",varMap["secJetbTag"],"secJetbTag/F")
+    tree.Branch("thirdJetPt",varMap["thirdJetPt"],"thirdJetPt/F")
+    tree.Branch("thirdJetEta",varMap["thirdJetEta"],"thirdJetEta/F")
+    tree.Branch("thirdJetPhi",varMap["thirdJetPhi"],"thirdJetPhi/F")
+    tree.Branch("thirdJetbTag",varMap["thirdJetbTag"],"thirdJetbTag/F")
+    tree.Branch("fourthJetPt",varMap["fourthJetPt"],"fourthJetPt/F")
+    tree.Branch("fourthJetEta",varMap["fourthJetEta"],"fourthJetEta/F")
+    tree.Branch("fourthJetPhi",varMap["fourthJetPhi"],"fourthJetPhi/F")
+    tree.Branch("fourthJetbTag",varMap["fourthJetbTag"],"fourthJetbTag/F")
     tree.Branch("nBjets",varMap["nBjets"],"nBjets/F")
     tree.Branch("bTagDisc",varMap["bTagDisc"],"bTagDisc/F")
     tree.Branch("lep1Pt",varMap["lep1Pt"],"lep1Pt/F")
@@ -369,11 +385,29 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["secJetPt"][0] = -1.
         varMap["secJetEta"][0] = -500.
         varMap["secJetPhi"][0] = -500.
+        varMap["thirdJetbTag"][0] = -1.
+        varMap["thirdJetPt"][0] = -1.
+        varMap["thirdJetEta"][0] = -500.
+        varMap["thirdJetPhi"][0] = -500.
+        varMap["fourthJetbTag"][0] = -1.
+        varMap["fourthJetPt"][0] = -1.
+        varMap["fourthJetEta"][0] = -500.
+        varMap["fourthJetPhi"][0] = -500.
         if len(jetVecs) > 1:
             varMap["secJetPt"][0] = jetVecs[1].Pt()
             varMap["secJetEta"][0] = jetVecs[1].Eta()
             varMap["secJetPhi"][0] = jetVecs[1].Phi()
             varMap["secJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[1]]
+        if len(jetVecs) > 2:
+            varMap["thirdJetPt"][0] = jetVecs[2].Pt()
+            varMap["thirdJetEta"][0] = jetVecs[2].Eta()
+            varMap["thirdJetPhi"][0] = jetVecs[2].Phi()
+            varMap["thirdJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[2]]
+        if len(jetVecs) > 3:
+            varMap["fourthJetPt"][0] = jetVecs[3].Pt()
+            varMap["fourthJetEta"][0] = jetVecs[3].Eta()
+            varMap["fourthJetPhi"][0] = jetVecs[3].Phi()
+            varMap["fourthJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[3]]
 
 #        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
         varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()

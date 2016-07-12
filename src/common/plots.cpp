@@ -72,6 +72,14 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("secondJetEta",&Plots::fillSecondJetEta));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("secondJetPhi",&Plots::fillSecondJetPhi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("secondJetBDisc",&Plots::fillSecondJetBDisc));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("thirdJetPt",&Plots::fillThirdJetPt));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("thirdJetEta",&Plots::fillThirdJetEta));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("thirdJetPhi",&Plots::fillThirdJetPhi));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("thirdJetBDisc",&Plots::fillThirdJetBDisc));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("fourthJetPt",&Plots::fillFourthJetPt));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("fourthJetEta",&Plots::fillFourthJetEta));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("fourthJetPhi",&Plots::fillFourthJetPhi));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("fourthJetBDisc",&Plots::fillFourthJetBDisc));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("numbBJets",&Plots::numbBJets));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("bTagDisc",&Plots::fillBtagDisc));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepton1Pt",&Plots::fillZLep1Pt));
@@ -303,6 +311,16 @@ float Plots::fillSecondJetPt(AnalysisEvent* event){
   return -10;
 }
 
+float Plots::fillThirdJetPt(AnalysisEvent* event){
+  if (event->jetIndex.size() > 2) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[2]] * event->jetPF2PATPx[event->jetIndex[2]] + event->jetPF2PATPy[event->jetIndex[2]] * event->jetPF2PATPy[event->jetIndex[2]]) );
+  return -10;
+}
+
+float Plots::fillFourthJetPt(AnalysisEvent* event){
+  if (event->jetIndex.size() > 3) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[3]] * event->jetPF2PATPx[event->jetIndex[3]] + event->jetPF2PATPy[event->jetIndex[3]] * event->jetPF2PATPy[event->jetIndex[3]]) );
+  return -10;
+}
+
 float Plots::fillLeadingJetEta(AnalysisEvent* event){
   if (event->jetIndex.size() > 0) return std::abs(event->jetPF2PATEta[event->jetIndex[0]]);
   return -10;
@@ -310,6 +328,16 @@ float Plots::fillLeadingJetEta(AnalysisEvent* event){
 
 float Plots::fillSecondJetEta(AnalysisEvent* event){
   if (event->jetIndex.size() > 1) return std::abs(event->jetPF2PATEta[event->jetIndex[1]]);
+  return -10;
+}
+
+float Plots::fillThirdJetEta(AnalysisEvent* event){
+  if (event->jetIndex.size() > 2) return std::abs(event->jetPF2PATEta[event->jetIndex[2]]);
+  return -10;
+}
+
+float Plots::fillFourthJetEta(AnalysisEvent* event){
+  if (event->jetIndex.size() > 3) return std::abs(event->jetPF2PATEta[event->jetIndex[3]]);
   return -10;
 }
 
@@ -323,6 +351,16 @@ float Plots::fillSecondJetPhi(AnalysisEvent* event){
   return -10;
 }
 
+float Plots::fillThirdJetPhi(AnalysisEvent* event){
+  if (event->jetIndex.size() > 2) return event->jetPF2PATPhi[event->jetIndex[2]];
+  return -10;
+}
+
+float Plots::fillFourthJetPhi(AnalysisEvent* event){
+  if (event->jetIndex.size() > 3) return event->jetPF2PATPhi[event->jetIndex[3]];
+  return -10;
+}
+
 float Plots::fillLeadingJetBDisc(AnalysisEvent* event){
   if (event->jetIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->jetIndex[0]];
   else return -10;
@@ -330,6 +368,16 @@ float Plots::fillLeadingJetBDisc(AnalysisEvent* event){
 
 float Plots::fillSecondJetBDisc(AnalysisEvent* event){
   if (event->jetIndex.size() > 1) return event->jetPF2PATBDiscriminator[event->jetIndex[1]];
+  else return -10;
+}
+
+float Plots::fillThirdJetBDisc(AnalysisEvent* event){
+  if (event->jetIndex.size() > 2) return event->jetPF2PATBDiscriminator[event->jetIndex[2]];
+  else return -10;
+}
+
+float Plots::fillFourthJetBDisc(AnalysisEvent* event){
+  if (event->jetIndex.size() > 3) return event->jetPF2PATBDiscriminator[event->jetIndex[3]];
   else return -10;
 }
 

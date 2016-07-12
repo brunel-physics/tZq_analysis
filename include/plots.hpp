@@ -45,6 +45,14 @@ class Plots{
   float fillSecondJetEta(AnalysisEvent*);
   float fillSecondJetPhi(AnalysisEvent*);
   float fillSecondJetBDisc(AnalysisEvent*);
+  float fillThirdJetPt(AnalysisEvent*);
+  float fillThirdJetEta(AnalysisEvent*);
+  float fillThirdJetPhi(AnalysisEvent*);
+  float fillThirdJetBDisc(AnalysisEvent*);
+  float fillFourthJetPt(AnalysisEvent*);
+  float fillFourthJetEta(AnalysisEvent*);
+  float fillFourthJetPhi(AnalysisEvent*);
+  float fillFourthJetBDisc(AnalysisEvent*);
   float fillMetPlot(AnalysisEvent*);
   float numbBJets(AnalysisEvent*);
   float fillBtagDisc(AnalysisEvent*);
