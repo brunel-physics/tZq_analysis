@@ -12,8 +12,6 @@ rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015CFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015DFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015CFiles.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015DFiles.txt
-rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2016BFiles.txt
-rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2016BFiles.txt
 
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets10To50Files.txt
 rm $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50Files.txt
@@ -63,8 +61,6 @@ ls /scratch/data/tZqSkimsRun2015/mumuRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/d
 ls /scratch/data/tZqSkimsRun2015/mumuRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2015DFiles.txt
 ls /scratch/data/tZqSkimsRun2015/metRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015CFiles.txt
 ls /scratch/data/tZqSkimsRun2015/metRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/metRun2015DFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/eeRun2016BFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/mumuRun2016BFiles.txt
 
 ls /scratch/data/tZqSkimsRun2015/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2015/DYJetsToLL_M-50/* -1d >> $TQZ_TOOLS_PATH/configs/datasets/fileLists/DYJets50Files.txt
