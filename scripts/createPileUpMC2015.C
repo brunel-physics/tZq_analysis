@@ -12,7 +12,7 @@
 
 using namespace std;
 
-void createPileUpMC() {
+void createPileUpMC2015() {
 
   TH1D* pileup   = new TH1D("pileup", "pileup", 50,  0., 50.0);
 
