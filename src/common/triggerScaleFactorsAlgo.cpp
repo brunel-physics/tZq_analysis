@@ -14,6 +14,7 @@
 
 #include "TTree.h"
 #include "TFile.h"
+#include "TEfficiency.h"
 
 TriggerScaleFactors::TriggerScaleFactors():
   config(""),
@@ -602,14 +603,24 @@ void TriggerScaleFactors::savePlots()
 
   // Calculate alphas
   double alphaElectron = ( (numberSelectedElectronsTriggered[0]/numberSelectedElectrons[0])*(numberPassedElectrons[0]/numberSelectedElectrons[0]) )/(numberTriggeredElectrons[0]/numberSelectedElectrons[0]+1.0e-6);
-  double electronSystUncert = (1.0-alphaElectron);
-  double alphaMuon = ( (numberSelectedMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredMuons[0]/numberSelectedMuons[0]+1.0e-6); 
-  double muonSystUncert = (1.0-alphaMuon);
+  double alphaMuon = ( (numberSelectedMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredMuons[0]/numberSelectedMuons[0]+1.0e-6);
+
+  // Calculate uncertainities
+  double level = 0.60;
+  double electronDataUpperUncert = electronEfficiencyData-TEfficiency::ClopperPearson(numberPassedElectrons[1], numberTriggeredElectrons[1], level, true);
+  double electronMcUpperUncert = electronEfficiencyMC-TEfficiency::ClopperPearson(numberPassedElectrons[0], numberTriggeredElectrons[0], level, true);
+  double electronDataLowerUncert = electronEfficiencyData-TEfficiency::ClopperPearson(numberPassedElectrons[1], numberTriggeredElectrons[1], level, false);
+  double electronMcLowerUncert = electronEfficiencyMC-TEfficiency::ClopperPearson(numberPassedElectrons[0], numberTriggeredElectrons[0], level, false);
+
+  double muonDataUpperUncert = muonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuons[1], numberTriggeredMuons[1], level, true);
+  double muonMcUpperUncert = muonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuons[0], numberTriggeredMuons[0], level, true);
+  double muonDataLowerUncert = muonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuons[1], numberTriggeredMuons[1], level, false);
+  double muonMcLowerUncert = muonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuons[0], numberTriggeredMuons[0], level, false);
 
   // Save output
 
-  std::cout << "electron/muon data efficiencies: " << electronEfficiencyData << " / " << muonEfficiencyData << std::endl;
-  std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " / " << muonEfficiencyMC << std::endl;
+  std::cout << "\nelectron/muon data efficiencies: " << electronEfficiencyData << " +/- " << electronDataUpperUncert << "/" << electronDataLowerUncert << " / " << muonEfficiencyData << " +/- " << muonDataUpperUncert << "/" << muonDataLowerUncert << std::endl;
+  std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " +/- " << electronMcUpperUncert << "/" << electronMcLowerUncert << " / " << muonEfficiencyMC << " +/- " << muonMcUpperUncert << "/" << muonMcLowerUncert << std::endl;
   std::cout << "electron/muon trigger SFs: " << electronSF << " / " << muonSF << std::endl;
 
   TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
