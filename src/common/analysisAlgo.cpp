@@ -50,7 +50,8 @@ AnalysisAlgo::AnalysisAlgo():
   mtwCut{0.},
   trileptonChannel_{true},
   isFCNC_{false},
-  isCtag_{false}
+  isCtag_{false},
+  blindedPlots_{true}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -273,6 +274,7 @@ void AnalysisAlgo::show_usage(std::string name){
             << "\t--FCNC \t Look for FCNC dilepton final state instead of the default trilepton channel.\n"
             << "\t--cTag \t Look for FCNC dilepton final state with cTagging instead of the default trilepton channel.\n"
 	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
+	    << "\t--unblinded\t\t\t\tMake all unblinded plots.\n"
             << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
             << "\t-l\t\t\t\tIf this option is set, scale MC plots to a fixed lumi. Default is lumi from data samples.\n"
 	    << "\t-o  --outFolder\tOUTFOLDER\tOutput folder for plots. If set overwrites what may be in the config file.\n"
@@ -398,6 +400,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-a" || arg == "--synch"){ // Change to synch exercise cut flow.
       synchCutFlow = true;
+    }
+    else if ( arg == "--unblinded" ){ // unblind plots.
+      blindedPlots_= false;
     }
     else if (arg == "-m"){
       skipData = true;
@@ -773,7 +778,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
 	std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
 	if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkim2015s/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+	std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
 	if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
       }
       cutObj->setMC(dataset->isMC());
