@@ -50,8 +50,7 @@ AnalysisAlgo::AnalysisAlgo():
   mtwCut{0.},
   trileptonChannel_{true},
   isFCNC_{false},
-  isCtag_{false},
-  blindedPlots_{true}
+  isCtag_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -400,9 +399,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg == "-a" || arg == "--synch"){ // Change to synch exercise cut flow.
       synchCutFlow = true;
-    }
-    else if ( arg == "--unblinded" ){ // unblind plots.
-      blindedPlots_= false;
     }
     else if (arg == "-m"){
       skipData = true;
