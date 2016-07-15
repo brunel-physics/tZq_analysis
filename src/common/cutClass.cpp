@@ -63,7 +63,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   numLooseMu_{0},
   looseMuonPt_{20.},
   looseMuonEta_{2.4},
-  looseMuonRelIso_{0.2},
+  looseMuonRelIso_{0.25},
   //zMass cuts
   invZMassCut_{15.},
   invWMassCut_{50.},
@@ -389,7 +389,6 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
     if (postLepSelTree_) { //If post-lep tree creation, keep more info
-//        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
         if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
@@ -416,6 +415,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     }
 
     else { // Else do tight cut-based ID
+        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
  	// Barrel cut-based ID
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
@@ -458,13 +458,15 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_)continue;
 
     // Barrel cut-based Veto ID      
+        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 && postLepSelTree_ ) continue;
+
 	if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0114 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.181 ) continue;
 	  if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue; // Use same rel iso as tight
-	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue; // Use same rel iso as medium
+	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.126 ) continue; // Use same rel iso as loose
 	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.207 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
@@ -476,7 +478,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
 	  if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue; // Use same rel iso as tight
-	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue; // Use same rel iso as medium	  
+	  if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.144 ) continue; // Use same rel iso as loose	  
 	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.174 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
