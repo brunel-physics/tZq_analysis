@@ -7,7 +7,7 @@ cuts =
 	      number = 0;
 	      },
 	looseMuons = {
-	      pt   = 10.;
+	      pt   = 20.;
 	      eta  = 2.4;
 	      relIso = 0.25;
 	      number = 0;
@@ -19,7 +19,7 @@ cuts =
 	      number = 2.;
 	      },
 	looseElectrons = {
-	      pt   = 10.;
+	      pt   = 20.;
 	      eta  = 2.4;
 	      relIso = 0.126;
 	      number = 2.; 

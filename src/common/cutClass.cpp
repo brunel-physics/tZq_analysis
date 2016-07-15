@@ -526,8 +526,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   std::vector<int> muons;
   for (int i{0}; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    //    if (!event->muonPF2PATGlobalID[i] || !event->muonPF2PATTrackID[i]) continue;
-    if (event->muonPF2PATPt[i] <= looseMuonPt_) continue;
+    if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
     if (event->muonPF2PATGlobalID[i] || event->muonPF2PATTrackID[i])
