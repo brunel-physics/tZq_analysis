@@ -21,7 +21,7 @@ cuts =
 	looseElectrons = {
 	      pt   = 10.;
 	      eta  = 2.4;
-	      relIso = 0.107587;
+	      relIso = 0.126;
 	      number = 2.; 
 	      }
 	jets = {
