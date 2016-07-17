@@ -669,10 +669,10 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] <= 0 ) continue;
 	// Now ensure that the leading b jet isn't one of these!
 	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
-	  if( event->jetPF2PATPt[getLeadingBjet(event)] == event->jetPF2PATPt[jets[k]]) continue;
+	  if( event->jetPF2PATPt[event->jetIndex[getLeadingBjet(event)]] == event->jetPF2PATPt[jets[k]]) continue;
 	}
 	else if ( event->jetPF2PATBDiscriminator[l] > bDiscCut_ ){
-	  if( event->jetPF2PATPt[getLeadingBjet(event)] == event->jetPF2PATPt[jets[l]]) continue;
+	  if( event->jetPF2PATPt[event->jetIndex[getLeadingBjet(event)]] == event->jetPF2PATPt[jets[l]]) continue;
 	}
 	TLorentzVector wQuark1{event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]};
 	TLorentzVector wQuark2{event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]};
@@ -695,8 +695,8 @@ float Cuts::getTopMass(AnalysisEvent *event){
   int leadingBjet{getLeadingBjet( event )};
   if (leadingBjet == -1) return -1.0;
   TLorentzVector metVec{event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt};
-  //TLorentzVector bVec{event->jetPF2PATPx[leadingBjet],event->jetPF2PATPy[leadingBjet],event->jetPF2PATPz[leadingBjet],event->jetPF2PATE[leadingBjet]};
-  TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  TLorentzVector bVec{event->jetPF2PATPx[event->jetIndex[leadingBjet]],event->jetPF2PATPy[event->jetIndex[leadingBjet]],event->jetPF2PATPz[event->jetIndex[leadingBjet]],event->jetPF2PATE[event->jetIndex[leadingBjet]]};
+  //TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
   float topMass{(event->wLepton + bVec + metVec).M()};
   return topMass;
 }
