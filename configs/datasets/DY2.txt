@@ -187,7 +187,7 @@ colour = kSpring
 label = w+jets
 plotType = f
 
-[DYJetsToLL_MM-50]
+[DYJetsToLL_M-50]
 fileName = configs/datasets/fileLists/DYJets50v2Files.txt
 totalEvents = 163982720
 crossSection = 6025.2
@@ -197,7 +197,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_MM-10To50]
+[DYJetsToLL_M-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 169513672
 crossSection = 18610.0
@@ -209,7 +209,7 @@ plotType = f
 
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
-luminosity = 17.227
+luminosity = 17.731
 runType = data
 histoName = data
 label = Data
@@ -219,7 +219,7 @@ triggerFlag = eCt
 
 [eeRun2015D]
 fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
-luminosity = 2095.17
+luminosity = 2207.321
 runType = data
 histoName = data
 label = Data

@@ -209,7 +209,7 @@ plotType = f
 
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
-luminosity = 17.227
+luminosity = 17.731
 runType = data
 histoName = data
 label = Data
@@ -219,7 +219,7 @@ triggerFlag = eCt
 
 [eeRun2015D]
 fileName = configs/datasets/fileLists/eeRun2015DFiles.txt
-luminosity = 2095.17
+luminosity = 2207.321
 runType = data
 histoName = data
 label = Data

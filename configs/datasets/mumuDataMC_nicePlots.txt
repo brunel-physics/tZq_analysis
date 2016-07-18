@@ -209,7 +209,7 @@ plotType = f
 
 [mumuRun2015C]
 fileName = configs/datasets/fileLists/mumuRun2015CFiles.txt
-luminosity = 17.227
+luminosity = 17.731
 runType = data
 histoName = data
 label = Data
@@ -219,7 +219,7 @@ triggerFlag = mCt
 
 [mumuRun2015D]
 fileName = configs/datasets/fileLists/mumuRun2015DFiles.txt
-luminosity = 2186.175
+luminosity = 2300.542
 runType = data
 histoName = data
 label = Data

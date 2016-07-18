@@ -1,3 +1,13 @@
+[tZq]
+fileName = configs/datasets/fileLists/tZqFiles.txt
+totalEvents = 2996000
+crossSection = 0.0758
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
+plotType = f
+
 [eeRun2015C]
 fileName = configs/datasets/fileLists/eeRun2015CFiles.txt
 luminosity = 17.731
@@ -17,7 +27,6 @@ label = Data
 plotType = p
 colour = kBlack
 triggerFlag = eCt
-
 
 []
 

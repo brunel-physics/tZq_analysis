@@ -1,6 +1,6 @@
 [emuRun2015C]
 fileName = configs/datasets/fileLists/emuRun2015CFiles.txt
-luminosity = 17.227
+luminosity = 17.731
 runType = data
 histoName = data
 label = Data
@@ -10,7 +10,7 @@ triggerFlag = dCt
 
 [emuRun2015D]
 fileName = configs/datasets/fileLists/emuRun2015DFiles.txt
-luminosity = 2095.17
+luminosity = 2207.321
 runType = data
 histoName = data
 label = Data
