@@ -180,6 +180,7 @@ class Cuts{
 
   //met and mtw cut values
   float metCut_;
+  float metDileptonCut_;
   float mTWCut_;
   float mTWCutSynch_;
 
@@ -203,7 +204,7 @@ class Cuts{
   void setTriggerFlag(std::string triggerFlag) {triggerFlag_ = triggerFlag;}
   void setBTagPlots(std::vector<TH2D*> vec, bool makePlotsOrRead) {makeBTagEffPlots_ = makePlotsOrRead; bTagEffPlots_ = vec;getBTagWeight_ = !makePlotsOrRead;}
   void setSkipTrig(bool skip){skipTrigger_ = skip;}
-  void setMetCut(float cut){metCut_ = cut;}
+  void setMetCut(float cut){metCut_ = cut; metDileptonCut_ = cut;}
   void setMTWCut(float cut){mTWCut_ = cut;}
   void setJetRegion(int nJets, int nBets, int maxJets, int maxBJets){numJets_ = nJets; numbJets_ = nBets; maxJets_ = maxJets; maxbJets_ = maxBJets;}
   bool parse_config(std::string);

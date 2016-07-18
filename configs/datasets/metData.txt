@@ -1,6 +1,6 @@
 [metRun2015C]
 fileName = configs/datasets/fileLists/metRun2015CFiles.txt
-luminosity = 17.731
+luminosity = 17.227
 runType = data
 histoName = data
 label = Data
@@ -10,7 +10,7 @@ triggerFlag = eCt
 
 [metRun2015D]
 fileName = configs/datasets/fileLists/metRun2015DFiles.txt
-luminosity = 2207.321
+luminosity = 2246.256
 runType = data
 histoName = data
 label = Data

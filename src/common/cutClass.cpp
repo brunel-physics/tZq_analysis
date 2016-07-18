@@ -65,7 +65,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
   //zMass cuts
-  invZMassCut_{15.},
+  invZMassCut_{5.},
   invWMassCut_{50.},
   //Jet initialisation
   numJets_{2},
@@ -122,6 +122,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   //MET and mTW cuts go here.
   metCut_{0.0},
+  metDileptonCut_{100.0},
   mTWCut_{20.0},
   mTWCutSynch_{20.0},
   TopMassCutLower_{95.},
@@ -320,6 +321,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
+  if (!trileptonChannel_ && !isFCNC_ && event->metPF2PATPt > metDileptonCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
   double mtw{std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())))};
