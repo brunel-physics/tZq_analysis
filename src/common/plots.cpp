@@ -120,6 +120,8 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wTransverseMass",&Plots::fillwTransverseMass));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("jjDelR",&Plots::filljjDelR));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("jjDelPhi",&Plots::filljjDelPhi));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wwDelR",&Plots::fillwwDelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wwDelPhi",&Plots::fillwwDelPhi));  
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lbDelR",&Plots::filllbDelR));  
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lbDelPhi",&Plots::filllbDelPhi));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepDelR",&Plots::fillZLepDelR));  
@@ -650,6 +652,16 @@ float Plots::filljjDelPhi(AnalysisEvent* event){
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]],event->jetPF2PATPy[event->jetIndex[0]],event->jetPF2PATPz[event->jetIndex[0]],event->jetPF2PATE[event->jetIndex[0]]);
   tempJet2.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]],event->jetPF2PATPy[event->jetIndex[1]],event->jetPF2PATPz[event->jetIndex[1]],event->jetPF2PATE[event->jetIndex[1]]);
   return tempJet1.DeltaPhi(tempJet2);
+}
+
+float Plots::fillwwDelR(AnalysisEvent* event){
+  if (event->jetIndex.size() < 3) return -1.;
+  return event->wPairQuarks.first.DeltaR(event->wPairQuarks.second);
+}
+
+float Plots::fillwwDelPhi(AnalysisEvent* event){
+  if (event->jetIndex.size() < 3) return -1.;
+  return event->wPairQuarks.first.DeltaPhi(event->wPairQuarks.second);
 }
 
 float Plots::filllbDelR(AnalysisEvent* event){

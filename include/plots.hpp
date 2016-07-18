@@ -97,6 +97,8 @@ class Plots{
   float fillwTransverseMass(AnalysisEvent*);
   float filljjDelR(AnalysisEvent*);
   float filljjDelPhi(AnalysisEvent*);
+  float fillwwDelR(AnalysisEvent*);
+  float fillwwDelPhi(AnalysisEvent*);
   float fillZLepDelR(AnalysisEvent*);
   float fillZLepDelPhi(AnalysisEvent*);
   float fillZLep1BjetDelR(AnalysisEvent*);
