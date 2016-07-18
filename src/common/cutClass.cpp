@@ -1614,13 +1614,13 @@ float Cuts::getTriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.953; // tight=0.953; medium=0.958
+      float twgt = 0.956; // tight=0.956; medium=0.958
       if (syst == 1) twgt += 0.009;
       if (syst == 2) twgt -= 0.009;
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.937; // tight=0.937; medium=0.931
+      float twgt = 0.934; // tight=0.934; medium=0.931
       if (syst == 1) twgt += 0.007;
       if (syst == 2) twgt -= 0.007;
       return twgt;
