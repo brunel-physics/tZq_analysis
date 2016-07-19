@@ -301,10 +301,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex);
-  event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
+//  event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
-  if (event->bTagIndex.size() != event->bTagLooseIndex.size() ) return false;
+//  if (event->bTagIndex.size() != event->bTagLooseIndex.size() ) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
