@@ -77,6 +77,7 @@ class Plots{
   float fillZPairPhi(AnalysisEvent*);
   float fillWPair1Mass(AnalysisEvent*);
   float fillWPair2Mass(AnalysisEvent*);
+  float fillWPairMass(AnalysisEvent*);
   float fillLeptonMass(AnalysisEvent*);
   float fillTopMass(AnalysisEvent*);
   float fillTopPt(AnalysisEvent*);

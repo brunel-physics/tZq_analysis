@@ -681,7 +681,7 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	}
 	TLorentzVector wQuark1{event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]};
 	TLorentzVector wQuark2{event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]};
-	double invWbosonMass{(wQuark1 + wQuark2).M() - 80.};
+	double invWbosonMass{(wQuark1 + wQuark2).M() - 80.385};
 	if( std::abs(invWbosonMass) < std::abs(closestWmass) ){
 	  event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
 	  event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];

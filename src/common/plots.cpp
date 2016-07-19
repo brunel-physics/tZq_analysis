@@ -100,6 +100,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zPairPhi",&Plots::fillZPairPhi));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPair1Mass",&Plots::fillWPair1Mass));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPair2Mass",&Plots::fillWPair2Mass));
+  if (!trileptonChannel_) functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPairMass",&Plots::fillWPairMass));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lepMass",&Plots::fillLeptonMass));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("topMass",&Plots::fillTopMass));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("topPt",&Plots::fillTopPt));
@@ -462,6 +463,10 @@ float Plots::fillWPair1Mass(AnalysisEvent* event){
 
 float Plots::fillWPair2Mass(AnalysisEvent* event){
   return (event->zPairLeptons.second + event->wLepton).M();
+}
+
+float Plots::fillWPairMass(AnalysisEvent* event){
+  return (event->wPairQuarks.first + event->wPairQuarks.second).M();
 }
 
 float Plots::fillLeptonMass(AnalysisEvent* event){
