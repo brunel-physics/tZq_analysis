@@ -20,6 +20,7 @@ class Cuts{
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
   std::vector<int> makeMetCuts(AnalysisEvent*);
   std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>);
+  std::vector<int> makeLooseBCuts(AnalysisEvent*, std::vector<int>);
   std::vector<int> makeCCuts(AnalysisEvent*, std::vector<int>);
   
   std::vector<int> getTightEles(AnalysisEvent* event);
@@ -115,6 +116,7 @@ class Cuts{
   unsigned numbJets_;
   unsigned maxbJets_;
   float bDiscCut_;
+  float bLooseDiscCut_;
   float bDiscSynchCut_;
 
   //C-Disc cut

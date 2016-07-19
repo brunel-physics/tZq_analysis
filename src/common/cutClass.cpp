@@ -80,6 +80,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   bDiscCut_{0.935}, // Tight cut
   //bDiscCut_{0.80}, // Medium level
   //bDiscCut_{0.460}, // Loose cut
+  bLooseDiscCut_{0.460}, // Loose cut
    bDiscSynchCut_{0.460},
   //C-discriminator cut
   numcJets_{1},
@@ -300,8 +301,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex);
+  event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
+  if (event->bTagIndex.size() != event->bTagLooseIndex.size() ) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
@@ -321,7 +324,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
-  if (!trileptonChannel_ && !isFCNC_ && event->metPF2PATPt > metDileptonCut_) return false;
+//  if (!trileptonChannel_ && !isFCNC_ && event->metPF2PATPt > metDileptonCut_) return false;
   TLorentzVector tempMet;
   tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
   double mtw{std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())))};
@@ -844,6 +847,19 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ && !synchCutFlow_) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && synchCutFlow_) continue;
+    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
+    bJets.emplace_back(i);
+  }
+  return bJets;
+}
+
+std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jets){
+  
+  std::vector<int> bJets;
+
+  for (auto i = 0; i != jets.size(); i++){
+    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
+    if (event->jetPF2PATBDiscriminator[jets[i]] <= bLooseDiscCut_) continue;
     if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
   }
@@ -1616,7 +1632,7 @@ float Cuts::getTriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.956; // tight=0.956; medium=0.958
+      float twgt = 0.954; // tight=0.954; medium=0.958
       if (syst == 1) twgt += 0.009;
       if (syst == 2) twgt -= 0.009;
       return twgt;
@@ -1824,7 +1840,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       std::cout << std::setprecision(6) << std::fixed;
 
   if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
-    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
+    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 /*&& std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma*/ ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];

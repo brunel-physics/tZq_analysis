@@ -464,24 +464,24 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (event->elePF2PATPhotonConversionTag[i]) continue;
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
 	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0174 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.373 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
 	}
       else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0283 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0898 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
+	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
+	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
+	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
+	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
+	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
+	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
+	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
 	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
 	  }
       else continue;
