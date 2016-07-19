@@ -669,9 +669,6 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
   if ( jets.size() > 3 )
     for ( unsigned k{0}; k < jets.size(); k++ ){
       for ( unsigned l{k + 1}; l < jets.size(); l++ ){
-	// check that one of the two compared jets aren't neutral.
-	//std::cout << "jet charge: " << (event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]]) << std::endl;
-	if ( event->jetPF2PATJetCharge[jets[k]] * event->jetPF2PATJetCharge[jets[l]] <= 0 ) continue;
 	// Now ensure that the leading b jet isn't one of these!
 	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
 	  if( event->jetPF2PATPt[event->jetIndex[getLeadingBjet(event)]] == event->jetPF2PATPt[jets[k]]) continue;
