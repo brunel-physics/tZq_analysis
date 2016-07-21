@@ -1904,11 +1904,13 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
-      }
+	std::cout << returnJet.Pt() << " : " << event->jetPF2PATPtRaw[index] << " / well matched " << newSmearValue << std::endl; 
+     }
       else { // If not, randomly smear 
       srand (time(nullptr));
       newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+	std::cout << returnJet.Pt() << " : " << event->jetPF2PATPtRaw[index] << " / NOT well matched " << std::endl; 
       }
   }
 
