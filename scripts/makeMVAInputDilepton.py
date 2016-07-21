@@ -154,12 +154,10 @@ def setupInputVars():
     inputVars["wQuark2Pt"] = array('f',[0.])
     inputVars["wQuark2Eta"] = array('f',[0.])
     inputVars["wQuark2Phi"] = array('f',[0.])
-
     inputVars["wPairMass"] = array('f',[0.])
     inputVars["wPairPt"] = array('f',[0.])
     inputVars["wPairEta"] = array('f',[0.])
     inputVars["wPairPhi"] = array('f',[0.])
-
     inputVars["met"] = array('f',[0.])
     inputVars["nJets"] = array('f',[0.])
     inputVars["leadJetPt"] = array('f',[0.])
@@ -208,7 +206,6 @@ def setupInputVars():
     inputVars["w1w2delPhi"] = array('f',[0.])
     inputVars["zLepdelR"] = array('f',[0.])
     inputVars["zLepdelPhi"] = array('f',[0.])
-
     inputVars["zl1Quark1DelR"] = array('f',[0.])
     inputVars["zl1Quark1DelPhi"] = array('f',[0.])
     inputVars["zl1Quark2DelR"] = array('f',[0.])
@@ -217,7 +214,6 @@ def setupInputVars():
     inputVars["zl2Quark1DelPhi"] = array('f',[0.])
     inputVars["zl2Quark2DelR"] = array('f',[0.])
     inputVars["zl2Quark2DelPhi"] = array('f',[0.])
-
     inputVars["zlb1DelR"] = array('f',[0.])
     inputVars["zlb1DelPhi"] = array('f',[0.])
     inputVars["zlb2DelR"] = array('f',[0.])
@@ -232,19 +228,16 @@ def setupInputVars():
     inputVars["totPt2Jet"] = array('f',[0.])
     inputVars["wZdelR"] = array('f',[0.])
     inputVars["wZdelPhi"] = array('f',[0.])
-
     inputVars["zQuark1DelR"] = array('f',[0.])
     inputVars["zQuark1DelPhi"] = array('f',[0.])
     inputVars["zQuark2DelR"] = array('f',[0.])
     inputVars["zQuark2DelPhi"] = array('f',[0.])
-
     inputVars["zTopDelR"] = array('f',[0.])
     inputVars["zTopDelPhi"] = array('f',[0.])
     inputVars["zl1TopDelR"] = array('f',[0.])
     inputVars["zl1TopDelPhi"] = array('f',[0.])
     inputVars["zl2TopDelR"] = array('f',[0.])
     inputVars["zl2TopDelPhi"] = array('f',[0.])
-
     inputVars["minZJetR"] = array('f',[0.])
     inputVars["minZJetPhi"] = array('f',[0.])
     inputVars["totHt"] = array('f',[0.])
@@ -261,12 +254,10 @@ def setupBranches(tree,varMap):
     tree.Branch("wQuark2Pt", varMap["wQuark2Pt"], "wQuark2Pt/F")
     tree.Branch("wQuark2Eta", varMap["wQuark2Eta"], "wQuark2Eta/F")
     tree.Branch("wQuark2Phi", varMap["wQuark2Phi"], "wQuark2Phi/F")
-
     tree.Branch("wPairMass", varMap["wPairMass"], "wPairMass/F")
     tree.Branch("wPairPt", varMap["wPairPt"], "wPairPt/F")
     tree.Branch("wPairEta", varMap["wPairEta"], "wPairEta/F")
     tree.Branch("wPairPhi", varMap["wPairPhi"], "wPairPhi/F")
-
     tree.Branch("met",varMap["met"],"met/F")
     tree.Branch("nJets",varMap["nJets"],"nJets/F")
     tree.Branch("leadJetPt",varMap["leadJetPt"],"leadJetPt/F")
@@ -315,7 +306,6 @@ def setupBranches(tree,varMap):
     tree.Branch("wwdelPhi",varMap["w1w2delPhi"],"wwdelPhi/F")
     tree.Branch("zLepdelR",varMap["zLepdelR"],"zLepdelR/F")
     tree.Branch("zLepdelPhi",varMap["zLepdelPhi"],"zLepdelPhi/F")
-
     tree.Branch("zl1Quark1DelR",varMap["zl1Quark1DelR"],"zl1Quark1DelR/F")
     tree.Branch("zl1Quark1DelPhi",varMap["zl1Quark1DelPhi"],"zl1Quark1DelPhi/F")
     tree.Branch("zl1Quark2DelR",varMap["zl1Quark2DelR"],"zl1Quark2DelR/F")
@@ -324,7 +314,6 @@ def setupBranches(tree,varMap):
     tree.Branch("zl2Quark1DelPhi",varMap["zl2Quark1DelPhi"],"zl2Quark1DelPhi/F")
     tree.Branch("zl2Quark2DelR",varMap["zl2Quark2DelR"],"zl2Quark2DelR/F")
     tree.Branch("zl2Quark2DelPhi",varMap["zl2Quark2DelPhi"],"zl2Quark2DelPhi/F")
-
     tree.Branch("zlb1DelR",varMap["zlb1DelR"],"zlb1DelR/F")
     tree.Branch("zlb1DelPhi",varMap["zlb1DelPhi"],"zlb1DelPhi/F")
     tree.Branch("zlb2DelR",varMap["zlb2DelR"],"zlb2DelR/F")
@@ -339,19 +328,16 @@ def setupBranches(tree,varMap):
     tree.Branch("totPt2Jet",varMap["totPt2Jet"],"totPt2Jet/F")
     tree.Branch("wzdelR",varMap["wZdelR"],"wzdelR/F")
     tree.Branch("wzdelPhi",varMap["wZdelPhi"],"wzdelPhi/F")
-
     tree.Branch("zQuark1DelR",varMap["zQuark1DelR"],"zQuark1DelR/F")
     tree.Branch("zQuark1DelPhi",varMap["zQuark1DelPhi"],"zQuark1DelPhi/F")
     tree.Branch("zQuark2DelR",varMap["zQuark2DelR"],"zQuark2DelR/F")
     tree.Branch("zQuark2DelPhi",varMap["zQuark2DelPhi"],"zQuark2DelPhi/F")
-
     tree.Branch("zTopDelR",varMap["zTopDelR"],"zTopDelR/F")
     tree.Branch("zTopDelPhi",varMap["zTopDelPhi"],"zTopDelPhi/F")
     tree.Branch("zl1TopDelR",varMap["zl1TopDelR"],"zl1TopDelR/F")
     tree.Branch("zl1TopDelPhi",varMap["zl1TopDelPhi"],"zl1TopDelPhi/F")
     tree.Branch("zl2TopDelR",varMap["zl2TopDelR"],"zl2TopDelR/F")
     tree.Branch("zl2TopDelPhi",varMap["zl2TopDelPhi"],"zl2TopDelPhi/F")
-
     tree.Branch("zjminR",varMap["minZJetR"],"zjminR/F")
     tree.Branch("zjminPhi",varMap["minZJetPhi"],"zjminPhi/F")
     tree.Branch("totHt",varMap["totHt"],"totHt/F")
