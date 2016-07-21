@@ -101,6 +101,9 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPair1Mass",&Plots::fillWPair1Mass));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPair2Mass",&Plots::fillWPair2Mass));
   if (!trileptonChannel_) functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPairMass",&Plots::fillWPairMass));
+  if (!trileptonChannel_) functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPairPt",&Plots::fillWPairPt));
+  if (!trileptonChannel_) functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPairEta",&Plots::fillWPairEta));
+  if (!trileptonChannel_) functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wPairPhi",&Plots::fillWPairPhi));
   if (trileptonChannel_)  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lepMass",&Plots::fillLeptonMass));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("topMass",&Plots::fillTopMass));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("topPt",&Plots::fillTopPt));
@@ -127,6 +130,14 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   if (trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lbDelPhi",&Plots::filllbDelPhi));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepDelR",&Plots::fillZLepDelR));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLepDelPhi",&Plots::fillZLepDelPhi));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1Quark1DelR",&Plots::fillZLep1Quark1DelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1Quark1DelPhi",&Plots::fillZLep1Quark1DelPhi));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1Quark2DelR",&Plots::fillZLep1Quark2DelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1Quark2DelPhi",&Plots::fillZLep1Quark2DelPhi));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep2Quark1DelR",&Plots::fillZLep2Quark1DelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep2Quark1DelPhi",&Plots::fillZLep2Quark1DelPhi));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep2Quark2DelR",&Plots::fillZLep2Quark2DelR));  
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep2Quark2DelPhi",&Plots::fillZLep2Quark2DelPhi));  
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1BjetDelR",&Plots::fillZLep1BjetDelR));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep1BjetDelPhi",&Plots::fillZLep1BjetDelPhi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zLep2BjetDelR",&Plots::fillZLep2BjetDelR));
@@ -138,7 +149,19 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totHtOverPt",&Plots::fillTotHtOverPt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totPt",&Plots::fillTotPt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totEta",&Plots::fillTotEta));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totM",&Plots::fillTotM));
+
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelR",&Plots::fillWZdelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelPhi",&Plots::fillWZDelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark1DelR",&Plots::fillZquark1DelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark1DelPhi",&Plots::fillZquark1DelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark2DelR",&Plots::fillZquark2DelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark2DelPhi",&Plots::fillZquark2DelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zTopDelR",&Plots::fillZtopDelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zTopDelPhi",&Plots::fillZtopDelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zl1TopDelR",&Plots::fillZLep1TopDelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zl1TopDelPhi",&Plots::fillZLep1TopDelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zl2TopDelR",&Plots::fillZLep2TopDelR));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zl2TopDelPhi",&Plots::fillZLep2TopDelPhi));
 
   return functionPointerMap;
 }
@@ -469,6 +492,18 @@ float Plots::fillWPairMass(AnalysisEvent* event){
   return (event->wPairQuarks.first + event->wPairQuarks.second).M();
 }
 
+float Plots::fillWPairPt(AnalysisEvent* event){
+  return (event->wPairQuarks.first + event->wPairQuarks.second).Pt();
+}
+
+float Plots::fillWPairEta(AnalysisEvent* event){
+  return (event->wPairQuarks.first + event->wPairQuarks.second).Eta();
+}
+
+float Plots::fillWPairPhi(AnalysisEvent* event){
+  return (event->wPairQuarks.first + event->wPairQuarks.second).Phi();
+}
+
 float Plots::fillLeptonMass(AnalysisEvent* event){
   return (event->zPairLeptons.second + event->zPairLeptons.first + event->wLepton).M();
 }
@@ -692,6 +727,38 @@ float Plots::fillZLepDelPhi(AnalysisEvent* event){
   return (event->zPairLeptons.first.DeltaPhi(event->zPairLeptons.second));
 }
 
+float Plots::fillZLep1Quark1DelR(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaR(event->wPairQuarks.first));
+}
+
+float Plots::fillZLep1Quark1DelPhi(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaPhi(event->wPairQuarks.first));
+}
+
+float Plots::fillZLep1Quark2DelR(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaR(event->wPairQuarks.second));
+}
+
+float Plots::fillZLep1Quark2DelPhi(AnalysisEvent* event){
+  return (event->zPairLeptons.first.DeltaPhi(event->wPairQuarks.second));
+}
+
+float Plots::fillZLep2Quark1DelR(AnalysisEvent* event){
+  return (event->zPairLeptons.second.DeltaR(event->wPairQuarks.first));
+}
+
+float Plots::fillZLep2Quark1DelPhi(AnalysisEvent* event){
+  return (event->zPairLeptons.second.DeltaPhi(event->wPairQuarks.first));
+}
+
+float Plots::fillZLep2Quark2DelR(AnalysisEvent* event){
+  return (event->zPairLeptons.second.DeltaR(event->wPairQuarks.second));
+}
+
+float Plots::fillZLep2Quark2DelPhi(AnalysisEvent* event){
+  return (event->zPairLeptons.second.DeltaPhi(event->wPairQuarks.second));
+}
+
 float Plots::fillZLep1BjetDelR(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
@@ -831,6 +898,74 @@ float Plots::fillTotM(AnalysisEvent* event){
   }
   return totVec.M();
 }
+
+float Plots::fillWZdelR(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second);
+}
+
+float Plots::fillWZdelPhi(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second);
+}
+
+float Plots::fillZquark1DelR(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first);
+}
+
+float Plots::fillZquark1DelPhi(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first);
+}
+
+float Plots::fillZquark2DelR(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.second);
+}
+
+float Plots::fillZquark2DelPhi(AnalysisEvent* event){
+
+  return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.second);
+}
+
+float Plots::zTopDelR(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::zTopDelPhi(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::fillZLep1TopDelR(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.first).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::fillZLep1TopDelPhi(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.first).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::fillZLep2TopDelR(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::fillZLep2TopDelPhi(AnalysisEvent* event){
+    TLorentzVector tempBjet;
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    return (event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
+}
+
+float Plots::fill
 
 void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
   for (unsigned i{0}; i < plotPoint.size(); i++){

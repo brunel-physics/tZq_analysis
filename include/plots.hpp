@@ -78,6 +78,9 @@ class Plots{
   float fillWPair1Mass(AnalysisEvent*);
   float fillWPair2Mass(AnalysisEvent*);
   float fillWPairMass(AnalysisEvent*);
+  float fillWPairPt(AnalysisEvent*);
+  float fillWPairEta(AnalysisEvent*);
+  float fillWPairPhi(AnalysisEvent*);
   float fillLeptonMass(AnalysisEvent*);
   float fillTopMass(AnalysisEvent*);
   float fillTopPt(AnalysisEvent*);
@@ -102,6 +105,14 @@ class Plots{
   float fillwwDelPhi(AnalysisEvent*);
   float fillZLepDelR(AnalysisEvent*);
   float fillZLepDelPhi(AnalysisEvent*);
+  float fillZLep1Quark1DelR(AnalysisEvent*);
+  float fillZLep1Quark1DelPhi(AnalysisEvent*);
+  float fillZLep1Quark2DelR(AnalysisEvent*);
+  float fillZLep1Quark2DelPhi(AnalysisEvent*);
+  float fillZLep2Quark1DelR(AnalysisEvent*);
+  float fillZLep2Quark1DelPhi(AnalysisEvent*);
+  float fillZLep2Quark2DelR(AnalysisEvent*);
+  float fillZLep2Quark2DelPhi(AnalysisEvent*);
   float fillZLep1BjetDelR(AnalysisEvent*);
   float fillZLep1BjetDelPhi(AnalysisEvent*);
   float fillZLep2BjetDelR(AnalysisEvent*);
@@ -116,6 +127,19 @@ class Plots{
   float fillTotPt(AnalysisEvent*);
   float fillTotEta(AnalysisEvent*);
   float fillTotM(AnalysisEvent*);
+  float fillWZdelR(AnalysisEvent*);
+  float fillWZdelPhi(AnalysisEvent*);
+  float fillZquark1DelR(AnalysisEvent*);
+  float fillZquark1DelPhi(AnalysisEvent*);
+  float fillZquark2DelR(AnalysisEvent*);
+  float fillZquark2DelPhi(AnalysisEvent*);
+  float fillZtopDelR(AnalysisEvent*);
+  float fillZtopDelPhi(AnalysisEvent*);
+  float fillZLep1TopDelR(AnalysisEvent*);
+  float fillZLep1TopDelPhi(AnalysisEvent*);
+  float fillZLep2TopDelR(AnalysisEvent*);
+  float fillZLep2TopDelPhi(AnalysisEvent*);
+
   const bool trileptonChannel_;
 
  public:
