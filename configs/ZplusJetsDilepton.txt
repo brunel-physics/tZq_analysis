@@ -1,4 +1,4 @@
-datasets = "configs/datasets/DY3.txt";
+datasets = "configs/datasets/DY.txt";
 cuts = "configs/cuts/eeCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
 outputFolder = "plots/DY_reweight/";

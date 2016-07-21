@@ -197,7 +197,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_MM-10To50]
+[DYJetsToLL_M-10To50]
 fileName = configs/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 169346620
 crossSection = 18610.0

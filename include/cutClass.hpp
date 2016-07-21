@@ -13,6 +13,7 @@
 class TH1F;
 class TH2F;
 class TH2D;
+class TH3D;
 
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
@@ -33,10 +34,10 @@ class Cuts{
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>);
   float getTopMass(AnalysisEvent*);
-  int getLeadingJet(AnalysisEvent*);
-  int getLeadingBjet(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*);
   bool metFilters(AnalysisEvent*);
+
+  double getChiSquared(double wMass = 0.0, double topMass = 0.0);
   
   //Method for running the synchronisation with Jeremy.
   bool synchCuts(AnalysisEvent* event, float *eventWeight);
@@ -142,6 +143,10 @@ class Cuts{
   TH1I* synchNumMus_;
   TH1I* synchMuonCutFlow_;
   TH1F* synchCutTopMassHist_;
+
+  TH2D* chiSquaredPlotTopMass_;
+  TH2D* chiSquaredPlotWmass_;
+  TH3D* chiSquaredPlot_;
 
   std::ofstream topMassEventDump_;
   std::ofstream step0EventDump_;

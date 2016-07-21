@@ -13,6 +13,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TH2D.h"
+#include "TH3D.h"
 
 #include <libconfig.h++>
 
@@ -138,6 +139,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
     synchNumMus_ = new TH1I{"synchNumMuos","synchNumMuos",11,0,11};
     synchMuonCutFlow_ = new TH1I{"synchMuonCutFlow","synchMuonCutFlow",11,0,11};
     synchCutTopMassHist_ = new TH1F{"synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.};
+    if(!trileptonChannel_) chiSquaredPlot_ = new TH3D{"chiSq", "chiSq;m_{Top};m_{W};#Chi^{2}", 300, 0., 300., 300, 0., 300., 50, 0., 50.};
+    if(!trileptonChannel_) chiSquaredPlotTopMass_ = new TH2D{"chiSq", "chiSq;m_{Top};#Chi^{2}", 300, 0., 300., 50, 0., 50.};
+    if(!trileptonChannel_) chiSquaredPlotWmass_ = new TH2D{"chiSq", "chiSq;m_{W};#Chi^{2}", 300, 0., 300., 50, 0., 50.};
   }
 
   std::cout << "\nInitialises fine" << std::endl;
@@ -182,13 +186,16 @@ Cuts::~Cuts(){
   electronRecoFile->Close();
   muonIDsFile->Close();
   muonIsoFile->Close();
-
+  
   if (synchCutFlow_) {
     delete synchCutFlowHist_;
     delete synchNumEles_;
     delete synchNumMus_;
     delete synchMuonCutFlow_;
     delete synchCutTopMassHist_;
+    if(!trileptonChannel_) delete chiSquaredPlot_;
+    if(!trileptonChannel_) delete chiSquaredPlotTopMass_;
+    if(!trileptonChannel_) delete chiSquaredPlotWmass_;
     if (makeEventDump_) {
       topMassEventDump_.close();
       step0EventDump_.close();
@@ -309,7 +316,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
   if ( !trileptonChannel_ && !isFCNC_ ) { // Do wMass stuff
-    if ( getWbosonQuarksCand(event,event->jetIndex) > invWMassCut_ ) return false;
+    float invWmass = getWbosonQuarksCand(event,event->jetIndex);
+    if ( std::abs(invWmass) > invWMassCut_ ) return false;
     if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
     if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
   }
@@ -671,14 +679,24 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
       for ( unsigned l{k + 1}; l < jets.size(); l++ ){
 	// Now ensure that the leading b jet isn't one of these!
 	if ( event->jetPF2PATBDiscriminator[k] > bDiscCut_ ){
-	  if( event->jetPF2PATPt[event->jetIndex[getLeadingBjet(event)]] == event->jetPF2PATPt[jets[k]]) continue;
+	  if( event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]] == event->jetPF2PATPt[jets[k]]) continue;
 	}
 	else if ( event->jetPF2PATBDiscriminator[l] > bDiscCut_ ){
-	  if( event->jetPF2PATPt[event->jetIndex[getLeadingBjet(event)]] == event->jetPF2PATPt[jets[l]]) continue;
+	  if( event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]] == event->jetPF2PATPt[jets[l]]) continue;
 	}
 	TLorentzVector wQuark1{event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]};
 	TLorentzVector wQuark2{event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]};
 	double invWbosonMass{(wQuark1 + wQuark2).M() - 80.385};
+
+/*         TLorentzVector bVec{event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[leadingBjet]],event->jetPF2PATPz[event->jetIndex[leadingBjet]],event->jetPF2PATE[event->jetIndex[leadingBjet]]};
+	 double topMass = bVec.M()+(wQuark1+wQuark2).M();
+
+         double chiSq = getChiSquared( (wQuark1+wQuark2).M(), topMass );
+
+         chiSquaredPlot_->Fill( topMass, (wQuark1+wQuark2).M(), chiSq);
+         chiSquaredPlotTopMass_->Fill( topMass, chiSq);
+         chiSquaredPlotWmass_->Fill( (wQuark1+wQuark2).M(), chiSq);
+*/
 	if( std::abs(invWbosonMass) < std::abs(closestWmass) ){
 	  event->wPairQuarks.first = wQuark1.Pt() > wQuark2.Pt()?wQuark1:wQuark2;
 	  event->wPairIndex.first = wQuark1.Pt() > wQuark2.Pt() ? jets[k]:jets[l];
@@ -690,49 +708,18 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	}
       }
     }
+
   return closestWmass;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event){
-  int leadingBjet{getLeadingBjet( event )};
-  if (leadingBjet == -1) return -1.0;
   TLorentzVector metVec{event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt};
-  TLorentzVector bVec{event->jetPF2PATPx[event->jetIndex[leadingBjet]],event->jetPF2PATPy[event->jetIndex[leadingBjet]],event->jetPF2PATPz[event->jetIndex[leadingBjet]],event->jetPF2PATE[event->jetIndex[leadingBjet]]};
-  //TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-  float topMass{(event->wLepton + bVec + metVec).M()};
+  TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  float topMass{-1.0};
+  if (trileptonChannel_) topMass = (event->wLepton + bVec + metVec).M();
+  else topMass = ( bVec + event->wPairQuarks.first + event->wPairQuarks.second ).M();
   return topMass;
 }
-
-int Cuts::getLeadingJet(AnalysisEvent *event){
-    
-  float leadingJetPt{-1};
-  int jetIndex{-1};
-
-  for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-    if ( event->jetPF2PATPtRaw[*jetIt] > leadingJetPt ){
-      leadingJetPt = event->jetPF2PATPtRaw[*jetIt];
-      jetIndex = *jetIt;
-    }
-  }
-  if ( jetIndex == -1 ) return -1;    
-  return jetIndex;
-}
-
-int Cuts::getLeadingBjet(AnalysisEvent *event){
-    
-    float leadingBjetPt{-1.0};
-    int tempIt{9999};
-
-    for (std::vector<int>::const_iterator lIt{event->bTagIndex.begin()}; lIt != event->bTagIndex.end(); ++lIt){
-      if ( event->jetPF2PATPt[event->jetIndex[*lIt]] > leadingBjetPt ){
-	leadingBjetPt = event->jetPF2PATPt[event->jetIndex[*lIt]];
-	tempIt = *lIt;
-      }
-    }
-    if ( tempIt == 9999 ) return -1;    
-    return tempIt;
-}
-
 
 std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
 
@@ -811,6 +798,18 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
 	  bTagEffPlots_[7]->Fill(jetVec.Pt(),jetVec.Eta());
       }
     }
+
+    // Update modified jet variables
+    event->jetPF2PATE[i] = jetVec.E();
+    event->jetPF2PATEt[i] = jetVec.Et();
+    event->jetPF2PATPt[i] = jetVec.Pt();
+    event->jetPF2PATEta[i] = jetVec.Eta();
+    event->jetPF2PATTheta[i] = jetVec.Theta();
+    event->jetPF2PATPhi[i] = jetVec.Phi();
+    event->jetPF2PATPx[i] = jetVec.Px();
+    event->jetPF2PATPy[i] = jetVec.Py();
+    event->jetPF2PATPz[i] = jetVec.Pz();
+
     jets.emplace_back(i);
 
     if (getBTagWeight_ && !synchCutFlow_){
@@ -833,6 +832,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     *eventWeight *= bWeight;
 
   }
+
   return jets;
 }
 
@@ -918,11 +918,6 @@ bool Cuts::metFilters(AnalysisEvent* event){
 bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   //Trigger stuff would go first, but in MC at least (what I'm starting with) I don't have that saved. Idiot.
 
-  if ( trileptonChannel_ == false ){
-    std::cout << "Not setup for dilepton synch cuts yet. Exiting program!" << std::endl;
-    exit(2);
-  }
-
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_ && synchCutFlow_) {
     if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
@@ -935,6 +930,64 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
   if (singleEventInfoDump_){
     std::cout << std::setprecision(6) << std::fixed;
+  }
+
+  if ( !trileptonChannel_ ){
+    synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+    std::cout << std::setprecision(6) << std::fixed;
+
+    if (!triggerCuts(event)) return false; 
+    if (!metFilters(event)) return false;
+
+    synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
+    synchNumEles_->Fill(event->electronIndexTight.size());
+    synchNumMus_->Fill(event->muonIndexTight.size());
+
+    if (event->electronIndexTight.size() != numTightEle_) return false;
+    if (event->muonIndexTight.size() != numTightMu_) return false;
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 2 ) return false;
+
+    synchCutFlowHist_->Fill(2.5, *eventWeight); // 2 Tight Leptons - step 1
+    if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
+    synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2  
+
+    if (std::abs(getDileptonZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
+    synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
+
+    event->jetIndex = makeJetCuts(event, 0, eventWeight);
+    if (event->jetIndex.size() < numJets_) return false;
+    if (event->jetIndex.size() > maxJets_) return false;
+    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+
+    event->bTagIndex = makeBCuts(event,event->jetIndex);
+    if (event->bTagIndex.size() < numbJets_) return false;
+    if (event->bTagIndex.size() > maxbJets_) return false;
+    synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
+  
+    synchCutFlowHist_->Fill(7.5, *eventWeight); // no Met cut applied
+
+    double wMass = getWbosonQuarksCand(event,event->jetIndex);
+
+    if ( std::abs(wMass) > invWMassCut_ ) return false;
+
+    TLorentzVector bVec{event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]};
+    double topMass = bVec.M()+(event->wPairQuarks.first+event->wPairQuarks.second).M();
+
+    double chiSq = getChiSquared( (event->wPairQuarks.first+event->wPairQuarks.second).M(), topMass );
+
+    chiSquaredPlot_->Fill( topMass, (event->wPairQuarks.first+event->wPairQuarks.second).M(), chiSq);
+    chiSquaredPlotTopMass_->Fill( topMass, chiSq);
+    chiSquaredPlotWmass_->Fill( (event->wPairQuarks.first+event->wPairQuarks.second).M(), chiSq);
+
+    synchCutFlowHist_->Fill(8.5, *eventWeight); // mWT cut - step 6
+
+//    double topMass (getTopMass(event));
+    synchCutFlowHist_->Fill(9.5, *eventWeight); // top mass cut - step 7
+    synchCutFlowHist_->Fill(10.5, *eventWeight);
+
+    return true;
   }
 
   synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
@@ -1044,6 +1097,9 @@ TH1F* Cuts::getSynchCutFlow(){
 
   synchCutFlowHist_->SaveAs("plots/synch/synchCutFlowHist.root");
   synchCutTopMassHist_->SaveAs("plots/synch/synchCutTopMassHist.root");
+  if ( !trileptonChannel_ ) chiSquaredPlot_->SaveAs("plots/chiSquared.root");
+  if ( !trileptonChannel_ ) chiSquaredPlotTopMass_->SaveAs("plots/chiSquaredTopMass.root");
+  if ( !trileptonChannel_ ) chiSquaredPlotWmass_->SaveAs("plots/chiSquaredWmass.root");
 
   return synchCutFlowHist_;
 }
@@ -1193,6 +1249,13 @@ std::vector<int> Cuts::getInvIsoMuons(AnalysisEvent* event){
     muons.emplace_back(i);
   }
   return muons;
+}
+
+double Cuts::getChiSquared( double wMass, double topMass ){
+
+  double topMassTerm = ( (topMass - 173.21) / 50.0 );
+  double wMassTerm = ( (wMass - 80.3585 ) / 10.0 );
+  return std::sqrt( topMassTerm*topMassTerm + wMassTerm*wMassTerm );
 }
 
 //For synchronisation I am dumping the lepton information here.
@@ -1504,7 +1567,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   switch (step){
   case 0:
     step0EventDump_.precision(3);
-//    int leadingJetIndex{getLeadingJet(event)};
     step0EventDump_ << event->jetPF2PATPt[0] << "|" << event->jetPF2PATBDiscriminator[0] << "|";
     break;
   }
@@ -1856,7 +1918,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
     returnJet *= 1+jerUncer;
   }
-  
+
   return returnJet;
 }
 
