@@ -149,6 +149,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totHtOverPt",&Plots::fillTotHtOverPt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totPt",&Plots::fillTotPt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totEta",&Plots::fillTotEta));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totM",&Plots::fillTotM));
 
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelR",&Plots::fillWZdelR));
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelPhi",&Plots::fillWZdelPhi));
@@ -900,12 +901,10 @@ float Plots::fillTotM(AnalysisEvent* event){
 }
 
 float Plots::fillWZdelR(AnalysisEvent* event){
-
   return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second);
 }
 
 float Plots::fillWZdelPhi(AnalysisEvent* event){
-
   return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second);
 }
 
