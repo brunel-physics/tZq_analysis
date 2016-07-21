@@ -151,7 +151,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totEta",&Plots::fillTotEta));
 
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelR",&Plots::fillWZdelR));
-  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelPhi",&Plots::fillWZDelPhi));
+  if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wzDelPhi",&Plots::fillWZdelPhi));
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark1DelR",&Plots::fillZquark1DelR));
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark1DelPhi",&Plots::fillZquark1DelPhi));
   if (!trileptonChannel_)functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("zQuark2DelR",&Plots::fillZquark2DelR));
@@ -929,13 +929,13 @@ float Plots::fillZquark2DelPhi(AnalysisEvent* event){
   return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.second);
 }
 
-float Plots::zTopDelR(AnalysisEvent* event){
+float Plots::fillZtopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
-float Plots::zTopDelPhi(AnalysisEvent* event){
+float Plots::fillZtopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
@@ -964,8 +964,6 @@ float Plots::fillZLep2TopDelPhi(AnalysisEvent* event){
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
     return (event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
-
-float Plots::fill
 
 void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
   for (unsigned i{0}; i < plotPoint.size(); i++){
