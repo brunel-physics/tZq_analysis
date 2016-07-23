@@ -129,6 +129,8 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
 #    else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
 #    if (tree.genJetPF2PATPT[index] < -990. or jetUnc == 0) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
 
+    returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+
     if (newSmearValue > 0.01):
         #Propogate through the met. But only do it if the smear jet isn't 0.
         metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
