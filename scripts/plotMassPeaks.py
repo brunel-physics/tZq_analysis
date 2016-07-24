@@ -1,6 +1,8 @@
 #A tool to pull plots from the mva inputs and plot gaussians
 
 import ROOT
+import subprocess
+import sys
 
 def main():
 
@@ -39,8 +41,8 @@ def main():
   DY_wVsTopvsChi2Histo = ROOT.TH3D("DY_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
   for event in infile_tZq.Ttree_tZq :
-    if ( event.topMass < 200 and event.topMass > 120 ) : topMassHisto.Fill(event.topMass)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : wMassHisto.Fill(event.wPairMass)
+    if ( event.topMass < 200 and event.topMass > 120 ) : tZq_topMassHisto.Fill(event.topMass)
+    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : tZq_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/6.0
     topChi2Term = (event.topMass - 173.21)/10.0
@@ -53,8 +55,8 @@ def main():
     tZq_chi2Histo.Fill(chi2)
 
   for event in infile_TT.Ttree_TT :
-    if ( event.topMass < 200 and event.topMass > 120 ) : topMassHisto.Fill(event.topMass)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : wMassHisto.Fill(event.wPairMass)
+    if ( event.topMass < 200 and event.topMass > 120 ) : TT_topMassHisto.Fill(event.topMass)
+    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : TT_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/6.0
     topChi2Term = (event.topMass - 173.21)/10.0
@@ -67,8 +69,8 @@ def main():
     TT_chi2Histo.Fill(chi2)
 
   for event in infile_DY.Ttree_DYToLL_M50 :
-    if ( event.topMass < 200 and event.topMass > 120 ) : topMassHisto.Fill(event.topMass)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : wMassHisto.Fill(event.wPairMass)
+    if ( event.topMass < 200 and event.topMass > 120 ) : DY_topMassHisto.Fill(event.topMass)
+    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : DY_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/6.0
     topChi2Term = (event.topMass - 173.21)/10.0
@@ -80,42 +82,43 @@ def main():
     DY_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2)
     DY_chi2Histo.Fill(chi2)
 
-  subprocess.call("mkdir plots/chiSquared/tZq/ ,shell=True)
-  subprocess.call("mkdir plots/chiSquared/TT/ ,shell=True)
-  subprocess.call("mkdir plots/chiSquared/DY/ ,shell=True)
+  subprocess.call("mkdir plots/chiSquared/",shell=True)
+  subprocess.call("mkdir plots/chiSquared/tZq/",shell=True)
+  subprocess.call("mkdir plots/chiSquared/TT/",shell=True)
+  subprocess.call("mkdir plots/chiSquared/DY/",shell=True)
 
   tZq_topMassHisto.Fit("gaus")
   tZq_wMassHisto.Fit("gaus")
 
-  tZq_topMassHisto.SaveAs("plots/tZq/topMass.root")
-  tZq_wMassHisto.SaveAs("plots/tZq/wMass.root")
-  tZq_topVsWmassHisto.SaveAs("plots/tZq/topVsWmass.root")
-  tZq_wVsChi2Histo.SaveAs("plots/tZq/wVsChi2.root")
-  tZq_topVsChi2Histo.SaveAs("plots/tZq/topVsChi2.root")
-  tZq_wVsTopvsChi2Histo.SaveAs("plots/tZq/wVsTopvsChi2.root")
-  tZq_chi2Histo.SaveAs("plots/tZq/chi2.root")
+  tZq_topMassHisto.SaveAs("plots/chiSquared/tZq/topMass.root")
+  tZq_wMassHisto.SaveAs("plots/chiSquared/tZq/wMass.root")
+  tZq_topVsWmassHisto.SaveAs("plots/chiSquared/tZq/topVsWmass.root")
+  tZq_wVsChi2Histo.SaveAs("plots/chiSquared/tZq/wVsChi2.root")
+  tZq_topVsChi2Histo.SaveAs("plots/chiSquared/tZq/topVsChi2.root")
+  tZq_wVsTopvsChi2Histo.SaveAs("plots/chiSquared/tZq/wVsTopvsChi2.root")
+  tZq_chi2Histo.SaveAs("plots/chiSquared/tZq/chi2.root")
 
   TT_topMassHisto.Fit("gaus")
   TT_wMassHisto.Fit("gaus")
 
-  TT_topMassHisto.SaveAs("plots/TT/topMass.root")
-  TT_wMassHisto.SaveAs("plots/TT/wMass.root")
-  TT_topVsWmassHisto.SaveAs("plots/TT/topVsWmass.root")
-  TT_wVsChi2Histo.SaveAs("plots/TT/wVsChi2.root")
-  TT_topVsChi2Histo.SaveAs("plots/TT/topVsChi2.root")
-  TT_wVsTopvsChi2Histo.SaveAs("plots/TT/wVsTopvsChi2.root")
-  TT_chi2Histo.SaveAs("plots/TT/chi2.root")
+  TT_topMassHisto.SaveAs("plots/chiSquared/TT/topMass.root")
+  TT_wMassHisto.SaveAs("plots/chiSquared/TT/wMass.root")
+  TT_topVsWmassHisto.SaveAs("plots/chiSquared/TT/topVsWmass.root")
+  TT_wVsChi2Histo.SaveAs("plots/chiSquared/TT/wVsChi2.root")
+  TT_topVsChi2Histo.SaveAs("plots/chiSquared/TT/topVsChi2.root")
+  TT_wVsTopvsChi2Histo.SaveAs("plots/chiSquared/TT/wVsTopvsChi2.root")
+  TT_chi2Histo.SaveAs("plots/chiSquared/TT/chi2.root")
 
   DY_topMassHisto.Fit("gaus")
   DY_wMassHisto.Fit("gaus")
 
-  DY_topMassHisto.SaveAs("plots_DY/topMass.root")
-  DY_wMassHisto.SaveAs("plots_DY/wMass.root")
-  DY_topVsWmassHisto.SaveAs("plots_DY/topVsWmass.root")
-  DY_wVsChi2Histo.SaveAs("plots_DY/wVsChi2.root")
-  DY_topVsChi2Histo.SaveAs("plots_DY/topVsChi2.root")
-  DY_wVsTopvsChi2Histo.SaveAs("plots_DY/wVsTopvsChi2.root")
-  DY_chi2Histo.SaveAs("plots_DY/chi2.root")
+  DY_topMassHisto.SaveAs("plots/chiSquared/DY/topMass.root")
+  DY_wMassHisto.SaveAs("plots/chiSquared/DY/wMass.root")
+  DY_topVsWmassHisto.SaveAs("plots/chiSquared/DY/topVsWmass.root")
+  DY_wVsChi2Histo.SaveAs("plots/chiSquared/DY/wVsChi2.root")
+  DY_topVsChi2Histo.SaveAs("plots/chiSquared/DY/topVsChi2.root")
+  DY_wVsTopvsChi2Histo.SaveAs("plots/chiSquared/DY/wVsTopvsChi2.root")
+  DY_chi2Histo.SaveAs("plots/chiSquared/DY/chi2.root")
 
 if __name__ == "__main__":
     main()
