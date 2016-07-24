@@ -80,9 +80,9 @@ def main():
     DY_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2)
     DY_chi2Histo.Fill(chi2)
 
-  subprocess.call("mkdir plots/tZq/ ,shell=True)
-  subprocess.call("mkdir plots/DY/ ,shell=True)
-  subprocess.call("mkdir plots/TT/ ,shell=True)
+  subprocess.call("mkdir plots/chiSquared/tZq/ ,shell=True)
+  subprocess.call("mkdir plots/chiSquared/TT/ ,shell=True)
+  subprocess.call("mkdir plots/chiSquared/DY/ ,shell=True)
 
   tZq_topMassHisto.Fit("gaus")
   tZq_wMassHisto.Fit("gaus")
