@@ -40,8 +40,8 @@ def sortOutHadronicW(tree,channel):
     #Reads the position of the w quarks from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
     wQuark1,wQuark2 = 0,0
 
-    wQuark1 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark1Index],tree.jetPF2PATPx[tree.wQuark1Index],tree.jetPF2PATPz[tree.wQuark1Index ],tree.jetPF2PATE[tree.wQuark1Index])
-    wQuark2 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPz[tree.wQuark2Index ],tree.jetPF2PATE[tree.wQuark2Index])
+    wQuark1 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark1Index],tree.jetPF2PATPy[tree.wQuark1Index],tree.jetPF2PATPz[tree.wQuark1Index ],tree.jetPF2PATE[tree.wQuark1Index])
+    wQuark2 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPy[tree.wQuark2Index],tree.jetPF2PATPz[tree.wQuark2Index ],tree.jetPF2PATE[tree.wQuark2Index])
     return (wQuark1,wQuark2)
 
 def getJets(tree,syst,jetUnc,met):
@@ -245,6 +245,7 @@ def setupInputVars():
     inputVars["totHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
+    inputVars["chi2"] = array('f',[0.])
     return inputVars
 
 def setupBranches(tree,varMap):
@@ -345,7 +346,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHt",varMap["totHt"],"totHt/F")
     tree.Branch("jetHt",varMap["jetHt"],"jetHt/F")
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
-
+    tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
 def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
@@ -409,7 +410,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
 	varMap["wQuark2Pt"][0] = wQuark2.Pt()
 	varMap["wQuark2Eta"][0] = wQuark2.Eta()
 	varMap["wQuark2Phi"][0] = wQuark2.Phi()
-	varMap["wPairMass"][0] = ( wQuark1 + wQuark2 ).M()
+	wPairMass = ( wQuark1 + wQuark2 ).M()
+	varMap["wPairMass"][0] = wPairMass
 	varMap["wPairPt"][0] = ( wQuark1 + wQuark2 ).Pt()
 	varMap["wPairEta"][0] = ( wQuark1 + wQuark2 ).Eta()
 	varMap["wPairPhi"][0] = ( wQuark1 + wQuark2 ).Phi()
@@ -464,7 +466,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
             varMap["fourthJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[3]]
 
 #        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
-        varMap["topMass"][0] = (bJetVecs[0] + wQuark1 + wQuark2).M()
+	topMass = (bJetVecs[0] + wQuark1 + wQuark2).M()
+        varMap["topMass"][0] = topMass
         varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt()
         varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta()
         varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi()
@@ -526,6 +529,9 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["zEta"][0] = (zLep2 + zLep1).Eta()
         varMap["zPhi"][0] = (zLep2 + zLep1).Phi()
 
+	wChi2Term = (wPairMass - 80.3585)/6.0
+	topChi2Term = (topMass - 173.21)/10.0
+	varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
 def main():
 
