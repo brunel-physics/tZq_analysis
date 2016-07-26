@@ -1017,8 +1017,8 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool h
      fChain->SetBranchAddress("genPDFx2", &genPDFx2, &b_genPDFx2);
      fChain->SetBranchAddress("genPDFf1", &genPDFf1, &b_genPDFf1);
      fChain->SetBranchAddress("genPDFf2", &genPDFf2, &b_genPDFf2);
+     fChain->SetBranchAddress("topPtReweight", &topPtReweight, &b_topPtReweight);
    }
-   fChain->SetBranchAddress("topPtReweight", &topPtReweight, &b_topPtReweight);
    fChain->SetBranchAddress("processId", &processId, &b_processId);
    fChain->SetBranchAddress("processPtHat", &processPtHat, &b_processPtHat);
    fChain->SetBranchAddress("processMCWeight", &processMCWeight, &b_processMCWeight);
