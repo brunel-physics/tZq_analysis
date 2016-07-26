@@ -518,10 +518,9 @@ float Plots::fillTopMass(AnalysisEvent* event){
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).M();
   }
-  else return -10;
 }
 
 float Plots::fillTopPt(AnalysisEvent* event){

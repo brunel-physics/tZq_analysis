@@ -144,10 +144,6 @@ class Cuts{
   TH1I* synchMuonCutFlow_;
   TH1F* synchCutTopMassHist_;
 
-  TH2D* chiSquaredPlotTopMass_;
-  TH2D* chiSquaredPlotWmass_;
-  TH3D* chiSquaredPlot_;
-
   std::ofstream topMassEventDump_;
   std::ofstream step0EventDump_;
   std::ofstream step2EventDump_;

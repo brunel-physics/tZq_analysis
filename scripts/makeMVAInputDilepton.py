@@ -363,7 +363,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["chan"][0] = 1
     if channel == "mumu":
         varMap["chan"][0] = 0
-    #        topMass
+
     #Set up those variables as branches
     for event in range(tree.GetEntries()):
             #Fill some plots here. Let's make an example mTW plot.
