@@ -209,6 +209,8 @@ class Cuts{
   void setSkipTrig(bool skip){skipTrigger_ = skip;}
   void setMetCut(float cut){metCut_ = cut; metDileptonCut_ = cut;}
   void setMTWCut(float cut){mTWCut_ = cut;}
+  void setMWCut(float cut){invWMassCut_ = cut;}
+  void setMZCut(float cut){invZMassCut_ = cut;}
   void setJetRegion(int nJets, int nBets, int maxJets, int maxBJets){numJets_ = nJets; numbJets_ = nBets; maxJets_ = maxJets; maxbJets_ = maxBJets;}
   bool parse_config(std::string);
   void dumpLeptonInfo(AnalysisEvent*);

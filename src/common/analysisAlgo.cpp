@@ -298,8 +298,10 @@ void AnalysisAlgo::show_usage(std::string name){
 	    << "\t    --skipTrig\t\t\tSkip running triggers. Used for trigger studies or something.\n"
 	    << "\t    --mvaDir \tDIR\t\tChange the name of the folder the mva outputs go to. mvaTest/ by default. Include the /.\n"
 	    << "\t    --jetRegion \t\tSet the jet region that the analysis will look at. Takes arguments NJETS,NBJETS,MAXJETS,MAXBJETS.\n"
-	    << "\t    --metCut \tCUT\t\tAlter the MET cut of the analysis. 0 by default.\n"
-	    << "\t    --mtwCut \tCUT\t\tAlter the mTW cut of the analysis. 0 by default.\n"
+	    << "\t    --metCut \tCUT\t\tAlter the MET cut of the analysis. 0 by default. Trilepton only.\n"
+	    << "\t    --mtwCut \tCUT\t\tAlter the mTW cut of the analysis. 0 by default. Trilepton only.\n"
+	    << "\t    --mzCut \tCUT\t\tAlter the mZ cut of the analysis. 0 by default. Dilepton only.\n"
+	    << "\t    --mwCut \tCUT\t\tAlter the mW cut of the analysis. 0 by default. Dilepton only.\n"
 	    << "\t-h  --help\t\t\tShow this help message\n"
 	    << std::endl;
 }
@@ -484,6 +486,14 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       mtwCut = std::stof(argv[++i]);
       std::cout << "Non zero mTW cut! Applied " << mtwCut << " cut." << std::endl;
     }
+    else if (arg == "--mzCut"){
+      mzCut = std::stof(argv[++i]);
+      std::cout << "Non zero mZ cut! Applied " << mzCut << " cut." << std::endl;
+    }
+    else if (arg == "--mwCut"){
+      mwCut = std::stof(argv[++i]);
+      std::cout << "Non zero mW cut! Applied " << mwCut << " cut." << std::endl;
+    }
     
   } // End command line arguments loop.
   if (config == ""){
@@ -629,6 +639,8 @@ void AnalysisAlgo::setupCuts()
   if (customJetRegion) cutObj->setJetRegion(jetRegVars[0],jetRegVars[1],jetRegVars[2],jetRegVars[3]);
   cutObj->setMetCut(metCut);
   cutObj->setMTWCut(mtwCut);
+  cutObj->setMWCut(mwCut);
+  cutObj->setMZCut(mzCut);
 }
 
 void AnalysisAlgo::setupPlots()

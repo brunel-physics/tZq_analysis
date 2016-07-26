@@ -312,8 +312,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if ( !trileptonChannel_ && !isFCNC_ ) { // Do wMass stuff
     float invWmass{0.};
     invWmass = getWbosonQuarksCand(event,event->jetIndex);
-    if ( (invWmass + 80.385) < 0 ) std::cout << invWmass << std::endl;
-    if ( std::abs(invWmass) > invWMassCut_ && !trileptonChannel_ && !isFCNC_ ) return false;
+    if ( std::abs(invWmass) > invWMassCut_ ) return false;
     if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
     if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
   }

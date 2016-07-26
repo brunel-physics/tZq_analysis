@@ -63,6 +63,8 @@ class AnalysisAlgo{
 	bool customJetRegion;
 	float metCut;
 	float mtwCut;
+	float mzCut;
+	float mwCut;
 	bool trileptonChannel_;
 	bool isFCNC_;
 	bool isCtag_;
