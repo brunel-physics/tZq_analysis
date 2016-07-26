@@ -50,13 +50,13 @@ def main():
   DY_wVsTopvsChi2Histo = ROOT.TH3D("DY_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
   for event in infile_tZq.Ttree_tZq :
-    if ( event.topMass < 190 and event.topMass > 150 ) : tZq_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 200 and event.topMass > 140 ) : tZq_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : tZq_wMassHisto.Fill(event.wPairMass)
 #    tZq_topMassHisto.Fill(event.topMass)
 #    tZq_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/8.0
-    topChi2Term = (event.topMass - 173.21)/10.0
+    topChi2Term = (event.topMass - 173.21)/30.0
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
     tZq_topVsWmassHisto.Fill(event.wPairMass,event.topMass)
@@ -66,13 +66,13 @@ def main():
     tZq_chi2Histo.Fill(chi2)
 
   for event in infile_TT.Ttree_TT :
-    if ( event.topMass < 190 and event.topMass > 150 ) : TT_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 200 and event.topMass > 140 ) : TT_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : TT_wMassHisto.Fill(event.wPairMass)
 #    TT_topMassHisto.Fill(event.topMass)
 #    TT_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/8.0
-    topChi2Term = (event.topMass - 173.21)/10.0
+    topChi2Term = (event.topMass - 173.21)/30.0
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
     TT_topVsWmassHisto.Fill(event.wPairMass,event.topMass)
@@ -82,13 +82,13 @@ def main():
     TT_chi2Histo.Fill(chi2)
 
   for event in infile_DY.Ttree_DYToLL_M50 :
-    if ( event.topMass < 190 and event.topMass > 150 ) : DY_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 200 and event.topMass > 140 ) : DY_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : DY_wMassHisto.Fill(event.wPairMass)
 #    DY_topMassHisto.Fill(event.topMass)
 #    DY_wMassHisto.Fill(event.wPairMass)
 
     wChi2Term   = (event.wPairMass - 80.3585)/8.0
-    topChi2Term = (event.topMass - 173.21)/10.0
+    topChi2Term = (event.topMass - 173.21)/30.0
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
     DY_topVsWmassHisto.Fill(event.wPairMass,event.topMass)
