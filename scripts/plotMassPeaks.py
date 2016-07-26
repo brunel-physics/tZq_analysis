@@ -6,9 +6,9 @@ import sys
 
 def main():
 
-  infile_tZq = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/met0mtw0/histofile_tZq.root")
-  infile_TT = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/met0mtw0/histofile_TT.root")
-  infile_DY = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/met0mtw0/histofile_DYToLL_M50.root")
+  infile_tZq = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/mz5mw20/histofile_tZq.root")
+  infile_TT = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/mz5mw20/histofile_TT.root")
+  infile_DY = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/2015/mz5mw20/histofile_DYToLL_M50.root")
 
   # tZq Histos
 
