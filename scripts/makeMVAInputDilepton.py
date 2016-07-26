@@ -529,8 +529,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         varMap["zEta"][0] = (zLep2 + zLep1).Eta()
         varMap["zPhi"][0] = (zLep2 + zLep1).Phi()
 
-	wChi2Term = (wPairMass - 80.3585)/6.0
-	topChi2Term = (topMass - 173.21)/10.0
+	wChi2Term = (wPairMass - 80.3585)/8.0
+	topChi2Term = (topMass - 173.21)/30.0
 	varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
 def main():
