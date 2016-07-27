@@ -49,8 +49,9 @@ class Cuts{
   double deltaR(float,float,float,float);
   void dumpToFile(AnalysisEvent * event, int);
 
-  //Function to get trigger SF
-  float getTriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
+  //Function to get trigger SFs
+  float get2015TriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
+  float get2016TriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
 
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*, int syst = 0);
@@ -137,6 +138,8 @@ class Cuts{
   void initialiseJECCors();
   float getJECUncertainty(float,float,int);
   TLorentzVector getJetLVec(AnalysisEvent*,int,int);
+  std::pair< float, float > jet2015SFs( float );
+  std::pair< float, float > jet2016SFs( float );
 
   //Histogram to be used in synchronisation.
   TH1F* synchCutFlowHist_;

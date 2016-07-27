@@ -108,21 +108,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   makeBTagEffPlots_{false},
   getBTagWeight_{false},
 
-  // bTag calib code
-  calib{"CSVv2", "scaleFactors/CSVv2.csv"},
-  // udsg jets
-  lightReader{BTagEntry::OP_TIGHT,		// operating point
-                               "central"},	// systematics type
-  lightReader_up{BTagEntry::OP_TIGHT, "up"},	// sys up
-  lightReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
-  // c/b jets
-  charmReader{BTagEntry::OP_TIGHT, "central"},	//central
-  charmReader_up{BTagEntry::OP_TIGHT, "up"}, 	// sys up
-  charmReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
-  beautyReader{BTagEntry::OP_TIGHT, "central"},	//central
-  beautyReader_up{BTagEntry::OP_TIGHT, "up"}, 	// sys up
-  beautyReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
-
   //MET and mTW cuts go here.
   metCut_{0.0},
   metDileptonCut_{100.0},
@@ -142,27 +127,66 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
     synchCutTopMassHist_ = new TH1F{"synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.};
   }
 
+  // Setup bTag calibration code (2015/2016)
+  // bTag calib code
+  if ( !is2016_ ) { 
+    calib {"CSVv2", "scaleFactors/CSVv2.csv"};
+  }
+  else {
+    calib {"CSVv2", "scaleFactors/2016/CSVv2.csv"};
+  }
+  // udsg jets
+  lightReader{BTagEntry::OP_TIGHT,		// operating point
+                               "central"};	// systematics type
+  lightReader_up{BTagEntry::OP_TIGHT, "up"};	// sys up
+  lightReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
+  // c/b jets
+  charmReader{BTagEntry::OP_TIGHT, "central"};	//central
+  charmReader_up{BTagEntry::OP_TIGHT, "up"};	// sys up
+  charmReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
+  beautyReader{BTagEntry::OP_TIGHT, "central"};	//central
+  beautyReader_up{BTagEntry::OP_TIGHT, "up"}; 	// sys up
+  beautyReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
+
+
   std::cout << "\nInitialises fine" << std::endl;
   initialiseJECCors();
   std::cout << "Gets past JEC Cors" << std::endl;
 
-  std::cout << "\nLoad electron SFs from root file ... " << std::endl;
-//  electronSFsFile = new TFile("scaleFactors/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root"); // Electron triggering MVA ID
-  electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
-//  electronSFsFile = new TFile{"scaleFactors/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root"}; // Electron cut-based Medium ID
-  h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
-  electronRecoFile = new TFile{"scaleFactors/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
-  h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
-  std::cout << "Got electron SFs!\n" << std::endl;
+  if ( !is2016_ ) {
+    std::cout << "\nLoad electron SFs from root file ... " << std::endl;
+    electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
+    h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
+    electronRecoFile = new TFile{"scaleFactors/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
+    h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
+    std::cout << "Got electron SFs!\n" << std::endl;
 
-  std::cout << "Load muon SFs from root file ... " << std::endl;
-  muonIDsFile = new TFile{"scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root"};
-  muonIsoFile = new TFile{"scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
-  muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
-  h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
-  muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
-  h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
-  std::cout << "Got muon SFs!\n" << std::endl;
+    std::cout << "Load muon SFs from root file ... " << std::endl;
+    muonIDsFile = new TFile{"scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root"};
+    muonIsoFile = new TFile{"scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
+    muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
+    h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
+    muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
+    h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
+    std::cout << "Got muon SFs!\n" << std::endl;
+  }
+  else {
+    std::cout << "\nLoad electron SFs from root file ... " << std::endl;
+    electronSFsFile = new TFile("scaleFactors/2016/egammaEffi.txt_SF2D.root"); // Electron cut-based Tight ID
+    h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
+    electronRecoFile = new TFile{"scaleFactors/2016/egammaRecoEffi.txt_SF2D.root"}; // Electron Reco SF
+    h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
+    std::cout << "Got electron SFs!\n" << std::endl;
+
+    std::cout << "Load muon SFs from root file ... " << std::endl;
+    muonIDsFile = new TFile{"scaleFactors/2016/MuonID_Z_RunBCD_prompt80X_7p65.root"};
+    muonIsoFile = new TFile{"scaleFactors/2016/MuonIso_Z_RunBCD_prompt80X_7p65.root"};
+    muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
+    h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
+    muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
+    h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
+    std::cout << "Got muon SFs!\n" << std::endl;
+  }
 
   // if doing bTag SFs, load stuff here ...
   if ( getBTagWeight_ ) {
@@ -288,7 +312,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   //  if (!isMC_) if (!triggerCuts(event)) return false;
   if (!triggerCuts(event)) return false;
 
-  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF (systToRun);
+  if( !skipTrigger_ && isMC_ ) {
+    if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
+    else *eventWeight *= get2016TriggerSF (systToRun);
+  }
 
   if (!metFilters(event)) return false;
 
@@ -980,7 +1007,10 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   if (makeEventDump_) dumpToFile(event,0);
 
   if (!triggerCuts(event)) return false; 
-//  if( !skipTrigger_ && isMC_ ) *eventWeight *= getTriggerSF();
+//  if( !skipTrigger_ && isMC_ ) {
+//    if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
+//    else *eventWeight *= get2016TriggerSF (systToRun);
+//  }
 
   synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
 
@@ -1646,7 +1676,70 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
 
 }
 
-float Cuts::getTriggerSF(int syst, double eta1, double eta2){
+float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
+
+  std::string channel = "";
+
+  //Dilepton channels
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
+  //Trilepton channels
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
+
+  //If using SFs based on eta?
+  if ( std::abs(eta1) <= 5.0 && std::abs(eta2) <= 5.0 ) {
+	std::cout << "Not implemented yet. Don't pass eta values!" << std::endl;
+	exit(999);
+  }
+
+  //If no pT or eta dependancy ...
+  else {
+    //Dilepton channels
+    if (channel == "ee"){
+      float twgt = 0.954; // tight=0.954; medium=0.958
+      if (syst == 1) twgt += 0.009;
+      if (syst == 2) twgt -= 0.009;
+      return twgt;
+    }
+    if (channel == "mumu"){
+      float twgt = 0.934; // tight=0.934; medium=0.931
+      if (syst == 1) twgt += 0.007;
+      if (syst == 2) twgt -= 0.007;
+      return twgt;
+    }
+    //Trilepton channels
+    if (channel == "eee"){
+      float twgt = 0.987;
+      if (syst == 1) twgt += 0.036;
+      if (syst == 2) twgt -= 0.036;
+      return twgt;
+    }
+    if (channel == "eemu"){
+      float twgt = 0.987;
+      if (syst == 1) twgt += 0.035;
+      if (syst == 2) twgt -= 0.035;
+      return twgt;
+    }
+    if (channel == "emumu"){
+      float twgt = 0.886;
+      if (syst == 1) twgt += 0.042;
+      if (syst == 2) twgt -= 0.042;
+      return twgt;
+    }
+    if (channel == "mumumu"){
+      float twgt = 0.9871;
+      if (syst == 1) twgt += 0.0242;
+      if (syst == 2) twgt -= 0.0212;
+      return twgt;
+    }
+  }
+
+}
+
+float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
 
   std::string channel = "";
 
@@ -1770,7 +1863,9 @@ float Cuts::muonSF(double pt, double eta, int syst){
 }
 
 void Cuts::initialiseJECCors(){
-  std::ifstream jecFile{"scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt"};
+  std::ifstream jecFile;
+  if ( !is2016_ ) jecFile.open( "scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  else jecFile.open( "scaleFactors/2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
 
@@ -1850,63 +1945,15 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 
   float jerSF{1.};
   float jerSigma{0.};
+  std::pair< float, float > jetSFs{};
 
   float newSmearValue{1.};  
 
-  // JER Scaling Factors and uncertainities
-  if (std::abs(event->jetPF2PATEta[index]) <= 0.5) {
-    jerSF = 1.095;
-    jerSigma = 0.018;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 0.8) {
-    jerSF = 1.120;
-    jerSigma = 0.028;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 1.1) {
-    jerSF = 1.097;
-    jerSigma = 0.017;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 1.3) {
-    jerSF = 1.103;
-    jerSigma = 0.033;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 1.7) {
-    jerSF = 1.118;
-    jerSigma = 0.014;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 1.9) {
-    jerSF = 1.100;
-    jerSigma = 0.033;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 2.1) {
-    jerSF = 1.162;
-    jerSigma = 0.044;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 2.3) {
-    jerSF = 1.160;
-    jerSigma = 0.048;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 2.5) {
-    jerSF = 1.161;
-    jerSigma = 0.060;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 2.8) {
-    jerSF = 1.209;
-    jerSigma = 0.059;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 3.0){
-    jerSF = 1.564;
-    jerSigma = 0.321;
-  }
-  else if (std::abs(event->jetPF2PATEta[index]) <= 3.2){
-    jerSF = 1.384;
-    jerSigma = 0.033;
-  } 
-  else {
-    jerSF = 1.216;
-    jerSigma = 0.050;
-  }
-      std::cout << std::setprecision(6) << std::fixed;
+  if ( !is2016_ ) jetSFs = jet2015SFs( std::abs(event->jetPF2PATEta[index]) );
+  else jetSFs = jet2016SFs( std::abs(event->jetPF2PATEta[index]) );
+
+  jerSF = jetSFs.first;
+  jerSigma = jetSFs.second;
 
   if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
     if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 /*&& std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma*/ ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
@@ -1953,6 +2000,126 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
  }
 
   return returnJet;
+}
+
+std::pair< float, float > Cuts::jet2015SFs( float eta ) {
+  // JER Scaling Factors and uncertainities for 2015
+  float jerSF{0.};
+  float jerSigma{0.};
+
+  if (eta <= 0.5) {
+    jerSF = 1.095;
+    jerSigma = 0.018;
+  }
+  else if (eta <= 0.8) {
+    jerSF = 1.120;
+    jerSigma = 0.028;
+  }
+  else if (eta <= 1.1) {
+    jerSF = 1.097;
+    jerSigma = 0.017;
+  }
+  else if (eta <= 1.3) {
+    jerSF = 1.103;
+    jerSigma = 0.033;
+  }
+  else if (eta <= 1.7) {
+    jerSF = 1.118;
+    jerSigma = 0.014;
+  }
+  else if (eta <= 1.9) {
+    jerSF = 1.100;
+    jerSigma = 0.033;
+  }
+  else if (eta <= 2.1) {
+    jerSF = 1.162;
+    jerSigma = 0.044;
+  }
+  else if (eta <= 2.3) {
+    jerSF = 1.160;
+    jerSigma = 0.048;
+  }
+  else if (eta <= 2.5) {
+    jerSF = 1.161;
+    jerSigma = 0.060;
+  }
+  else if (eta <= 2.8) {
+    jerSF = 1.209;
+    jerSigma = 0.059;
+  }
+  else if (eta <= 3.0){
+    jerSF = 1.564;
+    jerSigma = 0.321;
+  }
+  else if (eta <= 3.2){
+    jerSF = 1.384;
+    jerSigma = 0.033;
+  } 
+  else {
+    jerSF = 1.216;
+    jerSigma = 0.050;
+  }
+  return make_pair({ jerSF, jerSigma });
+}
+
+std::pair< float, float > Cuts::jet2016SFs( float eta ) {
+  // JER Scaling Factors and uncertainities for 2016
+  float jerSF{0.};
+  float jerSigma{0.};
+
+  if (eta <= 0.5) {
+    jerSF = 1.122;
+    jerSigma = 0.026;
+  }
+  else if (eta <= 0.8) {
+    jerSF = 1.167;
+    jerSigma = 0.048;
+  }
+  else if (eta <= 1.1) {
+    jerSF = 1.168;
+    jerSigma = 0.046;
+  }
+  else if (eta <= 1.3) {
+    jerSF = 1.029;
+    jerSigma = 0.066;
+  }
+  else if (eta <= 1.7) {
+    jerSF = 1.115;
+    jerSigma = 0.03;
+  }
+  else if (eta <= 1.9) {
+    jerSF = 1.041;
+    jerSigma = 0.062;
+  }
+  else if (eta <= 2.1) {
+    jerSF = 1.167;
+    jerSigma = 0.086;
+  }
+  else if (eta <= 2.3) {
+    jerSF = 1.094;
+    jerSigma = 0.093;
+  }
+  else if (eta <= 2.5) {
+    jerSF = 1.168;
+    jerSigma = 0.120;
+  }
+  else if (eta <= 2.8) {
+    jerSF = 1.266;
+    jerSigma = 0.132;
+  }
+  else if (eta <= 3.0){
+    jerSF = 1.595;
+    jerSigma = 0.175;
+  }
+  else if (eta <= 3.2){
+    jerSF = 1.002;
+    jerSigma = 0.066;
+  } 
+  else {
+    jerSF = 1.216;
+    jerSigma = 0.145;
+  }
+  return std::make_pair({ jerSF, jerSigma });
 }
 
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * err1, float * err2, float * err3, float * err4){
