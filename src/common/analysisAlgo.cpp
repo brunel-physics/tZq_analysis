@@ -52,7 +52,8 @@ AnalysisAlgo::AnalysisAlgo():
   mwCut{20.0},
   trileptonChannel_{true},
   isFCNC_{false},
-  isCtag_{false}
+  isCtag_{false},
+  is2016_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -272,6 +273,7 @@ void AnalysisAlgo::show_usage(std::string name){
 	    << "Options:\n"
 	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over.\n"
             << "\t--dilepton \t Look for dilepton final state instead of the default trilepton channel.\n"
+            << "\t--2016 \t Use 2016 conditions. User must use 2016 config for this to give valid output.\n"
             << "\t--FCNC \t Look for FCNC dilepton final state instead of the default trilepton channel.\n"
             << "\t--cTag \t Look for FCNC dilepton final state with cTagging instead of the default trilepton channel.\n"
 	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
@@ -339,6 +341,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     }
     else if (arg=="--dilepton"){ // Sets whether trilepton or dilepton channel is to be analysed.
       trileptonChannel_ = false;
+    }
+    else if (arg=="--2016"){ // Sets program to use 2016 conditions (SFs, et al.)
+      is2016_ = true;
     }
     else if (arg =="--FCNC"){ // Runs code in FCNC mode.
 	isFCNC_ = true;
@@ -631,7 +636,7 @@ void AnalysisAlgo::setupSystematics()
 void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts{plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, isFCNC_, isCtag_};
+  cutObj = new Cuts{plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, is2016_, isFCNC_, isCtag_};
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
     exit(0);

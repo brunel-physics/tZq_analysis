@@ -68,6 +68,7 @@ class AnalysisAlgo{
 	bool trileptonChannel_;
 	bool isFCNC_;
 	bool isCtag_;
+	bool is2016_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;

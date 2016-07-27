@@ -17,7 +17,7 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool isFCNC, const bool isCtag ):
+Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
   doPlots_{doPlots},
@@ -32,6 +32,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   trileptonChannel_{trileptonChannel},
   isFCNC_{isFCNC},
   isCtag_{isCtag},
+  is2016_{is2016},
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_{3},

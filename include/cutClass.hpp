@@ -67,6 +67,7 @@ class Cuts{
   const bool trileptonChannel_;
   const bool isFCNC_;
   const bool isCtag_;
+  const bool is2016_;
 
   // Tight electron cuts
   unsigned numTightEle_;
@@ -195,7 +196,7 @@ class Cuts{
   std::string cutConfTrigLabel_;
 
  public:
-  Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool);
+  Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool, const bool);
   ~Cuts();
   bool makeCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*,int);
   void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
