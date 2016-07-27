@@ -295,7 +295,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSigSdBnd, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0 
@@ -459,7 +459,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
             if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1)
-        outTree.Fill()
+        outTreeSig.Fill()
         varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
         varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
         varMap["zlb2DelR"][0] = zLep2.DeltaR(jetVecs[bJets[0]])
@@ -509,6 +509,16 @@ def main():
         outputDir = sys.argv[3]
     inputVars = setupInputVars()
 
+    useSidebandRegion = False
+    if len(sys.argv) > 4 and sys.argv[4] == "-s":
+        useSidebandRegion = True
+    treeNamePostfixSig = ""
+    treeNamePostfixSB = ""
+    if useSidebandRegion:
+        print "Using control region"
+        treeNamePostfixSig = "sig_"
+        treeNamePostfixSB = "ctrl_"
+
     #Loop over samples
     for sample in listOfMCs.keys():
         print "Doing " + sample + ": ",
@@ -519,9 +529,14 @@ def main():
         outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
 
         for syst in systs:
-            #We now define the outtree out here, coz it seems like a more sensible option.
-            outTree = TTree("Ttree_"+listOfMCs[sample]+syst, "Ttree_"+listOfMCs[sample]+syst)
-            setupBranches(outTree,inputVars)
+            #We now define the outTreeSig out here, coz it seems like a more sensible option.
+            outTreeSig = TTree("Ttree_"+listOfMCs[sample]+syst, "Ttree_"+listOfMCs[sample]+syst)
+            setupBranches(outTreeSig,inputVars)
+	    #We now setup the control/side band region - set to null if not enabled.
+            outTreeSdBnd = 0
+            if useSidebandRegion:
+                useSidebandRegion = TTree()
+                setupBranches(outTreeSdBnd,inputVars)
             for channel in channels:
                 inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
                 for syst in systs:
@@ -531,7 +546,7 @@ def main():
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTree, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
+                    fillTree(outTreeSig, outTreeSigSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
                 except AttributeError:
                     print syst + " : " + "0",
                     sys.stdout.flush()
@@ -539,10 +554,13 @@ def main():
                 inFile.Close()
             outFile.cd()
             outFile.Write()
-            outTree.Write()
+            outTreeSig.Write()
+            if useSidebandRegion:
+                outTreeSB.Write()
+
         #if tree exists just update that.
         #        if outFile.GetListOfKeys().Contains("Ttree_"+listOfMCs[sample]):
-        #            outTree = outFile.Get("Ttree_"+listOfMCs[sample])
+        #            outTreeSig = outFile.Get("Ttree_"+listOfMCs[sample])
         #        else:
     #next do the data files
         outFile.Write()
@@ -557,17 +575,17 @@ def main():
 
     for outChan in outChannels:
         print "Data ",outChan
-        outTree = TTree("Ttree_"+outChan,"Ttree_"+outChan)
-        setupBranches(outTree,inputVars)
+        outTreeSig = TTree("Ttree_"+outChan,"Ttree_"+outChan)
+        setupBranches(outTreeSig,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
             for run in ["C","D"]:
                 dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTree, inputVars, dataChain, outChan, chan, 0)
+            fillTree(outTreeSig, outTreeSigSdBnd, inputVars, dataChain, outChan, chan, 0)
         outFile.cd()
         outFile.Write()
-        outTree.Write()
+        outTreeSig.Write()
         outFile.Close()
 
 if __name__ == "__main__":
