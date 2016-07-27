@@ -16,7 +16,7 @@ class TH2D;
 class TH3D;
 
 class Cuts{
-  bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
+  bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*, int syst = 0);
   bool invertIsoCut(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
   std::vector<int> makeMetCuts(AnalysisEvent*);
@@ -53,9 +53,9 @@ class Cuts{
   float getTriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
 
   //Function to get lepton SF
-  float getLeptonWeight(AnalysisEvent*);
-  float eleSF(double, double);
-  float muonSF(double, double);
+  float getLeptonWeight(AnalysisEvent*, int syst = 0);
+  float eleSF(double, double, int syst = 0);
+  float muonSF(double, double, int syst = 0);
 
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
