@@ -1,0 +1,12 @@
+[eeRun2016]
+fileName = configs/datasets/fileLists/eeRun2016Files.txt
+luminosity = 11419.713
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
+

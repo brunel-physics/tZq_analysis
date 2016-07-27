@@ -1,0 +1,12 @@
+[emuRun2016]
+fileName = configs/datasets/fileLists/emuRun2016Files.txt
+luminosity = 12918.141
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = dCt
+
+[]
+

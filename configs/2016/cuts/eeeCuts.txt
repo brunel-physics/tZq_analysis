@@ -1,0 +1,38 @@
+cuts = 
+{
+	tightMuons = {
+	      pt   = 20.;
+	      eta  = 2.4;
+	      relIso = 0.15;
+	      number = 0;
+	      },
+	looseMuons = {
+	      pt   = 20.;
+	      eta  = 2.4;
+	      relIso = 0.25;
+	      number = 0;
+	      },
+	tightElectrons = {
+	      pt   = 25.;
+	      eta  = 2.5;
+	      relIso = 0.107587;
+	      number = 3.;
+	      },
+	looseElectrons = {
+	      pt   = 10;
+	      eta  = 2.5;
+	      relIso = 0.107587;
+	      number = 3.; 
+	      }
+        jets = {
+		pt = 30.;
+		eta = 5.0;
+                numJets = 2;
+                maxJets = 4;
+                numbJets = 1;
+                maxbJets = 2;
+        }
+
+}
+trigLabel = "e";
+plotPostfix = "eee";

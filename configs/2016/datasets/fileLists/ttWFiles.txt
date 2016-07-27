@@ -1,0 +1,8 @@
+/scratch/data/tZqSkimsRun2016/ttW/skimFile0.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile1.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile2.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile3.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile4.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile5.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile6.root
+/scratch/data/tZqSkimsRun2016/ttW/skimFile7.root

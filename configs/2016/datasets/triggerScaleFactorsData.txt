@@ -1,0 +1,22 @@
+[ttbarInclusivePowerheg_ext3]
+fileName = configs/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+totalEvents = 92925926
+crossSection = 831.76
+runType = mc
+histoName = ttbar
+colour = kRed
+label = ttbar
+plotType = f
+
+[metRun2016]
+fileName = configs/datasets/fileLists/metRun2016Files.txt
+luminosity = 6321.286
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
+

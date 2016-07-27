@@ -1,0 +1,11 @@
+[tZq]
+fileName = configs/datasets/fileLists/tZqFiles.txt
+totalEvents = 16751283
+crossSection = 0.0758
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
+plotType = f
+
+[]

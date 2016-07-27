@@ -1,0 +1,6 @@
+datasets = "configs/datasets/muEGDataMC.txt";
+cuts = "configs/cuts/eeeCuts.txt";
+plots = "configs/plots/plotConf.cfg";
+outputFolder = "plots/eemu/";
+outputPostfix = "eemu";
+channelName = "eemu";
