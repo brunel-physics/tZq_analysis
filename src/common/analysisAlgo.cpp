@@ -591,17 +591,32 @@ void AnalysisAlgo::setupSystematics()
   systNames.emplace_back("__ME_PS__plus");
   systNames.emplace_back("__ME_PS__minus");
 
-  //Make pileupReweighting stuff here
-  dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};
-  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-  mcPileupFile = new TFile{"pileup/pileupMC.root","READ"};
-  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  if ( !is2016_ ) { // If 2015 mode, get 2015 PU
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile{"pileup/truePileupTest.root","READ"};
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile{"pileup/pileupMC.root","READ"};
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-  //Get systematic files too.
-  systUpFile = new TFile{"pileup/truePileupUp.root","READ"};
-  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-  systDownFile = new TFile{"pileup/truePileupDown.root","READ"};
-  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+    //Get systematic files too.
+    systUpFile = new TFile{"pileup/truePileupUp.root","READ"};
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile{"pileup/truePileupDown.root","READ"};
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
+  else {
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile{"pileup/2016/truePileupTest.root","READ"};
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile{"pileup/2016/pileupMC.root","READ"};
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+
+    //Get systematic files too.
+    systUpFile = new TFile{"pileup/2016/truePileupUp.root","READ"};
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile{"pileup/2016/truePileupDown.root","READ"};
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
 
   puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
