@@ -74,6 +74,24 @@ def getJetVec(tree, index):
 
     return returnJet
 
+def doUncMet(tree,met,zLep1,zLep2,jetVecs,syst):
+
+    uncMetX = met.Px() + zLep1.Px() + zLep2.Px()
+    uncMetY = met.Py() + zLep1.Py() + zLep2.Py()
+
+    for i in range(len(jetVecs)):
+        uncMetX += jetVecs[i].Px()
+        uncMetY += jetVecs[i].Py()
+
+    if syst == 1024:
+        met.SetPx(met.Px() + 0.1*uncMetX)
+        met.SetPy(met.Py() + 0.1*uncMetY)
+    else:
+        met.SetPx(met.Px() - 0.1*uncMetX)
+        met.SetPy(met.Py() - 0.1*uncMetY)
+
+    return met
+
 def setupInputVars():
     #Make the variables we want to save
     inputVars = {}
@@ -280,6 +298,13 @@ def setupBranches(tree,varMap):
 def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
+    syst = 0 
+
+    if "__met__plus" in label:
+        syst = 1024
+    if "__met__minus" in label:
+        syst = 2048
+
     if channel == "ee":
         varMap["chan"][0] = 1
     if channel == "mumu":
@@ -296,6 +321,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.)
         (bJets,bJetVecs) = getBjets(tree,jets)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
+        if syst == 1024 or syst == 2048:
+            metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
         varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
@@ -467,7 +494,7 @@ def main():
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus","__met__plus","__met__minus]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
@@ -497,7 +524,10 @@ def main():
             setupBranches(outTree,inputVars)
             for channel in channels:
                 inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
-                tree = inFile.Get("tree"+syst)
+                for syst in systs:
+                    tree = inFile.Get("tree")
+                else:
+                    tree = inFile.Get("tree"+syst)
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
