@@ -577,6 +577,10 @@ def main():
         print "Data ",outChan
         outTreeSig = TTree("Ttree_"+outChan,"Ttree_"+outChan)
         setupBranches(outTreeSig,inputVars)
+            outTreeSdBnd = 0
+            if useSidebandRegion:
+                useSidebandRegion = TTree()
+                setupBranches(outTreeSdBnd,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
@@ -586,6 +590,8 @@ def main():
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()
+        if useSidebandRegion:
+            outTreeSB.Write()
         outFile.Close()
 
 if __name__ == "__main__":
