@@ -1842,7 +1842,12 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 	return returnJet;
   }
 
-  float jerSF{0.};
+  if ( !isMC_ ) {
+	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+	return returnJet;
+  }
+
+  float jerSF{1.};
   float jerSigma{0.};
 
   float newSmearValue{1.};  
@@ -1908,12 +1913,13 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
-     }
+    }
       else { // If not, randomly smear 
       srand (time(nullptr));
       newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
-      }
+    }
+
   }
 
   else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
@@ -1922,6 +1928,28 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
     returnJet *= 1+jerUncer;
   }
+
+  // Propagate smearing through to MET
+  if ( isMC_ ) {
+   TLorentzVector tempMet;
+   tempMet.SetPxPyPzE(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
+
+   tempMet.SetPx( event->metPF2PATPx + event->jetPF2PATPx[index] );
+   tempMet.SetPy( event->metPF2PATPy + event->jetPF2PATPy[index] );
+   tempMet.SetPz( 0.0 );
+   tempMet.SetE( event->metPF2PATEt + event->jetPF2PATEt[index] );
+
+   tempMet.SetPx( tempMet.Px() - returnJet.Px() );
+   tempMet.SetPy( tempMet.Py() - returnJet.Py() );
+   tempMet.SetE( tempMet.Et() - returnJet.Et() );
+
+  // Update MET LVector
+  event->metPF2PATEt = tempMet.Et();
+  event->metPF2PATEt = tempMet.Phi();
+  event->metPF2PATPt = tempMet.Pt();
+  event->metPF2PATPx = tempMet.Px(); 
+  event->metPF2PATPy = tempMet.Py();  
+ }
 
   return returnJet;
 }
