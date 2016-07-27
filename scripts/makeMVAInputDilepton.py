@@ -459,7 +459,6 @@ def fillTree(outTreeSig, outTreeSigSdBnd, varMap, tree, label, channel, jetUnc, 
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
             if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1)
-        outTreeSig.Fill()
         varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
         varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
         varMap["zlb2DelR"][0] = zLep2.DeltaR(jetVecs[bJets[0]])
@@ -480,6 +479,11 @@ def fillTree(outTreeSig, outTreeSigSdBnd, varMap, tree, label, channel, jetUnc, 
 	wChi2Term = (wPairMass - 80.3585)/8.0
 	topChi2Term = (topMass - 173.21)/30.0
 	varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term
+
+	if varMap["chi2"][0] >= 2 and varMap["chi2"][0] < 7 and outTreeSdBnd :
+            outTreeSdBnd.Fill()
+        else :
+            outTreeSig.Fill()
 
 def main():
 
