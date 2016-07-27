@@ -48,6 +48,8 @@ AnalysisAlgo::AnalysisAlgo():
   customJetRegion{false},
   metCut{0.},
   mtwCut{0.},
+  mzCut{10.0},
+  mwCut{20.0},
   trileptonChannel_{true},
   isFCNC_{false},
   isCtag_{false}
