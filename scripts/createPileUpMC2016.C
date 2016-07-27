@@ -73,7 +73,7 @@ void createPileUpMC2016() {
     pileup->Fill ( x, y[x] );
   }
 
-  TFile* outFile = new TFile("pileup/pileupMC.root","recreate");
+  TFile* outFile = new TFile("pileup/2016/pileupMC.root","recreate");
 
   pileup->Draw();
   pileup->Write();
