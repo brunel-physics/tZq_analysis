@@ -10,5 +10,6 @@
 *.save
 bin/
 plots/
-configs/datasets/fileLists/*
+configs/2015/datasets/fileLists/*
+configs/2016/datasets/fileLists/*
 step*EventDump*.txt
