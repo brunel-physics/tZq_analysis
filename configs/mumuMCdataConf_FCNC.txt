@@ -1,6 +1,0 @@
-datasets = "configs/datasets/mumuDataMC.txt";
-cuts = "configs/cuts/eeCuts_FCNC.txt";
-plots = "configs/plots/plotFCNCconf.cfg";
-outputFolder = "plots/mumu_FCNC/";
-outputPostfix = "mumu";
-channelName = "mumu";

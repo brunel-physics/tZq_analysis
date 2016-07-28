@@ -1,0 +1,6 @@
+datasets = "configs/2015/datasets/DY.txt";
+cuts = "configs/2015/cuts/eeCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2015/DY_reweight/";
+outputPostfix = "ee";
+channelName = "ee";

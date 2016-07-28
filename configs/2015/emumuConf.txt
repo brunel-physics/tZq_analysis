@@ -1,0 +1,6 @@
+datasets = "configs/2015/datasets/muEGData.txt";
+cuts = "configs/2015/cuts/eeeCuts.txt";
+plots = "configs/plots/plotConf.cfg";
+outputFolder = "plots/2015/emumu_data/";
+outputPostfix = "emumu";
+channelName = "emumu";

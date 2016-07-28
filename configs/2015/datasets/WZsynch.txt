@@ -1,0 +1,12 @@
+[WZ_synch]
+fileName = configs/2015/datasets/fileLists/WZsynchFiles.txt
+totalEvents = 270459
+crossSection = 5.26
+runType = mc
+histoName = tZq
+colour = kYellow
+label = WZ_synch
+plotType = f
+
+[]
+

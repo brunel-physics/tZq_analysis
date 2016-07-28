@@ -1,0 +1,32 @@
+[wPlusJets]
+fileName = configs/2015/datasets/fileLists/wPlusJetsFiles.txt
+runType = mc
+totalEvents = 262341358
+crossSection = 61526.7
+histoName = wJets
+colour = kSpring
+label = w+jets
+plotType = f
+
+[mumuRun2015C]
+fileName = configs/2015/datasets/fileLists/mumuRun2015CFiles.txt
+luminosity = 17.227
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[mumuRun2015D]
+fileName = configs/2015/datasets/fileLists/mumuRun2015DFiles.txt
+luminosity = 2155.251
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
+

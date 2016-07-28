@@ -1,0 +1,23 @@
+[emuRun2015C]
+fileName = configs/2015/datasets/fileLists/emuRun2015CFiles.txt
+luminosity = 17.227
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = dCt
+
+[emuRun2015D]
+fileName = configs/2015/datasets/fileLists/emuRun2015DFiles.txt
+luminosity = 2155.251
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = dCt
+
+
+[]
+

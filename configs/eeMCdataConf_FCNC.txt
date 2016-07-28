@@ -1,6 +1,0 @@
-datasets = "configs/datasets/eeDataMC.txt";
-cuts = "configs/cuts/eeCuts_FCNC.txt";
-plots = "configs/plots/plotFCNCconf.cfg";
-outputFolder = "plots/ee_FCNC/";
-outputPostfix = "ee";
-channelName = "ee";

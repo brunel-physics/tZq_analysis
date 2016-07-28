@@ -1,0 +1,6 @@
+datasets = "configs/2015/datasets/eeData.txt";
+cuts = "configs/2015/cuts/eeeCuts.txt";
+plots = "configs/plots/plotConf.cfg";
+outputFolder = "plots/2015/eee_data/";
+outputPostfix = "eee";
+channelName = "eee";
