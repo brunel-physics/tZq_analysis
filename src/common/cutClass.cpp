@@ -2069,7 +2069,8 @@ std::pair< float, float > Cuts::jet2015SFs( float eta ) {
     jerSF = 1.216;
     jerSigma = 0.050;
   }
-  return make_pair({ jerSF, jerSigma });
+
+  return std::make_pair( jerSF, jerSigma );
 }
 
 std::pair< float, float > Cuts::jet2016SFs( float eta ) {
@@ -2129,7 +2130,8 @@ std::pair< float, float > Cuts::jet2016SFs( float eta ) {
     jerSF = 1.216;
     jerSigma = 0.145;
   }
-  return std::make_pair({ jerSF, jerSigma });
+
+  return std::make_pair( jerSF, jerSigma );
 }
 
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * err1, float * err2, float * err3, float * err4){
