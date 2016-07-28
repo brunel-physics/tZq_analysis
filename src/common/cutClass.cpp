@@ -950,7 +950,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 bool Cuts::metFilters(AnalysisEvent* event){
   if ( event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0 ||  event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 || event->Flag_goodVertices <= 0 || event->Flag_eeBadScFilter <= 0 ) return false;
   if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
-  if ( is2016_ && event->Flag_globalTightHalo2016Filter =< 0 ) return false;
+  if ( is2016_ && event->Flag_globalTightHalo2016Filter <= 0 ) return false;
   else return true;
 }
 

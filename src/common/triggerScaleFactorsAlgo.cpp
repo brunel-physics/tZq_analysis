@@ -343,13 +343,22 @@ void TriggerScaleFactors::runMainAnalysis(){
     else{
       std::string inputPostfix{};
       inputPostfix += postfix;
-      std::cout << "/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-      datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-      std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-      if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-      std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-      if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
-
+      if ( !is2016_ ) { 
+        std::cout << "/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+        datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+        std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+        if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+        std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+        if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+      }
+      else {
+        std::cout << "/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+        datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+        std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+        if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+        std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+        if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+      }
     }
 
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
@@ -367,9 +376,16 @@ void TriggerScaleFactors::runMainAnalysis(){
     TTree * cloneTree3{nullptr};
 
     if (makePostLepTree){
-      outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
-      outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
-      outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
+      if ( !is2016_ ) { 
+        outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+        outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
+        outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
+      }
+      else {
+        outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+        outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
+        outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
+      }
       cloneTree = datasetChain->CloneTree(0);
       cloneTree->SetDirectory(outFile1);
       cloneTree2 = datasetChain->CloneTree(0);
