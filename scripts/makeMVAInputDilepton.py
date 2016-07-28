@@ -294,7 +294,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSigSdBnd, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0 
