@@ -599,7 +599,7 @@ void AnalysisAlgo::setupSystematics()
     mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
     //Get systematic files too.
-    systUpFile = new TFile{"pileup/2015truePileupUp.root","READ"};
+    systUpFile = new TFile{"pileup/2015/truePileupUp.root","READ"};
     pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
     systDownFile = new TFile{"pileup/2015/truePileupDown.root","READ"};
     pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
