@@ -312,30 +312,74 @@ public :
    Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3;
 
-   //MC Triggers
+   //2015 MC Triggers
    Int_t           HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
    Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
    Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    Int_t           HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    Int_t           HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
 
-   //MET Triggers
-   Int_t           HLT_PFMET120_PFMHT120_IDTight_v2;
+   //2015 MET Triggers
    Int_t           HLT_PFMET170_JetIdCleaned_v2;
-   Int_t           HLT_PFMET170_HBHECleaned_v2;
    Int_t           HLT_PFHT350_PFMET100_v1;
-   Int_t           HLT_PFHT800_v2;
+
+   //2015 MET Filters
+   Int_t	   Flag_CSCTightHalo2015Filter;
+
+   //2016 Triggers
+   Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3;
+   Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4;
+   Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5;
+   Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6;
+   Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7;
+   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3;
+   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4;
+   Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3;
+   Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
+   Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4;
+   Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5;
+   Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6;
+   Int_t	   HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3;
+   Int_t	   HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4;
+   Int_t	   HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5;
+   Int_t	   HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6;
+
+   //2016 MET Triggers
+   Int_t	   HLT_MET250_v2;
+   Int_t	   HLT_MET250_v3;
+   Int_t	   HLT_PFMET120_PFMHT120_IDTight_v3;
+   Int_t	   HLT_PFMET120_PFMHT120_IDTight_v4;
+   Int_t	   HLT_PFMET170_HBHECleaned_v3;
+   Int_t	   HLT_PFMET170_HBHECleaned_v4;
+   Int_t	   HLT_PFMET170_HBHECleaned_v5;
+   Int_t	   HLT_PFHT800_v3;
+   Int_t	   HLT_PFHT800_v4;
+   Int_t	   HLT_PFHT750_4JetPt50_v4;
+   Int_t	   HLT_PFHT750_4JetPt50_v5;
+   Int_t	   HLT_PFHT300_PFMET100_v1;
+   Int_t	   HLT_PFHT300_PFMET100_v2;
+   Int_t	   HLT_PFHT300_PFMET100_v3;
+
+   //2016 MET Filters
+   Int_t	   Flag_globalTightHalo2016Filter;
+
+   //2015 and 2016 Triggers
+   Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
+   Int_t           HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2;
+
+   //2015 and 2016 MET Triggers
+   Int_t           HLT_PFMET120_PFMHT120_IDTight_v2;
+   Int_t	   HLT_PFMET170_HBHECleaned_v2;
+   Int_t	   HLT_PFHT800_v2;
    Int_t           HLT_MET250_v1;
    Int_t           HLT_PFHT750_4JetPt50_v3;
 
-   //MET Filters
+   //2015 and 2016 MET Filters
    Int_t	   Flag_HBHENoiseFilter;
    Int_t	   Flag_HBHENoiseIsoFilter;
-   Int_t	   Flag_CSCTightHalo2015Filter;
    Int_t	   Flag_EcalDeadCellTriggerPrimitiveFilter;
    Int_t	   Flag_goodVertices;
    Int_t	   Flag_eeBadScFilter;
-
 
    //Gen info
    Int_t           nGenPar;
@@ -684,12 +728,12 @@ public :
    Int_t numVert;
    TBranch * b_numVert;
 
-   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr, bool hasMetTriggers = false);
+   AnalysisEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr, bool is2016 = false, bool hasMetTriggers = false);
    virtual ~AnalysisEvent();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers);
+   virtual void     Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers);
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -699,7 +743,7 @@ public :
 #endif
 
 #ifdef AnalysisEvent_cxx
-AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers) : fChain(nullptr) 
+AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers) : fChain(nullptr) 
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -724,7 +768,7 @@ AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bo
 #endif // SINGLE_TREE
 
    }
-   Init(isMC,triggerFlag,tree,hasMetTriggers);
+   Init(isMC,triggerFlag,tree, is2016, hasMetTriggers);
 }
 
 AnalysisEvent::~AnalysisEvent()
@@ -753,7 +797,7 @@ Long64_t AnalysisEvent::LoadTree(Long64_t entry)
    return centry;
 }
 
-void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool hasMetTriggers)
+void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
