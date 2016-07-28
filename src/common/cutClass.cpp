@@ -130,7 +130,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   // Setup bTag calibration code (2015/2016)
   // bTag calib code
   if ( !is2016_ ) { 
-    calib {"CSVv2", "scaleFactors/CSVv2.csv"};
+    calib {"CSVv2", "scaleFactors/2015/CSVv2.csv"};
   }
   else {
     calib {"CSVv2", "scaleFactors/2016/CSVv2.csv"};
@@ -155,15 +155,15 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   if ( !is2016_ ) {
     std::cout << "\nLoad electron SFs from root file ... " << std::endl;
-    electronSFsFile = new TFile("scaleFactors/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
+    electronSFsFile = new TFile("scaleFactors/2015/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
-    electronRecoFile = new TFile{"scaleFactors/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
+    electronRecoFile = new TFile{"scaleFactors/2015/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
     h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
     std::cout << "Got electron SFs!\n" << std::endl;
 
     std::cout << "Load muon SFs from root file ... " << std::endl;
-    muonIDsFile = new TFile{"scaleFactors/MuonID_Z_RunCD_Reco76X_Feb15.root"};
-    muonIsoFile = new TFile{"scaleFactors/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
+    muonIDsFile = new TFile{"scaleFactors/2015/MuonID_Z_RunCD_Reco76X_Feb15.root"};
+    muonIsoFile = new TFile{"scaleFactors/2015/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
     muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
     muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
@@ -1864,7 +1864,7 @@ float Cuts::muonSF(double pt, double eta, int syst){
 
 void Cuts::initialiseJECCors(){
   std::ifstream jecFile;
-  if ( !is2016_ ) jecFile.open( "scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  if ( !is2016_ ) jecFile.open( "scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   else jecFile.open( "scaleFactors/2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
