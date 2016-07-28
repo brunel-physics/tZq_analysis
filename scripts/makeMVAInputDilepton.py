@@ -498,7 +498,7 @@ def main():
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus","__met__plus","__met__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
@@ -550,7 +550,7 @@ def main():
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSigSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
                 except AttributeError:
                     print syst + " : " + "0",
                     sys.stdout.flush()
@@ -590,7 +590,7 @@ def main():
             dataChain = TChain("tree")    
             for run in ["C","D"]:
                 dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSigSdBnd, inputVars, dataChain, outChan, chan, 0)
+            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, chan, 0)
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()
