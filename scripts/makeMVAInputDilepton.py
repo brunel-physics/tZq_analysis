@@ -492,7 +492,7 @@ def main():
 #    listOfMCs = {}
 
     #Set-up JEC corrections
-    jetUnc = JetCorrectionUncertainty("scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
+    jetUnc = JetCorrectionUncertainty("scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
@@ -581,10 +581,10 @@ def main():
         print "Data ",outChan
         outTreeSig = TTree("Ttree_"+treeNamePostfixSig+outChan,"Ttree_"+treeNamePostfixSig+outChan)
         setupBranches(outTreeSig,inputVars)
-            outTreeSdBnd = 0
-            if useSidebandRegion:
-                outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
-                setupBranches(outTreeSdBnd,inputVars)
+        outTreeSdBnd = 0
+        if useSidebandRegion:
+            outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
+            setupBranches(outTreeSdBnd,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
