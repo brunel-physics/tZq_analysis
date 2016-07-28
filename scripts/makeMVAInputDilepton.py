@@ -560,7 +560,7 @@ def main():
             outFile.Write()
             outTreeSig.Write()
             if useSidebandRegion:
-                outTreeSB.Write()
+                outTreeSdBnd.Write()
 
         #if tree exists just update that.
         #        if outFile.GetListOfKeys().Contains("Ttree_"+listOfMCs[sample]):
@@ -595,7 +595,7 @@ def main():
         outFile.Write()
         outTreeSig.Write()
         if useSidebandRegion:
-            outTreeSB.Write()
+            outTreeSdBnd.Write()
         outFile.Close()
 
 if __name__ == "__main__":
