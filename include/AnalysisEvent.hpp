@@ -667,6 +667,8 @@ public :
    TBranch	  *b_weight_muF2muR2;   //!
    TBranch	  *b_origWeightForNorm;   //!
    //   TBranch        *b_numVert;    //!
+
+   //2015 Lepton and MET Triggers
    TBranch        *b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2;
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
    TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2;
@@ -676,23 +678,71 @@ public :
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3;
    TBranch        *b_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1;
-   TBranch	  *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
-   TBranch	  *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1;
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1;
    TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1;
-   TBranch        *b_HLT_PFMET120_PFMHT120_IDTight_v2;
-   TBranch        *b_HLT_PFMET170_JetIdCleaned_v2;
-   TBranch        *b_HLT_PFMET170_HBHECleaned_v2;
+   TBranch        *b_HLT_PFMET170_JetIdCleaned_v2
    TBranch        *b_HLT_PFHT350_PFMET100_v1;
+
+   //2015 MET Filters
+   TBranch        *b_Flag_CSCTightHalo2015Filter;
+
+   //2016 Lepton Triggers
+   TBranch        *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3;
+   TBranch        *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4;
+   TBranch        *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5;
+   TBranch        *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6;
+   TBranch        *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3;
+   TBranch        *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
+   TBranch        *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4;
+   TBranch        *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5;
+   TBranch        *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6;
+   TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3;
+   TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4;
+   TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5;
+   TBranch        *b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6;
+
+   //2016 MET Triggers
+   TBranch        *b_HLT_MET250_v2;
+   TBranch        *b_HLT_MET250_v3;
+   TBranch        *b_HLT_PFMET120_PFMHT120_IDTight_v3;
+   TBranch        *b_HLT_PFMET120_PFMHT120_IDTight_v4;
+   TBranch        *b_HLT_PFMET170_HBHECleaned_v3;
+   TBranch        *b_HLT_PFMET170_HBHECleaned_v4;
+   TBranch        *b_HLT_PFMET170_HBHECleaned_v5;
+   TBranch        *b_HLT_PFHT800_v3;
+   TBranch        *b_HLT_PFHT800_v4;
+   TBranch        *b_HLT_PFHT750_4JetPt50_v4;
+   TBranch        *b_HLT_PFHT750_4JetPt50_v5;
+   TBranch        *b_HLT_PFHT300_PFMET100_v1;
+   TBranch        *b_HLT_PFHT300_PFMET100_v2;
+   TBranch        *b_HLT_PFHT300_PFMET100_v3;
+
+   //2016 MET Filters
+   TBranch        *b_Flag_globalTightHalo2016Filter;
+
+   //2015 and 2016 MET Triggers
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2;
+
+   //2015 and 2016 MET Filters
+   TBranch        *b_HLT_PFMET120_PFMHT120_IDTight_v2;
+   TBranch        *b_HLT_PFMET170_HBHECleaned_v2;
    TBranch        *b_HLT_PFHT800_v2;
    TBranch        *b_HLT_MET250_v1;
    TBranch        *b_HLT_PFHT750_4JetPt50_v3;
-   TBranch	  *b_Flag_HBHENoiseFilter;
-   TBranch	  *b_Flag_HBHENoiseIsoFilter;
-   TBranch	  *b_Flag_CSCTightHalo2015Filter;
-   TBranch	  *b_Flag_EcalDeadCellTriggerPrimitiveFilter;
-   TBranch	  *b_Flag_goodVertices;
-   TBranch	  *b_Flag_eeBadScFilter;
+
+   //2015 and 2016 MET Filters
+   TBranch        *b_Flag_HBHENoiseFilter;
+   TBranch        *b_Flag_HBHENoiseIsoFilter;
+   TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter;
+   TBranch        *b_Flag_goodVertices;
+   TBranch        *b_Flag_eeBadScFilter;
+
    TBranch        *b_nGenPar;   //!
    TBranch        *b_genParEta;   //!
    TBranch        *b_genParPhi;   //!
