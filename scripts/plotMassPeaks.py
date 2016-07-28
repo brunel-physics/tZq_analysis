@@ -32,6 +32,8 @@ def main():
   tZq_chi2Histo = ROOT.TH1D("tZq_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
 
   tZq_topVsWmassHisto = ROOT.TH2D("tZq_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  tZq_topVsWsignalHisto = ROOT.TH2D("tZq_topVsWsignalHisto", "Top mass vs W Mass for signal region, m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  tZq_topVsWcontrolHisto = ROOT.TH2D("tZq_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
 
   tZq_topVsChi2Histo  = ROOT.TH2D("tZq_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
   tZq_wVsChi2Histo    = ROOT.TH2D("tZq_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
@@ -79,7 +81,7 @@ def main():
 
 
   for event in infile_tZq.Ttree_tZq :
-    if ( event.topMass < 200 and event.topMass > 140 ) : tZq_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 230 and event.topMass > 110 ) : tZq_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : tZq_wMassHisto.Fill(event.wPairMass)
 #    tZq_topMassHisto.Fill(event.topMass)
 #    tZq_wMassHisto.Fill(event.wPairMass)
@@ -94,8 +96,11 @@ def main():
     tZq_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2)
     tZq_chi2Histo.Fill(chi2)
 
+    if ( chi2 < 2 ) : tZq_topVsWsignalHisto.Fill(event.wPairMass,event.topMass)
+    if ( chi2 >= 2 and chi2 < 7 ) : tZq_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass)
+
   for event in infile_TT.Ttree_TT :
-    if ( event.topMass < 200 and event.topMass > 140 ) : TT_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 230 and event.topMass > 110 ) : TT_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : TT_wMassHisto.Fill(event.wPairMass)
 #    TT_topMassHisto.Fill(event.topMass)
 #    TT_wMassHisto.Fill(event.wPairMass)
@@ -111,7 +116,7 @@ def main():
     TT_chi2Histo.Fill(chi2)
 
   for event in infile_DY.Ttree_DYToLL_M50 :
-    if ( event.topMass < 200 and event.topMass > 140 ) : DY_topMassHisto.Fill(event.topMass)
+    if ( event.topMass < 230 and event.topMass > 110 ) : DY_topMassHisto.Fill(event.topMass)
     if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : DY_wMassHisto.Fill(event.wPairMass)
 #    DY_topMassHisto.Fill(event.topMass)
 #    DY_wMassHisto.Fill(event.wPairMass)
@@ -370,6 +375,8 @@ def main():
   tZq_topVsChi2Histo.SaveAs("plots/chiSquared/tZq/topVsChi2.root")
   tZq_wVsTopvsChi2Histo.SaveAs("plots/chiSquared/tZq/wVsTopvsChi2.root")
   tZq_chi2Histo.SaveAs("plots/chiSquared/tZq/chi2.root")
+  tZq_topVsWsignalHisto.SaveAs("plots/chiSquared/tZq/signalMassPlot.root")
+  tZq_topVsWcontrolHisto.SaveAs("plots/chiSquared/tZq/controlMassPlot.root")
 
   TT_topMassHisto.Fit("gaus")
   TT_wMassHisto.Fit("gaus")
