@@ -28,6 +28,7 @@ TriggerScaleFactors::TriggerScaleFactors():
   postLepSelTree_{nullptr},
   postLepSelTree2_{nullptr},
   postLepSelTree3_{nullptr},
+  is2016_{false},
 
   numberPassedElectrons(),
   numberTriggeredElectrons(),
@@ -121,34 +122,56 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("eventRun",1);
   chain->SetBranchStatus("eventLumiblock",1);
 
-  if (!isMC){
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
-  }
-  else{
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+  chain->SetBranchStatus("Flag_HBHENoiseFilter",1);
+  chain->SetBranchStatus("Flag_HBHENoiseIsoFilter",1);
+  chain->SetBranchStatus("Flag_EcalDeadCellTriggerPrimitiveFilter",1);
+  chain->SetBranchStatus("Flag_goodVertices",1);
+  chain->SetBranchStatus("Flag_eeBadScFilter",1);
+
+  if ( !is2016_ ) {
+    if (!isMC){
+      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
+      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
+      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
+      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
+    }
+    else{
+      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
+      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+    }
+  chain->SetBranchStatus("Flag_CSCTightHalo2015Filter",1);
   }
 
-  chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
-  chain->SetBranchStatus("HLT_PFMET170_JetIdCleaned_v2",1);
-  chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
-  chain->SetBranchStatus("HLT_PFHT350_PFMET100_v1",1);
-  chain->SetBranchStatus("HLT_PFHT800_v2",1);
-  chain->SetBranchStatus("HLT_MET250_v1",1);
-  chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
-
+  else {
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6",1);
+    chain->SetBranchStatus("Flag_globalTightHalo2016Filter",1);
+  }
 }
 
 void TriggerScaleFactors::show_usage(std::string name){
@@ -201,6 +224,9 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     else if (arg=="-p") {
       plots = true;
     }
+    else if (arg=="--2016"){ // Sets program to use 2016 conditions (SFs, et al.)
+      is2016_ = true;
+    }
     else if ((arg=="-o")||(arg=="--outFolder")){//Set output folder
       if (i + 1 < argc){
 	outFolder = argv[++i];
@@ -247,17 +273,32 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
 void TriggerScaleFactors::runMainAnalysis(){
 
-  //Make pileupReweighting stuff here
-  dataPileupFile = new TFile("pileup/truePileupTest.root","READ");
-  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-  mcPileupFile = new TFile("pileup/pileupMC.root","READ");
-  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  if ( !is2016_ ) { // If 2015 mode, get 2015 PU
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile{"pileup/2015/truePileupTest.root","READ"};
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile{"pileup/2015/pileupMC.root","READ"};
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-  //Get systematic files too.
-  systUpFile = new TFile("pileup/truePileupUp.root","READ");
-  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-  systDownFile = new TFile("pileup/truePileupDown.root","READ");
-  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+    //Get systematic files too.
+    systUpFile = new TFile{"pileup/2015truePileupUp.root","READ"};
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile{"pileup/2015/truePileupDown.root","READ"};
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
+  else {
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile{"pileup/2016/truePileupTest.root","READ"};
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile{"pileup/2016/pileupMC.root","READ"};
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+
+    //Get systematic files too.
+    systUpFile = new TFile{"pileup/2016/truePileupUp.root","READ"};
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile{"pileup/2016/truePileupDown.root","READ"};
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
 
   puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
@@ -565,24 +606,52 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, std::vect
 }
 
 bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
+  if ( !is2016_ ) {
+    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
+  }
+  else if ( is2016_ ) {
+    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 ) return true;
+  }
   else return false;
 }
 
 bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
+  if ( !is2016_ ) { 
+    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
+  }
+  else if ( is2016_ ) {
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) return true;
+  }
   else return false;
 }
 
 bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
+  if ( !is2016_ ) {
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
+  }
+  else if ( is2016_ ) {
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) return true;
+  }
   else return false;
 }
 
 bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
+  if ( !is2016_ ) {
+    if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
+  }
+  else if ( is2016_ ) {
+    if ( event->HLT_MET250_v1 > 0 || event->HLT_MET250_v2 > 0 || event->HLT_MET250_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v3 > 0 || event->HLT_PFMET170_HBHECleaned_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v5 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_PFHT800_v3 > 0 || event->HLT_PFHT800_v4 > 0 || event->HLT_PFHT750_4JetPt50_v3 > 0 || event->HLT_PFHT750_4JetPt50_v4 > 0 || event->HLT_PFHT750_4JetPt50_v5 > 0 || event->HLT_PFHT300_PFMET100_v1 > 0 || event->HLT_PFHT300_PFMET100_v2 > 0 || event->HLT_PFHT300_PFMET100_v3 > 0 ) return true;
+  }
   else return false;
 }
+
+bool TriggerScaleFactors::metFilters( AnalysisEvent* event ) {
+  if ( event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0 ||  event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 || event->Flag_goodVertices <= 0 || event->Flag_eeBadScFilter <= 0 ) return false;
+  if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
+  if ( is2016_ && event->Flag_globalTightHalo2016Filter <= 0 ) return false;
+  else return true;
+}
+
 
 void TriggerScaleFactors::savePlots()
 {

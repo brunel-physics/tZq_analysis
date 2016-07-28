@@ -43,6 +43,8 @@ class TriggerScaleFactors{
 	bool makePostLepTree;
 	bool usePostLepTree;
 	int numFiles;
+
+	bool is2016_;
 	//For producing post-lepsel skims
 	TTree* postLepSelTree_;
 	TTree* postLepSelTree2_;
@@ -75,6 +77,7 @@ class TriggerScaleFactors{
 	bool muonElectronTriggerCut(AnalysisEvent*);
 	bool doubleMuonTriggerCut(AnalysisEvent*);
 	bool metTriggerCut(AnalysisEvent*);
+	bool metFilters(AnalysisEvent*);
 
 	//Efficiencies
 	double numberPassedElectrons[2];
