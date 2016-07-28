@@ -172,7 +172,8 @@ class Cuts{
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
   //bTag callibration for SFs
-  BTagCalibration calib;
+  BTagCalibration calib2015;
+  BTagCalibration calib2016;
   BTagCalibrationReader lightReader;
   BTagCalibrationReader lightReader_up;
   BTagCalibrationReader lightReader_do;

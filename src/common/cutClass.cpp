@@ -108,6 +108,24 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   makeBTagEffPlots_{false},
   getBTagWeight_{false},
 
+  // Setup bTag calibration code (2015/2016)
+  // bTag calib code
+  calib2015 {"CSVv2", "scaleFactors/2015/CSVv2.csv"},
+  calib2016 {"CSVv2", "scaleFactors/2016/CSVv2.csv"},
+
+  // udsg jets
+  lightReader{BTagEntry::OP_TIGHT,		// operating point
+                               "central"},	// systematics type
+  lightReader_up{BTagEntry::OP_TIGHT, "up"},	// sys up
+  lightReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
+  // c/b jets
+  charmReader{BTagEntry::OP_TIGHT, "central"},	//central
+  charmReader_up{BTagEntry::OP_TIGHT, "up"},	// sys up
+  charmReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
+  beautyReader{BTagEntry::OP_TIGHT, "central"},	//central
+  beautyReader_up{BTagEntry::OP_TIGHT, "up"}, 	// sys up
+  beautyReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
+
   //MET and mTW cuts go here.
   metCut_{0.0},
   metDileptonCut_{100.0},
@@ -115,6 +133,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   mTWCutSynch_{20.0},
   TopMassCutLower_{95.},
   TopMassCutUpper_{200.}
+
 {
   //Space here in case other stuff needs to be done.
 
@@ -126,28 +145,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
     synchMuonCutFlow_ = new TH1I{"synchMuonCutFlow","synchMuonCutFlow",11,0,11};
     synchCutTopMassHist_ = new TH1F{"synchCutTopMassHist", "synchCutTopMassHist", 200, 0., 200.};
   }
-
-  // Setup bTag calibration code (2015/2016)
-  // bTag calib code
-  if ( !is2016_ ) { 
-    calib {"CSVv2", "scaleFactors/2015/CSVv2.csv"};
-  }
-  else {
-    calib {"CSVv2", "scaleFactors/2016/CSVv2.csv"};
-  }
-  // udsg jets
-  lightReader{BTagEntry::OP_TIGHT,		// operating point
-                               "central"};	// systematics type
-  lightReader_up{BTagEntry::OP_TIGHT, "up"};	// sys up
-  lightReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
-  // c/b jets
-  charmReader{BTagEntry::OP_TIGHT, "central"};	//central
-  charmReader_up{BTagEntry::OP_TIGHT, "up"};	// sys up
-  charmReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
-  beautyReader{BTagEntry::OP_TIGHT, "central"};	//central
-  beautyReader_up{BTagEntry::OP_TIGHT, "up"}; 	// sys up
-  beautyReader_do{BTagEntry::OP_TIGHT, "down"};	// sys down
-
 
   std::cout << "\nInitialises fine" << std::endl;
   initialiseJECCors();
@@ -190,15 +187,28 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
 
   // if doing bTag SFs, load stuff here ...
   if ( getBTagWeight_ ) {
-    lightReader.load(calib, BTagEntry::FLAV_UDSG, "incl");
-    lightReader_up.load(calib, BTagEntry::FLAV_UDSG, "incl");
-    lightReader_do.load(calib, BTagEntry::FLAV_UDSG, "incl");
-    charmReader.load(calib, BTagEntry::FLAV_C, "mujets");
-    charmReader_up.load(calib, BTagEntry::FLAV_C, "mujets");
-    charmReader_do.load(calib, BTagEntry::FLAV_C, "mujets");
-    beautyReader.load(calib, BTagEntry::FLAV_B, "mujets");
-    beautyReader_up.load(calib, BTagEntry::FLAV_B, "mujets");
-    beautyReader_do.load(calib, BTagEntry::FLAV_B, "mujets");
+    if ( !is2016_ ) { 
+      lightReader.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
+      lightReader_up.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
+      lightReader_do.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
+      charmReader.load(calib2015, BTagEntry::FLAV_C, "mujets");
+      charmReader_up.load(calib2015, BTagEntry::FLAV_C, "mujets");
+      charmReader_do.load(calib2015, BTagEntry::FLAV_C, "mujets");
+      beautyReader.load(calib2015, BTagEntry::FLAV_B, "mujets");
+      beautyReader_up.load(calib2015, BTagEntry::FLAV_B, "mujets");
+      beautyReader_do.load(calib2015, BTagEntry::FLAV_B, "mujets");
+    }
+    else {
+      lightReader.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
+      lightReader_up.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
+      lightReader_do.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
+      charmReader.load(calib2016, BTagEntry::FLAV_C, "mujets");
+      charmReader_up.load(calib2016, BTagEntry::FLAV_C, "mujets");
+      charmReader_do.load(calib2016, BTagEntry::FLAV_C, "mujets");
+      beautyReader.load(calib2016, BTagEntry::FLAV_B, "mujets");
+      beautyReader_up.load(calib2016, BTagEntry::FLAV_B, "mujets");
+      beautyReader_do.load(calib2016, BTagEntry::FLAV_B, "mujets");
+    }
   }
 }
 
