@@ -534,12 +534,12 @@ def main():
 
         for syst in systs:
             #We now define the outTreeSig out here, coz it seems like a more sensible option.
-            outTreeSig = TTree("Ttree_"+listOfMCs[sample]+syst, "Ttree_"+listOfMCs[sample]+syst)
+            outTreeSig = TTree("Ttree_"+treeNamePostfixSig+listOfMCs[sample]+syst, "Ttree_"+treeNamePostfixSig+listOfMCs[sample]+syst)
             setupBranches(outTreeSig,inputVars)
 	    #We now setup the control/side band region - set to null if not enabled.
             outTreeSdBnd = 0
             if useSidebandRegion:
-                useSidebandRegion = TTree()
+                outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+listOfMCs[sample]+syst, "Ttree_"+treeNamePostfixSB+listOfMCs[sample]+syst)
                 setupBranches(outTreeSdBnd,inputVars)
             for channel in channels:
                 inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
@@ -579,11 +579,11 @@ def main():
 
     for outChan in outChannels:
         print "Data ",outChan
-        outTreeSig = TTree("Ttree_"+outChan,"Ttree_"+outChan)
+        outTreeSig = TTree("Ttree_"+treeNamePostfixSig+outChan,"Ttree_"+treeNamePostfixSig+outChan)
         setupBranches(outTreeSig,inputVars)
             outTreeSdBnd = 0
             if useSidebandRegion:
-                useSidebandRegion = TTree()
+                outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
                 setupBranches(outTreeSdBnd,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
