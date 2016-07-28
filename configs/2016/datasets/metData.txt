@@ -1,5 +1,5 @@
 [metRun2016]
-fileName = configs/datasets/fileLists/metRun2016Files.txt
+fileName = configs/2016/datasets/fileLists/metRun2016Files.txt
 luminosity = 12918.141
 runType = data
 histoName = data

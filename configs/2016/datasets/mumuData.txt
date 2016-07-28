@@ -1,5 +1,5 @@
 [mumuRun2016]
-fileName = configs/datasets/fileLists/mumuRun2016Files.txt
+fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
 luminosity = 12918.141
 runType = data
 histoName = data

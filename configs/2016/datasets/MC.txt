@@ -1,5 +1,5 @@
 [tZq]
-fileName = configs/datasets/fileLists/tZqFiles.txt
+fileName = configs/2016/datasets/fileLists/tZqFiles.txt
 totalEvents = 16751283
 crossSection = 0.0758
 runType = mc
@@ -9,7 +9,7 @@ label = tZq
 plotType = f
 
 [tHq]
-fileName = configs/datasets/fileLists/tHqFiles.txt
+fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3485999
 crossSection = 0.07096
 runType = mc
@@ -19,7 +19,7 @@ label = tHq
 plotType = f
 
 [ttW]
-fileName = configs/datasets/fileLists/ttWFiles.txt
+fileName = configs/2016/datasets/fileLists/ttWFiles.txt
 totalEvents = 252673
 crossSection = 0.2043
 runType = mc
@@ -29,7 +29,7 @@ label = ttW
 plotType = f
 
 [ttZ]
-fileName = configs/datasets/fileLists/ttZFiles.txt
+fileName = configs/2016/datasets/fileLists/ttZFiles.txt
 totalEvents = 398600
 crossSection = 0.2529
 runType = mc
@@ -39,7 +39,7 @@ label = ttZ
 plotType = f
 
 [ttbarInclusivePowerheg]
-fileName = configs/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 totalEvents = 92925926
 crossSection = 831.76
 runType = mc
@@ -49,7 +49,7 @@ label = ttbar
 plotType = f
 
 [sChannel]
-fileName = configs/datasets/fileLists/sChannelFiles.txt
+fileName = configs/2016/datasets/fileLists/sChannelFiles.txt
 totalEvents = 1000000
 crossSection = 10.32
 runType = mc
@@ -59,7 +59,7 @@ label = s-channel
 plotType = f
 
 [tChannel]
-fileName = configs/datasets/fileLists/tChannelFiles.txt
+fileName = configs/2016/datasets/fileLists/tChannelFiles.txt
 totalEvents = 3279200
 crossSection = 137.60
 runType = mc
@@ -69,7 +69,7 @@ label = t-channel
 plotType = f
 
 [tbarChannel]
-fileName = configs/datasets/fileLists/tbarChannelFiles.txt
+fileName = configs/2016/datasets/fileLists/tbarChannelFiles.txt
 totalEvents = 1682400
 crossSection = 82.6669
 runType = mc
@@ -79,7 +79,7 @@ label = t-channel
 plotType = f
 
 [tWInclusive]
-fileName = configs/datasets/fileLists/tWInclusiveFiles.txt
+fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 998400
 crossSection = 35.85
 runType = mc
@@ -89,7 +89,7 @@ label = tW
 plotType = f
 
 [tbarWInclusive]
-fileName = configs/datasets/fileLists/tbarWInclusiveFiles.txt
+fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 985000
 crossSection = 35.85
 runType = mc
@@ -99,7 +99,7 @@ label = tW
 plotType = f
 
 [WZ1l1nu2q]
-fileName = configs/datasets/fileLists/WZ1l1nu2q.txt
+fileName = configs/2016/datasets/fileLists/WZ1l1nu2q.txt
 totalEvents = 19500618
 crossSection = 10.71
 runType = mc
@@ -109,7 +109,7 @@ label = wz
 plotType = f
 
 [WZ2l2q]
-fileName = configs/datasets/fileLists/WZ2l2q.txt
+fileName = configs/2016/datasets/fileLists/WZ2l2q.txt
 totalEvents = 25996157
 crossSection = 5.595
 runType = mc
@@ -119,7 +119,7 @@ label = wz
 plotType = f
 
 [WZjets]
-fileName = configs/datasets/fileLists/WZjets.txt
+fileName = configs/2016/datasets/fileLists/WZjets.txt
 totalEvents = 1960761 
 crossSection = 5.26
 runType = mc
@@ -129,7 +129,7 @@ label = wz
 plotType = f
 
 [ZZ4l]
-fileName = configs/datasets/fileLists/ZZ4lFiles.txt
+fileName = configs/2016/datasets/fileLists/ZZ4lFiles.txt
 totalEvents = 6638328
 crossSection = 1.212
 runType = mc
@@ -139,7 +139,7 @@ label = zz
 plotType = f
 
 [ZZ2l2nu]
-fileName = configs/datasets/fileLists/ZZ2l2nuFiles.txt
+fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 runType = mc
 totalEvents = 8968000
 crossSection = 0.564
@@ -149,7 +149,7 @@ label = zz
 plotType = f
 
 [ZZ2l2q]
-fileName = configs/datasets/fileLists/ZZ2l2qFiles.txt
+fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
 runType = mc
 crossSection = 3.22
 totalEvents = 15498581
@@ -159,7 +159,7 @@ label = zz
 plotType = f
 
 [WW1l1nu2q]
-fileName = configs/datasets/fileLists/WW1l1nu2qFiles.txt
+fileName = configs/2016/datasets/fileLists/WW1l1nu2qFiles.txt
 totalEvents = 8950200
 crossSection = 49.997
 runType = mc
@@ -169,7 +169,7 @@ label = WW
 plotType = f
 
 [WW2l2nu]
-fileName = configs/datasets/fileLists/WW2l2nuFiles.txt
+fileName = configs/2016/datasets/fileLists/WW2l2nuFiles.txt
 totalEvents = 1996600
 crossSection = 12.178
 runType = mc
@@ -179,7 +179,7 @@ label = WW
 plotType = f
 
 [wPlusJets]
-fileName = configs/datasets/fileLists/wPlusJetsFiles.txt
+fileName = configs/2016/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
 totalEvents = 9908534
 crossSection = 61526.7
@@ -189,7 +189,7 @@ label = w+jets
 plotType = f
 
 [DYJetsToLL_M-50]
-fileName = configs/datasets/fileLists/DYJets50MadgraphFiles.txt
+fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 49877138
 crossSection = 6025.2
 runType = mc
@@ -199,7 +199,7 @@ label = zPlusJets
 plotType = f
 
 [DYJetsToLL_M-10To50]
-fileName = configs/datasets/fileLists/DYJets10To50Files.txt
+fileName = configs/2016/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 30868546
 crossSection = 18610.0
 runType = mc

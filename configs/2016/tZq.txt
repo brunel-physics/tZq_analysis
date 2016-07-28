@@ -1,6 +1,6 @@
-datasets = "configs/datasets/tZq.txt";
-cuts = "configs/cuts/eeCuts.txt";
+datasets = "configs/2016/datasets/tZq.txt";
+cuts = "configs/2016/cuts/eeCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/tZq/";
+outputFolder = "plots/2016/tZq/";
 outputPostfix = "ee";
 channelName = "ee";

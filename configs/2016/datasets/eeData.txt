@@ -1,5 +1,5 @@
 [eeRun2016]
-fileName = configs/datasets/fileLists/eeRun2016Files.txt
+fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
 luminosity = 11419.713
 runType = data
 histoName = data

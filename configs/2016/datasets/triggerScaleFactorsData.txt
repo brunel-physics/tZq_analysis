@@ -1,5 +1,5 @@
 [ttbarInclusivePowerheg_ext3]
-fileName = configs/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
 totalEvents = 92925926
 crossSection = 831.76
 runType = mc
@@ -9,7 +9,7 @@ label = ttbar
 plotType = f
 
 [metRun2016]
-fileName = configs/datasets/fileLists/metRun2016Files.txt
+fileName = configs/2016/datasets/fileLists/metRun2016Files.txt
 luminosity = 6321.286
 runType = data
 histoName = data

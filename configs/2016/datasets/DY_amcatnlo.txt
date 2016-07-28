@@ -1,5 +1,5 @@
 [DYJetsToLL_MM-50_amcatnlo]
-fileName = configs/datasets/fileLists/DYJets50Files.txt
+fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
 totalEvents = 28696958
 crossSection = 6025.2
 runType = mc

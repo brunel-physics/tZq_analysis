@@ -1,6 +1,6 @@
-datasets = "configs/datasets/muEGData.txt";
-cuts = "configs/cuts/eeeCuts.txt";
+datasets = "configs/2016/datasets/muEGData.txt";
+cuts = "configs/2016/cuts/eeeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/emumu_data/";
+outputFolder = "plots/2016/emumu_data/";
 outputPostfix = "emumu";
 channelName = "emumu";
