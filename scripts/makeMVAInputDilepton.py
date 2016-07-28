@@ -55,7 +55,7 @@ def getJets(tree):
         else: continue
     return (jetList,jetVecList)
 
-def getBjets(tree):
+def getBjets(tree,jets):
     #Return a list of the indices of the b-jets in the event
     bJetList = []
     bJetVecList = []
@@ -69,9 +69,8 @@ def getBjets(tree):
 
 def getJetVec(tree, index):
     #Gets a vector for a jet.
-
+    returnJet = TLorentzVector();
     returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
-
     return returnJet
 
 def doUncMet(tree,met,zLep1,zLep2,jetVecs,syst):
@@ -543,7 +542,7 @@ def main():
                 setupBranches(outTreeSdBnd,inputVars)
             for channel in channels:
                 inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
-                for syst in systs:
+                if "met" in systs:
                     tree = inFile.Get("tree")
                 else:
                     tree = inFile.Get("tree"+syst)
