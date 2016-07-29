@@ -363,7 +363,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
-    AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain, true);
+    AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain, is2016_, true);
 
     //Adding in some stuff here to make a skim file out of post lep sel stuff
     TFile * outFile1{nullptr};

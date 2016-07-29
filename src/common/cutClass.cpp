@@ -151,38 +151,38 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   std::cout << "Gets past JEC Cors" << std::endl;
 
   if ( !is2016_ ) {
-    std::cout << "\nLoad electron SFs from root file ... " << std::endl;
+    std::cout << "\nLoad 2015 electron SFs from root file ... " << std::endl;
     electronSFsFile = new TFile("scaleFactors/2015/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
     electronRecoFile = new TFile{"scaleFactors/2015/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
     h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
-    std::cout << "Got electron SFs!\n" << std::endl;
+    std::cout << "Got 2015 electron SFs!\n" << std::endl;
 
-    std::cout << "Load muon SFs from root file ... " << std::endl;
+    std::cout << "Load 2015 muon SFs from root file ... " << std::endl;
     muonIDsFile = new TFile{"scaleFactors/2015/MuonID_Z_RunCD_Reco76X_Feb15.root"};
     muonIsoFile = new TFile{"scaleFactors/2015/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
     muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
     muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
-    std::cout << "Got muon SFs!\n" << std::endl;
+    std::cout << "Got 2015 muon SFs!\n" << std::endl;
   }
   else {
-    std::cout << "\nLoad electron SFs from root file ... " << std::endl;
+    std::cout << "\nLoad 2016 electron SFs from root file ... " << std::endl;
     electronSFsFile = new TFile("scaleFactors/2016/egammaEffi.txt_SF2D.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
     electronRecoFile = new TFile{"scaleFactors/2016/egammaRecoEffi.txt_SF2D.root"}; // Electron Reco SF
     h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
-    std::cout << "Got electron SFs!\n" << std::endl;
+    std::cout << "Got 2016 electron SFs!\n" << std::endl;
 
-    std::cout << "Load muon SFs from root file ... " << std::endl;
+    std::cout << "Load 2016 muon SFs from root file ... " << std::endl;
     muonIDsFile = new TFile{"scaleFactors/2016/MuonID_Z_RunBCD_prompt80X_7p65.root"};
     muonIsoFile = new TFile{"scaleFactors/2016/MuonIso_Z_RunBCD_prompt80X_7p65.root"};
     muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
     muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
-    std::cout << "Got muon SFs!\n" << std::endl;
+    std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
 
   // if doing bTag SFs, load stuff here ...
