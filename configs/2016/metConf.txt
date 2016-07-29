@@ -1,0 +1,6 @@
+datasets = "configs/2016/datasets/metData.txt";
+cuts = "configs/2016/cuts/eeCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2016/met_data/";
+outputPostfix = "ee";
+channelName = "ee";
