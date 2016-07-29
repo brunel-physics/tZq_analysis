@@ -294,7 +294,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, channel, jetUnc, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, channel, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0 
@@ -493,9 +493,6 @@ def main():
     listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {}
 
-    #Set-up JEC corrections
-    jetUnc = JetCorrectionUncertainty("scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
-
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
@@ -552,7 +549,7 @@ def main():
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel)
                 except AttributeError:
                     print "\nAttribute Error \n"
                     print syst + " : " + "0",
