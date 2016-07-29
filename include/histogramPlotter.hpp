@@ -9,6 +9,7 @@
 #include "plots.hpp"
 
 class TH1F;
+class TPad;
 
 typedef struct datasetInfo datasetInfo;
 
@@ -29,6 +30,10 @@ class HistogramPlotter{
   TPaveText * labelOne_;
   TPaveText * labelTwo_;
   TPaveText * labelThree_;
+
+  TH1F* ratioHisto;
+  TPad* canvy_1;
+  TPad* canvy_2;
 
  public:
  //Constructor

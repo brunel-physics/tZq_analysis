@@ -14,6 +14,8 @@
 //For debugging. *sigh*
 #include <iostream>
 
+const bool BLIND_PLOTS( true ) ;
+
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap):
   //Initialise a load of variables. Labels are empty by default, but this can be changed by calling set label routines.
   lumiStr_{},
@@ -73,7 +75,7 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
   }
   //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
   unsigned long plotNumb{firstIt->second.begin()->second->getPlotPoint().size()};
-  for (int i{0}; i < plotNumb; i++){
+  for (unsigned i{0}; i < plotNumb; i++){
     for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
       std::map<std::string, TH1F*> tempPlotMap;
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
@@ -126,27 +128,31 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     mcStack->Add(plotMap[*plot_iter]);
   }
 
-  //Initialise ratio plots
-  TH1F* ratioHisto{dynamic_cast<TH1F*>(plotMap["data"]->Clone())};
-  ratioHisto->Sumw2();
-  ratioHisto->Divide(ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()),1,1 );
+  if ( !BLIND_PLOTS ) {
+    //Initialise ratio plots
+    ratioHisto = dynamic_cast<TH1F*>(plotMap["data"]->Clone());
+    ratioHisto->Sumw2();
+    ratioHisto->Divide(ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()),1,1 );
   
-  ratioHisto->SetMarkerStyle(20);
-  ratioHisto->SetMarkerSize(0.85);
-  ratioHisto->SetMarkerColor(kBlack);
+    ratioHisto->SetMarkerStyle(20);
+    ratioHisto->SetMarkerSize(0.85);
+    ratioHisto->SetMarkerColor(kBlack);
+  }
 
   // Set up canvas
-  TCanvas * canvy{new TCanvas{(plotName + postfix_).c_str(), (plotName + postfix_).c_str()}};
+  TCanvas * canvy = new TCanvas((plotName + subLabel + postfix_).c_str(), (plotName + subLabel + postfix_).c_str());
   canvy->cd();
 
-  // Top Histogram
-  TPad* canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
-  canvy_1->Draw(); 
-  canvy_1->cd();
-  canvy_1->SetTopMargin(0.08);
-  canvy_1->SetBottomMargin(0.08);
-  canvy_1->SetRightMargin(0.1);
-  canvy_1->SetFillStyle(0);
+  if( !BLIND_PLOTS ) {
+    // Top Histogram
+    canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
+    canvy_1->Draw(); 
+    canvy_1->cd();
+    canvy_1->SetTopMargin(0.08);
+    canvy_1->SetBottomMargin(0.08);
+    canvy_1->SetRightMargin(0.1);
+    canvy_1->SetFillStyle(0);
+  }
 
   mcStack->Draw("");
 
@@ -155,7 +161,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   //  labelTwo_->Draw();
   //  labelOne_->Draw();
 
-  float max{mcStack->GetMaximum()};
+  float max = mcStack->GetMaximum();
   if (plotMap.find("data") != plotMap.end()){
     max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
@@ -164,36 +170,37 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack->SetMaximum(max*1.1);
       
   legend_->Draw();
-  
-  // Bottom ratio plots
-  canvy->cd();
-  TPad* canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
-//  canvy_2->SetOptStat(0);
-  canvy_2->Draw(); 
-  canvy_2->cd();
-  canvy_2->SetTopMargin(0.05);
-  canvy_2->SetBottomMargin(0.08);
-  canvy_2->SetRightMargin(0.1);
-  canvy_2->SetFillStyle(0);
 
-  ratioHisto->SetStats(false);
-  ratioHisto->SetMinimum(0.5);
-  ratioHisto->SetMaximum(1.5);
-  ratioHisto->SetTitle("; ; data/MC");
-//  ratioHisto->GetYaxis()->SetNdivisions(5,25);
-  ratioHisto->GetXaxis()->SetLabelSize(0.08);
-  ratioHisto->GetYaxis()->SetLabelSize(0.06);
-  ratioHisto->GetYaxis()->SetTitleSize(0.09);
-  ratioHisto->GetYaxis()->SetTitleOffset(0.28);
+  if ( !BLIND_PLOTS ) {
+    // Bottom ratio plots
+    canvy->cd();
+    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
+  //  canvy_2->SetOptStat(0);
+    canvy_2->Draw(); 
+    canvy_2->cd();
+    canvy_2->SetTopMargin(0.05);
+    canvy_2->SetBottomMargin(0.08);
+    canvy_2->SetRightMargin(0.1);
+    canvy_2->SetFillStyle(0);
 
-  if (xAxisLabels.size() > 0){
-    for (unsigned i{1}; i <= xAxisLabels.size(); i++){
-      ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+    ratioHisto->SetStats(false);
+    ratioHisto->SetMinimum(0.5);
+    ratioHisto->SetMaximum(1.5);
+    ratioHisto->SetTitle("; ; data/MC");
+  //  ratioHisto->GetYaxis()->SetNdivisions(5,25);
+    ratioHisto->GetXaxis()->SetLabelSize(0.08);
+    ratioHisto->GetYaxis()->SetLabelSize(0.06);
+    ratioHisto->GetYaxis()->SetTitleSize(0.09);
+    ratioHisto->GetYaxis()->SetTitleOffset(0.28);
+
+    if (xAxisLabels.size() > 0){
+      for (unsigned i{1}; i <= xAxisLabels.size(); i++){
+        ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
+      }
     }
+
+    ratioHisto->Draw("e x0, SCAT");
   }
-
-  ratioHisto->Draw("e x0, SCAT");
-
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + postfix_ + extensions_[ext_it]).c_str());
