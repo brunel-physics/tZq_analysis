@@ -20,15 +20,15 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
     useSideBandRegion = "-s"
 
 #Make the skim directory
-subprocess.call("mkdir mvaDirs/skims/mz"+mzStr+"mw"+mwStr,shell=True)
+subprocess.call("mkdir mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr,shell=True)
 
 for chanName in channelList.keys():
-    print "bin/analysisMain.exe -c configs/2015"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut)
-    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut),shell=True)
+    print "bin/analysisMain.exe -c configs/2015"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut)
+    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut),shell=True)
 
 #Make the mvaInput directory
-subprocess.call("mkdir mvaDirs/inputs/mz"+mzStr+"mw"+mwStr,shell=True)
+subprocess.call("mkdir mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr,shell=True)
 
-print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion
-subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion ,shell=True)
+print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion
+subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion ,shell=True)
 

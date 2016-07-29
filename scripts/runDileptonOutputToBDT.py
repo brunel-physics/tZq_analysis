@@ -15,11 +15,8 @@ useSideBandRegion = ""
 if len(sys.argv) > 3 and sys.argv[3] == "-s" :
     useSideBandRegion = "-s"
 
-#Make the skim directory
-subprocess.call("mkdir mvaDirs/skims/mz"+mzStr+"mw"+mwStr,shell=True)
-
 #Make the mvaInput directory
-subprocess.call("mkdir mvaDirs/inputs/mz"+mzStr+"mw"+mwStr,shell=True)
+subprocess.call("mkdir mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr,shell=True)
 
-print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion
-subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion,shell=True)
+print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion
+subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2015/mz"+mzStr+"mw"+mwStr+"/ "+useSideBandRegion,shell=True)
