@@ -898,7 +898,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  inputPostfix += invertIsoCut?"invIso":"";
 	  TFile * datasetFileForHists;
           if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-          else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+          else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	  datasetFileForHists->Close();
