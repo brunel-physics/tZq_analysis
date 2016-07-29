@@ -20,5 +20,5 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
 #Make the mvaInput directory
 subprocess.call("mkdir mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
 
-print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion
-subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion,shell=True)
+print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion
+subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion,shell=True)
