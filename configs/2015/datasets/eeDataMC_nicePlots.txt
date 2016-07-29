@@ -28,14 +28,24 @@ colour = kGreen
 label = ttV
 plotType = f
 
-[ttZ]
-fileName = configs/2015/datasets/fileLists/ttZFiles.txt
+[ttZ2l2nu]
+fileName = configs/2015/datasets/fileLists/ttZ2l2nuFiles.txt
 totalEvents = 394200
 crossSection = 0.2529
 runType = mc
 histoName = ttV
 colour = kGreen
 label = ttV
+plotType = f
+
+[ttZ2q]
+fileName = configs/2015/datasets/fileLists/ttZ2qFiles.txt
+totalEvents = 747000
+crossSection = 0.5297
+runType = mc
+histoName = ttZ
+colour = kGreen
+label = ttZ
 plotType = f
 
 [ttbarInclusivePowerheg]

@@ -511,7 +511,8 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
-    if (tempVec.Pt() <= 25.0) continue;
+    if ( !is2016_ && tempVec.Pt() <= 20.0) continue;
+    if ( is2016_ && tempVec.Pt() <= 25.0) continue;
     if (std::abs(tempVec.Eta()) >= 2.40) continue;
 
     // ECAL Gap
