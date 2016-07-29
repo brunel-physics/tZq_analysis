@@ -512,8 +512,14 @@ def main():
         outputDir = sys.argv[3]
     inputVars = setupInputVars()
 
+    is2016 = False
+    if len(sys.argv) > 4 and sys.argv[4] == "--2016":
+        is2016 = True
+    elif len(sys.argv) > 4 and sys.argv[4] == "--2015": 
+        is2016 = False
+
     useSidebandRegion = False
-    if len(sys.argv) > 4 and sys.argv[4] == "-s":
+    if len(sys.argv) > 5 and sys.argv[5] == "-s":
         useSidebandRegion = True
     treeNamePostfixSig = ""
     treeNamePostfixSB = ""
@@ -570,7 +576,11 @@ def main():
         outFile.Write()
         outFile.Close()
         print
-    chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
+    chanMap = {}
+    if is2016 :
+        chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016"}
+    else : 
+        chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
     outChannels = ["DataEG","DataMu"]
     outChanToData = {}
@@ -588,8 +598,11 @@ def main():
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")    
-            for run in ["C","D"]:
-                dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
+            if is2016 : 
+                 dataChain.Add(inputDir+chanMap[chan]+chan+"mvaOut.root")
+            else : 
+                for run in ["C","D"]:
+                    dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
             fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, chan, 0)
         outFile.cd()
         outFile.Write()
