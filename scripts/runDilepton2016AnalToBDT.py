@@ -25,8 +25,8 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
 subprocess.call("mkdir mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr,shell=True)
 
 for chanName in channelList.keys():
-    print "bin/analysisMain.exe -c configs/2016/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut)
-    subprocess.call("bin/analysisMain.exe -c configs/2016/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut),shell=True)
+    print "bin/analysisMain.exe -c configs/2016/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut) + " --2016"
+    subprocess.call("bin/analysisMain.exe -c configs/2016/"+chanName+"MCdataConf.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut) + " --2016",shell=True)
 
 #Make the mvaInput directory
 subprocess.call("mkdir mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
