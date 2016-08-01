@@ -108,17 +108,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   makeBTagEffPlots_{false},
   getBTagWeight_{false},
 
-  // Setup bTag calibration code (2015/2016)
-  // bTag calib code
-  calib2015 {"CSVv2", "scaleFactors/2015/CSVv2.csv"},
-  calib2016 {"CSVv2", "scaleFactors/2016/CSVv2.csv"},
-
-  // udsg jets
-  lightReader{BTagEntry::OP_TIGHT,"central",{"up","down"}},// operating point
-  // c/b jets
-  charmReader{BTagEntry::OP_TIGHT, "central",{"up","down"}},	//central
-  beautyReader{BTagEntry::OP_TIGHT, "central",{"up","down"}},	//central
-
   //MET and mTW cuts go here.
   metCut_{0.0},
   metDileptonCut_{100.0},
@@ -177,6 +166,18 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
     h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
     std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
+
+  // Setup bTag calibration code (2015/2016)
+  // bTag calib code
+  calib2015 = BTagCalibration ("CSVv2", "scaleFactors/2015/CSVv2.csv");
+  calib2016 = BTagCalibration ("CSVv2", "scaleFactors/2016/CSVv2.csv");
+
+  // udsg jets
+  lightReader = BTagCalibrationReader (BTagEntry::OP_TIGHT,"central",{"up","down"});// operating point
+  // c/b jets
+  charmReader = BTagCalibrationReader (BTagEntry::OP_TIGHT, "central",{"up","down"});	//central
+  beautyReader = BTagCalibrationReader (BTagEntry::OP_TIGHT, "central",{"up","down"});	//central
+
 
   // if doing bTag SFs, load stuff here ...
   // N.B. 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG 
@@ -2005,18 +2006,14 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   if ( isMC_ ) {
    TLorentzVector tempMet;
    tempMet.SetPxPyPzE(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
-
    tempMet.SetPx( event->metPF2PATPx + event->jetPF2PATPx[index] - returnJet.Px() );
    tempMet.SetPy( event->metPF2PATPy + event->jetPF2PATPy[index] - returnJet.Py() );
 
-  // Update MET LVector
-  event->metPF2PATEt = tempMet.Pt();
-  event->metPF2PATEt = tempMet.Et();
-  event->metPF2PATPx = tempMet.Px(); 
-  event->metPF2PATPy = tempMet.Py();  
-  event->metPF2PATPhi = tempMet.Phi();  
- }
-
+   // Update MET LVector
+   event->metPF2PATEt = tempMet.Et();
+   event->metPF2PATPx = tempMet.Px();
+   event->metPF2PATPy = tempMet.Py();
+  }
   return returnJet;
 }
 
@@ -2170,47 +2167,25 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 
   float SFerr{0.};
   
-  double jetPt{jet.Pt()};
-  float maxBjetPt{670};
-  float maxLjetPt{1000.0};
-  bool doubleUncertainty{false};
-
   //Do some things if it's a b or c
 
   if ( partonFlavour == 5 ){
-    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
-    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    if (jetPt > maxBjetPt){
-      jetPt = maxBjetPt;
-      doubleUncertainty = true;
-    }
+    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jet.Pt()); 
+    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jet.Pt());
+    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jet.Pt());
   }
 
   else if ( partonFlavour == 4 ){
-    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jetPt); 
-    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    if (jetPt > maxBjetPt){
-      jetPt = maxBjetPt;
-      doubleUncertainty = true;
-    }
+    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jet.Pt()); 
+    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jet.Pt());
+    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jet.Pt());
   }
 
   //Light jets
   else {
-    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
-    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    if (jetPt > maxLjetPt){
-      jetPt = maxLjetPt;
-      doubleUncertainty = true;
-    }
-  }
-
-  if (doubleUncertainty) {
-    jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
-    jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
+    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt()); 
+    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt());
+    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt());
   }
 
   SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>std::abs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
