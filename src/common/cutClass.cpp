@@ -2172,8 +2172,6 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   bool doubleUncertainty{false};
   //Do some things if it's a b or c
 
-  std::cout << std::setprecision(6) << std::endl;
-
   if ( partonFlavour == 5 ){
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
