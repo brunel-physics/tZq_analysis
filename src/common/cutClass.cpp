@@ -114,17 +114,10 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   calib2016 {"CSVv2", "scaleFactors/2016/CSVv2.csv"},
 
   // udsg jets
-  lightReader{BTagEntry::OP_TIGHT,		// operating point
-                               "central"},	// systematics type
-  lightReader_up{BTagEntry::OP_TIGHT, "up"},	// sys up
-  lightReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
+  lightReader{BTagEntry::OP_TIGHT,"central",{"up","down"}},// operating point
   // c/b jets
-  charmReader{BTagEntry::OP_TIGHT, "central"},	//central
-  charmReader_up{BTagEntry::OP_TIGHT, "up"},	// sys up
-  charmReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
-  beautyReader{BTagEntry::OP_TIGHT, "central"},	//central
-  beautyReader_up{BTagEntry::OP_TIGHT, "up"}, 	// sys up
-  beautyReader_do{BTagEntry::OP_TIGHT, "down"},	// sys down
+  charmReader{BTagEntry::OP_TIGHT, "central",{"up","down"}},	//central
+  beautyReader{BTagEntry::OP_TIGHT, "central",{"up","down"}},	//central
 
   //MET and mTW cuts go here.
   metCut_{0.0},
@@ -186,28 +179,17 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   }
 
   // if doing bTag SFs, load stuff here ...
+  // N.B. 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG 
   if ( getBTagWeight_ ) {
     if ( !is2016_ ) { 
       lightReader.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
-      lightReader_up.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
-      lightReader_do.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
       charmReader.load(calib2015, BTagEntry::FLAV_C, "mujets");
-      charmReader_up.load(calib2015, BTagEntry::FLAV_C, "mujets");
-      charmReader_do.load(calib2015, BTagEntry::FLAV_C, "mujets");
       beautyReader.load(calib2015, BTagEntry::FLAV_B, "mujets");
-      beautyReader_up.load(calib2015, BTagEntry::FLAV_B, "mujets");
-      beautyReader_do.load(calib2015, BTagEntry::FLAV_B, "mujets");
     }
     else {
       lightReader.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
-      lightReader_up.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
-      lightReader_do.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
       charmReader.load(calib2016, BTagEntry::FLAV_C, "mujets");
-      charmReader_up.load(calib2016, BTagEntry::FLAV_C, "mujets");
-      charmReader_do.load(calib2016, BTagEntry::FLAV_C, "mujets");
       beautyReader.load(calib2016, BTagEntry::FLAV_B, "mujets");
-      beautyReader_up.load(calib2016, BTagEntry::FLAV_B, "mujets");
-      beautyReader_do.load(calib2016, BTagEntry::FLAV_B, "mujets");
     }
   }
 }
@@ -319,8 +301,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     return synchCuts(event, eventWeight);
   }
 
-  //  if (!isMC_) if (!triggerCuts(event)) return false;
-  if (!triggerCuts(event)) return false;
+  if (!isMC_ && is2016_) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+  if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
 
   if( !skipTrigger_ && isMC_ ) {
     if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
@@ -350,6 +332,16 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if ( !trileptonChannel_ && !isFCNC_ ) { // Do wMass stuff
     float invWmass{0.};
     invWmass = getWbosonQuarksCand(event,event->jetIndex);
+
+   // Debug chi2 cut
+//   float topMass = getTopMass(event);
+//   float topTerm = ( topMass-173.21 )/30.0;
+//   float wTerm = ( (event->wPairQuarks.first + event->wPairQuarks.second).M() - 80.3585 )/8.0;
+
+//   float chi2 = topTerm*topTerm + wTerm*wTerm;
+//   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
+//   if ( chi2 >= 2.0 ) return false; //signal region
+
     if ( std::abs(invWmass) > invWMassCut_ ) return false;
     if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
     if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
@@ -362,6 +354,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
     if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
   }
+ 
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
@@ -371,6 +364,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   double mtw{std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())))};
   if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_) return false;
   return true;
+
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
@@ -846,7 +840,6 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       bWeight = 1.;
     }
     float bWeightErr{std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight};
-
     if (syst == 256)
       bWeight += bWeightErr;
     if (syst == 512)
@@ -1764,6 +1757,8 @@ float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
     }
   }
 
+ std::cout << "Trigger not found!" << std::endl;
+ return 0.0; // Return 0.0 if trigger isn't found.
 }
 
 float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
@@ -1827,6 +1822,8 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
     }
   }
 
+ std::cout << "Trigger not found!" << std::endl;
+ return 0.0; // Return 0.0 if trigger isn't found.
 }
 
 float Cuts::eleSF(double pt, double eta, int syst){
@@ -2009,21 +2006,15 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
    TLorentzVector tempMet;
    tempMet.SetPxPyPzE(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
 
-   tempMet.SetPx( event->metPF2PATPx + event->jetPF2PATPx[index] );
-   tempMet.SetPy( event->metPF2PATPy + event->jetPF2PATPy[index] );
-   tempMet.SetPz( 0.0 );
-   tempMet.SetE( event->metPF2PATEt + event->jetPF2PATEt[index] );
-
-   tempMet.SetPx( tempMet.Px() - returnJet.Px() );
-   tempMet.SetPy( tempMet.Py() - returnJet.Py() );
-   tempMet.SetE( tempMet.Et() - returnJet.Et() );
+   tempMet.SetPx( event->metPF2PATPx + event->jetPF2PATPx[index] - returnJet.Px() );
+   tempMet.SetPy( event->metPF2PATPy + event->jetPF2PATPy[index] - returnJet.Py() );
 
   // Update MET LVector
+  event->metPF2PATEt = tempMet.Pt();
   event->metPF2PATEt = tempMet.Et();
-  event->metPF2PATEt = tempMet.Phi();
-  event->metPF2PATPt = tempMet.Pt();
   event->metPF2PATPx = tempMet.Px(); 
   event->metPF2PATPy = tempMet.Py();  
+  event->metPF2PATPhi = tempMet.Phi();  
  }
 
   return returnJet;
@@ -2187,9 +2178,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   //Do some things if it's a b or c
 
   if ( partonFlavour == 5 ){
-    jet_scalefactor = beautyReader.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt); 
-    jet_scalefactor_up = beautyReader_up.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    jet_scalefactor_do = beautyReader_do.eval(BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
       doubleUncertainty = true;
@@ -2197,9 +2188,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   }
 
   else if ( partonFlavour == 4 ){
-    jet_scalefactor = charmReader.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt); 
-    jet_scalefactor_up = charmReader_up.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    jet_scalefactor_do = charmReader_do.eval(BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jetPt);
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
       doubleUncertainty = true;
@@ -2208,9 +2199,9 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 
   //Light jets
   else {
-    jet_scalefactor = lightReader.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
-    jet_scalefactor_up = lightReader_up.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    jet_scalefactor_do = lightReader_do.eval(BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
     if (jetPt > maxLjetPt){
       jetPt = maxLjetPt;
       doubleUncertainty = true;
