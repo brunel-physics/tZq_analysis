@@ -2166,26 +2166,55 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   double jet_scalefactor_do{1.};
 
   float SFerr{0.};
-  
+  float jetPt = jet.Pt();
+  float maxBjetPt{670};
+  float maxLjetPt{1000.0};
+  bool doubleUncertainty{false};
   //Do some things if it's a b or c
 
   if ( partonFlavour == 5 ){
-    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jet.Pt()); 
-    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jet.Pt());
-    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jet.Pt());
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
+    }
+    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    if ( jet_scalefactor = 0.0 ) jet_scalefactor = getBweight_backup( 0, 0, jetPt );
+    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 0, 1, jetPt );
+    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 0, -1, jetPt );
   }
 
   else if ( partonFlavour == 4 ){
-    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jet.Pt()); 
-    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jet.Pt());
-    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jet.Pt());
+    if (jetPt > maxBjetPt){
+      jetPt = maxBjetPt;
+      doubleUncertainty = true;
+    }
+    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    if ( jet_scalefactor = 0.0 ) jet_scalefactor = getBweight_backup( 1, 0, jetPt );
+    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 1, 1, jetPt );
+    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 1, -1, jetPt );
   }
 
   //Light jets
   else {
-    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt()); 
-    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt());
-    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jet.Pt());
+    if (jetPt > maxLjetPt){
+      jetPt = maxLjetPt;
+      doubleUncertainty = true;
+    }
+    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    if ( jet_scalefactor= 0.0 ) jet_scalefactor = getBweight_backup( 2, 0, jetPt );
+    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 2, 1, jetPt );
+    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 2, -1, jetPt );
+  }
+
+  if (doubleUncertainty) {
+    jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
+    jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
   }
 
   SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>std::abs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
@@ -2207,4 +2236,71 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
     
   }
 
+}
+
+// Backup temporary method to do Btag Scale Factors whilst debugging is ongoing.
+
+float Cuts::getBweight_backup(int flavour, int type, float pt){
+
+  float sf = 1.0;
+  float x = pt;
+
+  if (!is2016_){
+
+    if (flavour == 0) { // B flavour
+      if (type == 0) sf = 0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x)));
+
+      if (type == 1) { // scale up
+	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.019803794100880623;
+	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.026958625763654709;
+	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.024285079911351204;
+	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.028512096032500267;
+	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.029808893799781799;
+	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.026503190398216248;
+	if ( pt < 670.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.042264193296432495;
+      }
+
+      if (type == -1) { // scale down
+	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.019803794100880623;
+	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.026958625763654709;
+	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.024285079911351204;
+	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.028512096032500267;
+	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.029808893799781799;
+	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.026503190398216248;
+	if ( pt < 670.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.042264193296432495;
+      }
+    }
+
+    if (flavour == 1) { // C flavour
+      if (type == 0) sf = 0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x)));
+
+      if ( type == 1 ) {
+	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.039607588201761246;
+	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.053917251527309418;
+	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.048570159822702408;
+	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.057024192065000534;
+	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.059617787599563599;
+	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.053006380796432495;
+	if ( pt < 670.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.08452838659286499;
+     }
+
+      if ( type == -1 ) {
+	if ( pt < 50.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.039607588201761246;
+	if ( pt < 70.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.053917251527309418;
+	if ( pt < 100.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.048570159822702408;
+	if ( pt < 140.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
+	if ( pt < 200.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
+	if ( pt < 300.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.059617787599563599;
+	if ( pt < 670.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.08452838659286499;
+       }
+    }
+    if (flavour == 2) { // UDSG flavour
+      if (type == 0)  sf = 0.992339;
+      if (type == 1)  sf = 1.17457;
+      if (type == -1) sf = 0.810103;
+    }
+  }
+  else {
+
+  }
 }

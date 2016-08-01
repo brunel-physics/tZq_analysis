@@ -175,14 +175,10 @@ class Cuts{
   BTagCalibration calib2015;
   BTagCalibration calib2016;
   BTagCalibrationReader lightReader;
-  BTagCalibrationReader lightReader_up;
-  BTagCalibrationReader lightReader_do;
   BTagCalibrationReader charmReader;
-  BTagCalibrationReader charmReader_up;
-  BTagCalibrationReader charmReader_do;
   BTagCalibrationReader beautyReader;
-  BTagCalibrationReader beautyReader_up;
-  BTagCalibrationReader beautyReader_do;
+
+  float getBweight_backup(int, int, float);
 
   void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*);
 
