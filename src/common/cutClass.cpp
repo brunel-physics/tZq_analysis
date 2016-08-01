@@ -302,12 +302,12 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     return synchCuts(event, eventWeight);
   }
 
-  if (!isMC_ && is2016_) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
-  if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
+  if( !skipTrigger_ ) {
+    if (!isMC_ && is2016_) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+    if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
 
-  if( !skipTrigger_ && isMC_ ) {
     if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
-    else *eventWeight *= get2016TriggerSF (systToRun);
+    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun);
   }
 
   if (!metFilters(event)) return false;
@@ -2172,17 +2172,19 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   bool doubleUncertainty{false};
   //Do some things if it's a b or c
 
+  std::cout << std::setprecision(6) << std::endl;
+
   if ( partonFlavour == 5 ){
     if (jetPt > maxBjetPt){
       jetPt = maxBjetPt;
       doubleUncertainty = true;
     }
-    jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
-    if ( jet_scalefactor = 0.0 ) jet_scalefactor = getBweight_backup( 0, 0, jetPt );
-    jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 0, 1, jetPt );
-    jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
-    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 0, -1, jetPt );
+    //jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    //jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    //jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
+    jet_scalefactor = getBweight_backup( 0, 0, jetPt );
+    jet_scalefactor_up = getBweight_backup( 0, 1, jetPt );
+    jet_scalefactor_do = getBweight_backup( 0, -1, jetPt );
   }
 
   else if ( partonFlavour == 4 ){
@@ -2190,12 +2192,12 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
       jetPt = maxBjetPt;
       doubleUncertainty = true;
     }
-    jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jetPt); 
-    if ( jet_scalefactor = 0.0 ) jet_scalefactor = getBweight_backup( 1, 0, jetPt );
-    jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 1, 1, jetPt );
-    jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jetPt);
-    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 1, -1, jetPt );
+    //jet_scalefactor = charmReader.eval_auto_bounds("central", BTagEntry::FLAV_C, jet.Eta(), jetPt); 
+    //jet_scalefactor_up = charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    //jet_scalefactor_do = charmReader.eval_auto_bounds("down", BTagEntry::FLAV_C, jet.Eta(), jetPt);
+    jet_scalefactor = getBweight_backup( 1, 0, jetPt );
+    jet_scalefactor_up = getBweight_backup( 1, 1, jetPt );
+    jet_scalefactor_do = getBweight_backup( 1, -1, jetPt );
   }
 
   //Light jets
@@ -2204,18 +2206,19 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
       jetPt = maxLjetPt;
       doubleUncertainty = true;
     }
-    jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
-    if ( jet_scalefactor= 0.0 ) jet_scalefactor = getBweight_backup( 2, 0, jetPt );
-    jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    if ( jet_scalefactor_up = 0.0 ) jet_scalefactor_up = getBweight_backup( 2, 1, jetPt );
-    jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-    if ( jet_scalefactor_do = 0.0 ) jet_scalefactor_do = getBweight_backup( 2, -1, jetPt );
+    //jet_scalefactor = lightReader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); 
+    //jet_scalefactor_up = lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    //jet_scalefactor_do = lightReader.eval_auto_bounds("down", BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
+    jet_scalefactor = getBweight_backup( 2, 0, jetPt );
+    jet_scalefactor_up = getBweight_backup( 2, 1, jetPt );
+    jet_scalefactor_do = getBweight_backup( 2, -1, jetPt );
   }
 
   if (doubleUncertainty) {
     jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
     jet_scalefactor_do = 2*(jet_scalefactor_do - jet_scalefactor) + jet_scalefactor; 
   }
+
 
   SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>std::abs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
 
@@ -2291,7 +2294,7 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
 	if ( pt < 140.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
 	if ( pt < 200.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
 	if ( pt < 300.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.059617787599563599;
-	if ( pt < 670.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.08452838659286499;
+	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.08452838659286499;
        }
     }
     if (flavour == 2) { // UDSG flavour
@@ -2349,4 +2352,5 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
       if (type == -1) sf = (0.688619+260.84/(x*x))*(1-(0.144982+0.000116685*x+-1.0021e-07*x*x));
     }
   }
+  return sf;
 }
