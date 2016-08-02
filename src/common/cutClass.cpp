@@ -373,7 +373,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
-bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int syst){
+bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int syst, bool isControl){
 
   //Do lepton selection. 
   event->electronIndexTight = getTightEles(event);
@@ -402,7 +402,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (trileptonChannel_ == true){
     invZmass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
-  else if (trileptonChannel_ == false){
+  else if (trileptonChannel_ == false && !isControl){ //Control doesn't need Z plots
     invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
   else{
@@ -416,7 +416,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
-  if (std::abs(invZmass) > invZMassCut_) return false;
+  if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
 
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -1303,7 +1303,7 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   if (!metFilters(event)) return false;
 
-  if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
+  if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun,true))) return false;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
