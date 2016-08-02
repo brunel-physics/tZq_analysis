@@ -225,7 +225,7 @@ histoName = data
 label = Data
 plotType = p
 colour = kBlack
-triggerFlag = eCt
+triggerFlag = dCt
 
 [emuRun2015D]
 fileName = configs/2015/datasets/fileLists/emuRun2015DFiles.txt
@@ -235,7 +235,7 @@ histoName = data
 label = Data
 plotType = p
 colour = kBlack
-triggerFlag = eCt
+triggerFlag = dCt
 
 []
 
