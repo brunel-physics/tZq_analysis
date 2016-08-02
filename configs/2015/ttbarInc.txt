@@ -1,6 +1,6 @@
-datasets = "configs/2015/datasets/ttbarInc.txt";
-cuts = "configs/2015/cuts/eeCuts.txt";
+datasets = "configs/2015/datasets/muEGDataMC.txt";
+cuts = "configs/2015/cuts/ttbarCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
 outputFolder = "plots/2015/ttbar/";
-outputPostfix = "ee";
-channelName = "ee";
+outputPostfix = "emu";
+channelName = "emu";
