@@ -304,7 +304,9 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   //If emu and dilepton - doing ttbar background estimation
 
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);;
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ){
+     return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);
+  }
 
   if( !skipTrigger_ ) {
     if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
@@ -405,7 +407,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   else if (trileptonChannel_ == false && !isControl){ //Control doesn't need Z plots
     invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
-  else{
+  else if (!isControl){
     std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
     std::cout << "HOW?! Well done for breaking this ..." << std::endl;
     exit(0);
@@ -937,9 +939,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
   }
 
-  if (cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos){if (muEGTrig) return true;}
-  if (cutConfTrigLabel_.find("e") != std::string::npos){if (eeTrig && !(muEGTrig || mumuTrig)) return true;}
-  if (cutConfTrigLabel_.find("m") != std::string::npos){if (mumuTrig && !(eeTrig || muEGTrig)) return true;}
+  if ( cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos || cutConfTrigLabel_.find("d") != std::string::npos ){if (muEGTrig) return true;}
+  if ( cutConfTrigLabel_.find("e") != std::string::npos ){ if ( eeTrig && !(muEGTrig || mumuTrig) ) return true; }
+  if ( cutConfTrigLabel_.find("m") != std::string::npos ){ if ( mumuTrig && !(eeTrig || muEGTrig) ) return true; }
 
   return false;
 }
@@ -1719,6 +1721,10 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
     else if (numTightMu_ == 2){
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
+    }
+    else if (numTightEle_ == 1 && numTightMu_ == 1){
+      leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
+      leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],event->muonPF2PATEta[event->muonIndexTight[0]],syst);
     }
   }
 
