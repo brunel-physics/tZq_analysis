@@ -583,7 +583,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   
   if (channelsToRun && !trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned channelInd = 1; channelInd != 4; channelInd = channelInd << 1){
+    for (unsigned channelInd = 1; channelInd != 8; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelInd & 1){
 	std::cout << "ee ";
@@ -593,6 +593,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       }
       if (channelInd & 3){ //nominal samples
 	std::cout << "nominal" << std::endl;
+      }
+      if (channelInd & 4){ //nominal samples and emu
+	std::cout << "nominal and emu" << std::endl;
       }
     }
   }
@@ -713,7 +716,7 @@ void AnalysisAlgo::runMainAnalysis(){
     TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
     unsigned channelIndMax{256};
 
-    if ( !trileptonChannel_ ){ channelIndMax = 4; }
+    if ( !trileptonChannel_ ){ channelIndMax = 8; }
     for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName{};
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -779,6 +782,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
        if (channelInd & 4){ //emu channel for ttbar background estimation
           cutObj->setNumLeps(1,1,1,1);
+          cutObj->setCutConfTrigLabel("d");
           channel = "emu";
           postfix = "emu";
           chanName += "emu";
