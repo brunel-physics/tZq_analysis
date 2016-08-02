@@ -595,7 +595,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 	std::cout << "nominal" << std::endl;
       }
       if (channelInd & 4){ //nominal samples and emu
-	std::cout << "nominal and emu" << std::endl;
+	std::cout << "emu - used only for ttbar control region " << std::endl;
       }
     }
   }
