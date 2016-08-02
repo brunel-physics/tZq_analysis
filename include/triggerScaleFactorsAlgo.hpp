@@ -44,7 +44,6 @@ class TriggerScaleFactors{
 	bool usePostLepTree;
 	int numFiles;
 
-	bool is2016_;
 	//For producing post-lepsel skims
 	TTree* postLepSelTree_;
 	TTree* postLepSelTree2_;
@@ -53,6 +52,8 @@ class TriggerScaleFactors{
 	std::vector<Dataset> datasets;
 	double totalLumi;
 	double* lumiPtr;
+
+	bool is2016_;
 
 	// PU reweighting
 	TFile * dataPileupFile;

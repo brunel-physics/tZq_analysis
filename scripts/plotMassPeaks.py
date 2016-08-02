@@ -6,9 +6,9 @@ import sys
 
 def main():
 
-  era = "2016"
+  era = "2015"
 
-  massCut = True
+  massCut = False
 
   weighted = True
 
@@ -16,25 +16,25 @@ def main():
   bkgCut = 7.0
 
   wSigma = 8.0
-  topSigma = 30.0
+  topSigma = 20.0
 
-  infile_tZq = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_tZq.root")
-  infile_TT = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TT.root")
-  infile_DY = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_DYToLL_M50.root")
+  infile_tZq = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_tZq.root")
+  infile_TT = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TT.root")
+  infile_DY = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_DYToLL_M50.root")
 
-  infile_DY2 = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_DYToLL_M10To50.root")
-  infile_TbartChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TbartChan.root")
-  infile_TbartW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TbartW.root")
-  infile_THQ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_THQ.root")
-  infile_TsChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TsChan.root")
-  infile_TtChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TtChan.root")
-  infile_TtW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TtW.root")
-  infile_TTW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TTW.root")
-  infile_TTZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_TTZ.root")
-  infile_Wjets = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_Wjets.root")
-  infile_WW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_WW.root")
-  infile_WZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_WZ.root")
-  infile_ZZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz20mw100/histofile_ZZ.root")
+  infile_DY2 = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_DYToLL_M10To50.root")
+  infile_TbartChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TbartChan.root")
+  infile_TbartW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TbartW.root")
+  infile_THQ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_THQ.root")
+  infile_TsChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TsChan.root")
+  infile_TtChan = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TtChan.root")
+  infile_TtW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TtW.root")
+  infile_TTW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TTW.root")
+  infile_TTZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_TTZ.root")
+  infile_Wjets = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_Wjets.root")
+  infile_WW = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_WW.root")
+  infile_WZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_WZ.root")
+  infile_ZZ = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaInput/"+era+"/all/mz5mw20/histofile_ZZ.root")
 
 
   # tZq Histos
@@ -170,8 +170,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -190,8 +192,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -210,8 +214,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -230,8 +236,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -250,8 +258,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -270,8 +280,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -290,8 +302,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -310,8 +324,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -330,8 +346,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -350,8 +368,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -370,8 +390,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -390,8 +412,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -410,8 +434,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -430,8 +456,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -450,8 +478,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -470,8 +500,10 @@ def main():
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
-    if ( event.topMass < 200 and event.topMass > 140 ) : All_topMassHisto.Fill(event.topMass,weight)
-    if ( event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if ( massCut and event.topMass < 200 and event.topMass > 110 ) : All_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : All_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : All_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : All_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
