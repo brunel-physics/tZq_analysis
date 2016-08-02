@@ -303,11 +303,11 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   }
 
   if( !skipTrigger_ ) {
-    if (!isMC_ && is2016_) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+    if ( !isMC_ && is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
     if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
 
-    if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
-    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun);
+    if( !is2016_ & isMC _) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
+    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
   }
 
   if (!metFilters(event)) return false;
