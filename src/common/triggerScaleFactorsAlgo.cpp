@@ -122,7 +122,7 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("eventRun",1);
   chain->SetBranchStatus("eventLumiblock",1);
 
-  if (!isMC){
+  if ( !is2016_ ) {
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
@@ -131,8 +131,6 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
-  }
-  else{
     chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
@@ -140,16 +138,34 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
+    chain->SetBranchStatus("HLT_PFMET170_JetIdCleaned_v2",1);
+    chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
+    chain->SetBranchStatus("HLT_PFHT350_PFMET100_v1",1);
+    chain->SetBranchStatus("HLT_PFHT800_v2",1);
+    chain->SetBranchStatus("HLT_MET250_v1",1);
+    chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
   }
-
-  chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
-  chain->SetBranchStatus("HLT_PFMET170_JetIdCleaned_v2",1);
-  chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
-  chain->SetBranchStatus("HLT_PFHT350_PFMET100_v1",1);
-  chain->SetBranchStatus("HLT_PFHT800_v2",1);
-  chain->SetBranchStatus("HLT_MET250_v1",1);
-  chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
-
+  else {
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6",1);
+    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5",1);
+    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6",1);
+  }
 }
 
 void TriggerScaleFactors::show_usage(std::string name){
@@ -362,11 +378,13 @@ void TriggerScaleFactors::runMainAnalysis(){
       //Does this event pass tight electron cut?
       //Create electron index
       event->electronIndexTight = getTightElectrons( event );
-      bool passDoubleElectronSelection ( passDileptonSelection( event, event->electronIndexTight, true ) );
+      bool passDoubleElectronSelection ( passDileptonSelection( event, true ) );
       //Does this event pass tight muon cut?
       //Create muon index
       event->muonIndexTight = getTightMuons( event );
-      bool passDoubleMuonSelection ( passDileptonSelection( event, event->muonIndexTight, false ) );
+      bool passDoubleMuonSelection ( passDileptonSelection( event, false ) );
+
+//      bool passMuonElectronSelection ( passDileptonSelection( event );
 
       if ( (passDoubleElectronSelection || passDoubleMuonSelection) && makePostLepTree ) {
 	if(postLepSelTree_) {
@@ -378,8 +396,8 @@ void TriggerScaleFactors::runMainAnalysis(){
 	}
       }
 
-      int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0);
-      int triggerMetElectronSelection (0), triggerMetMuonSelection (0);
+      int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMuonElection (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0), triggerMetMuonElectron (0);
+      int triggerMetElectronSelection (0), triggerMetMuonSelection (0), triggerMuonElectronSelection (0);
 
 
       //Does event pass Double EG trigger and the electron selection?
@@ -388,9 +406,13 @@ void TriggerScaleFactors::runMainAnalysis(){
       //Does event pass Double Muon trigger and the muon selection?
       if ( passDoubleMuonSelection )  triggerDoubleMuon = ( doubleMuonTriggerCut( event ) );
       if ( passDoubleMuonSelection )  triggerMetDoubleMuon = ( doubleMuonTriggerCut( event )*metTriggerCut( event ) );
+      //Does event pass Muon EG trigger and the muon selection?
+//      if ( passMuonElectronSelection )  triggerMuonElectron = ( muonElectronTriggerCut( event ) );
+//      if ( passMuonElectronSelection )  triggerMetMuonElectron = ( muonElectronTriggerCut( event )*metTriggerCut( event ) );
       //Does event pass either double lepton seletion and the MET triggers?
       if ( passDoubleElectronSelection ) triggerMetElectronSelection = ( metTriggerCut( event ) );
       if ( passDoubleMuonSelection ) triggerMetMuonSelection = ( metTriggerCut( event ) );
+//      if ( passMuonElectronSelection )  triggerMuonElectronSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) {
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
@@ -458,7 +480,8 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
-    if (tempVec.Pt() <= 20.0) continue;
+    if (tempVec.Pt() <= 20.0 && !is2016_) continue;
+    if (tempVec.Pt() <= 25.0 && is2016_) continue;
     if (std::abs(tempVec.Eta()) >= 2.40) continue;
 
     // ECAL Gap
@@ -519,13 +542,14 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
   return muons;
 }
 
-bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, std::vector<int> leptons, bool isElectron ){
+bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, bool isElectron ){
 
   //Check if there are at least two electrons first. Otherwise use muons.
   
   float invMass (0.0);
 
   if (isElectron){
+    std::vector<int> leptons = event->electronIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
         if (event->elePF2PATCharge[leptons[i]] * event->elePF2PATCharge[leptons[j]] >= 0) continue; // check electron pair have correct charge.
@@ -546,6 +570,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, std::vect
   }
 
   else {
+    std::vector<int> leptons = event->muonIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
 	if (event->muonPF2PATCharge[leptons[i]] * event->muonPF2PATCharge[leptons[j]] >= 0) continue;
@@ -569,23 +594,47 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, std::vect
 }
 
 bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
-  else return false;
+  if ( !is2016_ ) {
+    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
+    else return false;
+  }
+  else {
+    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 ) return true;
+    else return false;
+  }
 }
 
 bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
-  else return false;
+  if ( !is2016_ ) {
+    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
+    else return false;
+  }
+  else {
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) return true;
+    else return false;
+  }
 }
 
 bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
-  else return false;
+  if ( !is2016_ ) {
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
+    else return false;
+  }
+  else {
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) return true;
+    else return false;
+  }
 }
 
 bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
-  if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
-  else return false;
+  if ( !is2016_ ) {
+    if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
+    else return false;
+  }
+  else {
+    if ( event->HLT_MET250_v1 > 0 || event->HLT_MET250_v2 > 0 || event->HLT_MET250_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v3 > 0 || event->HLT_PFMET170_HBHECleaned_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v5 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_PFHT800_v3 > 0 || event->HLT_PFHT800_v4 > 0 || event->HLT_PFHT750_4JetPt50_v3 > 0 || event->HLT_PFHT750_4JetPt50_v4 > 0 || event->HLT_PFHT750_4JetPt50_v5 > 0 || event->HLT_PFHT300_PFMET100_v1 > 0 || event->HLT_PFHT300_PFMET100_v2 > 0 || event->HLT_PFHT300_PFMET100_v3 > 0 ) return true;
+    else return false;
+  }
 }
 
 void TriggerScaleFactors::savePlots()
@@ -662,4 +711,3 @@ void TriggerScaleFactors::savePlots()
   histEfficiencies->Write();
   outFile->Close();
 }
-

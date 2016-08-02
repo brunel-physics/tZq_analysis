@@ -765,7 +765,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	  postfix = "ee";
 	  chanName += "ee";
 	}
-
 	if (channelInd & 2){ // mumu channels
 	  cutObj->setNumLeps(2,2,0,0);
 	  cutObj->setCutConfTrigLabel("m");
@@ -777,6 +776,12 @@ void AnalysisAlgo::runMainAnalysis(){
 	  cutObj->setInvIsoCut(false);
 	  invertIsoCut = false;
 	  chanName += "nom";
+	}
+       if (channelInd & 4){ //emu channel for ttbar background estimation
+          cutObj->setNumLeps(1,1,1,1);
+          channel = "emu";
+          postfix = "emu";
+          chanName += "emu";
 	}
       } 
       if (dataset->isMC() && skipMC) continue;
@@ -973,8 +978,8 @@ void AnalysisAlgo::runMainAnalysis(){
         int systMask{1};
 	std::cout << "Making systematic trees for " << dataset->name() << ": ";
 	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
-	  std::cout << systNames[systIn] << " ";
-	//  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
+	  //std::cout << systNames[systIn] << " ";
+	  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
 	/*  	if (systIn > 0 && !(systMask & systToRun)){
 		if (systIn > 0) systMask = systMask << 1;
 		continue;
@@ -1055,6 +1060,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
 	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
 	    eventWeight *= pileupWeight;
+	    //std::cout << "pileupWeight: " <<  pileupWeight << std::endl;
 	  }
 	  if (infoDump) eventWeight = 1;
 	  if (readEventList) {

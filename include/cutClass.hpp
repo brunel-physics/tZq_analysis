@@ -45,6 +45,9 @@ class Cuts{
   int getLooseElecs(AnalysisEvent* event);
   int getLooseMus(AnalysisEvent* event);
 
+  //Method to do ttbar cuts for the dilepton background estimation
+  bool ttbarCuts(AnalysisEvent* event, float*, std::map<std::string,Plots*>, TH1F*, int);
+
   //Simple deltaR function, because the reco namespace doesn't work or something
   double deltaR(float,float,float,float);
   void dumpToFile(AnalysisEvent * event, int);

@@ -71,7 +71,7 @@ class TriggerScaleFactors{
 	// lepton selection
 	std::vector<int> getTightElectrons(AnalysisEvent*);
 	std::vector<int> getTightMuons(AnalysisEvent*);
-	bool passDileptonSelection(AnalysisEvent*,std::vector<int>,bool isElectron = true);
+	bool passDileptonSelection(AnalysisEvent*,bool isElectron = true);
 
 	// trigger cuts
 	bool doubleElectronTriggerCut(AnalysisEvent*);
@@ -85,11 +85,15 @@ class TriggerScaleFactors{
 	double numberTriggeredElectrons[2];
 	double numberPassedMuons[2];
 	double numberTriggeredMuons[2];
+	double numberPassedMuonElectrons[2];
+	double numberTriggeredMuonElectrons[2];
 	//Systematic variables
 	double numberSelectedElectrons[2];
 	double numberSelectedMuons[2];
+	double numberSelectedMuonElectrons[2];
         double numberSelectedElectronsTriggered[2];
 	double numberSelectedMuonsTriggered[2];
+	double numberSelectedMuonElectronsTriggered[2];
 };
 
 #endif

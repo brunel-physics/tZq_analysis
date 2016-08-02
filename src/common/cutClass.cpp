@@ -302,6 +302,10 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     return synchCuts(event, eventWeight);
   }
 
+  //If emu and dilepton - doing ttbar background estimation
+
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);;
+
   if( !skipTrigger_ ) {
     if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
     if ( !isMC_ && is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
@@ -1287,6 +1291,30 @@ double Cuts::getChiSquared( double wMass, double topMass ){
   return std::sqrt( topMassTerm*topMassTerm + wMassTerm*wMassTerm );
 }
 
+bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
+
+  if( !skipTrigger_ ) {
+    if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
+    if ( !isMC_ && is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+
+    if( !is2016_ && isMC_ ) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
+    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
+  }
+
+  if (!metFilters(event)) return false;
+
+  if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
+
+  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
+  event->bTagIndex = makeBCuts(event,event->jetIndex);
+  if (event->jetIndex.size() < numJets_) return false;
+  if (event->jetIndex.size() > maxJets_) return false;
+  if (event->jetIndex.size() < numJets_) return false;
+  if (event->jetIndex.size() > maxJets_) return false;  
+
+  return true;
+}
+
 //For synchronisation I am dumping the lepton information here.
 void Cuts::dumpLeptonInfo(AnalysisEvent* event){
   std::cout << std::setprecision(6) << std::fixed; 
@@ -1703,6 +1731,7 @@ float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
 
   //Dilepton channels
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
   //Trilepton channels
   if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
@@ -1721,14 +1750,20 @@ float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
     //Dilepton channels
     if (channel == "ee"){
       float twgt = 0.954; // tight=0.954; medium=0.958
-      if (syst == 1) twgt += 0.009;
-      if (syst == 2) twgt -= 0.009;
+      if (syst == 1) twgt = 0.963;
+      if(syst == 2) twgt = 0.945;
       return twgt;
     }
     if (channel == "mumu"){
       float twgt = 0.934; // tight=0.934; medium=0.931
-      if (syst == 1) twgt += 0.007;
-      if (syst == 2) twgt -= 0.007;
+      if (syst == 1) twgt = 0.947;
+      if (syst == 2) twgt = 0.921;
+      return twgt;
+    }
+    if (channel == "emu"){
+      float twgt = 0.954; // tight=0.954; medium=0.958
+      if (syst == 1) twgt = 0.963;
+      if(syst == 2) twgt = 0.945;
       return twgt;
     }
     //Trilepton channels
@@ -2177,7 +2212,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
       jetPt = maxBjetPt;
       doubleUncertainty = true;
     }
-    //jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt); 
+    //jet_scalefactor = beautyReader.eval_auto_bounds("central", BTagEntry::FLAV_B, jet.Eta(), jetPt);
     //jet_scalefactor_up = beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(), jetPt);
     //jet_scalefactor_do = beautyReader.eval_auto_bounds("down", BTagEntry::FLAV_B, jet.Eta(), jetPt);
     jet_scalefactor = getBweight_backup( 0, 0, jetPt );
