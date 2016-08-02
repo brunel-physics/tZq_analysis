@@ -122,56 +122,34 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("eventRun",1);
   chain->SetBranchStatus("eventLumiblock",1);
 
-  chain->SetBranchStatus("Flag_HBHENoiseFilter",1);
-  chain->SetBranchStatus("Flag_HBHENoiseIsoFilter",1);
-  chain->SetBranchStatus("Flag_EcalDeadCellTriggerPrimitiveFilter",1);
-  chain->SetBranchStatus("Flag_goodVertices",1);
-  chain->SetBranchStatus("Flag_eeBadScFilter",1);
-
-  if ( !is2016_ ) {
-    if (!isMC){
-      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
-      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
-      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
-      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
-    }
-    else{
-      chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-      chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
-      chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
-    }
-  chain->SetBranchStatus("Flag_CSCTightHalo2015Filter",1);
-  }
-
-  else {
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7",1);
+  if (!isMC){
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6",1);
-    chain->SetBranchStatus("Flag_globalTightHalo2016Filter",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
   }
+  else{
+    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
+    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
+  }
+
+  chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
+  chain->SetBranchStatus("HLT_PFMET170_JetIdCleaned_v2",1);
+  chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
+  chain->SetBranchStatus("HLT_PFHT350_PFMET100_v1",1);
+  chain->SetBranchStatus("HLT_PFHT800_v2",1);
+  chain->SetBranchStatus("HLT_MET250_v1",1);
+  chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
+
 }
 
 void TriggerScaleFactors::show_usage(std::string name){
@@ -273,32 +251,17 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
 void TriggerScaleFactors::runMainAnalysis(){
 
-  if ( !is2016_ ) { // If 2015 mode, get 2015 PU
-    //Make pileupReweighting stuff here
-    dataPileupFile = new TFile{"pileup/2015/truePileupTest.root","READ"};
-    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile{"pileup/2015/pileupMC.root","READ"};
-    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  //Make pileupReweighting stuff here
+  dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
+  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+  mcPileupFile = new TFile("pileup/2015/pileupMC.root","READ");
+  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-    //Get systematic files too.
-    systUpFile = new TFile{"pileup/2015/truePileupUp.root","READ"};
-    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile{"pileup/2015/truePileupDown.root","READ"};
-    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
-  }
-  else {
-    //Make pileupReweighting stuff here
-    dataPileupFile = new TFile{"pileup/2016/truePileupTest.root","READ"};
-    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile{"pileup/2016/pileupMC.root","READ"};
-    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
-
-    //Get systematic files too.
-    systUpFile = new TFile{"pileup/2016/truePileupUp.root","READ"};
-    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile{"pileup/2016/truePileupDown.root","READ"};
-    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
-  }
+  //Get systematic files too.
+  systUpFile = new TFile("pileup/2015/truePileupUp.root","READ");
+  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+  systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
+  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
 
   puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
@@ -343,22 +306,13 @@ void TriggerScaleFactors::runMainAnalysis(){
     else{
       std::string inputPostfix{};
       inputPostfix += postfix;
-      if ( !is2016_ ) { 
-        std::cout << "/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-        datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-        std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-        if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-        std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-        if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
-      }
-      else {
-        std::cout << "/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-        datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-        std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-        if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-        std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-        if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
-      }
+      std::cout << "/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+      datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+      std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+      if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+      std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+      if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+
     }
 
     std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
@@ -376,16 +330,9 @@ void TriggerScaleFactors::runMainAnalysis(){
     TTree * cloneTree3{nullptr};
 
     if (makePostLepTree){
-      if ( !is2016_ ) { 
-        outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
-        outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
-        outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
-      }
-      else {
-        outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
-        outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
-        outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
-      }
+      outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+      outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
+      outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
       cloneTree = datasetChain->CloneTree(0);
       cloneTree->SetDirectory(outFile1);
       cloneTree2 = datasetChain->CloneTree(0);
@@ -511,8 +458,7 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec(event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]);
 
-    if ( !is2016_ && tempVec.Pt() <= 20.0) continue;
-    if ( is2016_ && tempVec.Pt() <= 25.0) continue;
+    if (tempVec.Pt() <= 20.0) continue;
     if (std::abs(tempVec.Eta()) >= 2.40) continue;
 
     // ECAL Gap
@@ -623,52 +569,24 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, std::vect
 }
 
 bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event ) {
-  if ( !is2016_ ) {
-    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
-  }
-  else if ( is2016_ ) {
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 ) return true;
-  }
+  if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) return true;
   else return false;
 }
 
 bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event ) {
-  if ( !is2016_ ) { 
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
-  }
-  else if ( is2016_ ) {
-    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) return true;
-  }
+  if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) return true;
   else return false;
 }
 
 bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
-  if ( !is2016_ ) {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
-  }
-  else if ( is2016_ ) {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) return true;
-  }
+  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) return true;
   else return false;
 }
 
 bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
-  if ( !is2016_ ) {
-    if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
-  }
-  else if ( is2016_ ) {
-    if ( event->HLT_MET250_v1 > 0 || event->HLT_MET250_v2 > 0 || event->HLT_MET250_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v3 > 0 || event->HLT_PFMET120_PFMHT120_IDTight_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v3 > 0 || event->HLT_PFMET170_HBHECleaned_v4 > 0 || event->HLT_PFMET170_HBHECleaned_v5 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_PFHT800_v3 > 0 || event->HLT_PFHT800_v4 > 0 || event->HLT_PFHT750_4JetPt50_v3 > 0 || event->HLT_PFHT750_4JetPt50_v4 > 0 || event->HLT_PFHT750_4JetPt50_v5 > 0 || event->HLT_PFHT300_PFMET100_v1 > 0 || event->HLT_PFHT300_PFMET100_v2 > 0 || event->HLT_PFHT300_PFMET100_v3 > 0 ) return true;
-  }
+  if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 || event->HLT_PFMET170_JetIdCleaned_v2 > 0 || event->HLT_PFMET170_HBHECleaned_v2 > 0 || event->HLT_PFHT800_v2 > 0 || event->HLT_MET250_v1 > 0 ) return true;
   else return false;
 }
-
-bool TriggerScaleFactors::metFilters( AnalysisEvent* event ) {
-  if ( event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0 ||  event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 || event->Flag_goodVertices <= 0 || event->Flag_eeBadScFilter <= 0 ) return false;
-  if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
-  if ( is2016_ && event->Flag_globalTightHalo2016Filter <= 0 ) return false;
-  else return true;
-}
-
 
 void TriggerScaleFactors::savePlots()
 {
@@ -707,7 +625,20 @@ void TriggerScaleFactors::savePlots()
 
   std::cout << "\nelectron/muon data efficiencies: " << electronEfficiencyData << " +/- " << electronDataUpperUncert << "/" << electronDataLowerUncert << " / " << muonEfficiencyData << " +/- " << muonDataUpperUncert << "/" << muonDataLowerUncert << std::endl;
   std::cout << "electron/muon MC efficiencies: " << electronEfficiencyMC << " +/- " << electronMcUpperUncert << "/" << electronMcLowerUncert << " / " << muonEfficiencyMC << " +/- " << muonMcUpperUncert << "/" << muonMcLowerUncert << std::endl;
-  std::cout << "electron/muon trigger SFs: " << electronSF << " / " << muonSF << std::endl;
+
+  double eleSfUp = (electronEfficiencyData+electronDataUpperUncert)/(electronEfficiencyMC-electronMcLowerUncert+1.0e-6) - electronSF;
+  double eleSfDown = (electronEfficiencyData+electronDataLowerUncert)/(electronEfficiencyMC-electronMcUpperUncert+1.0e-6) - electronSF;
+  double eleSfUncert = 0.0;
+  if ( eleSfUp > eleSfDown ) eleSfUncert = eleSfUp;
+  else eleSfUncert = eleSfDown;
+
+  double muonSfUp = (muonEfficiencyData+muonDataUpperUncert)/(muonEfficiencyMC-muonMcLowerUncert+1.0e-6) - muonSF;
+  double muonSfDown = (muonEfficiencyData+muonDataLowerUncert)/(muonEfficiencyMC-muonMcUpperUncert+1.0e-6) - muonSF;
+  double muonSfUncert = 0.0;
+  if ( muonSfUp > muonSfDown ) muonSfUncert = muonSfUp;
+  else muonSfUncert = muonSfDown;
+
+  std::cout << "electron/muon trigger SFs: " << electronSF << " +/- " << eleSfUncert << " / " << muonSF << " +/- " << muonSfUncert << std::endl;
 
   TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
   histEfficiencies->Fill(0.5,0.5, electronEfficiencyData);
