@@ -20,6 +20,8 @@ rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50MadgraphFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/sChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveScaleUpFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveScaleDownFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttbarDileptonFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
@@ -28,6 +30,8 @@ rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttWFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttZ2l2nuFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttZ2qFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tWInclusiveFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tWInclusiveScaleUpFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tWInclusiveScaleDownFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tZqFilesRun1.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tZqFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tHqFiles.txt
@@ -92,8 +96,13 @@ ls /scratch/data/tZqSkimsRun2015/ZZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2015/d
 ls /scratch/data/tZqSkimsRun2015/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZ2l2qFiles.txt
 ls /scratch/data/tZqSkimsRun2015/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZ4lFiles.txt
 
-# Synchronisation files
+# Scaling files
+ls /scratch/data/tZqSkimsRun2015/tW_antitop_5f_scaleup/* >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveScaleUpFiles.txt
+ls /scratch/data/tZqSkimsRun2015/tW_antitop_5f_scaledown/* >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveScaleDownFiles.txt
+ls /scratch/data/tZqSkimsRun2015/tW_top_5f_scaleup/* >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tWInclusiveScaleUpFiles.txt
+ls /scratch/data/tZqSkimsRun2015/tW_top_5f_scaleup/* >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tWInclusiveScaleDownFiles.txt
 
+# Synchronisation files
 ls /scratch/data/tZqSkimsRun2015/synch/tZq/* -1d  >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tZqSynchFiles.txt
 ls /scratch/data/tZqSkimsRun2015/synch/WZ/* -1d  >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WZsynchFiles.txt
 ls /scratch/data/tZqSkimsRun2015/synch/ttZ/* -1d  >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttZsynchFiles.txt

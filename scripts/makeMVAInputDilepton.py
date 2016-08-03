@@ -539,8 +539,11 @@ def main():
         is2016 = False
 
     useSidebandRegion = False
+    ttbarControl = False
     if len(sys.argv) > 5 and sys.argv[5] == "-s":
         useSidebandRegion = True
+    if len(sys.argv) > 5 and sys.argv[5] == "--ttbar" :
+        ttbarControl = True
     treeNamePostfixSig = ""
     treeNamePostfixSB = ""
     if useSidebandRegion:
@@ -599,13 +602,17 @@ def main():
     chanMap = {}
     if is2016 :
         chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016"}
+        if ttbarControl : chanMap = {"emu":"emuRun2016"}
     else : 
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
+        if ttbarControl : chanMap = {"emu":"emuRun2015"}
 
     outChannels = ["DataEG","DataMu"]
+    if ttbarControl : outChannels = ["DataMuEG"]
     outChanToData = {}
     outChanToData["DataEG"] = ["ee"]
     outChanToData["DataMu"] = ["mumu"]
+    if ttbarControl : outChanToData["DataMuEG"] = ["emu"]
 
     for outChan in outChannels:
         print "Data ",outChan
