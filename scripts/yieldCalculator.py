@@ -14,7 +14,7 @@ channelIndex = -1
 if ( channel == "ee" ) : channelIndex = 1
 if ( channel == "mumu" ) : channelIndex = 0
 
-infile = ROOT.TFile.Open("mvaDirs/inputs/2015/all/mz5mw20/histofile_"+sample+".root")
+infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2015/all/mz5mw20/histofile_"+sample+".root")
 
 nom_yield  = 0
 
