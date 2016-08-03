@@ -16,15 +16,15 @@ mtwCut = sys.argv[2]
 mtwStr = mtwCut.split(".")[0]
 
 #Make the skim directory
-subprocess.call("mkdir mvaDirs/skims/met"+metStr+"mtw"+mtwStr,shell=True)
+subprocess.call("mkdir  /scratch/data/TopPhysics/mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)
 
 for chanName in channelList.keys():
-    print "bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut)
-    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut),shell=True)
+    print "bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut)
+    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut),shell=True)
 
 #Make the mvaInput directory
-subprocess.call("mkdir mvaDirs/inputs/met"+metStr+"mtw"+mtwStr,shell=True)
+subprocess.call("mkdir mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)
 
-print "python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/met"+metStr+"mtw"+mtwStr+"/"
-subprocess.call("python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/met"+metStr+"mtw"+mtwStr+"/",shell=True)
+print "python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr+"/"
+subprocess.call("python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr+"/",shell=True)
 
