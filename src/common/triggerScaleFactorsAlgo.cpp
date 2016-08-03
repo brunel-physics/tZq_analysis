@@ -532,7 +532,8 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if (!event->muonPF2PATTrackID[i]) continue;
     if (!event->muonPF2PATGlobalID[i]) continue;
 
-    if (event->muonPF2PATPt[i] <= 20.0) continue;
+    if ( event->muonPF2PATPt[i] <= 25.0 ) continue;
+
     if (std::abs(event->muonPF2PATEta[i]) >= 2.50) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
 
@@ -654,7 +655,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
     else return false;
   }
   else {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) return true;
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) return true;
     else return false;
   }
 }
