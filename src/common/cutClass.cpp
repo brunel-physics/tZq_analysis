@@ -1329,8 +1329,6 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
   if (!metFilters(event)) return false;
 
   if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun,true))) return false;
-  if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
-  if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
@@ -1339,8 +1337,11 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex);
+  event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;  
+  if (event->bTagIndex.size() != event->bTagLooseIndex.size()) return false;
+
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
@@ -1799,7 +1800,7 @@ float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
     if (channel == "emu"){
       float twgt = 0.969;
       if (syst == 1) twgt += 0.006;
-      if(syst == 2) twgt -= 0.006;
+      if (syst == 2) twgt -= 0.006;
       return twgt;
     }
     //Trilepton channels
@@ -1865,6 +1866,12 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       float twgt = 0.765; // tight=0.934; medium=0.931
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
+      return twgt;
+    }
+    if (channel == "emu"){
+      float twgt = 0.969;
+      if (syst == 1) twgt += 0.006;
+      if (syst == 2) twgt -= 0.006;
       return twgt;
     }
     //Trilepton channels
