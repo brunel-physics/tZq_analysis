@@ -27,10 +27,10 @@ cuts =
 	jets = {
 		pt = 30.0;
 		eta = 4.7;
-		numJets = 4;
-		maxJets = 8;
-		numbJets = 1;
-		maxbJets = 2;
+		numJets = 3;
+		maxJets = 3;
+		numbJets = 0;
+		maxbJets = 0;
 	}
 }
 trigLabel = "e";

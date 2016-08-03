@@ -14,13 +14,13 @@ cuts =
 	      },
 	tightElectrons = {
 	      pt   = 20.;
-	      eta  = 2.4;
+	      eta  = 2.5;
 	      relIso = 0.107587;
 	      number = 1.;
 	      },
 	looseElectrons = {
 	      pt   = 20.;
-	      eta  = 2.4;
+	      eta  = 2.5;
 	      relIso = 0.126;
 	      number = 1.; 
 	      }

@@ -715,12 +715,14 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
     for ( unsigned k{0}; k < jets.size(); k++ ){
       for ( unsigned l{k + 1}; l < jets.size(); l++ ){
 	// Now ensure that the leading b jet isn't one of these!
-	if ( event->jetPF2PATBDiscriminator[jets[k]] > bDiscCut_ ){
-	  if( event->jetIndex[event->bTagIndex[0]] == jets[k] ) continue;
-	}
-	else if ( event->jetPF2PATBDiscriminator[jets[l]] > bDiscCut_ ){
-	  if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
-	}
+        if ( event->bTagIndex.size() > 0 ) {
+  	  if ( event->jetPF2PATBDiscriminator[jets[k]] > bDiscCut_ ){
+	    if( event->jetIndex[event->bTagIndex[0]] == jets[k] ) continue;
+	  }
+	  else if ( event->jetPF2PATBDiscriminator[jets[l]] > bDiscCut_ ){
+	    if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
+	  }
+        }
 	TLorentzVector wQuark1{event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]};
 	TLorentzVector wQuark2{event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]};
 	double invWbosonMass{(wQuark1 + wQuark2).M() - 80.385};
