@@ -31,6 +31,6 @@ for chanName in channelList.keys():
 #Make the mvaInput directory
 subprocess.call("mkdir /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
 
-print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysicsmvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion
-subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysicsmvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion ,shell=True)
+print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysicsmvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion
+subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysicsmvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion ,shell=True)
 
