@@ -71,7 +71,7 @@ class TriggerScaleFactors{
 	// lepton selection
 	std::vector<int> getTightElectrons(AnalysisEvent*);
 	std::vector<int> getTightMuons(AnalysisEvent*);
-	bool passDileptonSelection(AnalysisEvent*,bool isElectron = true);
+	bool passDileptonSelection(AnalysisEvent*,int);
 
 	// trigger cuts
 	bool doubleElectronTriggerCut(AnalysisEvent*);

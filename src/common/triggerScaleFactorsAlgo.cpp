@@ -378,13 +378,13 @@ void TriggerScaleFactors::runMainAnalysis(){
       //Does this event pass tight electron cut?
       //Create electron index
       event->electronIndexTight = getTightElectrons( event );
-      bool passDoubleElectronSelection ( passDileptonSelection( event, true ) );
+      bool passDoubleElectronSelection ( passDileptonSelection( event, 2 ) );
       //Does this event pass tight muon cut?
       //Create muon index
       event->muonIndexTight = getTightMuons( event );
-      bool passDoubleMuonSelection ( passDileptonSelection( event, false ) );
+      bool passDoubleMuonSelection ( passDileptonSelection( event, 0 ) );
 
-//      bool passMuonElectronSelection ( passDileptonSelection( event );
+//      bool passMuonElectronSelection ( passDileptonSelection( event , 1 ) );
 
       if ( (passDoubleElectronSelection || passDoubleMuonSelection) && makePostLepTree ) {
 	if(postLepSelTree_) {
@@ -542,13 +542,14 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
   return muons;
 }
 
-bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, bool isElectron ){
+bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElectrons ){
 
   //Check if there are at least two electrons first. Otherwise use muons.
   
   float invMass (0.0);
+  float pT (0.0);
 
-  if (isElectron){
+  if (nElectrons == 2){
     std::vector<int> leptons = event->electronIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
@@ -556,39 +557,59 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, bool isEl
         TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[leptons[i]],event->elePF2PATGsfPy[leptons[i]],event->elePF2PATGsfPz[leptons[i]],event->elePF2PATGsfE[leptons[i]]);
         TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[leptons[j]],event->elePF2PATGsfPy[leptons[j]],event->elePF2PATGsfPz[leptons[j]],event->elePF2PATGsfE[leptons[j]]);
         float candidateMass  = (lepton1 + lepton2).M();
-	if (std::abs(candidateMass) > std::abs(invMass)){
+	if ( std::abs( (lepton1 + lepton2).Pt() ) > std::abs(pT) ){
         	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? leptons[i]:leptons[j];
-        	event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[leptons[i]]:event->elePF2PATComRelIsoRho[leptons[j]];
-        	event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[leptons[j]]:event->elePF2PATComRelIsoRho[leptons[i]];
         	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
         	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? leptons[j]:leptons[i];
 		invMass = candidateMass;
+		pT = (lepton1 + lepton2).Pt();
       		}
 	}
     } 
   }
 
-  else {
+  else if (nElectrons == 0){
     std::vector<int> leptons = event->muonIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
 	if (event->muonPF2PATCharge[leptons[i]] * event->muonPF2PATCharge[leptons[j]] >= 0) continue;
 	TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[leptons[i]],event->muonPF2PATPY[leptons[i]],event->muonPF2PATPZ[leptons[i]],event->muonPF2PATE[leptons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[leptons[j]],event->muonPF2PATPY[leptons[j]],event->muonPF2PATPZ[leptons[j]],event->muonPF2PATE[leptons[j]]);
-	float candidateMass = (lepton1 + lepton2).M() -91.1;
-	if (std::abs(candidateMass) > std::abs(invMass)){
+	float candidateMass = (lepton1 + lepton2).M();
+	if ( std::abs( (lepton1 + lepton2).Pt() ) > std::abs(pT) ){
 		event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 		event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? leptons[i]:leptons[j];
-		event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[leptons[i]];
-		event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[leptons[j]];
 		event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
 		event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? leptons[j]:leptons[i];
 		invMass = candidateMass;
+		pT = (lepton1 + lepton2).Pt();
 		}
       }
     }
   }
+
+  else if (nElectrons == 0){
+    std::vector<int> electrons = event->electronIndexTight;
+    std::vector<int> muons = event->muonIndexTight;
+    for ( unsigned i = 0; i < electrons.size(); i++ ){
+      for ( unsigned j = 0; j < muons.size(); j++ ){
+        if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) continue; // check muon-electron pair have correct charge.
+        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[eletrons[i]],event->elePF2PATGsfE[electrons[i]]);
+	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
+        	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+        	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? leptons[i]:leptons[j];
+        	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+        	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? leptons[j]:leptons[i];
+		invMass = candidateMass;
+		pT = (lepton1 + lepton2).Pt();
+  }
+
+  else {
+    std::cout << "Only dilepton searches currently supported. Exiting ..." << std::endl;
+    exit(888);
+  }
+
   if ( invMass > 20.0 ) return true;
   else return false;
 }
