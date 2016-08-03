@@ -397,7 +397,7 @@ void TriggerScaleFactors::runMainAnalysis(){
       }
 
       int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMuonElectron (0), triggerMetDoubleEG (0), triggerMetDoubleMuon (0), triggerMetMuonElectron (0);
-      int triggerMetElectronSelection (0), triggerMetMuonSelection (0), triggerMuonElectronSelection (0);
+      int triggerMetElectronSelection (0), triggerMetMuonSelection (0), triggerMetMuonElectronSelection (0);
 
       //Does event pass Double EG trigger and the electron selection?
       if ( passDoubleElectronSelection ) triggerDoubleEG 	= ( doubleElectronTriggerCut( event ) );
@@ -411,19 +411,25 @@ void TriggerScaleFactors::runMainAnalysis(){
       //Does event pass either double lepton seletion and the MET triggers?
       if ( passDoubleElectronSelection ) triggerMetElectronSelection = ( metTriggerCut( event ) );
       if ( passDoubleMuonSelection ) triggerMetMuonSelection = ( metTriggerCut( event ) );
-      if ( passMuonElectronSelection )  triggerMuonElectronSelection = ( metTriggerCut( event ) );
+      if ( passMuonElectronSelection )  triggerMetMuonElectronSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) {
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
+
 	numberPassedMuons[0] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
 	numberTriggeredMuons[0] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
-	
+
+        numberPassedMuonElectrons[0] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing cross trigger and muonEG selection
+        numberTriggeredMuonElectrons[0] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger	
+
 	// Systematic stuff
 	numberSelectedElectrons[0] += passDoubleElectronSelection*eventWeight;
 	numberSelectedMuons[0] += passDoubleMuonSelection*eventWeight;
+	numberSelectedMuonElectrons[0] += passMuonElectronSelection*eventWeight;
 	numberSelectedElectronsTriggered[0] += triggerDoubleEG*eventWeight;;
 	numberSelectedMuonsTriggered[0] += triggerDoubleMuon*eventWeight;;
+	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;;
 
       }
       else {
@@ -431,6 +437,8 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberTriggeredElectrons[1] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
 	numberPassedMuons[1] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
 	numberTriggeredMuons[1] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
+	numberPassedMuonElectrons[1] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing the cross trigger and muon selection
+	numberTriggeredMuonElectrons[1] += triggerMetMuonElectron*eventWeight; //Number of muonEGs passing both cross trigger+muon selection AND double muon trigger
       }
 
     }
