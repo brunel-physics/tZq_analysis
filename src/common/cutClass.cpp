@@ -407,6 +407,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   else if (trileptonChannel_ == false && !isControl){ //Control doesn't need Z plots
     invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
+  else if ( isControl ){
+    if (!getTTbarCand(event, event->electronIndexTight, event->muonIndexTight)) return false;
+  }
   else if (!isControl){
     std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
     std::cout << "HOW?! Well done for breaking this ..." << std::endl;
@@ -734,6 +737,26 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
       }
     }
   return closestWmass;
+}
+
+float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
+  
+  float leadingPt {0.0};
+
+  for (unsigned i{0}; i < electrons.size(); i++){
+    for (unsigned j{0}; j < muons.size(); j++){
+      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
+	TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
+	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
+	double leptonPt{ (lepton1 + lepton2).Pt() };
+        if ( std::abs(leptonPt) > std::abs(leadingPt) ) {
+	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+          leadingPt = leptonPt;
+       }
+    }
+  }
+  return leadingPt;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event){
