@@ -1791,15 +1791,15 @@ float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.934; // tight=0.934; medium=0.931
-      if (syst == 1) twgt = 0.947;
-      if (syst == 2) twgt = 0.921;
+      float twgt = 0.927; // tight=0.934; medium=0.931
+      if (syst == 1) twgt = 0.932;
+      if (syst == 2) twgt = 0.922;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.954; // tight=0.954; medium=0.958
-      if (syst == 1) twgt = 0.963;
-      if(syst == 2) twgt = 0.945;
+      float twgt = 0.969;
+      if (syst == 1) twgt += 0.006;
+      if(syst == 2) twgt -= 0.006;
       return twgt;
     }
     //Trilepton channels
