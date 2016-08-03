@@ -13,7 +13,7 @@ channelList = {"emu":"4"}
 subprocess.call("mkdir mvaDirs/skims/2015/ttbarControl/",shell=True)
 
 for chanName in channelList.keys():
-    print "bin/analysisMain.exe -c configs/2015/ttbarInc.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr + "/ --mzCut " + str(mzCut) + " --mwCut " + str(mwCut)
+    print "bin/analysisMain.exe -c configs/2015/ttbarInc.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2015/ttbarControl/"
     subprocess.call("bin/analysisMain.exe -c configs/2015/ttbarInc.txt -u -t -k "+str(channelList[chanName])+" -v 16383 -z --dilepton --mvaDir mvaDirs/skims/2015/ttbarControl",shell=True)
 
 #Make the mvaInput directory
