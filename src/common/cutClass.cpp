@@ -1842,6 +1842,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
 
   //Dilepton channels
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
   //Trilepton channels
   if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
