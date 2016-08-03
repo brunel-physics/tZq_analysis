@@ -122,6 +122,7 @@ class Cuts{
   //B-Disc cut
   unsigned numbJets_;
   unsigned maxbJets_;
+  unsigned looseBjetVeto_;
   float bDiscCut_;
   float bLooseDiscCut_;
   float bDiscSynchCut_;
