@@ -794,7 +794,6 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
     TLorentzVector jetVec{getJetLVec(event,i,syst)};
     // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy), event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
-
     if (jetVec.Pt() <= jetPt_) continue;
     if (std::abs(jetVec.Eta()) >= jetEta_) continue;
 
@@ -884,7 +883,6 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, in
   std::vector<int> bJets;
   for (auto i = 0; i != jets.size(); i++){
     TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
-
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && (synchCutFlow_ && trileptonChannel_)) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ ) continue;
@@ -1340,9 +1338,9 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
   if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
-  if (event->jetIndex.size() < numbJets_) return false;
-  if (event->jetIndex.size() > maxbJets_) return false;  
- if ( looseBjetVeto_ == 1  && (event->bTagIndex.size() != event->bTagLooseIndex.size()) ) return false;
+  if (event->bTagIndex.size() < numbJets_) return false;
+  if (event->bTagIndex.size() > maxbJets_) return false;  
+  if ( looseBjetVeto_ == 1  && (event->bTagIndex.size() != event->bTagLooseIndex.size()) ) return false;
 
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
@@ -2062,7 +2060,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   jerSigma = jetSFs.second;
 
   if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
-    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
+    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 /*&& std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma*/ ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
