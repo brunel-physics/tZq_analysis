@@ -330,8 +330,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
-  event->bTagIndex = makeBCuts(event,event->jetIndex);
-  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
+  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
+  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
   if ( looseBjetVeto_ == 1 && ( event->bTagIndex.size() != event->bTagLooseIndex.size() ) ) return false;
@@ -340,7 +340,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   if ( !trileptonChannel_ && !isFCNC_ ) { // Do wMass stuff
     float invWmass{0.};
-    invWmass = getWbosonQuarksCand(event,event->jetIndex);
+    invWmass = getWbosonQuarksCand(event,event->jetIndex,systToRun);
 
    // Debug chi2 cut
 //   float topMass = getTopMass(event);
@@ -711,7 +711,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
   return closestMass;
 }
 
-float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
+float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int syst){
   float closestWmass {9999.};
   if ( jets.size() > 2 )
     for ( unsigned k{0}; k < jets.size(); k++ ){
@@ -725,8 +725,11 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
 	    if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
 	  }
         }
-	TLorentzVector wQuark1{event->jetPF2PATPx[jets[k]],event->jetPF2PATPy[jets[k]],event->jetPF2PATPz[jets[k]],event->jetPF2PATE[jets[k]]};
-	TLorentzVector wQuark2{event->jetPF2PATPx[jets[l]],event->jetPF2PATPy[jets[l]],event->jetPF2PATPz[jets[l]],event->jetPF2PATE[jets[l]]};
+        TLorentzVector jetVec1{getJetLVec(event,jets[k],syst)};
+        TLorentzVector jetVec2{getJetLVec(event,jets[l],syst)};
+
+	TLorentzVector wQuark1{jetVec1.Px(),jetVec1.Py(),jetVec1.Pz(),jetVec1.E()};
+	TLorentzVector wQuark2{jetVec2.Px(),jetVec2.Py(),jetVec2.Pz(),jetVec2.E()};
 	double invWbosonMass{(wQuark1 + wQuark2).M() - 80.385};
 
 	if( std::abs(invWbosonMass) < std::abs(closestWmass) ){
@@ -870,28 +873,33 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
   return jets;
 }
 
-std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets){
+std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, int syst){
   
   std::vector<int> bJets;
-
   for (auto i = 0; i != jets.size(); i++){
+    TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
+
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && (synchCutFlow_ && trileptonChannel_)) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ ) continue;
-    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
+    if (jetVec.Eta() >= 2.40) continue;
+//    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
   }
   return bJets;
 }
 
-std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jets){
+std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jets, int syst){
   
   std::vector<int> bJets;
 
   for (auto i = 0; i != jets.size(); i++){
+
+    TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bLooseDiscCut_) continue;
-    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
+    if (jetVec.Eta() >= 2.40) continue;
+//    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
   }
   return bJets;
@@ -1014,14 +1022,14 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     if (event->jetIndex.size() > maxJets_) return false;
     synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
 
-    event->bTagIndex = makeBCuts(event,event->jetIndex);
+    event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
     if (event->bTagIndex.size() < numbJets_) return false;
     if (event->bTagIndex.size() > maxbJets_) return false;
     synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
   
     synchCutFlowHist_->Fill(7.5, *eventWeight); // no Met cut applied
 
-    double wMass = getWbosonQuarksCand(event,event->jetIndex);
+    double wMass = getWbosonQuarksCand(event,event->jetIndex,0);
 
     if ( std::abs(wMass) > invWMassCut_ ) return false;
 
@@ -1098,7 +1106,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
 
   // bTag selection
-  event->bTagIndex = makeBCuts(event,event->jetIndex);
+  event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
   synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (event->bTagIndex.size() != 1) return false;
@@ -1324,8 +1332,8 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
-  event->bTagIndex = makeBCuts(event,event->jetIndex);
-  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex);
+  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
+  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;  
  if ( looseBjetVeto_ == 1  && (event->bTagIndex.size() != event->bTagLooseIndex.size()) ) return false;
