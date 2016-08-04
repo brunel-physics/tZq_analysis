@@ -44,34 +44,147 @@ def sortOutHadronicW(tree,channel):
     wQuark2 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPy[tree.wQuark2Index],tree.jetPF2PATPz[tree.wQuark2Index ],tree.jetPF2PATE[tree.wQuark2Index])
     return (wQuark1,wQuark2)
 
-def getJets(tree):
+def getJets(tree,syst,jetUnc,met):
     #Makes a short list of indices of the jets in the event
     jetList = []
     jetVecList = []
     for i in range(15):
         if tree.jetInd[i] > -.5:
             jetList.append(tree.jetInd[i])
-            jetVecList.append(getJetVec(tree,tree.jetInd[i]))
+            jetVecList.append(getJetVec(tree,tree.jetInd[i],syst,jetUnc,met))
         else: continue
     return (jetList,jetVecList)
 
-def getBjets(tree,jets):
+def getBjets(tree,syst,jetUnc,met,jets):
     #Return a list of the indices of the b-jets in the event
     bJetList = []
     bJetVecList = []
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]]))
+            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],syst,jetUnc,met))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
 
-def getJetVec(tree, index):
-    #Gets a vector for a jet.
-    returnJet = TLorentzVector();
-    returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+def getJetVec(tree, index, syst, jetUnc, metVec):
+    #Gets a vector for a jet and applies jet corrections
+
+    newSmearValue = 1.0;
+    jerSF = 0.0;
+    jerSigma = 0.0;
+
+    if not ( is2016 ) :
+        if (n.fabs(tree.jetPF2PATEta[index]) <= 0.5) :
+            jerSF = 1.095;
+            jerSigma = 0.018;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 0.8) :
+            jerSF = 1.120
+            jerSigma = 0.028;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.1) :
+            jerSF = 1.097;
+            jerSigma = 0.017;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.3) :
+            jerSF = 1.103;
+            jerSigma = 0.033;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.7) :
+            jerSF = 1.118;
+            jerSigma = 0.014;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.9) :
+            jerSF = 1.100;
+            jerSigma = 0.033;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
+            jerSF = 1.162;
+            jerSigma = 0.044;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.3) :
+            jerSF = 1.160;
+            jerSigma = 0.048;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.5) :
+            jerSF = 1.161;
+            jerSigma = 0.060;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.8) :
+            jerSF = 1.209;
+            jerSigma = 0.059;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.0) :
+            jerSF = 1.564
+            jerSigma = 0.321;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.2) :
+            jerSF = 1.384;
+            jerSigma = 0.033;
+        else :
+            jerSF = 1.216;
+            jerSigma = 0.050;
+
+    else : 
+    
+        if (n.fabs(tree.jetPF2PATEta[index]) <= 0.5) :
+            jerSF = 1.122;
+            jerSigma = 0.026;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 0.8) :
+            jerSF = 1.167
+            jerSigma = 0.048;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.1) :
+            jerSF = 1.168;
+            jerSigma = 0.046;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.3) :
+            jerSF = 1.029;
+            jerSigma = 0.066;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.7) :
+            jerSF = 1.115;
+            jerSigma = 0.003;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.9) :
+            jerSF = 1.041;
+            jerSigma = 0.062;
+       elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
+             jerSF = 1.167;
+            jerSigma = 0.086;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.3) :
+            jerSF = 1.094;
+            jerSigma = 0.093;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.5) :
+            jerSF = 1.168;
+            jerSigma = 0.120;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.8) :
+            jerSF = 1.266;
+            jerSigma = 0.132;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.0) :
+            jerSF = 1.595
+            jerSigma = 0.175;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.2) :
+            jerSF = 1.002;
+            jerSigma = 0.066;
+        else :
+            jerSF = 1.216;
+            jerSigma = 0.145;
+
+    if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
+        if ( deltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index] ) < 0.4/2.0 and n.fabs(tree.jetPF2PATPt[index] - tree.genJetPF2PATPT[index] < 3.0*jerSigma ):
+        if (syst == 16): jerSF += jerSigma
+        elif (syst == 32): jerSF -= jerSigma
+        newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index]
+        returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
+    else :
+       random.seed(666)
+       newSmearValue = 1.0+TRandom(random.randint(0,65539)).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma)
+       returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
+    if (tree.genJetPF2PATPT[index] < -990. or !jetUnc) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+
+    if (newSmearValue > 0.01):
+        #Propogate through the met. But only do it if the smear jet isn't 0.
+        metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
+        metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
+    if syst == 16:
+        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
+    elif syst == 32:
+        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
+
+    metVec.SetPx(metVec.Px()-returnJet.Px())
+    metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
+
+    return returnJet
+    
+
 
 def doUncMet(tree,met,zLep1,zLep2,jetVecs,syst):
 
@@ -306,7 +419,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, channel, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0 
@@ -328,8 +441,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, channel, zPtEventWei
         tree.GetEntry(event)
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
-        (jets,jetVecs) = getJets(tree)
-        (bJets,bJetVecs) = getBjets(tree,jets)
+        (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec)
+        (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
         if syst == 1024 or syst == 2048:
@@ -513,6 +626,9 @@ def main():
     listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {}
 
+    jetUnc = JetCorrectionUncertainty("Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
+    if (is2016) jetUnc = JetCorrectionUncertainty("Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
 
@@ -575,7 +691,7 @@ def main():
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel)
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
                 except AttributeError:
                     print "\nAttribute Error \n"
                     print syst + " : " + "0",
