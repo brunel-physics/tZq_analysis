@@ -33,7 +33,7 @@ class Cuts{
   float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>, int syst = 0);
-  bool getTTbarCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
+  float getTTbarCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getTopMass(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*);
   bool metFilters(AnalysisEvent*);

@@ -410,7 +410,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
   else if ( isControl ){
-    if (!getTTbarCand(event, event->electronIndexTight, event->muonIndexTight)) return false;
+    invZmass = getTTbarCand(event, event->electronIndexTight, event->muonIndexTight);
   }
   else if (!isControl){
     std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
@@ -424,6 +424,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
+  if (std::abs(invZmass) > invZMassCut_ && isControl) return false;
 
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -746,19 +747,24 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
   return closestWmass;
 }
 
-bool Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
+float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
   
+  float closestMass {9999.9};
 
   for (unsigned i{0}; i < electrons.size(); i++){
     for (unsigned j{0}; j < muons.size(); j++){
-      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) return false;
+      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
       TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
       TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-      event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-      event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+      float invMass{(lepton1+lepton2).M() - 91.1};
+      if( std::abs(invMass) < std::abs(closestMass) ){
+        event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+        event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+        closestMass = invMass;
+      }
     }
   }
-  return true;
+  return closestMass;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event){
