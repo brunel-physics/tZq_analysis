@@ -44,37 +44,37 @@ def sortOutHadronicW(tree,channel):
     wQuark2 = TLorentzVector(tree.jetPF2PATPx[tree.wQuark2Index],tree.jetPF2PATPy[tree.wQuark2Index],tree.jetPF2PATPz[tree.wQuark2Index ],tree.jetPF2PATE[tree.wQuark2Index])
     return (wQuark1,wQuark2)
 
-def getJets(tree,syst,jetUnc,met):
+def getJets(tree,syst,jetUnc,met,is2016):
     #Makes a short list of indices of the jets in the event
     jetList = []
     jetVecList = []
     for i in range(15):
         if tree.jetInd[i] > -.5:
             jetList.append(tree.jetInd[i])
-            jetVecList.append(getJetVec(tree,tree.jetInd[i],syst,jetUnc,met))
+            jetVecList.append(getJetVec(tree,tree.jetInd[i],syst,jetUnc,met,is2016))
         else: continue
     return (jetList,jetVecList)
 
-def getBjets(tree,syst,jetUnc,met,jets):
+def getBjets(tree,syst,jetUnc,met,jets,is2016):
     #Return a list of the indices of the b-jets in the event
     bJetList = []
     bJetVecList = []
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],syst,jetUnc,met))
+            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],syst,jetUnc,met,is2016))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
 
-def getJetVec(tree, index, syst, jetUnc, metVec):
+def getJetVec(tree, index, syst, jetUnc, metVec, is2016):
     #Gets a vector for a jet and applies jet corrections
 
     newSmearValue = 1.0;
     jerSF = 0.0;
     jerSigma = 0.0;
 
-    if not ( is2016 ) :
+    if not is2016 :
         if (n.fabs(tree.jetPF2PATEta[index]) <= 0.5) :
             jerSF = 1.095;
             jerSigma = 0.018;
@@ -135,8 +135,8 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
         elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.9) :
             jerSF = 1.041;
             jerSigma = 0.062;
-       elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
-             jerSF = 1.167;
+        elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
+            jerSF = 1.167;
             jerSigma = 0.086;
         elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.3) :
             jerSF = 1.094;
@@ -157,17 +157,19 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
             jerSF = 1.216;
             jerSigma = 0.145;
 
+    returnJet = TLorentzVector();
+
     if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        if ( deltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index] ) < 0.4/2.0 and n.fabs(tree.jetPF2PATPt[index] - tree.genJetPF2PATPT[index] < 3.0*jerSigma ):
-        if (syst == 16): jerSF += jerSigma
-        elif (syst == 32): jerSF -= jerSigma
-        newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index]
-        returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
-    else :
-       random.seed(666)
-       newSmearValue = 1.0+TRandom(random.randint(0,65539)).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma)
-       returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
-    if (tree.genJetPF2PATPT[index] < -990. or !jetUnc) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+        if ( deltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index] ) < 0.4/2.0 ) :
+            if (syst == 16): jerSF += jerSigma
+            elif (syst == 32): jerSF -= jerSigma
+            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index]
+            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
+        else :
+            random.seed(666)
+            newSmearValue = 1.0+TRandom(random.randint(0,65539)).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma)
+            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
+#    if (tree.genJetPF2PATPT[index] < -990. and not jetUnc) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
 
     if (newSmearValue > 0.01):
         #Propogate through the met. But only do it if the smear jet isn't 0.
@@ -181,9 +183,6 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
     metVec.SetPx(metVec.Px()-returnJet.Px())
     metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
-
-    return returnJet
-    
 
 
 def doUncMet(tree,met,zLep1,zLep2,jetVecs,syst):
@@ -419,7 +418,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0 
@@ -441,8 +440,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, zPt
         tree.GetEntry(event)
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
-        (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec)
-        (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets)
+        (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
+        (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
         if syst == 1024 or syst == 2048:
@@ -626,8 +625,8 @@ def main():
     listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttW":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {}
 
-    jetUnc = JetCorrectionUncertainty("Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
-    if (is2016) jetUnc = JetCorrectionUncertainty("Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+    jetUnc = JetCorrectionUncertainty("scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
+    #if (is2016) jetUnc = JetCorrectionUncertainty("Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
@@ -691,7 +690,7 @@ def main():
                 try:
                     print syst +  " : " + str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, channel, jetUnc)
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, jetUnc, channel, is2016)
                 except AttributeError:
                     print "\nAttribute Error \n"
                     print syst + " : " + "0",
@@ -739,7 +738,7 @@ def main():
             else : 
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, chan, 0)
+            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, chan, is2016, 0)
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()
