@@ -424,7 +424,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
-  if (std::abs(invZmass) > invZMassCut_ && isControl) return false;
+  if (std::abs(invZmass) < 106 && isControl) return false;
 
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
@@ -749,15 +749,15 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
 
 float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
   
-  float closestMass {9999.9};
+  float closestMass {-1.0};
 
   for (unsigned i{0}; i < electrons.size(); i++){
     for (unsigned j{0}; j < muons.size(); j++){
       if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
       TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
       TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-      float invMass{(lepton1+lepton2).M() - 91.1};
-      if( std::abs(invMass) < std::abs(closestMass) ){
+      float invMass{(lepton1+lepton2).M()};
+      if( std::abs(invMass) > std::abs(closestMass) ){
         event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
         closestMass = invMass;
@@ -1340,8 +1340,8 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
   if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
-  if (event->jetIndex.size() < numJets_) return false;
-  if (event->jetIndex.size() > maxJets_) return false;  
+  if (event->jetIndex.size() < numbJets_) return false;
+  if (event->jetIndex.size() > maxbJets_) return false;  
  if ( looseBjetVeto_ == 1  && (event->bTagIndex.size() != event->bTagLooseIndex.size()) ) return false;
 
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
