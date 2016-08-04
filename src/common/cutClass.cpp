@@ -2053,7 +2053,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   jerSigma = jetSFs.second;
 
   if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
-    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 /*&& std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma*/ ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
+    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale 
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
       newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
