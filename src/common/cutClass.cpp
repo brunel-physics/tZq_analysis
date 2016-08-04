@@ -850,17 +850,6 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       }
     }
 
-    // Update modified jet variables
-    event->jetPF2PATE[i] = jetVec.E();
-    event->jetPF2PATEt[i] = jetVec.Et();
-    event->jetPF2PATPt[i] = jetVec.Pt();
-    event->jetPF2PATEta[i] = jetVec.Eta();
-    event->jetPF2PATTheta[i] = jetVec.Theta();
-    event->jetPF2PATPhi[i] = jetVec.Phi();
-    event->jetPF2PATPx[i] = jetVec.Px();
-    event->jetPF2PATPy[i] = jetVec.Py();
-    event->jetPF2PATPz[i] = jetVec.Pz();
-
     jets.emplace_back(i);
 
     if (getBTagWeight_ && ( !synchCutFlow_ || (synchCutFlow_ && !trileptonChannel_) )){
@@ -2071,7 +2060,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
     }
       else { // If not, randomly smear 
-      srand (time(nullptr));
+      srand (666);
       newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     }
@@ -2085,18 +2074,6 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     returnJet *= 1+jerUncer;
   }
 
-  // Propagate smearing through to MET
-  if ( isMC_ ) {
-   TLorentzVector tempMet;
-   tempMet.SetPxPyPzE(event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt);
-   tempMet.SetPx( event->metPF2PATPx + event->jetPF2PATPx[index] - returnJet.Px() );
-   tempMet.SetPy( event->metPF2PATPy + event->jetPF2PATPy[index] - returnJet.Py() );
-
-   // Update MET LVector
-   event->metPF2PATEt = tempMet.Et();
-   event->metPF2PATPx = tempMet.Px();
-   event->metPF2PATPy = tempMet.Py();
-  }
   return returnJet;
 }
 

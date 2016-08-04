@@ -980,10 +980,10 @@ void AnalysisAlgo::runMainAnalysis(){
           throw std::runtime_error("MVA Tree TFile could not be opened!");
         }
         int systMask{1};
-	std::cout << "Making systematic trees for " << dataset->name() << ": ";
+	//std::cout << "Making systematic trees for " << dataset->name() << ": ";
 	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
 	  //std::cout << systNames[systIn] << " ";
-	  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
+	//  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
 	/*  	if (systIn > 0 && !(systMask & systToRun)){
 		if (systIn > 0) systMask = systMask << 1;
 		continue;
