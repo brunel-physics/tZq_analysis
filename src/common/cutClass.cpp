@@ -743,24 +743,19 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets){
   return closestWmass;
 }
 
-float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
+bool Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
   
-  float leadingPt {0.0};
 
   for (unsigned i{0}; i < electrons.size(); i++){
     for (unsigned j{0}; j < muons.size(); j++){
-      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
-	TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-	double leptonPt{ (lepton1 + lepton2).Pt() };
-        if ( std::abs(leptonPt) > std::abs(leadingPt) ) {
-	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-          leadingPt = leptonPt;
-       }
+      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) return false;
+      TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
+      TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
+      event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+      event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
     }
   }
-  return leadingPt;
+  return true;
 }
 
 float Cuts::getTopMass(AnalysisEvent *event){
