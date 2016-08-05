@@ -738,7 +738,7 @@ def main():
             else : 
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, chan, is2016, 0)
+            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016, 0)
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()

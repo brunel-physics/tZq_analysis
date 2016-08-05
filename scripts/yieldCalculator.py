@@ -15,6 +15,7 @@ if ( channel == "ee" ) : channelIndex = 1
 if ( channel == "mumu" ) : channelIndex = 0
 
 infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2015/all/mz5mw20/histofile_"+sample+".root")
+#infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2015/emu/mz106/histofile_"+sample+".root")
 
 nom_yield  = 0
 
@@ -29,6 +30,6 @@ for syst in systs:
     tree = infile.Get("Ttree_"+sample+syst)
     for event in tree : 
         if ( channelIndex == event.Channel ) : syst_yield += event.EvtWeight
-    print "syst yield for ", syst, " : ", syst_yield
+    print "syst yield for ", syst, " : ", syst_yield, " / diff : ", syst_yield-nom_yield 
 
 
