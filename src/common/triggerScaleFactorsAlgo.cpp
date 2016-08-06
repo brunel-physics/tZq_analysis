@@ -165,6 +165,25 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5",1);
     chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6",1);
+    chain->SetBranchStatus("HLT_MET250_v1",1);
+    chain->SetBranchStatus("HLT_MET250_v2",1);
+    chain->SetBranchStatus("HLT_MET250_v3",1);
+    chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v2",1);
+    chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v3",1);
+    chain->SetBranchStatus("HLT_PFMET120_PFMHT120_IDTight_v4",1);
+    chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v2",1);
+    chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v3",1);
+    chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v4",1);
+    chain->SetBranchStatus("HLT_PFMET170_HBHECleaned_v5",1);
+    chain->SetBranchStatus("HLT_PFHT800_v2",1);
+    chain->SetBranchStatus("HLT_PFHT800_v3",1);
+    chain->SetBranchStatus("HLT_PFHT800_v4",1);
+    chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
+    chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v4",1);
+    chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v5",1);
+    chain->SetBranchStatus("HLT_PFHT300_PFMET100_v1",1);
+    chain->SetBranchStatus("HLT_PFHT300_PFMET100_v2",1);
+    chain->SetBranchStatus("HLT_PFHT300_PFMET100_v3",1);
   }
 }
 
@@ -267,18 +286,34 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
 void TriggerScaleFactors::runMainAnalysis(){
 
-  //Make pileupReweighting stuff here
-  dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
-  dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-  mcPileupFile = new TFile("pileup/2015/pileupMC.root","READ");
-  mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+  if ( !is2016_ ) {
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile("pileup/2015/pileupMC.root","READ");
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-  //Get systematic files too.
-  systUpFile = new TFile("pileup/2015/truePileupUp.root","READ");
-  pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-  systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
-  pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+    //Get systematic files too.
+    systUpFile = new TFile("pileup/2015/truePileupUp.root","READ");
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
 
+  else {
+    //Make pileupReweighting stuff here
+    dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
+    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+    mcPileupFile = new TFile("pileup/2015/pileupMC.root","READ");
+    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+
+    //Get systematic files too.
+    systUpFile = new TFile("pileup/2015/truePileupUp.root","READ");
+    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+    systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
+    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+  }
+  
   puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
@@ -532,7 +567,7 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if (!event->muonPF2PATTrackID[i]) continue;
     if (!event->muonPF2PATGlobalID[i]) continue;
 
-    if ( event->muonPF2PATPt[i] <= 25.0 ) continue;
+    if ( event->muonPF2PATPt[i] <= 20.0 ) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= 2.50) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
@@ -739,6 +774,8 @@ void TriggerScaleFactors::savePlots()
 
   std::cout << "double electron/muon trigger SFs: " << electronSF << " +/- " << eleSfUncert << " / " << muonSF << " +/- " << muonSfUncert << std::endl;
   std::cout << "muonEG trigger SFs: " << muonElectronSF << " +/- " << muonElectronSfUncert << std::endl;
+
+  std::cout << "alpha for DoubleEG/DoubleMuon/MuonEG: " << alphaElectron << "/" << alphaMuon << "/" << alphaMuonElectron << std::endl;
 
   TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
   histEfficiencies->Fill(0.5,0.5, electronEfficiencyData);
