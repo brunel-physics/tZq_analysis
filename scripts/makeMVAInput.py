@@ -2,7 +2,7 @@
 
 from ROOT import *
 
-import numpy as n
+import math
 import sys
 import os
 from array import array
@@ -64,40 +64,40 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
     jerSF = 0.0;
     jerSigma = 0.0;
 
-    if (n.fabs(tree.jetPF2PATEta[index]) <= 0.5) :
+    if (math.abs(tree.jetPF2PATEta[index]) <= 0.5) :
         jerSF = 1.095;
         jerSigma = 0.018;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 0.8) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 0.8) :
         jerSF = 1.120
         jerSigma = 0.028;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.1) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.1) :
         jerSF = 1.097;
         jerSigma = 0.017;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.3) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.3) :
         jerSF = 1.103;
         jerSigma = 0.033;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.7) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.7) :
         jerSF = 1.118;
         jerSigma = 0.014;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 1.9) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.9) :
         jerSF = 1.100;
         jerSigma = 0.033;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.1) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.1) :
         jerSF = 1.162;
         jerSigma = 0.044;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.3) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.3) :
         jerSF = 1.160;
         jerSigma = 0.048;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.5) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.5) :
         jerSF = 1.161;
         jerSigma = 0.060;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 2.8) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.8) :
         jerSF = 1.209;
         jerSigma = 0.059;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.0) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 3.0) :
         jerSF = 1.564
         jerSigma = 0.321;
-    elif (n.fabs(tree.jetPF2PATEta[index]) <= 3.2) :
+    elif (math.abs(tree.jetPF2PATEta[index]) <= 3.2) :
         jerSF = 1.384;
         jerSigma = 0.033;
     else :
@@ -113,7 +113,7 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
             returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
         else :
            random.seed();
-           newSmearValue = 1.0+TRandom(random).Gaus(0.0,n.sqrt(jerSF*jerSF-1)*jerSigma);
+           newSmearValue = 1.0+TRandom(random).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma);
            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
 
     else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
@@ -306,27 +306,27 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         totPx,totPy = 0,0
         totPx += zLep1.Px() + zLep2.Px() + wLep.Px()
         totPy += zLep1.Py() + zLep2.Py() + wLep.Py()
-        varMap["lepPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
+        varMap["lepPt"][0] = math.sqrt(totPx * totPx + totPy * totPy)
         totPx += metVec.Px()
         totPy += metVec.Py()
-        varMap["lepMetPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
+        varMap["lepMetPt"][0] = math.sqrt(totPx * totPx + totPy * totPy)
         totPx += jetVecs[0].Px()
         totPy += jetVecs[0].Py()
         if len(jetVecs) > 1:
             totPx += jetVecs[1].Px()
             totPy += jetVecs[1].Py()
-        varMap["totPt2Jet"][0] = n.sqrt(totPx * totPx + totPy * totPy)
+        varMap["totPt2Jet"][0] = math.sqrt(totPx * totPx + totPy * totPy)
         for i in range(2,len(jets)):
             totPx+=jetVecs[i].Px()
             totPy+=jetVecs[i].Py()
-        varMap["totPt"][0] = n.sqrt(totPx * totPx + totPy * totPy)
+        varMap["totPt"][0] = math.sqrt(totPx * totPx + totPy * totPy)
         totVec = (wLep + zLep1+zLep2)
         for i in range(len(jetVecs)):
             totVec += jetVecs[i]
         varMap["totEta"][0] = totVec.Eta()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
-        varMap["mTW"][0] = n.sqrt(2*metVec.Pt()*wLep.Pt() * (1-n.cos(metVec.Phi() - wLep.Phi())))
+        varMap["mTW"][0] = math.sqrt(2*metVec.Pt()*wLep.Pt() * (1-math.cos(metVec.Phi() - wLep.Phi())))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = metVec.Pt()
@@ -374,7 +374,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         varMap["lepMetHt"][0] = ht
         ht += jetHt
         varMap["totHt"][0] = ht
-        varMap["totHtOverPt"][0] = ht / n.sqrt(totPx * totPx + totPy * totPy) 
+        varMap["totHtOverPt"][0] = ht / math.sqrt(totPx * totPx + totPy * totPy) 
         varMap["zMass"][0] = (zLep1+zLep2).M()
 
 
