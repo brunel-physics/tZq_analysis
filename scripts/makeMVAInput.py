@@ -398,7 +398,7 @@ def main():
 #    listOfMCs = {}
 
     #Set-up JEC corrections
-    jetUnc = JetCorrectionUncertainty("scaleFactors/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
+    jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
     channelToDataset = {"eee":"DataEG","eemu":"DataMuEG","emumu":"DataMuEG","mumumu":"DataMu"}
