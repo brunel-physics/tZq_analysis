@@ -9,58 +9,42 @@
 #include "TMVA/Timer.h"
 
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/program_options.hpp>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 
-static void show_usage(std::string name){
-  std::cerr << "Usage: " << name << " <options>"
-	    << "Options:\n"
-	    << "\t-o  \tOUTFILE\tOutput file path for plots. If set overwrites the default.\n"
-	    << "\t-i \tOUTFILE\tInput file path for input nTuples. If set overwrites the default.\n"
-	    << "\t-h  --help\t\t\tShow this help message\n"
-	    << std::endl;
-}
-
 int main(int argc, char* argv[]) {
 
   std::string inputDir;
   std::string outFileString{"plots/distributions/output.root"};
-  bool inputFlag{false};
 
-  for (int i{1}; i < argc; ++i){
-    std::string arg{argv[i]};
-    if ((arg=="-h") || (arg == "--help")){ // Display help stuff
-      show_usage(argv[0]);
+  namespace po = boost::program_options;
+  po::options_description desc("Options");
+  desc.add_options()
+      ("help,h", "Print this message.")
+      ("indir,i", po::value<std::string>(&inputDir)->required(), "Input folder for nTuples.")
+      ("outfile,o", po::value<std::string>(&outFileString)->default_value(outFileString),
+       "Output file for plots.");
+  po::variables_map vm;
+
+  try
+  {
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+
+    if (vm.count("help"))
+    {
+      std::cout << desc;
       return 0;
     }
-    else if (arg=="-o"){//Set output file
-      if (i + 1 < argc){
-	outFileString = argv[++i];
-      } 
-      else{
-	std::cerr << "requires a string for output folder name." << std::endl;;
-      }
-    }
-    else if (arg=="-i"){//Set input folder
-      if (i + 1 < argc){
-	inputDir = argv[++i];
-	if ( inputDir == "" ){
-	  std::cerr << "requires a non-null input dir to be run over!" << std::endl;;
-	  return 0;
-	}
-	else{
-	  inputFlag = true;
-	}
-      }
-    }
+
+    po::notify(vm);
   }
-
-
-  if (!inputFlag){
-    std::cerr << "Program requires an input dir to be run over!" << std::endl;;
-	return 0;
+  catch (const po::error& e)
+  {
+    std::cerr << "ERROR: " << e.what() << std::endl;
+    return 1;
   }
 
   // Read in root files from directory

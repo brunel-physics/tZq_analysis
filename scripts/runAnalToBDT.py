@@ -19,8 +19,8 @@ mtwStr = mtwCut.split(".")[0]
 subprocess.call("mkdir  /scratch/data/TopPhysics/mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)
 
 for chanName in channelList.keys():
-    print "bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut)
-    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2,1,3,4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut),shell=True)
+    print "bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2 1 3 4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut)
+    subprocess.call("bin/analysisMain.exe -c configs/2015/"+chanName+"Conf.txt -u -t -k "+str(channelList[chanName])+" --jetRegion 2 1 3 4 -v 4095 -z --mvaDir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr + "/ --metCut " + str(metCut) + " --mtwCut " + str(mtwCut),shell=True)
 
 #Make the mvaInput directory
 subprocess.call("mkdir mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)

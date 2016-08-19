@@ -5,6 +5,7 @@
 #include "config_parser.hpp"
 #include "AnalysisEvent.hpp"
 
+#include <boost/program_options.hpp>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -17,19 +18,9 @@
 #include "TEfficiency.h"
 
 TriggerScaleFactors::TriggerScaleFactors():
-  config(""),
-  plots(false),
-  nEvents(0.),
-  outFolder("plots/scaleFactors/"),
-  postfix("default"),
-  numFiles(-1),
-  makePostLepTree(false),
-  usePostLepTree(false),
   postLepSelTree_{nullptr},
   postLepSelTree2_{nullptr},
   postLepSelTree3_{nullptr},
-  is2016_{false},
-
   numberPassedElectrons(),
   numberTriggeredElectrons(),
   numberPassedMuons(),
@@ -187,94 +178,53 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   }
 }
 
-void TriggerScaleFactors::show_usage(std::string name){
-  std::cerr << "Usage: " << name << " <options>"
-	    << "Options:\n"
-	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over.\n"
-            << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
-	    << "\t-o  --outFolder\tOUTFOLDER\tOutput folder for plots. If set overwrites what may be in the config file.\n"
-	    << "\t-s  --postfix\tPOSTFIX\t\tPostfix for produced plots. Over-rides anything set in a configuration file.\n"
-	    << "\t-d\t\t\t\tDump event info. For now this is the yield at each stage. May also include event lists later on. \n\t\t\t\t\tIf this flag is set all event weights are 1.\n"
-	    << "\t-f  --nFiles \tNFILES\t\tUses a specific number of files to run over. \n\t\t\t\t\tThis is useful if testing stuff so that it doesn't have to access the T2 a lot etc.\n"
-	    << std::endl;
-}
-		       
-
 void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 {
+  namespace po = boost::program_options;
+  po::options_description desc("Options");
+  desc.add_options()
+    ("help,h", "Print this message.")
+    ("config,c", po::value<std::string>(&config)->required(),
+     "The configuration file to be used.")
+    (",n", po::value<long>(&nEvents)->default_value(0),
+     "The number of events to be run over. All if set to 0.")
+    ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/scaleFactors/"),
+     "The output directory for the plots. Overrides the config file.")
+    ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
+     "Set postfix for plots. Overrides the config file.")
+    ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.)")
+    (",g", po::bool_switch(&makePostLepTree),
+     "Make post lepton selection trees.")
+    (",u", po::bool_switch(&usePostLepTree),
+     "Use post lepton selection trees.")
+    ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
+     "Number of files to run over. All if set to -1.");
+  po::variables_map vm;
+
+  try
+  {
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+
+    if (vm.count("help"))
+    {
+      std::cout << desc;
+      std::exit(0);
+    }
+
+    po::notify(vm);
+  }
+  catch (const po::error& e)
+  {
+    std::cerr << "ERROR: " << e.what() << std::endl;
+    std::cerr << desc;
+    std::exit(1);
+  }
+
   gErrorIgnoreLevel = kInfo;
+
   //Set up environment a little.
   std::cout << std::setprecision(3) << std::fixed;
-  // "This is the main function. It basically just loads a load of other stuff.";
-  //Parse command line arguments - looking for config file.
-  if (argc < 3){
-    TriggerScaleFactors::show_usage(argv[0]);
-    exit(1);
-  }
 
-  // Loop for parsing command line arguments.
-  for (int i = 1; i < argc; ++i){
-    std::string arg = argv[i];
-    if ((arg=="-h") || (arg == "--help")){ // Display help stuff
-      TriggerScaleFactors::show_usage(argv[0]);
-      exit(0);
-    }
-    else if ((arg=="-c")||(arg=="--config")){ // Sets configuration file - Required!
-      if (i + 1 < argc) {
-      config = argv[++i];
-      } else{
-	std::cerr << "--config requires an argument!";
-	exit(0);
-      }
-    }
-    else if (arg=="-n") { // using this option sets the number of entries to run over.
-      if (i+1 < argc){
-	nEvents = atol(argv[++i]);
-      }else{
-	std::cerr << "-n requires a number of events to run over! You idiot!";
-      }
-    }
-    else if (arg=="-p") {
-      plots = true;
-    }
-    else if (arg=="--2016"){ // Sets program to use 2016 conditions (SFs, et al.)
-      is2016_ = true;
-    }
-    else if ((arg=="-o")||(arg=="--outFolder")){//Set output folder
-      if (i + 1 < argc){
-	outFolder = argv[++i];
-      } else{
-	std::cerr << "requires a string for output folder name.";
-      }
-    }
-    else if ((arg=="-s")||(arg=="--postfix")){//Set plot postfix
-      if (i + 1 < argc){
-	postfix = argv[++i];
-      } else{
-	std::cerr << "requires a string for plot postfix.";
-      }
-    }
-    else if (arg == "-g"){
-      makePostLepTree = true;
-    }
-    else if (arg == "-u"){
-      usePostLepTree = true;
-    }
-    else if (arg == "-f" || arg == "--nFiles"){
-      if (i+1 < argc){
-	numFiles = atoi(argv[++i]);
-      }else{
-	 std::cerr << "-f requires an int";
-	 exit(0);
-      }
-    }
-
-  } // End command line arguments loop.
-  if (config == ""){
-    std::cerr << "We need a configuration file! Type -h for usage. Error";
-    exit(0);
-
-  }
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;

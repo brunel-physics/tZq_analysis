@@ -35,7 +35,6 @@ class TriggerScaleFactors{
 	private:
 
 	std::string config;
- 	bool plots;
 	double usePreLumi;
 	long nEvents;
 	std::string outFolder;

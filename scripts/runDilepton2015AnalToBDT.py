@@ -34,3 +34,4 @@ subprocess.call("mkdir /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz
 print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2015 "+useSideBandRegion
 subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2015 "+useSideBandRegion ,shell=True)
 
+
