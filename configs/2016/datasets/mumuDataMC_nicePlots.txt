@@ -18,10 +18,20 @@ colour = kMagenta
 label = Single Top
 plotType = f
 
-[ttW]
-fileName = configs/2016/datasets/fileLists/ttWFiles.txt
+[ttWlnu]
+fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 252673
 crossSection = 0.2043
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttW2q]
+fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
+totalEvents = 833298
+crossSection = 0.4062
 runType = mc
 histoName = ttV
 colour = kGreen

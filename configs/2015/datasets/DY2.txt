@@ -8,13 +8,23 @@ colour = kYellow
 label = tZq
 plotType = f
 
-[ttW]
-fileName = configs/2015/datasets/fileLists/ttWFiles.txt
+[ttWlnu]
+fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 250307
 crossSection = 0.2043
 runType = mc
 histoName = ttW
-colour = kGreen - 4
+colour = kGreen
+label = ttW
+plotType = f
+
+[ttW2q]
+fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
+totalEvents = 831847
+crossSection = 0.4062
+runType = mc
+histoName = ttW
+colour = kGreen
 label = ttW
 plotType = f
 
