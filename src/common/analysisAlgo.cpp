@@ -12,6 +12,7 @@
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -19,41 +20,11 @@
 #include <sstream>
 
 AnalysisAlgo::AnalysisAlgo():
-  config{},
-  plots{false},
-  usePreLumi{2095.17},
-  nEvents{0},
-  outFolder{"plots/"},
-  postfix{"default"},
   channel{},
-  infoDump{false},
-  invertIsoCut{false}, //For z+jets background estimation
-  synchCutFlow{false}, // For synch
-  skipData{false}, //utility stuff. True if flags are set and will skip either data or mc
-  skipMC{false},
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
-  numFiles{-1},
   readEventList{false},
-  dumpEventNumbers{false},
-  makePostLepTree{false},
-  makeMVATree{false},
-  usePostLepTree{false},
-  usebTagWeight{false},
-  systToRun{0},
-  makeBTagEffPlots{false},
-  channelsToRun{0}, //0 makes it run the one in the config, I guess.
-  skipTrig{false},
-  mvaDir{"mvaTest/"},
-  customJetRegion{false},
-  metCut{0.},
-  mtwCut{0.},
-  mzCut{10.0},
-  mwCut{20.0},
-  trileptonChannel_{true},
-  isFCNC_{false},
-  isCtag_{false},
-  is2016_{false}
+  customJetRegion{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -293,261 +264,170 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
   }
 }
 
-void AnalysisAlgo::show_usage(std::string name){
-  std::cerr << "Usage: " << name << " <options>"
-	    << "Options:\n"
-	    << "\t-c  --config\tCONFIGURATION\tThe configuration file to be run over.\n"
-            << "\t--dilepton \t Look for dilepton final state instead of the default trilepton channel.\n"
-            << "\t--2016 \t Use 2016 conditions. User must use 2016 config for this to give valid output.\n"
-            << "\t--FCNC \t Look for FCNC dilepton final state instead of the default trilepton channel.\n"
-            << "\t--cTag \t Look for FCNC dilepton final state with cTagging instead of the default trilepton channel.\n"
-	    << "\t-p\t\t\t\tMake all plots. Currently segfaults if this isn't set, I believe.\n"
-	    << "\t--unblinded\t\t\t\tMake all unblinded plots.\n"
-            << "\t-n\t\t\t\tSet the number of events to run over. Leave blank for all.\n"
-            << "\t-l\t\t\t\tIf this option is set, scale MC plots to a fixed lumi. Default is lumi from data samples.\n"
-	    << "\t-o  --outFolder\tOUTFOLDER\tOutput folder for plots. If set overwrites what may be in the config file.\n"
-	    << "\t-s  --postfix\tPOSTFIX\t\tPostfix for produced plots. Over-rides anything set in a configuration file.\n"
-	    << "\t-d\t\t\t\tDump event info. For now this is the yield at each stage. May also include event lists later on. \n\t\t\t\t\tIf this flag is set all event weights are 1.\n"
-	    << "\t-x  --cutConf\tCUTCONF\t\tOverrides the cut configuration given in the usual configuration file.\n\t\t\t\t\tThis is mostly so that MC can be run on different cuts without having to make wqhole new confs.\n"
-	    << "\t    --plotConf\tPLOTCONF\tOverrides the plot configuration file in the usual configuration file. \n\t\t\t\t\tFor various reasons I guess. Also sets -p flag automatically. If you don't want plots, DON'T USE THIS OPTION.\n"
-	    << "\t-i\t\t\t\tInvert the isolation cut of the third lepton. This is for background estimation purposes. \n\t\t\t\t\tWho knows how I am supposed to use that though.\n"
-	    << "\t-a  --synch\t\t\tMakes cutflows for synch exercise i.e. detailed lepSel cutflows. Doesn't do full event selection.\n"
-	    << "\t-e\t\t\t\tGive a comma separated list of events to run on. This is for synch, but might be useful later?\n"
-	    << "\t-f  --nFiles \tNFILES\t\tUses a specific number of files to run over. \n\t\t\t\t\tThis is useful if testing stuff so that it doesn't have to access the T2 a lot etc.\n"
-	    << "\t-m\t\t\t\tMonte carlo only mode. Will not run over any data in the configuration.\n"
-	    << "\t-b\t\t\t\tData only mode. Only runs over data, skips all MC.\n"
-	    << "\t-t\t\t\t\tUse b-tagging efficiencies to reweight MC\n"
-	    << "\t-y\t\t\t\tProduces a file of event dumps for stages of the synch.\n"
-	    << "\t-g\t\t\t\tMakes post-lepSel tree\n"
-	    << "\t-u\t\t\t\tUses post-lepSel trees\n"
-	    << "\t-z  --makeMVATree\t\tProduce a tree after event selection for MVA purposes\n"
-	    << "\t-v  --syst  \tSYST\t\tDo the desired systematic. Brief workaround here, not final yet\n"
-	    << "\t-j\t\t\t\tMake b-tagging efficiency histograms. Probably doesn't need to be run too many times.\n"
-	    << "\t-k          \tCHANS\t\tBit mask dealy for the channels. 1 - eee 2 - eemu 4 - emumu 8 - mumumu 16 through 128 are same but for inverted third lep iso.\n"
-	    << "\t    --skipTrig\t\t\tSkip running triggers. Used for trigger studies or something.\n"
-	    << "\t    --mvaDir \tDIR\t\tChange the name of the folder the mva outputs go to. mvaTest/ by default. Include the /.\n"
-	    << "\t    --jetRegion \t\tSet the jet region that the analysis will look at. Takes arguments NJETS,NBJETS,MAXJETS,MAXBJETS.\n"
-	    << "\t    --metCut \tCUT\t\tAlter the MET cut of the analysis. 0 by default. Trilepton only.\n"
-	    << "\t    --mtwCut \tCUT\t\tAlter the mTW cut of the analysis. 0 by default. Trilepton only.\n"
-	    << "\t    --mzCut \tCUT\t\tAlter the mZ cut of the analysis. 0 by default. Dilepton only.\n"
-	    << "\t    --mwCut \tCUT\t\tAlter the mW cut of the analysis. 0 by default. Dilepton only.\n"
-	    << "\t-h  --help\t\t\tShow this help message\n"
-	    << std::endl;
-}
-		       
-
 void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 {
+  std::stringstream events;
+  std::stringstream jetRegion;
+
   gErrorIgnoreLevel = kInfo;
   //Set up environment a little.
   std::cerr << std::setprecision(1) << std::fixed;
   std::cout << std::setprecision(1) << std::fixed;
-  // "This is the main function. It basically just loads a load of other stuff.";
-  //Parse command line arguments - looking for config file.
-  if (argc < 3){
-    AnalysisAlgo::show_usage(argv[0]);
-    exit(1);
-  }
 
-  // Loop for parsing command line arguments.
-  for (int i {1}; i < argc; ++i){
-    std::string arg{argv[i]};
-    if ((arg=="-h") || (arg == "--help")){ // Display help stuff
-      AnalysisAlgo::show_usage(argv[0]);
-      exit(0);
+  namespace po = boost::program_options;
+  po::options_description desc("Options");
+  desc.add_options()
+    ("help,h", "Print this message.")
+    ("config,c", po::value<std::string>(&config)->required(),
+     "The configuration file to be used.")
+    ("dilepton", po::bool_switch(&trileptonChannel_),
+     "Look for dilepton rather than trilepton final states.")
+    ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.).")
+    ("FCNC", po::bool_switch(&isFCNC_),
+     "Look for FCNC dilepton rather than trilepton final states.")
+    ("cTag", po::bool_switch(&isCtag_),
+     "Look for FCNC dilepton rather than trilepton final states using "
+     "cTagging.")
+    (",n", po::value<long>(&nEvents)->default_value(0),
+     "The number of events to be run over. All if set to 0.")
+    ("allPlots,p", po::bool_switch(&plots), "Make all plots")
+    ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/"),
+     "The output directory for the plots. Overrides the config file.")
+    ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
+     "Set postfix for plots. Overrides the config file.")
+    ("lumi,l", po::value<double>(&usePreLumi)->default_value(2095.17),
+     "Lumi to scale MC plots to.")
+    ("dump,d", po::bool_switch(&infoDump),
+     "Dump event info, currently only the yield at each stage. Sets all event "
+     "weights to 1.")
+    ("cutConf,x", po::value<std::string>(cutConfName),
+     "Override the cut configuration given in the config file.")
+    ("plotConf", po::value<std::string>(plotConfName),
+     "Override the plot configuration given in the config file. Sets --allPlots.")
+    ("invert,i", po::bool_switch(&invertIsoCut),
+     "Invert the isolation cut of the third lepton.")
+    ("synch,a", po::bool_switch(&synchCutFlow),
+     "Make lepton selection cutflows for synchronisation exercises.")
+    ("MC,m", po::bool_switch(&skipData),
+     "Monte Carlo only mode. Ignores all data in the config file.")
+    ("data,b", po::bool_switch(&skipMC),
+     "Data only mode. Ignores all data in the config file.")
+    ("bTag,t", po::bool_switch(&usebTagWeight),
+     "Use b-tagging efficiencies to reweight the Monte Carlo. Currently " 
+     "requires -u.")
+    (",y", po::bool_switch(&dumpEventNumbers),
+     "Produce event dumps for each stage of the synch. Requires --synch.")
+    ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
+     "Number of files to run over. All if set to -1.")
+    ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
+     "Specify a space-separated list of events to run over.")
+    (",g", po::bool_switch(&makePostLepTree),
+     "Make post lepton selection trees.")
+    (",u", po::bool_switch(&usePostLepTree),
+     "Use post lepton selection trees.")
+    ("makeMVATree,z", po::bool_switch(&makeMVATree),
+     "Produce trees after event selection for multivariate analysis.")
+    ("syst,v", po::value<int>(&systToRun)->default_value(0),
+     "Mask for systematics to be run. 4095 enables all systematics.")
+    ("bTagPlots,j", po::bool_switch(&makeBTagEffPlots),
+     "Output b-tagging efficiency histograms.")
+    ("channels,k", po::value<int>(&channelsToRun)->default_value(0),
+     "Mask describing the channels to be run over in trilepton mode. The mask "
+     "is the sum of each channel's mask, which are:\n"
+     "    eee        - 1\n"
+     "    eemu       - 2\n"
+     "    emumu      - 4\n"
+     "    mumumu     - 8\n"
+     "    eee inv    - 16\n"
+     "    eemu inv   - 32\n"
+     "    emumu inv  - 64\n"
+     "    mumumu inv - 128\n"
+     "0 runs the channels specified in the config file")
+    ("skipTrig", po::bool_switch(&skipTrig), "Skip running triggers.")
+    ("mvaDir", po::value<std::string>(&mvaDir),
+     "Output directory for the MVA files.")
+    ("jetRegion", po::value<std::vector<unsigned>>(&jetRegVars),
+     "Set a sustom jet region in the format NJETS NBJETS MAXJETS MAXBJETS.")
+    ("metCut", po::value<float>(&metCut)->default_value(0),
+     "Apply an MET cut. Trilepton only.")
+    ("mtwCut", po::value<float>(&mtwCut)->default_value(0),
+     "Apply an mTW cut. Trilepton only.")
+    ("mzCut", po::value<float>(&mzCut)->default_value(0),
+     "Apply an mZ cut. Dilepton only.")
+    ("mWcut", po::value<float>(&mwCut)->default_value(0),
+     "Apply an mW cut. Dilepton only.");
+  po::variables_map vm;
+
+  try
+  {
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+
+    if (vm.count("help"))
+    {
+      std::cout << desc;
+      std::exit(0);
     }
-    else if ((arg=="-c")||(arg=="--config")){ // Sets configuration file - Required!
-      if (i + 1 < argc) {
-      config = argv[++i];
-      } else{
-	std::cerr << "--config requires an argument!";
-	exit(0);
+
+    po::notify(vm);
+
+    trileptonChannel_ = !trileptonChannel_;
+    if (vm.count("channels") && !vm.count("config"))
+    {
+      throw std::logic_error("--channels requires --config to be specified");
+    }
+    if (vm.count("jetRegion"))
+    {
+      if (jetRegVars.size() != 4)
+      {
+        throw std::logic_error("--jetRegion takes exactly four arguments.");
       }
-    }
-    else if (arg=="--dilepton"){ // Sets whether trilepton or dilepton channel is to be analysed.
-      trileptonChannel_ = false;
-    }
-    else if (arg=="--2016"){ // Sets program to use 2016 conditions (SFs, et al.)
-      is2016_ = true;
-    }
-    else if (arg =="--FCNC"){ // Runs code in FCNC mode.
-	isFCNC_ = true;
-    }
-    else if (arg =="--cTag"){ // Runs code in FCNC mode.
-	isCtag_ = true;
-    }
-    else if (arg=="-n") { // using this option sets the number of entries to run over.
-      if (i+1 < argc){
-      nEvents = std::stol(argv[++i]);
-      }else{
-	std::cerr << "-n requires a number of events to run over! You idiot!";
-      }
-    }
-    else if (arg=="-p") {
-      plots = true;
-    }
-    else if ((arg=="-o")||(arg=="--outFolder")){//Set output folder
-      if (i + 1 < argc){
-	outFolder = argv[++i];
-      } else{
-	std::cerr << "requires a string for output folder name.";
-      }
-    }
-    else if ((arg=="-s")||(arg=="--postfix")){//Set plot postfix
-      if (i + 1 < argc){
-	postfix = argv[++i];
-      } else{
-	std::cerr << "requires a string for plot postfix.";
-      }
-    }
-    else if (arg=="-l"){
-      if (i+1 < argc){
-	usePreLumi = std::stof(argv[++i]);
-      }else{
-	std::cerr << "-l requries a float!";
-	exit(0);
-      }
-    }
-    else if (arg == "-d"){//Option for dumping event information about selected events.
-      infoDump = true;
-    }
-    else if (arg == "-x" || arg == "--cutConf"){
-      if (i+1 < argc){
-	*cutConfName = argv[++i];
-      }else{
-	std::cerr <<" -x requires an argument";
-	exit(0);
-      }
-    }
-    else if (arg == "--plotConf"){
-      if (i+1 < argc){
-	*plotConfName = argv[++i];
-	plots = true;
-      }else{
-	std::cerr <<" --plotConf requires an argument";
-	exit(0);
-      }
-    }
-    else if (arg == "-i"){ //Set up anti-isolation cut for 
-      invertIsoCut = true;
-    }
-    else if (arg == "-a" || arg == "--synch"){ // Change to synch exercise cut flow.
-      synchCutFlow = true;
-    }
-    else if (arg == "-m"){
-      skipData = true;
-    }
-    else if (arg == "-b"){
-      skipMC = true;
-    }
-    else if (arg == "-y"){
-      dumpEventNumbers = true;
-      std::cout << "WARNING: Dump files will be empty if -a or --synch is not used." << std::endl;
-    }
-    else if (arg == "-t"){
-      usebTagWeight = true;
-    }
-    else if (arg == "-f" || arg == "--nFiles"){
-      if (i+1 < argc){
-	numFiles = std::stoi(argv[++i]);
-      }else{
-	 std::cerr << "-f requires an int";
-	 exit(0);
-      }
-    }
-    else if (arg == "-e"){
-      readEventList = true;
-      std::stringstream ss{argv[++i]};
-      std::string item;
-      while (std::getline(ss,item,',')){
-	jetRegVars.emplace_back(std::stoi(item));
-      }
-    }
-    else if (arg == "-g"){
-      makePostLepTree = true;
-    }
-    else if (arg == "-z" || arg == "--makeMVATree"){
-      makeMVATree = true;
-    }
-    else if (arg == "-u"){
-      usePostLepTree = true;
-    }
-    else if (arg == "-v" || arg == "--syst"){
-      if (i+1 < argc){
-	systToRun = std::stoi(argv[++i]);
-      }
-      else{
-	std::cerr << "-v requires an int";
-	exit(0);
-      }
-    }
-    else if (arg == "-j"){
-      makeBTagEffPlots = true;
-    }
-    else if (arg == "-k"){
-      if (i+1 < argc){
-	channelsToRun = std::stoi(argv[++i]);
-      }
-      else{
-	std::cerr << "-k needs a config file!";
-	exit(0);
-      }
-    }
-    else if (arg == "--skipTrig"){
-      skipTrig = true;
-      std::cout << "Note that you're skipping the trigger!" << std::endl;
-    }
-    else if (arg == "--mvaDir"){
-      mvaDir = argv[++i];
-    }
-    else if (arg == "--jetRegion"){
       customJetRegion = true;
-      std::stringstream ss{argv[++i]};
-      std::string item;
-      while (std::getline(ss,item,',')){
-	jetRegVars.emplace_back(std::stoi(item));
-      }
-      std::cout << "CAUTION! Using a custom jet region of "<< jetRegVars[0] << "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets" <<std::endl;
+      std::cout << "CAUTION! Using a custom jet region of " << jetRegVars[0] <<
+        "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" <<
+        jetRegVars[3] << " b-jets" << std::endl;
+    }
+    if (usebTagWeight && !usePostLepTree)
+    {
+      throw std::logic_error("Currently bTag weights can only be retrieved "
+          "from post lepton selection trees. Please set -u.");
+    }
+    if (usebTagWeight && makeBTagEffPlots)
+    {
+      throw std::logic_error("Simultaneous generation and use of b-tag "
+          " efficiencies is not supported");
+    }
+    if (trileptonChannel_ && isFCNC_)
+    {
+      throw std::logic_error( "Code has not been setup to do a trilepton FCNC "
+          "search, only a dilepton one. Please use --dilepton argument.");
+    }
+    if (!isFCNC_ && isCtag_)
+    {
+      throw std::logic_error("C-tagging is only used during an FCNC search. "
+          "Set --FCNC & --dilepton arguements.");
+    }
+  }
+  catch (const std::logic_error& e)
+  {
+    std::cerr << "ERROR: " << e.what() << std::endl;
+    std::cerr << "Use -h or --help for help." << std::endl;
+    std::exit(1);
+  }
 
-    }
-    else if (arg == "--metCut"){
-      metCut = std::stof(argv[++i]);
-      std::cout << "Non zero MET cut! Applied " << metCut << " cut." << std::endl;
-    }
-    else if (arg == "--mtwCut"){
-      mtwCut = std::stof(argv[++i]);
-      std::cout << "Non zero mTW cut! Applied " << mtwCut << " cut." << std::endl;
-    }
-    else if (arg == "--mzCut"){
-      mzCut = std::stof(argv[++i]);
-      std::cout << "Non zero mZ cut! Applied " << mzCut << " cut." << std::endl;
-    }
-    else if (arg == "--mwCut"){
-      mwCut = std::stof(argv[++i]);
-      std::cout << "Non zero mW cut! Applied " << mwCut << " cut." << std::endl;
-    }
-    
-  } // End command line arguments loop.
-  if (config == ""){
-    std::cerr << "We need a configuration file! Type -h for usage. Error";
-    exit(0);
+  if (vm.count("events"))
+  {
+    readEventList = true;
   }
-  if (usebTagWeight && !usePostLepTree){
-    std::cerr << "At the moment only getting btag weights from post lep-sel trees is supported. Sorry everyone.";
-    exit(0);
+  if (dumpEventNumbers && !vm.count("synch"))
+  {
+    std::cerr << "WARNING: Using -y without --synch will result in empty dump "
+      "files" << std::endl;
   }
-  if (usebTagWeight && makeBTagEffPlots){
-    std::cerr << "I doubt that set of options is a good idea, so I'm going to just quietly exit here. Don't generate and use b-tag efficiency numbers at the same time...";
-    exit(0);
+  if (vm.count("plotConf"))
+  {
+    plots = true;
   }
-  if (trileptonChannel_ && isFCNC_){
-    std::cerr << "Code has not been setup to do a trilepton FCNC search, only a dilepton one. Please use --dilepton argument.";
-    exit(0);
-  }
-  if (!isFCNC_ && isCtag_){
-    std::cerr << "C-tagging is only used during an FCNC search. Please use --FCNC & --dilepton arguements.";
-    exit(0);
-  }
+
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;
@@ -555,47 +435,46 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     std::cerr << "There was an error parsing the config file.\n";
     exit(0);
   }
-  
+
   if (channelsToRun && trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
     for (unsigned channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelInd & 17){
-	std::cout << "eee ";
+        std::cout << "eee ";
       }
       if (channelInd & 34){ //eemu channels
-	std::cout << "eemu ";
+        std::cout << "eemu ";
       }
       if (channelInd & 68){ // emumu channels
-	std::cout << "emumu ";
+        std::cout << "emumu ";
       }
       if (channelInd & 136){ // mumumu channels
-	std::cout << "mumumu ";
+        std::cout << "mumumu ";
       }
       if (channelInd & 15){ //nominal samples
-	std::cout << "nominal" << std::endl;
+        std::cout << "nominal" << std::endl;
       }
       if (channelInd & 240){ //inv iso samples
-	std::cout << "inverted" << std::endl;
+        std::cout << "inverted" << std::endl;
       }
     }
   }
-  
-  if (channelsToRun && !trileptonChannel_){
+  else if (channelsToRun && !trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
     for (unsigned channelInd = 1; channelInd != 8; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       if (channelInd & 1){
-	std::cout << "ee ";
+        std::cout << "ee ";
       }
       if (channelInd & 2){ // mumu channels
-	std::cout << "mumu ";
+        std::cout << "mumu ";
       }
       if (channelInd & 3){ //nominal samples
-	std::cout << "nominal" << std::endl;
+        std::cout << "nominal" << std::endl;
       }
       if (channelInd & 4){ //nominal samples and emu
-	std::cout << "emu - used only for ttbar control region " << std::endl;
+        std::cout << "emu - used only for ttbar control region " << std::endl;
       }
     }
   }

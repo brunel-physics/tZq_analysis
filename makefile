@@ -20,6 +20,7 @@ LIBRARIES = 	$(shell root-config --libs) \
 		-lz \
 		-lboost_system-mt \
 		-lboost_filesystem-mt \
+		-lboost_program_options \
 
 INCLUDE_PATH = 	-Iinclude  \
 		-isystem/scratch/shared/include \
@@ -38,7 +39,7 @@ CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 LINK_LIBRARY_FLAGS = -shared -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
 LINK_EXECUTABLE_FLAGS = -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
 			-lTQZanalysisTools \
-			-Wl,-R/scratch/shared/lib,-Rlib,--enable-new-dtags
+			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,--enable-new-dtags
 
 .PHONY: all _all clean _cleanall build _buildall install _installall rpm _rpmall test _testall spec_update
 
