@@ -360,6 +360,8 @@ public :
 
    //2016 MET Filters
    Int_t	   Flag_globalTightHalo2016Filter;
+   Int_t           Flag_BadChargedCandidateFilter;
+   Int_t	   Flag_BadPFMuonFilter;
 
    //2015 and 2016 Triggers
    Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
@@ -720,6 +722,8 @@ public :
 
    //2016 MET Filters
    TBranch        *b_Flag_globalTightHalo2016Filter;
+   TBranch	  *b_Flag_BadChargedCandidateFilter;
+   TBranch	  *b_Flag_BadPFMuonFilter;
 
    //2015 and 2016 MET Triggers
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
@@ -1203,6 +1207,8 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      }
      //MET filter branches
      fChain->SetBranchAddress("Flag_globalTightHalo2016Filter", &Flag_globalTightHalo2016Filter, &b_Flag_globalTightHalo2016Filter);
+     fChain->SetBranchAddress("Flag_BadChargedCandidateFilter", &Flag_BadChargedCandidateFilter, &b_Flag_BadChargedCandidateFilter);
+     fChain->SetBranchAddress("Flag_BadPFMuonFilter", &Flag_BadPFMuonFilter, &b_Flag_BadPFMuonFilter);
    }
 
    // 2015 and 2016 triggers and MET filters
