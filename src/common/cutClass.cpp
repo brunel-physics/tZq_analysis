@@ -1864,15 +1864,15 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.765; // tight=0.934; medium=0.931
+      float twgt = 0.772; // tight=0.934; medium=0.931
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.969;
-      if (syst == 1) twgt += 0.006;
-      if (syst == 2) twgt -= 0.006;
+      float twgt = 0.895;
+      if (syst == 1) twgt += 0.003;
+      if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     //Trilepton channels
