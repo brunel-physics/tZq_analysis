@@ -67,7 +67,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
   //zMass cuts
-  invZMassCut_{5.},
+  invZMassCut_{10.},
   invWMassCut_{20.},
   //Jet initialisation
   numJets_{2},
@@ -363,7 +363,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
     if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
   }
- 
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
   if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_) return false;
@@ -428,6 +427,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
+
   return true;
 }
 
