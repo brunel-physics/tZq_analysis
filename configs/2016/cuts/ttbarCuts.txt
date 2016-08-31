@@ -13,14 +13,14 @@ cuts =
 	      number = 1;
 	      },
 	tightElectrons = {
-	      pt   = 20.;
-	      eta  = 2.4;
+	      pt   = 25.;
+	      eta  = 2.5;
 	      relIso = 0.107587;
 	      number = 1.;
 	      },
 	looseElectrons = {
-	      pt   = 20.;
-	      eta  = 2.4;
+	      pt   = 25.;
+	      eta  = 2.5;
 	      relIso = 0.126;
 	      number = 1.; 
 	      }
@@ -31,6 +31,7 @@ cuts =
 		maxJets = 2;
 		numbJets = 2;
 		maxbJets = 2;
+		looseBjetVeto = 1;
 	}
 }
 trigLabel = "d";
