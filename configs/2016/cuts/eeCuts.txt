@@ -25,8 +25,8 @@ cuts =
 	      number = 2.; 
 	      }
 	jets = {
-		pt = 30.0;
-		eta = 5.0;
+		pt = 40.0;
+		eta = 4.7;
 		numJets = 4;
 		maxJets = 8;
 		numbJets = 1;
