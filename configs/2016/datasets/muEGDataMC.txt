@@ -13,9 +13,9 @@ fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3485999
 crossSection = 0.07096
 runType = mc
-histoName = tHq
-colour = kRed2
-label = tHq
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [ttWlnu]
@@ -23,9 +23,9 @@ fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 252673
 crossSection = 0.2043
 runType = mc
-histoName = ttW
-colour = kGreen - 4
-label = ttW
+histoName = ttV
+colour = kGreen
+label = ttV
 plotType = f
 
 [ttW2q]
@@ -33,19 +33,19 @@ fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
 totalEvents = 833298
 crossSection = 0.4062
 runType = mc
-histoName = ttW
+histoName = ttV
 colour = kGreen
-label = ttW
+label = ttV
 plotType = f
 
 [ttZ2l2nu]
-fileName = configs/2016/datasets/fileLists/ttZ22nuFiles.txt
+fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
 totalEvents = 398600
 crossSection = 0.2529
 runType = mc
-histoName = ttZ
+histoName = ttV
 colour = kGreen
-label = ttZ
+label = ttV
 plotType = f
 
 [ttZ2q]
@@ -53,9 +53,9 @@ fileName = configs/2016/datasets/fileLists/ttZ2qFiles.txt
 totalEvents = 749400
 crossSection = 0.5297
 runType = mc
-histoName = ttZ
+histoName = ttV
 colour = kGreen
-label = ttZ
+label = ttV
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -73,9 +73,9 @@ fileName = configs/2016/datasets/fileLists/sChannelFiles.txt
 totalEvents = 1000000
 crossSection = 10.32
 runType = mc
-histoName = sChannel
-colour = kTeal
-label = s-channel
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [tChannel]
@@ -83,9 +83,9 @@ fileName = configs/2016/datasets/fileLists/tChannelFiles.txt
 totalEvents = 3279200
 crossSection = 137.60
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = Single Top
 plotType = f
 
 [tbarChannel]
@@ -93,9 +93,9 @@ fileName = configs/2016/datasets/fileLists/tbarChannelFiles.txt
 totalEvents = 1682400
 crossSection = 82.6669
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = Single Top
 plotType = f
 
 [tWInclusive]
@@ -103,9 +103,9 @@ fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 998400
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [tbarWInclusive]
@@ -113,9 +113,9 @@ fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 985000
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
 plotType = f
 
 [WZ1l1nu2q]
@@ -183,7 +183,7 @@ totalEvents = 8950200
 crossSection = 49.997
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -193,7 +193,7 @@ totalEvents = 1996600
 crossSection = 12.178
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -203,7 +203,7 @@ runType = mc
 totalEvents = 47502020
 crossSection = 61526.7
 histoName = wJets
-colour = kSpring
+colour = kGray
 label = w+jets
 plotType = f
 
