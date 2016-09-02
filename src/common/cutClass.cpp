@@ -84,7 +84,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, 
   //bDiscCut_{0.80}, // Medium level
   //bDiscCut_{0.460}, // Loose cut
   bLooseDiscCut_{0.460}, // Loose cut
-   bDiscSynchCut_{0.460},
+  bDiscSynchCut_{0.460},
   //C-discriminator cut
   numcJets_{1},
   maxcJets_{1},
