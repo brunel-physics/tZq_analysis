@@ -22,7 +22,7 @@ rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Fil
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttWlnuFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttW2qFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2qFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2qFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqFilesRun1.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqFiles.txt
