@@ -20,7 +20,7 @@ plotType = f
 
 [ttWlnu]
 fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
-totalEvents = 252673
+totalEvents = 2404521
 crossSection = 0.2043
 runType = mc
 histoName = ttV
@@ -40,7 +40,7 @@ plotType = f
 
 [ttZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 398600
+totalEvents = 1981476
 crossSection = 0.2529
 runType = mc
 histoName = ttV
