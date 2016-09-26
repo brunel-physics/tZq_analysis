@@ -1,6 +1,5 @@
 #include "AnalysisEvent.hpp"
 #include <libconfig.h++>
-#include <dirent.h>
 
 #include "TFile.h"
 #include "TChain.h"
@@ -9,11 +8,15 @@
 #include "TH2F.h"
 #include "TMVA/Timer.h"
 
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <iterator>
+#include <memory>
 #include <fstream>
 #include <vector>
 
@@ -44,37 +47,43 @@ int main(int argc, char* argv[]) {
 
     po::notify(vm);
   }
-  catch (const po::error& e)
+  catch (po::error& e)
   {
     std::cerr << "ERROR: " << e.what() << std::endl;
     return 1;
   }
 
-  DIR *dp;
-  struct dirent *dirp;
-
-  if((dp  = opendir( inputDir.c_str() )) == nullptr) {
-    std::cout << "Error opening Directory" << std::endl;
-    std::cout << inputDir << " is not a valid directory" << std::endl;
-    return 0;
-  }
-
   std::vector<TTree*> inputTrees;
 
-  std::cout << "Attaching files to TTree" << std::flush;
+  if (boost::filesystem::is_directory(inputDir))
+  {
+      const long int count{std::distance
+          (boost::filesystem::directory_iterator{inputDir},
+           boost::filesystem::directory_iterator())};
 
-  while ( (dirp = readdir(dp)) != nullptr) {
-    std::string line{dirp->d_name};
-    if ( line == "." || line == "..")
-    continue;
-    TFile *inputFile{new TFile {(inputDir+line).c_str()}};
-    TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
-    inputTrees.emplace_back(lTempTree);
+      TMVA::Timer lTimer{count, "Attaching files to TTree", false};
+      Int_t lCounter{1};
 
-    std::cout << '.' << std::flush;
+      lTimer.DrawProgressBar(0, "");
+
+      for(const auto& file: boost::make_iterator_range(
+                  boost::filesystem::directory_iterator{inputDir}, {}))
+      {
+          TFile *inputFile{new TFile {file.path().string().c_str()}};
+          TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
+          inputTrees.emplace_back(lTempTree);
+
+          lTimer.DrawProgressBar(lCounter++, "");
+      }
   }
-  std::cout << std::endl;
+  else
+  {
+      std::cout << "ERROR: " << inputDir << "is not a valid directory" <<
+          std::endl;
+      return 1;
+  }
 
+  std::cout << std::endl;
   std::cout << "Attached all files to TTree!" << std::endl;
 
   TH1F *histElePt    {new TH1F{"histElePt"    , "Distribution of reco-electron p_{T}", 500, 0.0  , 500.0}};

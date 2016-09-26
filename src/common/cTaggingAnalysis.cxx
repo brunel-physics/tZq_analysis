@@ -1,6 +1,5 @@
 #include "AnalysisEvent.hpp"
 #include <libconfig.h++>
-#include <dirent.h>
 
 #include "TFile.h"
 #include "TChain.h"
@@ -8,6 +7,8 @@
 #include "TH2F.h"
 #include "TMVA/Timer.h"
 
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
 #include <string>
@@ -47,30 +48,37 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  // Read in root files from directory
-  DIR *dp;
-  struct dirent *dirp;
-
-  if((dp  = opendir( inputDir.c_str() )) == nullptr) {
-    std::cout << "Error opening Directory" << std::endl;
-    std::cout << inputDir << " is not a valid directory" << std::endl;
-    return 0;
-  }
-
   std::vector<TTree*> inputTrees;
 
-  std::cout << "Attaching files to TTree ... " << std::endl;
+  if (boost::filesystem::is_directory(inputDir))
+  {
+      const long int count{std::distance
+          (boost::filesystem::directory_iterator{inputDir},
+           boost::filesystem::directory_iterator())};
 
-  while ( (dirp = readdir(dp)) != nullptr) {
-    std::string line{dirp->d_name};
-    if ( line == "." || line == "..")
-    continue;
-    TFile *inputFile{new TFile ((inputDir+line).c_str())};
-    TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
-    inputTrees.emplace_back(lTempTree);
+      TMVA::Timer lTimer{count, "Attaching files to TTree", false};
+      Int_t lCounter{1};
+
+      lTimer.DrawProgressBar(0, "");
+
+      for(const auto& file: boost::make_iterator_range(
+                  boost::filesystem::directory_iterator{inputDir}, {}))
+      {
+          TFile *inputFile{new TFile {file.path().string().c_str()}};
+          TTree *lTempTree{dynamic_cast<TTree*>(inputFile->Get("tree"))};
+          inputTrees.emplace_back(lTempTree);
+
+          lTimer.DrawProgressBar(lCounter++, "");
+      }
+  }
+  else
+  {
+      std::cout << "ERROR: " << inputDir << "is not a valid directory" <<
+          std::endl;
+      return 1;
   }
 
-  std::cout << "Attached all files to TTree!" << std::endl;
+  std::cout << std::endl;
 
   constexpr int discriminatorIncrement{100};
 
@@ -99,8 +107,8 @@ int main(int argc, char* argv[]) {
   double lPassedCvsL_cJetFraction[discriminatorIncrement] {0};
 
   // Initial progress bar.
-  TMVA::Timer *lTimer{new TMVA::Timer {boost::numeric_cast<int>(inputTrees.size()), "Running over trees", true }};
-  TMVA::Timer *lTimer2{new TMVA::Timer {discriminatorIncrement, "Filling plots", true}};
+  TMVA::Timer *lTimer{new TMVA::Timer {boost::numeric_cast<int>(inputTrees.size()), "Running over trees", false}};
+  TMVA::Timer *lTimer2{new TMVA::Timer {discriminatorIncrement, "Filling plots", false}};
   lTimer->DrawProgressBar(0, "");
 
   Int_t lCounter{1};
