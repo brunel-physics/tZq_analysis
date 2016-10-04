@@ -321,14 +321,12 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (!metFilters(event)) return false;
 
   //Make lepton cuts. Does the inverted iso cuts if necessary.
-//  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
   if (invertLepCut_ && trileptonChannel_) { 
      if ( !invertIsoCut(event,eventWeight, plotMap,cutFlow) ) return false;
   }
   else {
     if ( !makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun) ) return false;
   }
-  //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
   if (event->jetIndex.size() < numJets_) return false;
@@ -678,7 +676,12 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
   if (electrons.size() > 1){
     for ( unsigned i{0}; i < electrons.size(); i++ ){
       for ( unsigned j{i + 1}; j < electrons.size(); j++ ){
-        if (event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) continue; // check electron pair have correct charge.
+        if ( !invertLepCut_) {
+          if ( event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0 )  continue; // check electron pair have correct charge.
+        }
+        else {
+          if ( !(event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) ) continue; // check electron pair have correct charge for same sign control region.
+        }
         TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
         TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
         double invMass{(lepton1 + lepton2).M() -91.1};
@@ -698,7 +701,12 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
   else if (muons.size() > 1){
     for ( unsigned i {0}; i < muons.size(); i++ ){
       for ( unsigned j{i + 1}; j < muons.size(); j++ ){
-	if (event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) continue;
+        if ( !invertLepCut_) {
+  	  if ( event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0 ) continue;
+        }
+        else {
+  	  if ( !(event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue;
+        }
 	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
 	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
 	double invMass{(lepton1 + lepton2).M() -91.1};
