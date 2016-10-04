@@ -322,15 +322,13 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
      "Specify a space-separated list of events to run over.")
     (",g", po::bool_switch(&makePostLepTree),
-     "Make post lepton selection trees.")
+     "Make post lepton selection trees and bTag efficiencies.")
     (",u", po::bool_switch(&usePostLepTree),
      "Use post lepton selection trees.")
     ("makeMVATree,z", po::bool_switch(&makeMVATree),
      "Produce trees after event selection for multivariate analysis.")
     ("syst,v", po::value<int>(&systToRun)->default_value(0),
      "Mask for systematics to be run. 4095 enables all systematics.")
-    ("bTagPlots,j", po::bool_switch(&makeBTagEffPlots),
-     "Output b-tagging efficiency histograms.")
     ("channels,k", po::value<int>(&channelsToRun)->default_value(0),
      "Mask describing the channels to be run over in trilepton mode. The mask "
      "is the sum of each channel's mask, which are:\n"
@@ -390,11 +388,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     {
       throw std::logic_error("Currently bTag weights can only be retrieved "
           "from post lepton selection trees. Please set -u.");
-    }
-    if (usebTagWeight && makeBTagEffPlots)
-    {
-      throw std::logic_error("Simultaneous generation and use of b-tag "
-          " efficiencies is not supported");
     }
     if (trileptonChannel_ && isFCNC_)
     {
@@ -718,20 +711,20 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	if (!is2016_) {
-          std::cout << "/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-	  datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-	  std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-	  if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	  std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-	  if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+          std::cout << "/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+	  datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+	  std::ifstream secondTree{"/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+	  if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+	  std::ifstream thirdTree{"/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+	  if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
         }
         else {
-          std::cout << "/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
-	  datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
-	  std::ifstream secondTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
-	  if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	  std::ifstream thirdTree{"/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
-	  if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
+          std::cout << "/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
+	  datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
+	  std::ifstream secondTree{"/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root"};
+	  if (secondTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
+	  std::ifstream thirdTree{"/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root"};
+	  if (thirdTree.good()) datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name()+inputPostfix + "SmallSkim2.root").c_str());
         }
       }
       cutObj->setMC(dataset->isMC());
@@ -743,7 +736,7 @@ void AnalysisAlgo::runMainAnalysis(){
       std::vector<TH2D*> bTagEffPlots;
       std::vector<std::string> denomNum {"Denom","Num"};
       std::vector<std::string> typesOfEff {"b","c","uds","g"};
-      if (makeBTagEffPlots && dataset->isMC()){
+      if (makePostLepTree && dataset->isMC()){
         int ptBins{4};
         int etaBins{4};
         float ptMin{0};
@@ -763,8 +756,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += postfix;
 	inputPostfix += invertIsoCut?"invIso":"";
 	TFile * datasetFileForHists;
-        if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-        else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+        if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+        else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
 	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
 	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
@@ -785,8 +778,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  inputPostfix += postfix;
 	  inputPostfix += invertIsoCut?"invIso":"";
 	  TFile * datasetFileForHists;
-          if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-          else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+          if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+          else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	  datasetFileForHists->Close();
@@ -821,14 +814,14 @@ void AnalysisAlgo::runMainAnalysis(){
 
       if (makePostLepTree){
         if (!is2016_){
-	  outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
-	  outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
-	  outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
+	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
+	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
+	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
         }
         else {
-	  outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
-	  outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
-	  outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
+	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
+	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
+	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
         }
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree->SetDirectory(outFile1);
@@ -1047,7 +1040,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	//Write out mc generator level info
 	if ( dataset->isMC() ) generatorWeightPlot->Write();
 	//If we're doing b-tag efficiencies, let's save them here.
-	if (makeBTagEffPlots){
+	if (makePostLepTree){
 	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
@@ -1098,7 +1091,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	std::cout << std::endl;
 	//Save the efficiency plots for b-tagging here if we're doing that.
-	if (makeBTagEffPlots){
+	if (makePostLepTree){
 	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
@@ -1120,7 +1113,7 @@ void AnalysisAlgo::runMainAnalysis(){
       delete generatorWeightPlot;
       generatorWeightPlot = nullptr;
       //Delete plots from out btag vector. Avoid memory leaks, kids.
-      if (makeBTagEffPlots){
+      if (makePostLepTree){
         for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	  delete bTagEffPlots[i];
 	}

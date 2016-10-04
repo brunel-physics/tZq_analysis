@@ -56,7 +56,6 @@ class AnalysisAlgo{
 	bool usePostLepTree;
 	bool usebTagWeight;
 	int systToRun;
-	bool makeBTagEffPlots;
 	int channelsToRun;
 	bool skipTrig;
 	std::string mvaDir;
