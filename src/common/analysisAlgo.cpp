@@ -455,18 +455,21 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   }
   else if (channelsToRun && !trileptonChannel_){
     std::cout << "Running over the channels: " << std::endl;
-    for (unsigned channelInd = 1; channelInd != 8; channelInd = channelInd << 1){
+    for (unsigned channelInd = 1; channelInd != 32; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelInd & 1){
+      if (channelInd & 5){ // ee channel
         std::cout << "ee ";
       }
-      if (channelInd & 2){ // mumu channels
+      if (channelInd & 10){ // mumu channel
         std::cout << "mumu ";
       }
       if (channelInd & 3){ //nominal samples
         std::cout << "nominal" << std::endl;
       }
-      if (channelInd & 4){ //nominal samples and emu
+      if (channelInd & 12){ //same sign samples
+        std::cout << "same lepton charge" << std::endl;
+      }
+      if (channelInd & 16){ //nominal samples and emu
         std::cout << "emu - used only for ttbar control region " << std::endl;
       }
     }
@@ -588,7 +591,7 @@ void AnalysisAlgo::runMainAnalysis(){
     TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
     unsigned channelIndMax{256};
 
-    if ( !trileptonChannel_ ){ channelIndMax = 8; }
+    if ( !trileptonChannel_ ){ channelIndMax = 32; }
     for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1){
       std::string chanName{};
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
@@ -633,14 +636,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       } 
       if (channelsToRun && !trileptonChannel_){
-	if (channelInd & 1){ // ee channels
+	if (channelInd & 5){ // ee channels
 	  cutObj->setNumLeps(0,0,2,2);
 	  cutObj->setCutConfTrigLabel("e");
 	  channel = "ee";
 	  postfix = "ee";
 	  chanName += "ee";
 	}
-	if (channelInd & 2){ // mumu channels
+	if (channelInd & 10){ // mumu channels
 	  cutObj->setNumLeps(2,2,0,0);
 	  cutObj->setCutConfTrigLabel("m");
 	  channel = "mumu";
@@ -652,13 +655,18 @@ void AnalysisAlgo::runMainAnalysis(){
 	  invertLepCut = false;
 	  chanName += "nom";
 	}
-       if (channelInd & 4){ //emu channel for ttbar background estimation
+        if (channelInd & 12){ //same sign samples
+          cutObj->setInvLepCut(true);
+          invertLepCut = false;
+          chanName += "inv";
+	}
+        if (channelInd & 16){ //emu channel for ttbar background estimation
           cutObj->setNumLeps(1,1,1,1);
           cutObj->setCutConfTrigLabel("d");
           channel = "emu";
           postfix = "emu";
           chanName += "emu";
-	}
+        }
       } 
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
