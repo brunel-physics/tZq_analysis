@@ -42,7 +42,7 @@ class AnalysisAlgo{
 	std::string postfix;
 	std::string channel;
 	bool infoDump;
-	bool invertIsoCut; //For z+jets background estimation
+	bool invertLepCut; //For z+jets background estimation
 	bool synchCutFlow; // For synch
 	bool skipData; //utility stuff. True if flags are set and will skip either data or mc.
 	bool skipMC;

@@ -17,13 +17,13 @@
 
 #include <libconfig.h++>
 
-Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertIsoCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
+Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
   doPlots_{doPlots},
   fillCutFlow_{fillCutFlows},
   //background estimation. May not be possible
-  invertIsoCut_{invertIsoCut},
+  invertLepCut_{invertLepCut},
   //Synchronisation cut flow.
   synchCutFlow_{lepCutFlow},
   //Synchronisation cut flow.
@@ -321,7 +321,13 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (!metFilters(event)) return false;
 
   //Make lepton cuts. Does the inverted iso cuts if necessary.
-  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
+//  if (!(invertIsoCut_?invertIsoCut(event,eventWeight, plotMap,cutFlow):makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun))) return false;
+  if (invertLepCut_ && trileptonChannel_) { 
+     if ( !invertIsoCut(event,eventWeight, plotMap,cutFlow) ) return false;
+  }
+  else {
+    if ( !makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun) ) return false;
+  }
   //  if (!makeLeptonCuts(event,eventWeight,plotMap,cutFlow)) return false;
 
   event->jetIndex = makeJetCuts(event, systToRun, eventWeight);

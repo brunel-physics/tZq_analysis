@@ -304,8 +304,8 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Override the cut configuration given in the config file.")
     ("plotConf", po::value<std::string>(plotConfName),
      "Override the plot configuration given in the config file. Sets --allPlots.")
-    ("invert,i", po::bool_switch(&invertIsoCut),
-     "Invert the isolation cut of the third lepton.")
+    ("invert,i", po::bool_switch(&invertLepCut),
+     "Invert the isolation cut of the third lepton for trilepton searches. Inverts the different charge cut for leptons for dilepton searches.")
     ("synch,a", po::bool_switch(&synchCutFlow),
      "Make lepton selection cutflows for synchronisation exercises.")
     ("MC,m", po::bool_switch(&skipData),
@@ -551,7 +551,7 @@ void AnalysisAlgo::setupSystematics()
 void AnalysisAlgo::setupCuts()
 {
   //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts{plots,plots||infoDump,invertIsoCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, is2016_, isFCNC_, isCtag_};
+  cutObj = new Cuts{plots,plots||infoDump,invertLepCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, is2016_, isFCNC_, isCtag_};
   if (!cutObj->parse_config(*cutConfName)){
     std::cerr << "There was a problem with parsing the config!" << std::endl;
     exit(0);
@@ -622,13 +622,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	  chanName += "mumumu";
 	}
 	if (channelInd & 15){ //nominal samples
-	  cutObj->setInvIsoCut(false);
-	  invertIsoCut = false;
+	  cutObj->setInvLepCut(false);
+	  invertLepCut = false;
 	  chanName += "nom";
 	}
 	if (channelInd & 240){ //inv iso samples
-	  cutObj->setInvIsoCut(true);
-	  invertIsoCut = true;
+	  cutObj->setInvLepCut(true);
+	  invertLepCut = true;
 	  chanName += "inv";
 	}
       } 
@@ -648,8 +648,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  chanName += "mumu";
 	}
 	if (channelInd & 3){ //nominal samples
-	  cutObj->setInvIsoCut(false);
-	  invertIsoCut = false;
+	  cutObj->setInvLepCut(false);
+	  invertLepCut = false;
 	  chanName += "nom";
 	}
        if (channelInd & 4){ //emu channel for ttbar background estimation
@@ -709,7 +709,10 @@ void AnalysisAlgo::runMainAnalysis(){
       else{
         std::string inputPostfix{};
 	inputPostfix += postfix;
-	inputPostfix += invertIsoCut?"invIso":"";
+        if (invertLepCut) {
+          if ( trileptonChannel_ ) inputPostfix += "invIso";
+          else inputPostfix += "invLep";
+        }
 	if (!is2016_) {
           std::cout << "/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
 	  datasetChain->Add(("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root").c_str());
@@ -754,7 +757,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
         std::string inputPostfix{};
 	inputPostfix += postfix;
-	inputPostfix += invertIsoCut?"invIso":"";
+        if (invertLepCut) {
+          if ( trileptonChannel_ ) inputPostfix += "invIso";
+          else inputPostfix += "invLep";
+        }
 	TFile * datasetFileForHists;
         if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
         else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
@@ -776,7 +782,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	if ( usePostLepTree ) { 
 	  std::string inputPostfix{};
 	  inputPostfix += postfix;
-	  inputPostfix += invertIsoCut?"invIso":"";
+          if (invertLepCut) {
+            if ( trileptonChannel_ ) inputPostfix += "invIso";
+            else inputPostfix += "invLep";
+          }
 	  TFile * datasetFileForHists;
           if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
           else datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
@@ -813,15 +822,22 @@ void AnalysisAlgo::runMainAnalysis(){
       TTree * cloneTree3{nullptr};
 
       if (makePostLepTree){
+
+        std::string invPostFix {};
+        if (invertLepCut) {
+          if ( trileptonChannel_ ) invPostFix = "invIso";
+          else invPostFix = "invLep";
+        }
+
         if (!is2016_){
-	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
-	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
-	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
+	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
+	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + invPostFix + "SmallSkim1.root").c_str(),"RECREATE"};
+	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + postfix + invPostFix + "SmallSkim2.root").c_str(),"RECREATE"};
         }
         else {
-	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim.root").c_str(),"RECREATE"};
-	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim1.root").c_str(),"RECREATE"};
-	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + (invertIsoCut?"invIso":"") + "SmallSkim2.root").c_str(),"RECREATE"};
+	  outFile1 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
+	  outFile2 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + invPostFix + "SmallSkim1.root").c_str(),"RECREATE"};
+	  outFile3 = new TFile{("/scratch/data/TopPhysics/postLepSelSkims2016/"+dataset->name() + postfix + invPostFix + "SmallSkim2.root").c_str(),"RECREATE"};
         }
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree->SetDirectory(outFile1);
@@ -847,7 +863,12 @@ void AnalysisAlgo::runMainAnalysis(){
     
       if (makeMVATree){
         boost::filesystem::create_directory(mvaDir);
-        mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root").c_str(),"RECREATE"};
+        std::string invPostFix {};
+        if (invertLepCut) {
+          if ( trileptonChannel_ ) invPostFix = "invIso";
+          else invPostFix = "invLep";
+        }
+        mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root").c_str(),"RECREATE"};
         if (!mvaOutFile->IsOpen()) {
           throw std::runtime_error("MVA Tree TFile could not be opened!");
         }
@@ -1003,7 +1024,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
 	  //}
 	  //Do the Zpt reweighting here
-	  if (invertIsoCut){
+	  if (invertLepCut){
 	    double zPT{(event->zPairLeptons.first + event->zPairLeptons.second).Pt()};
 	    eventWeight *= zptSF(channel,zPT);
 	  }
@@ -1074,7 +1095,13 @@ void AnalysisAlgo::runMainAnalysis(){
     
       //Save mva outputs
       if (makeMVATree) {
-	std::cout << (mvaDir + dataset->name() + postfix + (invertIsoCut?"invIso":"")  +  "mvaOut.root") << std::endl;
+        std::string invPostFix {};
+        if (invertLepCut) {
+          if ( trileptonChannel_ ) invPostFix = "invIso";
+          else invPostFix = "invLep";
+        }
+
+	std::cout << (mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root") << std::endl;
 	mvaOutFile->cd();
 	std::cout << std::endl;
 	int systMask{1};

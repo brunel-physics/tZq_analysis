@@ -65,7 +65,7 @@ class Cuts{
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
   bool fillCutFlow_; // Fill cut flows
-  bool invertIsoCut_; // For background estimation
+  bool invertLepCut_; // For background estimation
   bool synchCutFlow_; //For synch
   bool singleEventInfoDump_; //For dropping info on event for synching.
   bool makeEventDump_;
@@ -209,7 +209,7 @@ class Cuts{
   void setCloneTree(TTree* tree, TTree* tree2, TTree* tree3) {postLepSelTree_ = tree; postLepSelTree2_ = tree2; postLepSelTree3_ = tree3;}
   void setNumLeps(int tightMu, int looseMu, int tightEle, int looseEle){numTightEle_ = tightEle; numLooseEle_ = looseEle; numTightMu_ = tightMu; numLooseMu_ = looseMu;}
   void setCutConfTrigLabel(std::string newLabel){cutConfTrigLabel_ = newLabel;}
-  void setInvIsoCut(bool invIso){invertIsoCut_ = invIso;}
+  void setInvLepCut(bool invLep){invertLepCut_ = invLep;}
   void setTriggerFlag(std::string triggerFlag) {triggerFlag_ = triggerFlag;}
   void setBTagPlots(std::vector<TH2D*> vec, bool makePlotsOrRead) {makeBTagEffPlots_ = makePlotsOrRead; bTagEffPlots_ = vec;getBTagWeight_ = !makePlotsOrRead;}
   void setSkipTrig(bool skip){skipTrigger_ = skip;}
