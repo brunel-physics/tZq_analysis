@@ -13,7 +13,7 @@ def deltaR(eta1, phi1, eta2, phi2):
     ###Returns the delta R from the eta and phi of two particles.
     dEta = eta1-eta2
     dPhi = phi1-phi2
-    while ( math.abs(dPhi) > math.pi ):
+    while ( abs(dPhi) > math.pi ):
 	if (dPhi > 0.0):
 	    dPhi += -2*math.pi
 	else:
@@ -75,40 +75,40 @@ def getJetVec(tree, index, syst, jetUnc, metVec, is2016):
     jerSigma = 0.0;
 
     if not is2016 :
-        if (math.abs(tree.jetPF2PATEta[index]) <= 0.5) :
+        if (abs(tree.jetPF2PATEta[index]) <= 0.5) :
             jerSF = 1.095;
             jerSigma = 0.018;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 0.8) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 0.8) :
             jerSF = 1.120
             jerSigma = 0.028;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.1) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.1) :
             jerSF = 1.097;
             jerSigma = 0.017;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.3) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.3) :
             jerSF = 1.103;
             jerSigma = 0.033;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.7) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.7) :
             jerSF = 1.118;
             jerSigma = 0.014;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.9) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.9) :
             jerSF = 1.100;
             jerSigma = 0.033;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.1) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.1) :
             jerSF = 1.162;
             jerSigma = 0.044;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.3) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.3) :
             jerSF = 1.160;
             jerSigma = 0.048;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.5) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.5) :
             jerSF = 1.161;
             jerSigma = 0.060;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.8) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.8) :
             jerSF = 1.209;
             jerSigma = 0.059;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 3.0) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 3.0) :
             jerSF = 1.564
             jerSigma = 0.321;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 3.2) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 3.2) :
             jerSF = 1.384;
             jerSigma = 0.033;
         else :
@@ -117,40 +117,40 @@ def getJetVec(tree, index, syst, jetUnc, metVec, is2016):
 
     else : 
     
-        if (math.abs(tree.jetPF2PATEta[index]) <= 0.5) :
+        if (abs(tree.jetPF2PATEta[index]) <= 0.5) :
             jerSF = 1.122;
             jerSigma = 0.026;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 0.8) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 0.8) :
             jerSF = 1.167
             jerSigma = 0.048;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.1) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.1) :
             jerSF = 1.168;
             jerSigma = 0.046;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.3) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.3) :
             jerSF = 1.029;
             jerSigma = 0.066;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.7) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.7) :
             jerSF = 1.115;
             jerSigma = 0.003;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 1.9) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 1.9) :
             jerSF = 1.041;
             jerSigma = 0.062;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.1) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.1) :
             jerSF = 1.167;
             jerSigma = 0.086;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.3) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.3) :
             jerSF = 1.094;
             jerSigma = 0.093;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.5) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.5) :
             jerSF = 1.168;
             jerSigma = 0.120;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 2.8) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 2.8) :
             jerSF = 1.266;
             jerSigma = 0.132;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 3.0) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 3.0) :
             jerSF = 1.595
             jerSigma = 0.175;
-        elif (math.abs(tree.jetPF2PATEta[index]) <= 3.2) :
+        elif (abs(tree.jetPF2PATEta[index]) <= 3.2) :
             jerSF = 1.002;
             jerSigma = 0.066;
         else :
