@@ -719,7 +719,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += postfix;
         if (invertLepCut) {
           if ( trileptonChannel_ ) inputPostfix += "invIso";
-          else inputPostfix += "invLep";
+          else if ( !trileptonChannel_ ) inputPostfix += "invLep";
         }
 	if (!is2016_) {
           std::cout << "/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name()+inputPostfix + "SmallSkim.root" << std::endl;
@@ -767,7 +767,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	inputPostfix += postfix;
         if (invertLepCut) {
           if ( trileptonChannel_ ) inputPostfix += "invIso";
-          else inputPostfix += "invLep";
+          else if ( !trileptonChannel_ ) inputPostfix += "invLep";
         }
 	TFile * datasetFileForHists;
         if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
@@ -792,7 +792,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  inputPostfix += postfix;
           if (invertLepCut) {
             if ( trileptonChannel_ ) inputPostfix += "invIso";
-            else inputPostfix += "invLep";
+            else if ( !trileptonChannel_ ) inputPostfix += "invLep";
           }
 	  TFile * datasetFileForHists;
           if (!is2016_) datasetFileForHists = new TFile (("/scratch/data/TopPhysics/postLepSelSkims2015/"+dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
@@ -834,7 +834,7 @@ void AnalysisAlgo::runMainAnalysis(){
         std::string invPostFix {};
         if (invertLepCut) {
           if ( trileptonChannel_ ) invPostFix = "invIso";
-          else invPostFix = "invLep";
+          else if ( !trileptonChannel_ ) invPostFix = "invLep";
         }
 
         if (!is2016_){
@@ -874,7 +874,7 @@ void AnalysisAlgo::runMainAnalysis(){
         std::string invPostFix {};
         if (invertLepCut) {
           if ( trileptonChannel_ ) invPostFix = "invIso";
-          else invPostFix = "invLep";
+          else if ( !trileptonChannel_ ) invPostFix = "invLep";
         }
         mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root").c_str(),"RECREATE"};
         if (!mvaOutFile->IsOpen()) {
@@ -1106,7 +1106,7 @@ void AnalysisAlgo::runMainAnalysis(){
         std::string invPostFix {};
         if (invertLepCut) {
           if ( trileptonChannel_ ) invPostFix = "invIso";
-          else invPostFix = "invLep";
+          else if ( !trileptonChannel_ ) invPostFix = "invLep";
         }
 
 	std::cout << (mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root") << std::endl;
