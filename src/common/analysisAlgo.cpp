@@ -657,7 +657,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
         if (channelInd & 12){ //same sign samples
           cutObj->setInvLepCut(true);
-          invertLepCut = false;
+          invertLepCut = true;
           chanName += "inv";
 	}
         if (channelInd & 16){ //emu channel for ttbar background estimation
