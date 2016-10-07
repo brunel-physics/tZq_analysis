@@ -435,132 +435,209 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   return true;
 }
 
-std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
-  std::vector<int> electrons;
-  for (int i{0}; i < event->numElePF2PAT; i++){
-    if (!event->elePF2PATIsGsf[i]) continue;
-    TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
+std::vector<int> Cuts::getTightEles(AnalysisEvent* event)
+{
+    std::vector<int> electrons;
+    for (int i{0}; i < event->numElePF2PAT; i++)
+    {
+        if (!event->elePF2PATIsGsf[i])
+        {
+            continue;
+        }
 
-    if (tempVec.Pt() <= tightElePt_) continue;
-    if (std::abs(tempVec.Eta()) >= tightEleEta_) continue;
-    if (event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_) continue;
+        TLorentzVector tempVec{event->elePF2PATGsfPx[i], 
+            event->elePF2PATGsfPy[i],
+            event->elePF2PATGsfPz[i],
+            event->elePF2PATGsfE[i]};
 
-    // 2015 cuts
-    if ( !is2016_ ) {
-      if (postLepSelTree_) { //If post-lep tree creation, keep more info (medium cuts)
-        if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0876 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0766 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0174 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0118 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0373 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
-	}
-        else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0283 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0678 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0678 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0898 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0739 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.602 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-	}
-	else continue;
-      }
+        if (tempVec.Pt() <= tightElePt_
+                || std::abs(tempVec.Eta()) >= tightEleEta_
+                || (event->elePF2PATPhotonConversionTag[i]
+                    && tightEleCheckPhotonVeto_))
+        {
+            continue;
+        }
 
-      else { // Else do tight cut-based ID
-        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
-   	  // Barrel cut-based ID
-          if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-          if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
-	}
-        else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-	}
-	else continue;
-      }
+        // 2015 cuts
+        if (!is2016_)
+        {
+            if (postLepSelTree_) // If post-lep tree creation, keep more info (medium cuts)
+            {
+                if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0103
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336
+                            || event->elePF2PATHoverE[i] >= 0.0876
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0766
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) * 
+                                (1.0 / event->elePF2PATEcalEnergy[i])) >= 0.0174
+                            || std::abs(event->elePF2PATD0PV[i]) >= 0.0118
+                            || std::abs(event->elePF2PATDZPV[i]) >= 0.0373
+                            || event->elePF2PATMissingInnerLayers[i] > 2)
+                    {
+                        continue;
+                    }
+                }
+                else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                        && std::abs(event->elePF2PATSCEta[i]) < 2.50) // Endcap cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0283
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00733
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.114
+                            || event->elePF2PATHoverE[i] >= 0.0678
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0678
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) * 
+                                (1.0 / event->elePF2PATEcalEnergy[i])) >= 0.0898
+                            || std::abs(event->elePF2PATD0PV[i]) >= 0.0739
+                            || std::abs(event->elePF2PATDZPV[i]) >= 0.602
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+                }
+                else continue;
+            }
+            else // Else do tight cut-based ID
+            {
+                if (std::abs(event->elePF2PATSCEta[i]) > 1.4442
+                        && std::abs(event->elePF2PATSCEta[i]) < 1.566)
+                {
+                    continue;
+                }
+                if (std::abs(event->elePF2PATSCEta[i]) <= 1.479) // Barrel cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336
+                            || event->elePF2PATHoverE[i] >= 0.0597
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0354
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) * 
+                                (1.0/event->elePF2PATEcalEnergy[i])) >= 0.012
+                            || std::abs(event->elePF2PATD0PV[i]) >= 0.0111
+                            || std::abs(event->elePF2PATDZPV[i]) >= 0.0466
+                            || event->elePF2PATMissingInnerLayers[i] > 2)
+                    {
+                        continue;
+                    }
+                }
+                else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                        && std::abs(event->elePF2PATSCEta[i]) < 2.50) // Endcap cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918
+                            || event->elePF2PATHoverE[i] >= 0.0615
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0646
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) *
+                                (1.0 / event->elePF2PATEcalEnergy[i])) >= 0.00999
+                            || std::abs(event->elePF2PATD0PV[i]) >= 0.0351
+                            || std::abs(event->elePF2PATDZPV[i]) >= 0.417
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+
+        // 2016 cuts
+        else
+        {
+            if (postLepSelTree_) // If post-lep tree creation, keep more info (medium cuts)
+            {
+                if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00311
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.103
+                            || event->elePF2PATHoverE[i] >= 0.253
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0695
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) * 
+                                (1.0 / event->elePF2PATEcalEnergy[i])) >= 0.0174
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+                }
+                else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                        && std::abs(event->elePF2PATSCEta[i]) < 2.50) // Endcap cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0298
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00609
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.045
+                            || event->elePF2PATHoverE[i] >= 0.0878
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0821
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) * 
+                                (1.0 / event->elePF2PATEcalEnergy[i])) >= 0.13
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+                }
+                else continue;
+            }
+            else // Else do tight cut-based ID
+            {
+                if (std::abs(event->elePF2PATSCEta[i]) > 1.4442
+                        && std::abs(event->elePF2PATSCEta[i]) < 1.566)
+                {
+                    continue;
+                }
+                if (std::abs(event->elePF2PATSCEta[i]) <= 1.479) // Barrel cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00308
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0816
+                            || event->elePF2PATHoverE[i] >= 0.0414
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0588
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) *
+                                (1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+
+                    // Cuts not part of the tuned ID
+                    if (std::abs(event->elePF2PATD0PV[i]) >= 0.05
+                            || std::abs(event->elePF2PATDZPV[i]) >= 0.10)
+                    {
+                        continue;
+                    }
+                }
+                else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                        && std::abs(event->elePF2PATSCEta[i]) < 2.50) // Endcap cut-based ID
+                {
+                    if (event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0292
+                            || std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00605
+                            || std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0394
+                            || event->elePF2PATHoverE[i] >= 0.0641
+                            || event->elePF2PATComRelIsoRho[i] >= 0.0571
+                            || (std::abs(1.0 - event->elePF2PATSCEoverP[i]) *
+                                (1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129
+                            || event->elePF2PATMissingInnerLayers[i] > 1)
+                    {
+                        continue;
+                    }
+
+                    // Cuts not part of the tuned ID
+                    if (std::abs(event->elePF2PATD0PV[i]) >= 0.10
+                        || std::abs(event->elePF2PATDZPV[i]) >= 0.20)
+                        {
+                            continue;
+                        }
+                }
+                else continue;
+            }
+        }
+        electrons.emplace_back(i);
     }
 
-    // 2016 cuts
-    else {
-      if (postLepSelTree_) { //If post-lep tree creation, keep more info (medium cuts)
-        if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-          if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998 ) continue;
-          if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00311 ) continue;
-          if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.103 ) continue;
-          if ( event->elePF2PATHoverE[i] >= 0.253 ) continue;
-          if ( event->elePF2PATComRelIsoRho[i] >= 0.0695 ) continue;
-          if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0174 ) continue;
-          if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        }
-        else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-          if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0298 ) continue;
-          if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00609 ) continue;
-          if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.045 ) continue;
-          if ( event->elePF2PATHoverE[i] >= 0.0878 ) continue;
-          if ( event->elePF2PATComRelIsoRho[i] >= 0.0821 ) continue;
-          if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.13 ) continue;
-          if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        }
-        else continue;
-      }
-
-      else { // Else do tight cut-based ID
-        if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
-        // Barrel cut-based ID
-        if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-          if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998 ) continue;
-          if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00308 ) continue;
-          if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0816 ) continue;
-          if ( event->elePF2PATHoverE[i] >= 0.0414 ) continue;
-          if ( event->elePF2PATComRelIsoRho[i] >= 0.0588 ) continue;
-          if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
-          if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-
-          // Cuts not part of the tuned ID
-          if ( std::abs(event->elePF2PATD0PV[i]) >= 0.05 ) continue;
-          if ( std::abs(event->elePF2PATDZPV[i]) >= 0.10 ) continue;
-	}
-	else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-          if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0292 ) continue;
-          if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00605 ) continue;
-          if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0394 ) continue;
-          if ( event->elePF2PATHoverE[i] >= 0.0641 ) continue;
-          if ( event->elePF2PATComRelIsoRho[i] >= 0.0571 ) continue;
-          if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
-          if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-
-          // Cuts not part of the tuned ID
-          if ( std::abs(event->elePF2PATD0PV[i]) >= 0.10 ) continue;
-          if ( std::abs(event->elePF2PATDZPV[i]) >= 0.20 ) continue;
-        }
-        else continue;
-      }
-    }
-    electrons.emplace_back(i);
-  }
-  return electrons;
+    return electrons;
 }
 
 std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
