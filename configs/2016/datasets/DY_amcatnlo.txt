@@ -1,6 +1,6 @@
 [tZq]
 fileName = configs/2016/datasets/fileLists/tZqFiles.txt
-totalEvents = 2973639
+totalEvents = 16751283
 crossSection = 0.0758
 runType = mc
 histoName = tZq
