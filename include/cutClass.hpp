@@ -231,10 +231,13 @@ class Cuts{
   TFile* electronRecoFile;
   TH2F* h_eleSFs;
   TH2F* h_eleReco;
+
   TFile* muonIDsFile;
   TFile* muonIsoFile;  
+  TFile* muonRecoFile;
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;
+  TH1F* h_muonReco;
 
 };
 
