@@ -642,22 +642,43 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" << event->muonPF2PATEta[i] << "\t" << event->muonPF2PATComRelIsodBeta[i] << "\t" << event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" << event->muonPF2PATGlobalID[i] << "\t" << event->muonPF2PATIsPFMuon[i] << "\t" << event->muonPF2PATTrackID[i] << "\t" <<  event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    if (!event->muonPF2PATTrackID[i]) continue;
-    if (!event->muonPF2PATGlobalID[i]) continue;
 
     if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
     if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
-    //Do a little test of muon id stuff here.
-    if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
-    if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
-    if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
-    if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
-    if (event->muonPF2PATMuonNHits[i] < 1) continue;
-    if (event->muonPF2PATVldPixHits[i] < 1) continue;
-    if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    // 2015 cuts
+    if ( !is2016_ ) {
+      //Do a little test of muon id stuff here.
+      if (!event->muonPF2PATTrackID[i]) continue;
+      if (!event->muonPF2PATGlobalID[i]) continue;
 
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
+      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
+      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+      if (event->muonPF2PATMuonNHits[i] < 1) continue;
+      if (event->muonPF2PATVldPixHits[i] < 1) continue;
+      if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    }
+    // 2016 cuts
+    else {
+
+      // If not either track muon and global muon ...
+      if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
+      
+      bool goodGlobalMuon (true), tightSegmentCompatible (true);
+
+      if (event->muonPF2PATValidFraction[i] <= 0.49) goodGlobalMuon = false;
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
+      if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
+      if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
+      if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
+      if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
+      
+      // If both good global muon and tight segment compatible are not true ...
+      if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
+    }
     muons.emplace_back(i);
   }
   //  std::cout << muons.size() << std::endl;
