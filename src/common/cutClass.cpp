@@ -14,6 +14,7 @@
 #include "TH2F.h"
 #include "TH2D.h"
 #include "TH3D.h"
+#include "TGraphAsymmErrors.h"
 
 #include <libconfig.h++>
 
@@ -167,7 +168,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Medium ID for ICHEP
     muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Medium ID for ICHEP
-    h_muonReco = dynamic_cast<TH1F*>(muonRecoFile->Get("ratio_eta")); // HIP issue means muon tracking RECO efficiency != ~1
+    h_muonRecoGraph = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile->Get("ratio_eta")); // HIP issue means muon tracking RECO efficiency != ~1
     std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
 
@@ -2066,7 +2067,6 @@ float Cuts::muonSF(double pt, double eta, int syst){
   double maxIsoPt{h_muonPFiso->GetYaxis()->GetXmax()};
   unsigned binId {0};
   unsigned binIso {0};
-  unsigned binReco {0};
 
   if ( pt <= maxIdPt ) binId = h_muonIDs->FindBin(std::abs(eta),pt);
   else binId = h_muonIDs->FindBin(std::abs(eta),maxIdPt);
@@ -2079,18 +2079,19 @@ float Cuts::muonSF(double pt, double eta, int syst){
   float muonRecoSF = 1.0;
 
   if ( is2016_ ) {
-    binReco = h_muonReco->FindBin(eta);
-    muonRecoSF = h_muonReco->GetBinContent(binReco);
+    muonRecoSF = h_muonRecoGraph->Eval(eta);
   }
 
   if ( syst == 1 ) {
     muonIdSF    += h_muonIDs->GetBinError(binId);
     muonPFisoSF += h_muonPFiso->GetBinError(binIso);
+    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
   }
 
   if ( syst == 2 ) {
     muonIdSF    -= h_muonIDs->GetBinError(binId);
     muonPFisoSF -= h_muonPFiso->GetBinError(binIso);
+    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
   }
 
   return muonIdSF*muonPFisoSF*muonRecoSF;

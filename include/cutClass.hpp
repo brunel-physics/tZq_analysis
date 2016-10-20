@@ -14,6 +14,7 @@ class TH1F;
 class TH2F;
 class TH2D;
 class TH3D;
+class TGraphAsymmErrors;
 
 class Cuts{
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*, int syst = 0, bool isControl = false);
@@ -237,7 +238,7 @@ class Cuts{
   TFile* muonRecoFile;
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;
-  TH1F* h_muonReco;
+  TGraphAsymmErrors* h_muonRecoGraph;
 
 };
 
