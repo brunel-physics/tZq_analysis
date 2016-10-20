@@ -21,8 +21,8 @@ def sortOutLeptons(tree,channel):
 def main():
 
   era = "2016"
-#  channel = "ee"
-  channel = "mumu"
+  channel = "ee"
+#  channel = "mumu"
 
   weighted = False
 
@@ -56,7 +56,7 @@ def main():
     DY_zMassSameSignHisto.Fill(zMass,weight)
 
   for event in range ( tree_DY.GetEntries() ) :
-    tree_DYGetEntry(event)
+    tree_DY.GetEntry(event)
 
     weight = 1
     if (weighted) : weight = tree_DYS.eventWeight
@@ -80,6 +80,7 @@ def main():
 
   eff = sameSignDY/(sameSignDY + oppSignDY)
 
+  print "sameSignDY:oppSignDY = ", sameSignDY, " : " , oppSignDY
   print "Efficiency coefficient for calculating the number of expected same sign events with no fakes = ", eff
 
 if __name__ == "__main__":
