@@ -26,31 +26,46 @@ def main():
 
   weighted = False
 
-  infile_DY = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"invLepmvaOut.root")
+  infile_DY = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"mvaOut.root")
   tree_DY = infile_DY.Get("tree")
+
+  infile_DY_SS = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"invLepmvaOut.root")
+  tree_DY_SS = infile_DY_SS.Get("tree")
 
   ## DY Histos
 
-  DY_zMassHisto = TH1D("DY_zMassHisto","Z Mass Histo", 300, 0.0, 300.0)
+  DY_zMassSameOppHisto = TH1D("DY_zMassOppSignHisto","Z Mass Histo from Opposite Sign events", 300, 0.0, 300.0)
+  DY_zMassSameSignHisto = TH1D("DY_zMassSameSignHisto","Z Mass Histo from Same Sign events", 300, 0.0, 300.0)
 
-  for event in range ( tree_DY.GetEntries() ) :
-    tree_DY.GetEntry(event)
+  for event in range ( tree_DY_SS.GetEntries() ) :
+    tree_DY_SS.GetEntry(event)
 
     weight = 1
-    if (weighted) : weight = tree_DY.eventWeight
+    if (weighted) : weight = tree_DY_SS.eventWeight
+
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS,channel)
+    zMass = (zLep1+zLep2).M()
+    DY_zMassSameSignHisto.Fill(zMass,weight)
+
+  for event in range ( tree_DY.GetEntries() ) :
+    tree_DYGetEntry(event)
+
+    weight = 1
+    if (weighted) : weight = tree_DYS.eventWeight
 
     (zLep1,zLep2) = sortOutLeptons(tree_DY,channel)
     zMass = (zLep1+zLep2).M()
-    DY_zMassHisto.Fill(zMass,weight)
+    DY_zMassOppSignHisto.Fill(zMass,weight)
 
 ##############
 
   subprocess.call("mkdir plots/fakeLeptons/",shell=True)
   subprocess.call("mkdir plots/fakeLeptons/DY/",shell=True)
 
-  DY_zMassHisto.Fit("gaus")
+#  DY_zMassHisto.Fit("gaus")
 
-  DY_zMassHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+".root")
+  DY_zMassSameSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_SameSign.root")
+  DY_zMassOppSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_OppSign.root")
 
 if __name__ == "__main__":
     main()
