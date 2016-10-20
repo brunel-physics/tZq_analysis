@@ -26,10 +26,10 @@ def main():
   weighted = True
 
   infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"+invLepmvaOut.root")
-  tree_DY = inFile_DY.Get("tree")
+  tree_DY = infile_DY.Get("tree")
 
   infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/histofile_DYToLL_M10To50"+channel+"invLepmvaOut.root")
-  tree_DY2 = inFile_DY2.Get("tree")
+  tree_DY2 = infile_DY2.Get("tree")
 
   ## DY Histos
 
