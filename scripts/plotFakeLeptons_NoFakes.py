@@ -26,6 +26,11 @@ def main():
 
   weighted = False
 
+  zRefMass = 91.1
+  zWindow = 5.0
+  sameSignDY = 0
+  oppSignDY = 0
+
   infile_DY = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"mvaOut.root")
   tree_DY = infile_DY.Get("tree")
 
@@ -45,6 +50,9 @@ def main():
 
     (zLep1,zLep2) = sortOutLeptons(tree_DY_SS,channel)
     zMass = (zLep1+zLep2).M()
+
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY += 1*weight
+
     DY_zMassSameSignHisto.Fill(zMass,weight)
 
   for event in range ( tree_DY.GetEntries() ) :
@@ -55,6 +63,9 @@ def main():
 
     (zLep1,zLep2) = sortOutLeptons(tree_DY,channel)
     zMass = (zLep1+zLep2).M()
+
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY += 1*weight
+
     DY_zMassOppSignHisto.Fill(zMass,weight)
 
 ##############
@@ -66,6 +77,10 @@ def main():
 
   DY_zMassSameSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_SameSign.root")
   DY_zMassOppSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_OppSign.root")
+
+  eff = sameSignDY/(sameSignDY + oppSignDY)
+
+  print "Efficiency coefficient for calculating the number of expected same sign events with no fakes = ", eff
 
 if __name__ == "__main__":
     main()
