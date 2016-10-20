@@ -21,15 +21,13 @@ def sortOutLeptons(tree,channel):
 def main():
 
   era = "2016"
-  channel = "ee"
+#  channel = "ee"
+  channel = "mumu"
 
-  weighted = True
+  weighted = False
 
   infile_DY = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"invLepmvaOut.root")
   tree_DY = infile_DY.Get("tree")
-
-#  infile_DY2 = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYToLL_M10To50"+channel+"invLepmvaOut.root")
-#  tree_DY2 = infile_DY2.Get("tree")
 
   ## DY Histos
 
@@ -45,16 +43,6 @@ def main():
     zMass = (zLep1+zLep2).M()
     DY_zMassHisto.Fill(zMass,weight)
 
-#  for event in range ( tree_DY2.GetEntries() ) :
-#    tree_DY2.GetEntry(event)
-
-#    weight = 1
-#    if (weighted) : weight = tree_DY2.eventWeight
-
-#    (zLep1,zLep2) = sortOutLeptons(tree_DY2,channel)
-#    zMass = (zLep1+zLep2).M()    
-#    DY_zMassHisto.Fill(zMass,weight)
-
 ##############
 
   subprocess.call("mkdir plots/fakeLeptons/",shell=True)
@@ -62,7 +50,7 @@ def main():
 
   DY_zMassHisto.Fit("gaus")
 
-  DY_zMassHisto.SaveAs("plots/fakeLeptons/DY/zMass.root")
+  DY_zMassHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+".root")
 
 if __name__ == "__main__":
     main()
