@@ -1,0 +1,6 @@
+datasets = "configs/2015/datasets/DY.txt";
+cuts = "configs/2015/cuts/ZplusCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2015/zPlus_amcatnlo_ee/";
+outputPostfix = "ee";
+channelName = "ee";
