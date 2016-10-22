@@ -1,6 +1,6 @@
 [ttbarInclusivePowerheg]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 275049126
+totalEvents = 274999326
 crossSection = 831.76
 runType = mc
 histoName = ttbar
