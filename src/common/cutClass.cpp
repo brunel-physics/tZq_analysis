@@ -1984,19 +1984,19 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.931; // tight=0.954; medium=0.958
+      float twgt = 0.932;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.772; // tight=0.934; medium=0.931
+      float twgt = 0.743;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.895;
+      float twgt = 0.881;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
