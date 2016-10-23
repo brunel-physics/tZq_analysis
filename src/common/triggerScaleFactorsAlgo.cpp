@@ -101,6 +101,11 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("muonPF2PATDZPV",1);
   chain->SetBranchStatus("muonPF2PATVldPixHits",1);
   chain->SetBranchStatus("muonPF2PATMatchedStations",1);
+  chain->SetBranchStatus("muonPF2PATGlbTkNormChi2",1);
+  chain->SetBranchStatus("muonPF2PATValidFraction",1);
+  chain->SetBranchStatus("muonPF2PATChi2LocalPosition",1);
+  chain->SetBranchStatus("muonPF2PATTrkKick",1);
+  chain->SetBranchStatus("muonPF2PATSegmentCompatibility",1);
   //MET variables - for plotting (no cuts on these)
   chain->SetBranchStatus("metPF2PATEt",1);
   chain->SetBranchStatus("metPF2PATPt",1);
@@ -479,58 +484,114 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     // ECAL Gap
     if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
 
-    // Spring15 Cut-based ID - Tight
-    if (event->elePF2PATPhotonConversionTag[i]) continue;
+    if ( !is2016_ ) {
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
-	}
+        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
+        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
+        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
+        if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
+        if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
+        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
+        if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
+      }
       else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-	  if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
-	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
-	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
-	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
-	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
-	  if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-	  }
+        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
+        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
+        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
+        if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
+        if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
+        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
+        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
+      }
       else continue;
-      electrons.push_back(i);
-
     }
-    return electrons;
+
+    else { // Else do tight cut-based ID
+      if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
+      // Barrel cut-based ID
+      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
+        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998 ) continue;
+        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00308 ) continue;
+        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0816 ) continue;
+        if ( event->elePF2PATHoverE[i] >= 0.0414 ) continue;
+        if ( event->elePF2PATComRelIsoRho[i] >= 0.0588 ) continue;
+        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
+        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
+
+        // Cuts not part of the tuned ID
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.05 ) continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.10 ) continue;
+      }
+      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
+        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0292 ) continue;
+        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00605 ) continue;
+        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0394 ) continue;
+        if ( event->elePF2PATHoverE[i] >= 0.0641 ) continue;
+        if ( event->elePF2PATComRelIsoRho[i] >= 0.0571 ) continue;
+        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
+        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
+
+        // Cuts not part of the tuned ID
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.10 ) continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.20 ) continue;
+      }
+      else continue;
+    }
+    electrons.emplace_back(i);
+  }
+  return electrons;
 }
 
 std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
   std::vector<int> muons;
+
   for (int i = 0; i < event->numMuonPF2PAT; i++){
+
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    if (!event->muonPF2PATTrackID[i]) continue;
-    if (!event->muonPF2PATGlobalID[i]) continue;
 
     if ( event->muonPF2PATPt[i] <= 20.0 ) continue;
-
     if (std::abs(event->muonPF2PATEta[i]) >= 2.50) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
 
-    if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
-    if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
-    if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
-    if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
-    if (event->muonPF2PATMuonNHits[i] < 1) continue;
-    if (event->muonPF2PATVldPixHits[i] < 1) continue;
-    if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    if ( !is2016_ ) {
+      //Do a little test of muon id stuff here.
+      if (!event->muonPF2PATTrackID[i]) continue;
+      if (!event->muonPF2PATGlobalID[i]) continue;
 
-    muons.push_back(i);
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
+      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
+      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+      if (event->muonPF2PATMuonNHits[i] < 1) continue;
+      if (event->muonPF2PATVldPixHits[i] < 1) continue;
+      if (event->muonPF2PATMatchedStations[i] < 2) continue;
+    }
+    // 2016 cuts
+    else {
+
+      // If not either track muon and global muon ...
+      if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
+      if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
+      
+      bool goodGlobalMuon (true), tightSegmentCompatible (true);
+
+      if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
+      if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
+      if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
+      if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
+
+      if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
+
+      // If both good global muon and tight segment compatible are not true ...
+      if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
+    }
+
+  muons.emplace_back(i);
   }
   return muons;
 }
