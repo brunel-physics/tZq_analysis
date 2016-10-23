@@ -670,16 +670,18 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
 
       // If not either track muon and global muon ...
       if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
+      if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
       
       bool goodGlobalMuon (true), tightSegmentCompatible (true);
 
-      if (event->muonPF2PATValidFraction[i] <= 0.49) goodGlobalMuon = false;
+      if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
       if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
       if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
       if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
       if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
+
       if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
-      
+
       // If both good global muon and tight segment compatible are not true ...
       if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
     }
