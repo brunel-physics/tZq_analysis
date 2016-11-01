@@ -164,8 +164,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIsoFile = new TFile{"scaleFactors/2016/MuonIso_Z_RunBCD_prompt80X_7p65.root"};
     muonRecoFile = new TFile{"scaleFactors/2016/MuonReco_RunBCD_prompt80X_9p2.root"};
 
-    muonIDsFile->cd("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
-    h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Medium ID for ICHEP
+    muonIDsFile->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
+    h_muonIDs = dynamic_cast<TH2F*>(muonIDsFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Medium ID for ICHEP
     muonIsoFile->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonPFiso = dynamic_cast<TH2F*>(muonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Medium ID for ICHEP
     h_muonRecoGraph = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile->Get("ratio_eta")); // HIP issue means muon tracking RECO efficiency != ~1
@@ -652,7 +652,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
     // 2015 cuts
-    if ( !is2016_ ) {
+//    if ( !is2016_ ) {
       //Do a little test of muon id stuff here.
       if (!event->muonPF2PATTrackID[i]) continue;
       if (!event->muonPF2PATGlobalID[i]) continue;
@@ -664,9 +664,9 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
       if (event->muonPF2PATMuonNHits[i] < 1) continue;
       if (event->muonPF2PATVldPixHits[i] < 1) continue;
       if (event->muonPF2PATMatchedStations[i] < 2) continue;
-    }
+//    }
     // 2016 cuts
-    else {
+/*    else {
 
       // If not either track muon and global muon ...
       if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
@@ -685,7 +685,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
       // If both good global muon and tight segment compatible are not true ...
       if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
     }
-    muons.emplace_back(i);
+*/    muons.emplace_back(i);
   }
   //  std::cout << muons.size() << std::endl;
   return muons;
@@ -926,17 +926,29 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     bool jetId{true};
 
     // Jet ID == loose
-    if ( jetIDDo_ && std::abs(jetVec.Eta()) <= 3.0 ) { // for cases where jet eta <= 3.0
+    if ( jetIDDo_ ) {
+      if ( std::abs( jetVec.Eta() ) <= 2.7 ) { // for cases where jet eta <= 2.7
       
-      // for all jets with eta <= 3.0
-      if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 || ( (event->jetPF2PATChargedMultiplicity[i]+event->jetPF2PATNeutralMultiplicity[i]) <= 1 ) ) jetId = false;
-      //for jets with eta <= 2.40
-      if ( std::abs(jetVec.Eta()) <= 2.40 ) {
-	  if( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 || event->jetPF2PATChargedMultiplicity[i] <= 0.0 || event->jetPF2PATChargedEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+        // for all jets with eta <= 2.7
+        if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 ) jetId = false; 
+        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+        if ( ( event->jetPF2PATChargedMultiplicity[i] + event->jetPF2PATNeutralMultiplicity[i] ) <= 1 ) jetId = false;
+
+        //for jets with eta <= 2.40
+        if ( std::abs(jetVec.Eta()) <= 2.40 ) {
+  	  if ( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 ) jetId = false;
+          if ( event->jetPF2PATChargedMultiplicity[i] <= 0.0 ) jetId = false;
+          if ( event->jetPF2PATChargedEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
 	}
-    }
-    else if ( jetIDDo_ && std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
-      if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 || event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+      }
+      else if ( std::abs( jetVec.Eta() ) <= 3.0 && std::abs( jetVec.Eta() ) > 2.40 ) {
+        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+        if ( event->jetPF2PATNeutralMultiplicity[i] <= 2 ) jetId = false;
+      }
+      else if ( std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+        if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 ) jetId = false;
+      }
     }
 
     if (!jetId) continue;
@@ -1990,13 +2002,13 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.743;
+      float twgt = 0.772;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.881;
+      float twgt = 0.895;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
@@ -2332,7 +2344,7 @@ std::pair< float, float > Cuts::jet2016SFs( float eta ) {
     jerSigma = 0.066;
   } 
   else {
-    jerSF = 1.216;
+    jerSF = 1.226;
     jerSigma = 0.145;
   }
 
