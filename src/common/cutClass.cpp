@@ -930,23 +930,23 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       if ( std::abs( jetVec.Eta() ) <= 2.7 ) { // for cases where jet eta <= 2.7
       
         // for all jets with eta <= 2.7
-        if ( event->jetPF2PATNeutralHadronEnergyFractionCorr[i] >= 0.99 ) jetId = false; 
-        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+        if ( event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99 ) jetId = false; 
+        if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.99 ) jetId = false;
         if ( ( event->jetPF2PATChargedMultiplicity[i] + event->jetPF2PATNeutralMultiplicity[i] ) <= 1 ) jetId = false;
 
         //for jets with eta <= 2.40
         if ( std::abs(jetVec.Eta()) <= 2.40 ) {
-  	  if ( event->jetPF2PATChargedHadronEnergyFractionCorr[i] <= 0.0 ) jetId = false;
+  	  if ( event->jetPF2PATChargedHadronEnergyFraction[i] <= 0.0 ) jetId = false;
           if ( event->jetPF2PATChargedMultiplicity[i] <= 0.0 ) jetId = false;
-          if ( event->jetPF2PATChargedEmEnergyFractionCorr[i] >= 0.99 ) jetId = false;
+          if ( event->jetPF2PATChargedEmEnergyFraction[i] >= 0.99 ) jetId = false;
 	}
       }
       else if ( std::abs( jetVec.Eta() ) <= 3.0 && std::abs( jetVec.Eta() ) > 2.40 ) {
-        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+        if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.90 ) jetId = false;
         if ( event->jetPF2PATNeutralMultiplicity[i] <= 2 ) jetId = false;
       }
       else if ( std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
-        if ( event->jetPF2PATNeutralEmEnergyFractionCorr[i] >= 0.90 ) jetId = false;
+        if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.90 ) jetId = false;
         if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 ) jetId = false;
       }
     }
@@ -1548,7 +1548,7 @@ void Cuts::dumpLeptonInfo(AnalysisEvent* event){
     std::cout << " | " << event->jetPF2PATEta[i];
     std::cout << " | " << event->jetPF2PATPhi[i];
     std::cout << " | " << event->jetPF2PATNConstituents[i];
-    std::cout << " | " << (event->jetPF2PATNeutralHadronEnergyFractionCorr[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFractionCorr[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFractionCorr[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFractionCorr[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.));
+    std::cout << " | " << (event->jetPF2PATNeutralHadronEnergyFraction[i] < 0.99 && event->jetPF2PATNeutralEmEnergyFraction[i] < 0.99) && ((std::abs(event->jetPF2PATEta[i]) > 2.4) || (event->jetPF2PATChargedEmEnergyFraction[i] < 0.99 && event->jetPF2PATChargedHadronEnergyFraction[i] > 0. && event->jetPF2PATChargedMultiplicity[i] > 0.));
     std::cout << " | " << event->jetPF2PATdRClosestLepton[i];
     std::cout << std::endl;
   }
