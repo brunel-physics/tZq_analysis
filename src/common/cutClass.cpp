@@ -478,6 +478,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
       }
 
       else { // Else do tight cut-based ID
+        double AEff03 = effectiveArea ( event->elePF2PATSCEta[i] );
         if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
    	  // Barrel cut-based ID
           if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
@@ -485,7 +486,9 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
+          float relIso = ( event->elePF2PATChHadIso[i] + std::max( 0.0, event->elePF2PATNtHadIso[i] + event->elePF2PATGammaIso[i] - event->elePF2PATRhoIso[i]*AEff03 ) ) / event->elePF2PATPT[i];
+	  if ( relIso >= 0.0354 ) continue;
+//	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
 	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
@@ -496,7 +499,9 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 	  if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
 	  if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
 	  if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
+          float relIso = ( event->elePF2PATChHadIso[i] + std::max( 0.0, event->elePF2PATNtHadIso[i] + event->elePF2PATGammaIso[i] - event->elePF2PATRhoIso[i]*AEff03 ) ) / event->elePF2PATPT[i];
+	  if ( relIso >= 0.0354 ) continue;
+//	  if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
 	  if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
 	  if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
 	  if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
@@ -2563,4 +2568,16 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
     }
   }
   return sf;
+}
+
+// Temporary effective area calculation for 2016 given nTuples have not been updated with new EA yet. Needed to recalculate the rel iso.
+float Cuts::effectiveArea( float SCeta ) {
+  float eta = std::abs ( SCeta );
+  if ( eta < 1.0000 ) return 0.1703;
+  else if ( eta < 1.4790 ) return 0.1715;
+  else if ( eta < 2.0000 ) return 0.1213;
+  else if ( eta < 2.2000 ) return 0.1230;
+  else if ( eta < 2.3000 ) return 0.1635;
+  else if ( eta < 2.4000 ) return 0.1937;
+  else return 0.2393; // eta less than 5.0
 }
