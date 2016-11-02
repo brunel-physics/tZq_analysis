@@ -1,4 +1,4 @@
-][tZq]
+[tZq]
 fileName = configs/2015/datasets/fileLists/tZqFiles.txt
 totalEvents = 2996000
 crossSection = 0.0758
@@ -219,13 +219,32 @@ plotType = f
 
 [DYJetsToLL_M-10To50]
 fileName = configs/2015/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 169346620
+totalEvents = 169346620 
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
 colour = kBlue
 label = zPlusJets
 plotType = f
+[eeRun2015C]
+fileName = configs/2015/datasets/fileLists/eeRun2015CFiles.txt
+luminosity = 17.227
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[eeRun2015D]
+fileName = configs/2015/datasets/fileLists/eeRun2015DFiles.txt
+luminosity = 2155.251
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
 
 [mumuRun2015C]
 fileName = configs/2015/datasets/fileLists/mumuRun2015CFiles.txt
@@ -235,7 +254,7 @@ histoName = data
 label = Data
 plotType = p
 colour = kBlack
-triggerFlag = eCt
+triggerFlag = mCt
 
 [mumuRun2015D]
 fileName = configs/2015/datasets/fileLists/mumuRun2015DFiles.txt
@@ -245,6 +264,6 @@ histoName = data
 label = Data
 plotType = p
 colour = kBlack
-triggerFlag = eCt
+triggerFlag = mCt
 
 []
