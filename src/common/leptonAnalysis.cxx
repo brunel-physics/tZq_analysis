@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
 
   std::string inputDir{};
   std::string outFileString{"plots/distributions/output.root"};
+  bool is2016;
 
   namespace po = boost::program_options;
   po::options_description desc("Options");
@@ -32,7 +33,8 @@ int main(int argc, char* argv[]) {
       ("indir,i", po::value<std::string>(&inputDir)->required(),
        "Input folder for nTuples.")
       ("outfile,o", po::value<std::string>(&outFileString)->default_value(outFileString),
-       "Output file for plots.");
+       "Output file for plots.")
+      ("2016", po::bool_switch(&is2016), "Use 2016 conditions (SFs, et al.).");
   po::variables_map vm;
 
   try
@@ -131,7 +133,7 @@ int main(int argc, char* argv[]) {
 
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
     
-    AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt}};
+    AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt, is2016}};
 
     Long64_t lNumEvents{(*lIt)->GetEntries()};
     totalEvents += lNumEvents;
