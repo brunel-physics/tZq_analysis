@@ -620,23 +620,34 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     else {
     // Barrel cut-based Veto ID
       if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 && postLepSelTree_ ) continue;
+      double AEff03 = effectiveArea ( event->elePF2PATSCEta[i] );
       if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
         if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0115 ) continue;
         if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00749 ) continue;
         if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.228 ) continue;
         if ( event->elePF2PATHoverE[i] >= 0.356 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.175 ) continue;
+          float relIso = ( event->elePF2PATChHadIso[i] + std::max( 0.0, event->elePF2PATNtHadIso[i] + event->elePF2PATGammaIso[i] - event->elePF2PATRhoIso[i]*AEff03 ) ) / event->elePF2PATPT[i];
+        if ( relIso >= 0.175 ) continue;
         if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.299 ) continue;
         if ( event->elePF2PATMissingInnerLayers[i] > 2  ) continue;
+
+        // Cuts not part of the tuned ID
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.05 ) continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.10 ) continue;
       }
       else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
         if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.037 ) continue;
         if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00895 ) continue;
         if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.213 ) continue;
         if ( event->elePF2PATHoverE[i] >= 0.211 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.159 ) continue;
+          float relIso = ( event->elePF2PATChHadIso[i] + std::max( 0.0, event->elePF2PATNtHadIso[i] + event->elePF2PATGammaIso[i] - event->elePF2PATRhoIso[i]*AEff03 ) ) / event->elePF2PATPT[i];
+        if ( relIso >= 0.159 ) continue;
         if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.15 ) continue;
         if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
+
+        // Cuts not part of the tuned ID
+        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.10 ) continue;
+        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.20 ) continue;
       }
       else continue;
     }
@@ -2017,7 +2028,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.895;
+      float twgt = 0.896;
       if (syst == 1) twgt += 0.003;
       if (syst == 2) twgt -= 0.003;
       return twgt;
