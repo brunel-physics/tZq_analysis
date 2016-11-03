@@ -1007,10 +1007,12 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("muonPF2PATNMatches", muonPF2PATNMatches.data(), &b_muonPF2PATNMatches);
    fChain->SetBranchAddress("muonPF2PATTkLysWithMeasurements", muonPF2PATTkLysWithMeasurements.data(), &b_muonPF2PATTkLysWithMeasurements);
    fChain->SetBranchAddress("muonPF2PATGlbTkNormChi2", muonPF2PATGlbTkNormChi2.data(), &b_muonPF2PATGlbTkNormChi2);
-   fChain->SetBranchAddress("muonPF2PATValidFraction", muonPF2PATValidFraction.data(), &b_muonPF2PATValidFraction);
-   fChain->SetBranchAddress("muonPF2PATChi2LocalPosition", muonPF2PATChi2LocalPosition.data(), &b_muonPF2PATChi2LocalPosition);
-   fChain->SetBranchAddress("muonPF2PATTrkKick", muonPF2PATTrkKick.data(), &b_muonPF2PATTrkKick);
-   fChain->SetBranchAddress("muonPF2PATSegmentCompatibility", muonPF2PATSegmentCompatibility.data(), &b_muonPF2PATSegmentCompatibility);
+   if( is2016 ) {
+     fChain->SetBranchAddress("muonPF2PATValidFraction", muonPF2PATValidFraction.data(), &b_muonPF2PATValidFraction);
+     fChain->SetBranchAddress("muonPF2PATChi2LocalPosition", muonPF2PATChi2LocalPosition.data(), &b_muonPF2PATChi2LocalPosition);
+     fChain->SetBranchAddress("muonPF2PATTrkKick", muonPF2PATTrkKick.data(), &b_muonPF2PATTrkKick);
+     fChain->SetBranchAddress("muonPF2PATSegmentCompatibility", muonPF2PATSegmentCompatibility.data(), &b_muonPF2PATSegmentCompatibility);
+   }
    fChain->SetBranchAddress("muonPF2PATDBPV", muonPF2PATDBPV.data(), &b_muonPF2PATDBPV);
    fChain->SetBranchAddress("muonPF2PATDZPV", muonPF2PATDZPV.data(), &b_muonPF2PATDZPV);
    fChain->SetBranchAddress("muonPF2PATVldPixHits", muonPF2PATVldPixHits.data(), &b_muonPF2PATVldPixHits);
