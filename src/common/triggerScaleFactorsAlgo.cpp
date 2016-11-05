@@ -102,10 +102,13 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("muonPF2PATVldPixHits",1);
   chain->SetBranchStatus("muonPF2PATMatchedStations",1);
   chain->SetBranchStatus("muonPF2PATGlbTkNormChi2",1);
-  chain->SetBranchStatus("muonPF2PATValidFraction",1);
-  chain->SetBranchStatus("muonPF2PATChi2LocalPosition",1);
-  chain->SetBranchStatus("muonPF2PATTrkKick",1);
-  chain->SetBranchStatus("muonPF2PATSegmentCompatibility",1);
+  if (is2016_)
+  {
+    chain->SetBranchStatus("muonPF2PATValidFraction",1);
+    chain->SetBranchStatus("muonPF2PATChi2LocalPosition",1);
+    chain->SetBranchStatus("muonPF2PATTrkKick",1);
+    chain->SetBranchStatus("muonPF2PATSegmentCompatibility",1);
+  }
   //MET variables - for plotting (no cuts on these)
   chain->SetBranchStatus("metPF2PATEt",1);
   chain->SetBranchStatus("metPF2PATPt",1);
