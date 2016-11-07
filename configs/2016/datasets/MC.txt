@@ -14,8 +14,18 @@ totalEvents = 3485999
 crossSection = 0.07096
 runType = mc
 histoName = tHq
-colour = kRed2
+colour = kCyan
 label = tHq
+plotType = f
+
+[tWZ]
+filename = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+totalEvents = 50000
+crossSection = 0.01123
+runType = mc
+histoName = tWZ
+colour = kCyan
+label = tWZ
 plotType = f
 
 [ttWlnu]

@@ -18,6 +18,16 @@ colour = kMagenta
 label = Single Top
 plotType = f
 
+[tWZ]
+filename = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+totalEvents = 50000
+crossSection = 0.01123
+runType = mc
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
+plotType = f
+
 [ttWlnu]
 fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 2404521
