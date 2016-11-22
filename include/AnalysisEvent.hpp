@@ -42,6 +42,10 @@ public :
    std::array<Float_t, NELECTRONSMAX> elePF2PATMVAcategory;
    std::array<Float_t, NELECTRONSMAX> elePF2PATNonTrigMVA;
    std::array<Float_t, NELECTRONSMAX> elePF2PATNonTrigMVAcategory;
+   std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdVeto;
+   std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdLoose;
+   std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdMedium;
+   std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdTight;
    std::array<Float_t, NELECTRONSMAX> elePF2PATImpactTransDist;
    std::array<Float_t, NELECTRONSMAX> elePF2PATImpactTransError;
    std::array<Float_t, NELECTRONSMAX> elePF2PATImpactTransSignificance;
@@ -423,6 +427,10 @@ public :
    TBranch        *b_elePF2PATMVAcategory;   //!
    TBranch        *b_elePF2PATNonTrigMVA;   //!
    TBranch        *b_elePF2PATNonTrigMVAcategory;   //!
+   TBranch        *b_elePF2PATCutIdVeto;   //!
+   TBranch        *b_elePF2PATCutIdLoose;   //!
+   TBranch        *b_elePF2PATCutIdMedium;   //!
+   TBranch        *b_elePF2PATCutIdTight;   //!
    TBranch        *b_elePF2PATImpactTransDist;   //!
    TBranch        *b_elePF2PATImpactTransError;   //!
    TBranch        *b_elePF2PATImpactTransSignificance;   //!
@@ -900,6 +908,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory.data(), &b_elePF2PATMVAcategory);
    fChain->SetBranchAddress("elePF2PATNonTrigMVA", elePF2PATNonTrigMVA.data(), &b_elePF2PATNonTrigMVA);
    fChain->SetBranchAddress("elePF2PATNonTrigMVAcategory", elePF2PATNonTrigMVAcategory.data(), &b_elePF2PATNonTrigMVAcategory);
+   fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
+   fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
+   fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
+   fChain->SetBranchAddress("elePF2PATCutIdTight", elePF2PATCutIdTight.data(), &b_elePF2PATCutIdTight);
    fChain->SetBranchAddress("elePF2PATImpactTransDist", elePF2PATImpactTransDist.data(), &b_elePF2PATImpactTransDist);
    fChain->SetBranchAddress("elePF2PATImpactTransError", elePF2PATImpactTransError.data(), &b_elePF2PATImpactTransError);
    fChain->SetBranchAddress("elePF2PATImpactTransSignificance", elePF2PATImpactTransSignificance.data(), &b_elePF2PATImpactTransSignificance);

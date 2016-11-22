@@ -63,9 +63,6 @@ class Cuts{
   float eleSF(double, double, int syst = 0);
   float muonSF(double, double, int syst = 0);
 
-  // Function to return Summer16 effective area for electrons
-  float effectiveArea( float );
-
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
   bool fillCutFlow_; // Fill cut flows
