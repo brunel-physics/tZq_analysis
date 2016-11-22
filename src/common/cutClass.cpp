@@ -380,7 +380,6 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   double mtw{std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())))};
   if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_) return false;
   return true;
-
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
@@ -606,7 +605,6 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     else {
       // Barrel cut-based Veto ID
 
-      if ( postLepSelTree_ ) continue; // Don't cut on additional loose leptons for post-lepton selction skims
       // Ensure we aren't in the barrel/endcap gap and below the max safe eta range
       if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
 
