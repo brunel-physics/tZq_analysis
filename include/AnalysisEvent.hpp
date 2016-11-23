@@ -908,10 +908,12 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory.data(), &b_elePF2PATMVAcategory);
    fChain->SetBranchAddress("elePF2PATNonTrigMVA", elePF2PATNonTrigMVA.data(), &b_elePF2PATNonTrigMVA);
    fChain->SetBranchAddress("elePF2PATNonTrigMVAcategory", elePF2PATNonTrigMVAcategory.data(), &b_elePF2PATNonTrigMVAcategory);
-   fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
-   fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
-   fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
-   fChain->SetBranchAddress("elePF2PATCutIdTight", elePF2PATCutIdTight.data(), &b_elePF2PATCutIdTight);
+   if( is2016 ) {
+     fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
+     fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
+     fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
+     fChain->SetBranchAddress("elePF2PATCutIdTight", elePF2PATCutIdTight.data(), &b_elePF2PATCutIdTight);
+   }
    fChain->SetBranchAddress("elePF2PATImpactTransDist", elePF2PATImpactTransDist.data(), &b_elePF2PATImpactTransDist);
    fChain->SetBranchAddress("elePF2PATImpactTransError", elePF2PATImpactTransError.data(), &b_elePF2PATImpactTransError);
    fChain->SetBranchAddress("elePF2PATImpactTransSignificance", elePF2PATImpactTransSignificance.data(), &b_elePF2PATImpactTransSignificance);
