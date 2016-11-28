@@ -1,7 +1,7 @@
 #include "cutClass.hpp"
 
 #include "TLorentzVector.h"
-#include "TRandom.h"
+#include "TRandomGen.h"
 
 #include <sstream>
 #include <iostream>
@@ -2228,7 +2228,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     }
       else { // If not, randomly smear 
       srand (666);
-      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
+      newSmearValue = 1.0+TRandomMT64(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     }
 

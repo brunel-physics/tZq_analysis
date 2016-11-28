@@ -167,7 +167,7 @@ def getJetVec(tree, index, syst, jetUnc, metVec, is2016):
             returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
         else :
             random.seed(666)
-            newSmearValue = 1.0+TRandom(random.randint(0,65539)).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma)
+            newSmearValue = 1.0+TRandomMT64(random.randint(0,65539)).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma)
             returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
 #    if (tree.genJetPF2PATPT[index] < -990. and not jetUnc) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
 

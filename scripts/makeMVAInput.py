@@ -113,7 +113,7 @@ def getJetVec(tree, index, syst, jetUnc, metVec):
             returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
         else :
            random.seed();
-           newSmearValue = 1.0+TRandom(random).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma);
+           newSmearValue = 1.0+TRandomMT64(random).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma);
            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
 
     else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
