@@ -72,9 +72,6 @@ class TriggerScaleFactors{
 	std::vector<int> getTightMuons(AnalysisEvent*);
 	bool passDileptonSelection(AnalysisEvent*,int);
 
-        // Function to return Summer16 effective area for electrons
-        float effectiveArea( float );
-
 	// trigger cuts
 	bool doubleElectronTriggerCut(AnalysisEvent*);
 	bool muonElectronTriggerCut(AnalysisEvent*);
