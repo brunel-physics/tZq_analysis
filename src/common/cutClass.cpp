@@ -861,10 +861,10 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
 	// Now ensure that the leading b jet isn't one of these!
         if ( event->bTagIndex.size() > 0 ) {
   	  if ( event->jetPF2PATBDiscriminator[jets[k]] > bDiscCut_ ){
-	    if( event->jetIndex[event->bTagIndex[0]] == jets[k] ) continue;
+	    if( event->bTagIndex[0] == jets[k] ) continue;
 	  }
 	  else if ( event->jetPF2PATBDiscriminator[jets[l]] > bDiscCut_ ){
-	    if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
+	    if( event->bTagIndex[0] == jets[l] ) continue;
 	  }
         }
         TLorentzVector jetVec1{getJetLVec(event,jets[k],syst)};
@@ -910,7 +910,7 @@ float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::
 
 float Cuts::getTopMass(AnalysisEvent *event){
   TLorentzVector metVec{event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt};
-  TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  TLorentzVector bVec(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   float topMass{-1.0};
   if (trileptonChannel_) topMass = (event->wLepton + bVec + metVec).M();
   else topMass = ( bVec + event->wPairQuarks.first + event->wPairQuarks.second ).M();
@@ -1031,9 +1031,9 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
   return jets;
 }
 
-std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, int syst){
+std::vector<std::reference_wrapper <int>> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, int syst){
   
-  std::vector<int> bJets;
+  std::vector<std::reference_wrapper<int>> bJets;
   for (auto i = 0; i != jets.size(); i++){
     TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
@@ -1041,7 +1041,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, in
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ ) continue;
     if (jetVec.Eta() >= 2.40) continue;
 //    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
-    bJets.emplace_back(i);
+    bJets.emplace_back(jets[i]);
   }
   return bJets;
 }
@@ -1190,15 +1190,15 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
     if ( std::abs(wMass) > invWMassCut_ ) return false;
 
-    TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    TLorentzVector bVec(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
 
 //    double topMass = (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
     double topMass = getTopMass(event);
 //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
 
     if ( topMass > 130 ){
-       if ( std::abs(event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]]) == 5)
-       std::cout << "jet PID/b mass/w Mass/leading b pT: " << event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]] << " / " << bVec.M() << " / " << (event->wPairQuarks.first + event->wPairQuarks.second).M() << " / " << event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]] << "\t " << std::endl;
+       if ( std::abs(event->jetPF2PATPID[event->bTagIndex[0]]) == 5)
+       std::cout << "jet PID/b mass/w Mass/leading b pT: " << event->jetPF2PATPID[event->bTagIndex[0]] << " / " << bVec.M() << " / " << (event->wPairQuarks.first + event->wPairQuarks.second).M() << " / " << event->jetPF2PATPt[event->bTagIndex[0]] << "\t " << std::endl;
     }
 
     return true;

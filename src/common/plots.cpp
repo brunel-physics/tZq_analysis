@@ -413,7 +413,7 @@ float Plots::numbBJets(AnalysisEvent* event){
 }
 
 float Plots::fillBtagDisc(AnalysisEvent* event){
-  if (event->bTagIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->jetIndex[event->bTagIndex[0]]];
+  if (event->bTagIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->bTagIndex[0]];
   return -10;
 }
 
@@ -513,12 +513,12 @@ float Plots::fillTopMass(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
     return ( tempMet + tempBjet + event->wLepton ).M();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).M();
   }
 }
@@ -527,12 +527,12 @@ float Plots::fillTopPt(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
     return ( tempMet + tempBjet + event->wLepton ).Pt();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Pt();
   }
   else return -10;
@@ -542,12 +542,12 @@ float Plots::fillTopEta(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
     return std::abs(( tempMet + tempBjet + event->wLepton ).Eta());
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return std::abs(( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Eta());
   }
   else return -10;
@@ -557,12 +557,12 @@ float Plots::fillTopPhi(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
     return ( tempMet + tempBjet + event->wLepton ).Phi();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Phi();
   }
   else return -10;
@@ -707,7 +707,7 @@ float Plots::fillwwDelPhi(AnalysisEvent* event){
 float Plots::filllbDelR(AnalysisEvent* event){
   TLorentzVector tempJet1;
   if (event->bTagIndex.size() < 1) return -10.;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return tempJet1.DeltaR(event->wLepton);
 
 }
@@ -715,7 +715,7 @@ float Plots::filllbDelR(AnalysisEvent* event){
 float Plots::filllbDelPhi(AnalysisEvent* event){
   TLorentzVector tempJet1;
   if (event->bTagIndex.size() < 1) return -10.;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return tempJet1.DeltaPhi(event->wLepton);
 }
 
@@ -762,28 +762,28 @@ float Plots::fillZLep2Quark2DelPhi(AnalysisEvent* event){
 float Plots::fillZLep1BjetDelR(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return (event->zPairLeptons.first.DeltaR(tempJet1));
 }
 
 float Plots::fillZLep1BjetDelPhi(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return (event->zPairLeptons.first.DeltaPhi(tempJet1));
 }
 
 float Plots::fillZLep2BjetDelR(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return (event->zPairLeptons.second.DeltaR(tempJet1));
 }
 
 float Plots::fillZLep2BjetDelPhi(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
-  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->bTagIndex[0]],event->jetPF2PATPy[event->bTagIndex[0]],event->jetPF2PATPz[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);
   return (event->zPairLeptons.second.DeltaPhi(tempJet1));
 }
 
@@ -929,37 +929,37 @@ float Plots::fillZquark2DelPhi(AnalysisEvent* event){
 
 float Plots::fillZtopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZtopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep1TopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.first).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep1TopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.first).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep2TopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep2TopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
-    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);    
+    tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->bTagIndex[0]],event->jetPF2PATEta[event->bTagIndex[0]],event->jetPF2PATPhi[event->bTagIndex[0]],event->jetPF2PATE[event->bTagIndex[0]]);    
     return (event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 

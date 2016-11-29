@@ -790,7 +790,7 @@ public :
    std::vector<int> muonIndexTight;
    std::vector<int> muonIndexLoose;
    std::vector<int> jetIndex;
-   std::vector<int> bTagIndex; 
+   std::vector<std::reference_wrapper <int>> bTagIndex; 
    std::vector<int> bTagLooseIndex; 
    std::vector<int> cTagIndex; 
 

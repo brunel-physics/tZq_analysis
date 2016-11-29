@@ -21,7 +21,7 @@ class Cuts{
   bool invertIsoCut(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
   std::vector<int> makeMetCuts(AnalysisEvent*);
-  std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
+  std::vector<std::reference_wrapper <int>> makeBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
   std::vector<int> makeLooseBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
   std::vector<int> makeCCuts(AnalysisEvent*, std::vector<int>);
   
