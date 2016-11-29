@@ -51,7 +51,7 @@ def getJets(tree,syst,jetUnc,met,is2016):
     for i in range(15):
         if tree.jetInd[i] > -.5:
             jetList.append(tree.jetInd[i])
-            jetVecList.append(getJetVec(tree,tree.jetInd[i],syst,jetUnc,met,is2016))
+            jetVecList.append(getJetVec(tree,tree.jetInd[i],met,is2016,True))
         else: continue
     return (jetList,jetVecList)
 
@@ -62,126 +62,23 @@ def getBjets(tree,syst,jetUnc,met,jets,is2016):
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],syst,jetUnc,met,is2016))
+            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],met,is2016,False))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
 
-def getJetVec(tree, index, syst, jetUnc, metVec, is2016):
+def getJetVec(tree, index, metVec, is2016, doMetSmear):
     #Gets a vector for a jet and applies jet corrections
 
-    newSmearValue = 1.0;
-    jerSF = 0.0;
-    jerSigma = 0.0;
+    returnJet = tree.smearedJets[index];
 
-    if not is2016 :
-        if (abs(tree.jetPF2PATEta[index]) <= 0.5) :
-            jerSF = 1.095;
-            jerSigma = 0.018;
-        elif (abs(tree.jetPF2PATEta[index]) <= 0.8) :
-            jerSF = 1.120
-            jerSigma = 0.028;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.1) :
-            jerSF = 1.097;
-            jerSigma = 0.017;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.3) :
-            jerSF = 1.103;
-            jerSigma = 0.033;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.7) :
-            jerSF = 1.118;
-            jerSigma = 0.014;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.9) :
-            jerSF = 1.100;
-            jerSigma = 0.033;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.1) :
-            jerSF = 1.162;
-            jerSigma = 0.044;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.3) :
-            jerSF = 1.160;
-            jerSigma = 0.048;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.5) :
-            jerSF = 1.161;
-            jerSigma = 0.060;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.8) :
-            jerSF = 1.209;
-            jerSigma = 0.059;
-        elif (abs(tree.jetPF2PATEta[index]) <= 3.0) :
-            jerSF = 1.564
-            jerSigma = 0.321;
-        elif (abs(tree.jetPF2PATEta[index]) <= 3.2) :
-            jerSF = 1.384;
-            jerSigma = 0.033;
-        else :
-            jerSF = 1.216;
-            jerSigma = 0.050;
-
-    else : 
-    
-        if (abs(tree.jetPF2PATEta[index]) <= 0.5) :
-            jerSF = 1.122;
-            jerSigma = 0.026;
-        elif (abs(tree.jetPF2PATEta[index]) <= 0.8) :
-            jerSF = 1.167
-            jerSigma = 0.048;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.1) :
-            jerSF = 1.168;
-            jerSigma = 0.046;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.3) :
-            jerSF = 1.029;
-            jerSigma = 0.066;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.7) :
-            jerSF = 1.115;
-            jerSigma = 0.003;
-        elif (abs(tree.jetPF2PATEta[index]) <= 1.9) :
-            jerSF = 1.041;
-            jerSigma = 0.062;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.1) :
-            jerSF = 1.167;
-            jerSigma = 0.086;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.3) :
-            jerSF = 1.094;
-            jerSigma = 0.093;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.5) :
-            jerSF = 1.168;
-            jerSigma = 0.120;
-        elif (abs(tree.jetPF2PATEta[index]) <= 2.8) :
-            jerSF = 1.266;
-            jerSigma = 0.132;
-        elif (abs(tree.jetPF2PATEta[index]) <= 3.0) :
-            jerSF = 1.595
-            jerSigma = 0.175;
-        elif (abs(tree.jetPF2PATEta[index]) <= 3.2) :
-            jerSF = 1.002;
-            jerSigma = 0.066;
-        else :
-            jerSF = 1.216;
-            jerSigma = 0.145;
-
-    returnJet = TLorentzVector();
-
-    if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        if ( deltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index] ) < 0.4/2.0 ) :
-            if (syst == 16): jerSF += jerSigma
-            elif (syst == 32): jerSF -= jerSigma
-            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index]
-            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
-        else :
-            random.seed(666)
-            newSmearValue = 1.0+TRandomMT64(random.randint(0,65539)).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma)
-            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index])
-#    if (tree.genJetPF2PATPT[index] < -990. and not jetUnc) : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
-
-    if (newSmearValue > 0.01):
-        #Propogate through the met. But only do it if the smear jet isn't 0.
-        metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
-        metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
-    if syst == 16:
-        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
-    elif syst == 32:
-        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
-
-    metVec.SetPx(metVec.Px()-returnJet.Px())
-    metVec.SetPy(metVec.Py()-returnJet.Py())
+    if doMetSmear :
+       #Propogate through the met. But only do it if the smear jet isn't 0.
+       metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
+       metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
+ 
+       metVec.SetPx(metVec.Px()-returnJet.Px())
+       metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
 
 

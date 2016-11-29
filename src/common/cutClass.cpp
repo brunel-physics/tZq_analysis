@@ -2227,7 +2227,6 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);    
     }
       else { // If not, randomly smear 
-      srand (666);
       newSmearValue = 1.0+TRandomMT64(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     }
@@ -2240,6 +2239,8 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
     returnJet *= 1+jerUncer;
   }
+
+  event->smearedJets.emplace_back(returnJet);
 
   return returnJet;
 }

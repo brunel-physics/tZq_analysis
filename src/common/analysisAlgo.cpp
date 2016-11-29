@@ -581,7 +581,8 @@ void AnalysisAlgo::setupPlots()
 }
 
 void AnalysisAlgo::runMainAnalysis(){
-  
+
+  srand (666);  
   bool datasetFilled{false};
 
   if (totalLumi == 0.) totalLumi = usePreLumi;

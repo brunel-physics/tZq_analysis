@@ -41,7 +41,7 @@ def getJets(tree,syst,jetUnc,met):
     for i in range(15):
         if tree.jetInd[i] > -.5:
             jetList.append(tree.jetInd[i])
-            jetVecList.append(getJetVec(tree,tree.jetInd[i],syst,jetUnc,met))
+            jetVecList.append(getJetVec(tree,tree.jetInd[i],met,True))
         else: continue
     return (jetList,jetVecList)
 
@@ -52,84 +52,23 @@ def getBjets(tree,syst,jetUnc,met,jets):
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],syst,jetUnc,met))
+            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],met,False))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
 
-def getJetVec(tree, index, syst, jetUnc, metVec):
+def getJetVec(tree, index, metVec, doMetSmear):
     #Gets a vector for a jet and applies jet corrections.
 
-    newSmearValue = 1.0;
-    jerSF = 0.0;
-    jerSigma = 0.0;
+    returnJet = tree.smearedJets[index];
 
-    if (math.abs(tree.jetPF2PATEta[index]) <= 0.5) :
-        jerSF = 1.095;
-        jerSigma = 0.018;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 0.8) :
-        jerSF = 1.120
-        jerSigma = 0.028;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.1) :
-        jerSF = 1.097;
-        jerSigma = 0.017;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.3) :
-        jerSF = 1.103;
-        jerSigma = 0.033;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.7) :
-        jerSF = 1.118;
-        jerSigma = 0.014;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 1.9) :
-        jerSF = 1.100;
-        jerSigma = 0.033;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.1) :
-        jerSF = 1.162;
-        jerSigma = 0.044;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.3) :
-        jerSF = 1.160;
-        jerSigma = 0.048;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.5) :
-        jerSF = 1.161;
-        jerSigma = 0.060;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 2.8) :
-        jerSF = 1.209;
-        jerSigma = 0.059;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 3.0) :
-        jerSF = 1.564
-        jerSigma = 0.321;
-    elif (math.abs(tree.jetPF2PATEta[index]) <= 3.2) :
-        jerSF = 1.384;
-        jerSigma = 0.033;
-    else :
-        jerSF = 1.216;
-        jerSigma = 0.050;
+    if doMetSmear :
+       #Propogate through the met. But only do it if the smear jet isn't 0.
+       metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
+       metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
 
-    returnJet = TLorentzVector();
-    if (jetUnc and tree.genJetPF2PATPT[index] > -990.) :
-        if (tree.DeltaR(tree.genJetPF2PATEta[index],tree.genJetPF2PATPhi[index],tree.jetPF2PATEta[index],tree.jetPF2PATEta[index]) < 0.4/2.0 ):
-            if (syst == 16): jerSF += jerSigma;
-            elif (syst == 32): jerSF -= jerSigma;
-            newSmearValue = max(0.0,tree.jetPF2PATPtRaw[index] + ( tree.jetPF2PATPtRaw[index]  - tree.genJetPF2PATPT[index]) * jerSF)/tree.jetPF2PATPtRaw[index];
-            returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
-        else :
-           random.seed();
-           newSmearValue = 1.0+TRandomMT64(random).Gaus(0.0,math.sqrt(jerSF*jerSF-1)*jerSigma);
-           returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
-
-    else : returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
-
-    if (newSmearValue > 0.01):
-        #Propogate through the met. But only do it if the smear jet isn't 0.
-        metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
-        metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
-
-    if syst == 16:
-        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
-    elif syst == 32:
-        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
-
-    metVec.SetPx(metVec.Px()-returnJet.Px())
-    metVec.SetPy(metVec.Py()-returnJet.Py())
+       metVec.SetPx(metVec.Px()-returnJet.Px())
+       metVec.SetPy(metVec.Py()-returnJet.Py())
     return returnJet
 
 def doUncMet(tree,met,zLep1,zLep2,wLep,jetVecs,syst):
