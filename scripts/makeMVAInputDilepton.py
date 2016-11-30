@@ -62,7 +62,7 @@ def getBjets(tree,syst,jetUnc,met,jets,is2016):
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],met,is2016,False))
+            bJetVecList.append(getJetVec(tree,tree.bJetInd[i],met,is2016,False))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
@@ -403,7 +403,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
         varMap["met"][0] = tree.metPF2PATEt
-        varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]
+        varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[bJets[0]]
         varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
         varMap["secJetbTag"][0] = -1.
         varMap["secJetPt"][0] = -1.
@@ -433,7 +433,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             varMap["fourthJetPhi"][0] = jetVecs[3].Phi()
             varMap["fourthJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[3]]
 
-#        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[jets[bJets[0]]], len(bJets), nBjets[0]
+#        print bTagDisc[0], bJets[0], tree.jetPF2PATBDiscriminator[bJets[0]], len(bJets), nBjets[0]
 	topMass = (bJetVecs[0] + wQuark1 + wQuark2).M()
         varMap["topMass"][0] = topMass
         varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt()
@@ -487,10 +487,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
             if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1)
-        varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
-        varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
-        varMap["zlb2DelR"][0] = zLep2.DeltaR(jetVecs[bJets[0]])
-        varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(jetVecs[bJets[0]])
+        varMap["zlb1DelR"][0] = zLep1.DeltaR(bJetVecs[0])
+        varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(bJetVecs[0])
+        varMap["zlb2DelR"][0] = zLep2.DeltaR(bJetVecs[0])
+        varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(bJetVecs[0])
         ht = 0.
         ht += zLep1.Pt() + zLep2.Pt()
         varMap["lepHt"][0] = ht
