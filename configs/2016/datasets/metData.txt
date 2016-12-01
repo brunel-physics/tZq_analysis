@@ -1,6 +1,6 @@
 [metRun2016]
 fileName = configs/2016/datasets/fileLists/metRun2016Files.txt
-luminosity = 12918.141
+luminosity = 12891.528
 runType = data
 histoName = data
 label = Data
