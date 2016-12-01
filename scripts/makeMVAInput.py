@@ -60,7 +60,7 @@ def getBjets(tree,syst,jetUnc,met,jets):
 def getJetVec(tree, index, metVec, doMetSmear):
     #Gets a vector for a jet with corrections already applied
 
-    newSmearValue = tree.jetSmearValue;
+    newSmearValue = tree.jetSmearValue[index];
     returnJet = = TLorentzVector();
 
     returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[in$
