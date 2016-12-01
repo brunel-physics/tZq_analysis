@@ -2196,6 +2196,7 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 
   TLorentzVector returnJet;
+  float newSmearValue{1.};  
   
   if ( synchCutFlow_ && trileptonChannel_ ) {
 	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
@@ -2203,6 +2204,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   }
 
   if ( !isMC_ ) {
+        event->jetSmearValue.emplace_back(newSmearValue);
 	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
 	return returnJet;
   }
@@ -2210,8 +2212,6 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
   float jerSF{1.};
   float jerSigma{0.};
   std::pair< float, float > jetSFs{};
-
-  float newSmearValue{1.};  
 
   if ( !is2016_ ) jetSFs = jet2015SFs( std::abs(event->jetPF2PATEta[index]) );
   else jetSFs = jet2016SFs( std::abs(event->jetPF2PATEta[index]) );
