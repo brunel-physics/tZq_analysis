@@ -58,17 +58,26 @@ def getBjets(tree,syst,jetUnc,met,jets):
     return (bJetList,bJetVecList)
 
 def getJetVec(tree, index, metVec, doMetSmear):
-    #Gets a vector for a jet and applies jet corrections.
+    #Gets a vector for a jet with corrections already applied
 
-    returnJet = tree.smearedJets[index];
+    newSmearValue = tree.jetSmearValue;
+    returnJet = = TLorentzVector();
 
-    if doMetSmear :
-       #Propogate through the met. But only do it if the smear jet isn't 0.
-       metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
-       metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
+    returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[in$
 
-       metVec.SetPx(metVec.Px()-returnJet.Px())
-       metVec.SetPy(metVec.Py()-returnJet.Py())
+    if syst == 16:
+        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
+    elif syst == 32:
+        returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
+
+    if ( doMetSmear & newSmearValue > 0.01 ) :
+    #Propogate through the met. But only do it if the smear jet isn't 0.
+        metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
+        metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
+
+        metVec.SetPx(metVec.Px()-returnJet.Px())
+        metVec.SetPy(metVec.Py()-returnJet.Py())
+
     return returnJet
 
 def doUncMet(tree,met,zLep1,zLep2,wLep,jetVecs,syst):

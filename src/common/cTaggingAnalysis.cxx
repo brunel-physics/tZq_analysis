@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 	bool jetID{false};
 
 	if (
-	    ( std::abs(lEta<=3.0) && lEvent->jetPF2PATNeutralHadronEnergyFraction[k] < 0.99 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.99 &&  (lEvent->jetPF2PATNeutralMultiplicity[k] && lEvent->jetPF2PATChargedMultiplicity[k]) > 1 && 
+	    ( std::abs(lEta<=3.0) && lEvent->jetPF2PATNeutralHadronEnergyFraction[k] < 0.99 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.99 &&  (lEvent->jetPF2PATNeutralMultiplicity[k] && lEvent->jetPF2PATChargedMultiplicity[k]) > 1.00 && 
 	      ( ( std::abs(lEta<=2.40) && (lEvent->jetPF2PATChargedHadronEnergyFraction[k] > 0 && lEvent->jetPF2PATChargedMultiplicity[k] > 0 && lEvent->jetPF2PATChargedEmEnergyFraction[k] < 0.99)) && std::abs(lEta > 2.40) ) ) 
 	    || (std::abs(lEta)>3.0 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.90 && lEvent->jetPF2PATNeutralMultiplicity[k] > 10) 
 	    )

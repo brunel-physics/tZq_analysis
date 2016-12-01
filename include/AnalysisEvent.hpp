@@ -798,7 +798,7 @@ public :
    std::pair<float,float> zPairRelIso;
    std::pair<int,int> zPairIndex; 
 
-   std::vector<TLorentzVector> smearedJets;
+   std::vector<float> jetSmearValue;
 
    std::pair<TLorentzVector,TLorentzVector> wPairQuarks;
    std::pair<int,int> wPairIndex;

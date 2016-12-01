@@ -868,6 +868,7 @@ void AnalysisAlgo::runMainAnalysis(){
       int wQuark2Index{-1};
       int jetInd[15];  // The index of the selected jets;
       int bJetInd[10]; // Index of selected b-jets;
+      float jetSmearValue[15] {};
       //Now add in the branches:
     
       if (makeMVATree){
@@ -902,6 +903,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
 	  } 
 	  mvaTree[systIn]->Branch("jetInd",jetInd,"jetInd[15]/I");
+          mvaTree[systIn]->Branch("jetSmearValue",jetSmearValue,"jetSmearValue[15]/F");
 	  mvaTree[systIn]->Branch("bJetInd",bJetInd,"jetInd[10]/I");
 
 	  if (systIn > 0) systMask = systMask << 1;
@@ -1046,8 +1048,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	      wQuark2Index = event->wPairIndex.second;
 	    }
 	    for (unsigned jetIndexIt{0}; jetIndexIt < 15; jetIndexIt++){
-	      if (jetIndexIt < event->jetIndex.size()) jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
-	      else jetInd[jetIndexIt] = -1;
+	      if (jetIndexIt < event->jetIndex.size()){
+                jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
+                jetSmearValue[jetIndexIt] = event->jetSmearValue[jetIndexIt];
+              }
+	      else { 
+                jetInd[jetIndexIt] = -1;
+                jetSmearValue[jetIndexIt] = 0.0;
+              }
 	    }
 	    for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++){
 	      if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
