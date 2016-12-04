@@ -20,7 +20,7 @@ class Dataset{
   std::string plotLabel_;
   std::string plotType_;
   std::string triggerFlag_;
- 
+
  public:
   Dataset(std::string name, float lumi, bool isMC, float crossSection, std::string fileList, std::string histoName, std::string treeName,long long,int,std::string,std::string,std::string);
   std::string name(){return name_;}

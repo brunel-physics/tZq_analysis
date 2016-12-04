@@ -121,7 +121,7 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
 //This method is here to set up a load of branches in the TTrees that I will be analysing. Because it's vastly quicker to not load the whole damned thing.
 void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
   //Get electron branches
-  chain->SetBranchStatus("numElePF2PAT",1);  
+  chain->SetBranchStatus("numElePF2PAT",1);
   chain->SetBranchStatus("elePF2PATPT",1);
   chain->SetBranchStatus("elePF2PATPX",1);
   chain->SetBranchStatus("elePF2PATPY",1);
@@ -161,10 +161,10 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
   chain->SetBranchStatus("muonPF2PATPX",1);
   chain->SetBranchStatus("muonPF2PATPY",1);
   chain->SetBranchStatus("muonPF2PATPZ",1);
-  chain->SetBranchStatus("muonPF2PATE",1);  
+  chain->SetBranchStatus("muonPF2PATE",1);
   chain->SetBranchStatus("muonPF2PATEta",1);
   chain->SetBranchStatus("muonPF2PATPhi",1);
-  chain->SetBranchStatus("muonPF2PATCharge",1);  
+  chain->SetBranchStatus("muonPF2PATCharge",1);
   chain->SetBranchStatus("muonPF2PATComRelIsodBeta",1);
   chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
   chain->SetBranchStatus("muonPF2PATD0",1);
@@ -313,7 +313,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("data,b", po::bool_switch(&skipMC),
      "Data only mode. Ignores all data in the config file.")
     ("bTag,t", po::bool_switch(&usebTagWeight),
-     "Use b-tagging efficiencies to reweight the Monte Carlo. Currently " 
+     "Use b-tagging efficiencies to reweight the Monte Carlo. Currently "
      "requires -u.")
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
@@ -570,7 +570,7 @@ void AnalysisAlgo::setupCuts()
 
 void AnalysisAlgo::setupPlots()
 {
-  //Do a little initialisation for the plots here. Will later on be done in a config file.  
+  //Do a little initialisation for the plots here. Will later on be done in a config file.
   //Initialise plot stage names.
   stageNames.emplace_back("lepSel");
   stageNames.emplace_back("zMass");
@@ -582,7 +582,7 @@ void AnalysisAlgo::setupPlots()
 
 void AnalysisAlgo::runMainAnalysis(){
 
-  srand (666);  
+  srand (666);
   bool datasetFilled{false};
 
   if (totalLumi == 0.) totalLumi = usePreLumi;
@@ -635,7 +635,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  invertLepCut = true;
 	  chanName += "inv";
 	}
-      } 
+      }
       if (channelsToRun && !trileptonChannel_){
 	if (channelInd & 5){ // ee channels
 	  cutObj->setNumLeps(0,0,2,2);
@@ -668,7 +668,7 @@ void AnalysisAlgo::runMainAnalysis(){
           postfix = "emu";
           chanName += "emu";
         }
-      } 
+      }
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
       if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
@@ -677,7 +677,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
-	  } 
+	  }
 	  if (cutFlowMap.find(dataset->getFillHisto()+systNames[systInd]) == cutFlowMap.end()){
 	    const size_t numCutFlowBins{stageNames.size()};
 	    cutFlowMap[dataset->getFillHisto()] = new TH1F{(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
@@ -690,7 +690,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      datasetInfos[dataset->getFillHisto()].legType = dataset->getPlotType();
 	    }
 	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl; 
+	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl;
 	      if (plotsMap.find(channel) == plotsMap.end()){
 		plotsVec.emplace_back(systNames[systInd]+channel);
 	      }
@@ -702,7 +702,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }//end cutFlow find loop
 	  if (systInd > 0) systMask = systMask << 1;
 	}//end systematic loop
-      
+
       } //end plots if
       //If making either plots or doing the event dump, make cut flow object.
       std::cerr << "Processing dataset " << dataset->name() << std::endl;
@@ -788,7 +788,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //Here we will initialise the generator level weight histograms
       TH1I* generatorWeightPlot {nullptr};
       if ( dataset->isMC() ) {
-	if ( usePostLepTree ) { 
+	if ( usePostLepTree ) {
 	  std::string inputPostfix{};
 	  inputPostfix += postfix;
           if (invertLepCut) {
@@ -803,7 +803,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  datasetFileForHists->Close();
 	}
         else {
-  	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone()); 
+  	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	}
       }
@@ -870,7 +870,7 @@ void AnalysisAlgo::runMainAnalysis(){
       int bJetInd[10]; // Index of selected b-jets;
       float jetSmearValue[15] {};
       //Now add in the branches:
-    
+
       if (makeMVATree){
         boost::filesystem::create_directory(mvaDir);
         std::string invPostFix {};
@@ -901,7 +901,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  else if (!trileptonChannel_) {
 	    mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
 	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
-	  } 
+	  }
 	  mvaTree[systIn]->Branch("jetInd",jetInd,"jetInd[15]/I");
           mvaTree[systIn]->Branch("jetSmearValue",jetSmearValue,"jetSmearValue[15]/F");
 	  mvaTree[systIn]->Branch("bJetInd",bJetInd,"jetInd[10]/I");
@@ -1052,7 +1052,7 @@ void AnalysisAlgo::runMainAnalysis(){
                 jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
                 jetSmearValue[jetIndexIt] = event->jetSmearValue[jetIndexIt];
               }
-	      else { 
+	      else {
                 jetInd[jetIndexIt] = -1;
                 jetSmearValue[jetIndexIt] = 0.0;
               }
@@ -1109,7 +1109,7 @@ void AnalysisAlgo::runMainAnalysis(){
         outFile2->Close();
         outFile3->Close();
       }
-    
+
       //Save mva outputs
       if (makeMVATree) {
         std::string invPostFix {};
@@ -1162,13 +1162,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	  delete bTagEffPlots[i];
 	}
       }
-      
+
       //datasetChain->MakeClass("AnalysisEvent");
     } // end channel loop.
     delete datasetChain;
   } //end dataset loop
 }
-  
+
 void AnalysisAlgo::savePlots()
 {
   //Save all plot objects. For testing purposes.
@@ -1187,7 +1187,7 @@ void AnalysisAlgo::savePlots()
       if (plots)
 	plotObj.plotHistos(plotsMap[plotsVec[i]]);
     }
-    
+
     std::vector<std::string> cutFlowLabels;
     for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
     	cutFlowLabels.emplace_back(*lIt);
@@ -1203,7 +1203,7 @@ void AnalysisAlgo::savePlots()
     for (unsigned j = 0; j < stageNames.size(); j++){
     plotsMap[dataset->getFillHisto()][stageNames[j]]->saveAllPlots();
     }
-    //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.root").c_str());    
+    //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.root").c_str());
     //    cutFlowMap[dataset->getFillHisto()]->Draw();
     //    cutFlowMap[dataset->getFillHisto()]->SaveAs(("plots/"+dataset->name()+"_cutFlow.png").c_str());
     }*/

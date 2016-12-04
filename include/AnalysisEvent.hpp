@@ -790,13 +790,13 @@ public :
    std::vector<int> muonIndexTight;
    std::vector<int> muonIndexLoose;
    std::vector<int> jetIndex;
-   std::vector<int> bTagIndex; 
-   std::vector<int> bTagLooseIndex; 
-   std::vector<int> cTagIndex; 
+   std::vector<int> bTagIndex;
+   std::vector<int> bTagLooseIndex;
+   std::vector<int> cTagIndex;
 
    std::pair<TLorentzVector,TLorentzVector> zPairLeptons;
    std::pair<float,float> zPairRelIso;
-   std::pair<int,int> zPairIndex; 
+   std::pair<int,int> zPairIndex;
 
    std::vector<float> jetSmearValue;
 
@@ -825,7 +825,7 @@ public :
 #endif
 
 #ifdef AnalysisEvent_cxx
-AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers) : fChain(nullptr) 
+AnalysisEvent::AnalysisEvent(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers) : fChain(nullptr)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -986,7 +986,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATPhotonConversionDcotCustom", elePF2PATPhotonConversionDcotCustom.data(), &b_elePF2PATPhotonConversionDcotCustom);
    fChain->SetBranchAddress("elePF2PATTriggerMatch", elePF2PATTriggerMatch.data(), &b_elePF2PATTriggerMatch);
    fChain->SetBranchAddress("elePF2PATJetOverlap", elePF2PATJetOverlap.data(), &b_elePF2PATJetOverlap);
-   if (isMC) { 
+   if (isMC) {
      fChain->SetBranchAddress("genElePF2PATPT", genElePF2PATPT.data(), &b_genElePF2PATPT);
      fChain->SetBranchAddress("genElePF2PATET", genElePF2PATET.data(), &b_genElePF2PATET);
      fChain->SetBranchAddress("genElePF2PATPX", genElePF2PATPX.data(), &b_genElePF2PATPX);

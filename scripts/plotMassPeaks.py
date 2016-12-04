@@ -67,7 +67,7 @@ def main():
 
   TT_wVsTopvsChi2Histo = ROOT.TH3D("TT_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
-  ## DY Histos 
+  ## DY Histos
 
   DY_topMassHisto = ROOT.TH1D("DY_topMassHisto","Top Mass Histo", 300, 0.0, 300.0)
   DY_wMassHisto = ROOT.TH1D("DY_wMassHisto","W Mass Histo", 300, 0.0, 300.0)
@@ -82,7 +82,7 @@ def main():
 
   DY_wVsTopvsChi2Histo = ROOT.TH3D("DY_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
-  ## All MC Histos 
+  ## All MC Histos
 
   All_topMassHisto = ROOT.TH1D("All_topMassHisto","Top Mass Histo", 300, 0.0, 300.0)
   All_wMassHisto = ROOT.TH1D("All_wMassHisto","W Mass Histo", 300, 0.0, 300.0)

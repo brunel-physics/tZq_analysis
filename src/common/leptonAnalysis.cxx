@@ -132,22 +132,22 @@ int main(int argc, char* argv[]) {
   int totalCut{0};
 
   for ( std::vector<TTree*>::const_iterator lIt = inputTrees.begin(); lIt != inputTrees.end(); ++lIt ){
-    
+
     AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt, is2016}};
 
     Long64_t lNumEvents{(*lIt)->GetEntries()};
     totalEvents += lNumEvents;
-    
+
     for ( Int_t j{0}; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
-      
+
       for ( Int_t k{0}; k < lEvent->numElePF2PAT; k++){
 	histElePt->Fill(lEvent->elePF2PATPT[k]);
 	histEleEta->Fill(lEvent->elePF2PATEta[k]);
 	histEleGenPt->Fill(lEvent->genElePF2PATPT[k]);
 	histEleGenEta->Fill(lEvent->genElePF2PATEta[k]);
 
-        histEleGenPtEta->Fill(lEvent->elePF2PATPT[k], 
+        histEleGenPtEta->Fill(lEvent->elePF2PATPT[k],
             lEvent->elePF2PATEta[k]);
 
       }
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
   	histMuGenPt->Fill(lEvent->genMuonPF2PATPT[k]);
     	histMuGenEta->Fill(lEvent->genMuonPF2PATEta[k]);
 
-        histMuGenPtEta->Fill(lEvent->muonPF2PATPt[k], 
+        histMuGenPtEta->Fill(lEvent->muonPF2PATPt[k],
             lEvent->muonPF2PATEta[k]);
       }
 

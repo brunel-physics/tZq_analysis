@@ -20,7 +20,7 @@ class HistogramPlotter{
   std::string lumiStr_;
   std::string outputFolder_; //Where the plots will be saved. Make sure to inclue the final /...
   std::string postfix_; //Will be appended to name of saved files. Defaults to aPostfix. Set with setter.
-  
+
   //Orders of various things and information regarding plotting.
   std::vector<std::string> plotOrder_;
   std::vector<std::string> legOrder_;

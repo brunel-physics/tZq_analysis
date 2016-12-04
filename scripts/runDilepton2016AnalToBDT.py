@@ -17,7 +17,7 @@ mwStr = mwCut.split(".")[0]
 
 useSideBandRegion = ""
 dirExt = "all/"
-if len(sys.argv) > 3 and sys.argv[3] == "-s" : 
+if len(sys.argv) > 3 and sys.argv[3] == "-s" :
     useSideBandRegion = "-s"
     dirExt = "sigCtrl/"
 
