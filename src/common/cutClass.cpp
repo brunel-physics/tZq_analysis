@@ -364,12 +364,34 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
   }
 
-  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) { // Do FCNC stuff & cTagging
-    event->cTagIndex = makeCCuts(event,event->jetIndex);
-    if (event->cTagIndex.size() < numcJets_) return false;
-    if (event->cTagIndex.size() < maxcJets_) return false;
-    if (doPlots_) plotMap["cTag"]->fillAllPlots(event,*eventWeight);
-    if (doPlots_||fillCutFlow_) cutFlow->Fill(4.5,*eventWeight);
+  if (!trileptonChannel_ && isFCNC_) // Do FCNC stuff
+  {
+      // Leading jet cannot be b-tagged
+      if (event->jetPF2PATBDiscriminator[0] > bDiscCut_)
+      {
+          return false;
+      }
+
+      if (isCtag_) // Do cTagging
+      {
+          event->cTagIndex = makeCCuts(event,event->jetIndex);
+
+          if (event->cTagIndex.size() < numcJets_
+              || event->cTagIndex.size() > maxJets_)
+          {
+              return false;
+          }
+          if (doPlots_ || fillCutFlow_)
+          {
+
+              if (doPlots_)
+              {
+                  plotMap["cTag"]->fillAllPlots(event,*eventWeight);
+              }
+
+              cutFlow->Fill(4.5,*eventWeight);
+          }
+      }
   }
 
   //Apply met and mtw cuts here. By default these are 0, so don't do anything.
