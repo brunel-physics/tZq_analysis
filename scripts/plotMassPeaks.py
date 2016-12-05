@@ -12,8 +12,8 @@ def main():
 
   weighted = False
 
-  sigCut = 2.0
-  bkgCut = 7.0
+  sigCut = 24.0
+  bkgCut = 285.0
 
   wSigma = 8.0
   topSigma = 20.0

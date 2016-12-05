@@ -518,9 +518,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
 	if outTreeSdBnd :
- 	    if varMap["chi2"][0] >= 2 and varMap["chi2"][0] < 7 :
+ 	    if varMap["chi2"][0] >= 24 and varMap["chi2"][0] < 285 :
                 outTreeSdBnd.Fill()
-            if varMap["chi2"][0] < 2 :
+            if varMap["chi2"][0] < 24 :
                  outTreeSig.Fill()
         else :
             outTreeSig.Fill()
