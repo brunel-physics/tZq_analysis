@@ -10,7 +10,7 @@ def main():
 
   massCut = False
 
-  weighted = True
+  weighted = False
 
   sigCut = 2.0
   bkgCut = 7.0
@@ -577,6 +577,97 @@ def main():
   All_chi2Histo.SaveAs("plots/chiSquared/All/chi2.root")
   All_topVsWsignalHisto.SaveAs("plots/chiSquared/All/signalMassPlot.root")
   All_topVsWcontrolHisto.SaveAs("plots/chiSquared/All/controlMassPlot.root")
+
+##############
+
+  print "##############"
+
+  totalEvents_tZq = tZq_chi2Histo.Integral()
+  sumEvents_tZq = 0.0
+  tZq_flag1 = 0
+  tZq_flag1a = 0 
+  tZq_flag1b = 0 
+  tZq_flag2 = 0
+  tZq_flag3 = 0
+  for x in range(0,300):
+    sumEvents_tZq += tZq_chi2Histo.GetBinContent(x)
+    if sumEvents_tZq >= 0.6827*totalEvents_tZq and tZq_flag1 == 0:
+      print "one sigma bound for tZq chi2 at: ", x, " : " , sumEvents_tZq
+      tZq_flag1 = 1
+    if sumEvents_tZq >= 0.80*totalEvents_tZq and tZq_flag1a == 0:
+      print "80% bound for tZq chi2 at: ", x, " : " , sumEvents_tZq
+      tZq_flag1a = 1
+    if sumEvents_tZq >= 0.90*totalEvents_tZq and tZq_flag1b == 0:
+      print "90% bound for tZq chi2 at: ", x, " : " , sumEvents_tZq
+      tZq_flag1b = 1
+    if sumEvents_tZq >= 0.9545*totalEvents_tZq and tZq_flag2 == 0:
+      print "two sigma bound for tZq chi2 at: ", x, " : " , sumEvents_tZq
+      tZq_flag2 = 1
+    if sumEvents_tZq >= 0.9973*totalEvents_tZq and tZq_flag3 == 0:
+      print "three sigma bound for tZq chi2 at: ", x, " : " , sumEvents_tZq
+      tZq_flag3 = 1
+
+  print "##############"
+
+##############
+
+  totalEvents_DY = DY_chi2Histo.Integral()
+  sumEvents_DY = 0.0
+  DY_flag1 = 0
+  DY_flag1a = 0
+  DY_flag1b = 0
+  DY_flag2 = 0
+  DY_flag3 = 0
+  for x in range(0,300):
+    sumEvents_DY += DY_chi2Histo.GetBinContent(x)
+    if sumEvents_DY >= 0.6827*totalEvents_DY and DY_flag1 == 0:
+      print "one sigma bound for DY chi2 at: ", x, " : " , sumEvents_DY
+      DY_flag1 = 1
+    if sumEvents_DY >= 0.80*totalEvents_DY and DY_flag1a == 0:
+      print "80% bound for DY chi2 at: ", x, " : " , sumEvents_DY
+      DY_flag1a = 1
+    if sumEvents_DY >= 0.90*totalEvents_DY and DY_flag1b == 0:
+      print "90% bound for DY chi2 at: ", x, " : " , sumEvents_DY
+      DY_flag1b = 1
+    if sumEvents_DY >= 0.9545*totalEvents_DY and DY_flag2 == 0:
+      print "two sigma bound for DY chi2 at: ", x, " : " , sumEvents_DY
+      DY_flag2 = 1
+    if sumEvents_DY >= 0.9973*totalEvents_DY and DY_flag3 == 0:
+      print "three sigma bound for DY chi2 at: ", x, " : " , sumEvents_DY
+      DY_flag3 = 1
+
+  print "##############"
+
+##############
+
+  totalEvents_TT = TT_chi2Histo.Integral()
+  sumEvents_TT = 0.0
+  TT_flag1 = 0
+  TT_flag1a = 0
+  TT_flag1b = 0
+  TT_flag2 = 0
+  TT_flag3 = 0
+  for x in range(0,300):
+    sumEvents_TT += TT_chi2Histo.GetBinContent(x)
+    if sumEvents_TT >= 0.6827*totalEvents_TT and TT_flag1 == 0:
+      print "one sigma bound for TT chi2 at: ", x, " : " , sumEvents_TT
+      TT_flag1 = 1
+    if sumEvents_TT >= 0.80*totalEvents_TT and TT_flag1a == 0:
+      print "80% bound for TT chi2 at: ", x, " : " , sumEvents_TT
+      TT_flag1a = 1
+    if sumEvents_TT >= 0.90*totalEvents_TT and TT_flag1b == 0:
+      print "90% bound for TT chi2 at: ", x, " : " , sumEvents_TT
+      TT_flag1b = 1
+    if sumEvents_TT >= 0.9545*totalEvents_TT and TT_flag2 == 0:
+      print "two sigma bound for TT chi2 at: ", x, " : " , sumEvents_TT
+      TT_flag2 = 1
+    if sumEvents_TT >= 0.9973*totalEvents_TT and TT_flag3 == 0:
+      print "three sigma bound for TT chi2 at: ", x, " : " , sumEvents_TT
+      TT_flag3 = 1
+
+  print "##############"
+
+##############
 
 if __name__ == "__main__":
     main()
