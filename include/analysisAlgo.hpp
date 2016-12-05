@@ -89,7 +89,7 @@ class AnalysisAlgo{
 
 	std::vector<std::string> plotsVec;
 
-	// variables for plotting. 
+	// variables for plotting.
 	std::vector<std::string> plotNames;
 	std::vector<float> xMin;
 	std::vector<float> xMax;
@@ -116,9 +116,9 @@ class AnalysisAlgo{
 
 	// MC weight stuff
 	int sumPositiveWeights_;
-	int sumNegativeWeights_;	
-	int sumNegativeWeightsScaleUp_;	
-	int sumNegativeWeightsScaleDown_;	
+	int sumNegativeWeights_;
+	int sumNegativeWeightsScaleUp_;
+	int sumNegativeWeightsScaleDown_;
 };
 
 #endif

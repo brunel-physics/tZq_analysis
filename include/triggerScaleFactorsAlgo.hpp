@@ -66,7 +66,7 @@ class TriggerScaleFactors{
 	TH1F* puReweight;
 	TH1F* puSystUp;
 	TH1F* puSystDown;
-	
+
 	// lepton selection
 	std::vector<int> getTightElectrons(AnalysisEvent*);
 	std::vector<int> getTightMuons(AnalysisEvent*);

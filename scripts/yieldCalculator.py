@@ -28,7 +28,7 @@ print "nominal yield: ", nom_yield
 for syst in systs:
     syst_yield = 0
     tree = infile.Get("Ttree_"+sample+syst)
-    for event in tree : 
+    for event in tree :
         if ( channelIndex == event.Channel ) : syst_yield += event.EvtWeight
     print "syst yield for ", syst, " : ", syst_yield, " / abs diff : ", syst_yield-nom_yield, ", rel diff : ", (syst_yield-nom_yield)/nom_yield*100.0, "%"
 

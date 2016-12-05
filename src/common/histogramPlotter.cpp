@@ -21,7 +21,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   lumiStr_{},
   outputFolder_{},
   postfix_{"defaultPostfix"},
-  
+
 
   //Some things that actually need to be set. plot order, legend order and dataset information map.
   plotOrder_{plotOrder},
@@ -53,9 +53,9 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   labelThree_->SetBorderSize(0);
 
   gStyle->SetLabelFont(18,"");
-  
+
   //for (auto leg_iter = legOrder.begin(); leg_iter != legOrder.end(); leg_iter++){
-  //  
+  //
   //}
   //I guess I should put in the plot style stuff here? Worry about that later on. Get it plotting something at all first I guess.
 }
@@ -98,7 +98,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel){
   std::vector<std::string> blankLabels;
   makePlot(plotMap,plotName,subLabel,blankLabels);
-}  
+}
 
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
   std::cerr << "Making a plot called: " << plotName << std::endl;
@@ -111,7 +111,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
     legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
-    
+
   //Initialise the stack
   THStack* mcStack{new THStack{plotName.c_str(),(plotName+";"+subLabel+";Events (lumi scaled)").c_str()}};
   //Do a few colour changing things and add MC to the stack.
@@ -133,7 +133,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     ratioHisto = dynamic_cast<TH1F*>(plotMap["data"]->Clone());
     ratioHisto->Sumw2();
     ratioHisto->Divide(ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()),1,1 );
-  
+
     ratioHisto->SetMarkerStyle(20);
     ratioHisto->SetMarkerSize(0.85);
     ratioHisto->SetMarkerColor(kBlack);
@@ -146,7 +146,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   if( !BLIND_PLOTS ) {
     // Top Histogram
     canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
-    canvy_1->Draw(); 
+    canvy_1->Draw();
     canvy_1->cd();
     canvy_1->SetTopMargin(0.08);
     canvy_1->SetBottomMargin(0.08);
@@ -168,7 +168,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   mcStack->SetMaximum(max*1.1);
-      
+
   legend_->Draw();
 
   if ( !BLIND_PLOTS ) {
@@ -176,7 +176,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy->cd();
     canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
   //  canvy_2->SetOptStat(0);
-    canvy_2->Draw(); 
+    canvy_2->Draw();
     canvy_2->cd();
     canvy_2->SetTopMargin(0.05);
     canvy_2->SetBottomMargin(0.08);

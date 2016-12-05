@@ -7,19 +7,19 @@ cuts =
 	      number = 0;
 	      },
 	looseMuons = {
-	      pt   = 10.;
+	      pt   = 20.;
 	      eta  = 2.4;
-	      relIso = 0.25;
+	      relIso = 0.20;
 	      number = 0;
 	      },
 	tightElectrons = {
-	      pt   = 20.;
+	      pt   = 25.;
 	      eta  = 2.5;
 	      relIso = 0.107587;
 	      number = 2.;
 	      },
 	looseElectrons = {
-	      pt   = 10.;
+	      pt   = 25.;
 	      eta  = 2.5;
 	      relIso = 0.107587;
 	      number = 2.; 
@@ -28,8 +28,8 @@ cuts =
 		pt = 30.;
 		eta = 5.0;
 		numJets = 2;
-		maxJets = 4;
-		numbJets = 1;
+		maxJets = 8;
+		numbJets = 0;
 		maxbJets = 1;
 		numcJets = 1;
 		maxcJets = 1;

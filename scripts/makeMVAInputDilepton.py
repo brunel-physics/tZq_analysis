@@ -84,7 +84,7 @@ def getJetVec(tree, index, metVec, is2016, syst, doMetSmear):
     #Propogate through the met. But only do it if the smear jet isn't 0.
         metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
         metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
- 
+
         metVec.SetPx(metVec.Px()-returnJet.Px())
         metVec.SetPy(metVec.Py()-returnJet.Py())
 
@@ -327,7 +327,7 @@ def setupBranches(tree,varMap):
 def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, zPtEventWeight = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
-    syst = 0 
+    syst = 0
 
     if "__met__plus" in label:
         syst = 1024
@@ -507,7 +507,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
         ht += jetHt
         varMap["totHt"][0] = ht
-        varMap["totHtOverPt"][0] = ht / math.sqrt(totPx * totPx + totPy * totPy) 
+        varMap["totHtOverPt"][0] = ht / math.sqrt(totPx * totPx + totPy * totPy)
         varMap["zMass"][0] = (zLep1+zLep2).M()
         varMap["zPt"][0] = (zLep2 + zLep1).Pt()
         varMap["zEta"][0] = (zLep2 + zLep1).Eta()
@@ -522,7 +522,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
                 outTreeSdBnd.Fill()
             if varMap["chi2"][0] < 2 :
                  outTreeSig.Fill()
-        else : 
+        else :
             outTreeSig.Fill()
 
 def main():
@@ -532,7 +532,7 @@ def main():
 #    listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
-    #if (is2016) 
+    #if (is2016)
     jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
@@ -548,7 +548,7 @@ def main():
     inputDir = "mvaTest/"
     if len(sys.argv) > 2:
         inputDir = sys.argv[2]
-    
+
     outputDir = "mvaInputs/"
     if len(sys.argv) > 3:
         outputDir = sys.argv[3]
@@ -557,7 +557,7 @@ def main():
     is2016 = False
     if len(sys.argv) > 4 and sys.argv[4] == "--2016":
         is2016 = True
-    elif len(sys.argv) > 4 and sys.argv[4] == "--2015": 
+    elif len(sys.argv) > 4 and sys.argv[4] == "--2015":
         is2016 = False
 
     useSidebandRegion = False
@@ -574,7 +574,7 @@ def main():
     for sample in listOfMCs.keys():
         print "Doing " + sample + ": ",
         sys.stdout.flush()
-        
+
         outFile = 0
         #update the appropriate root file
         outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
@@ -602,7 +602,7 @@ def main():
                     print "\nAttribute Error \n"
                     print syst + " : " + "0",
                     sys.stdout.flush()
-                    #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does            
+                    #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
                 inFile.Close()
             outFile.cd()
             outFile.Write()
@@ -621,7 +621,7 @@ def main():
     chanMap = {}
     if is2016 :
         chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016"}
-    else : 
+    else :
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
     outChannels = ["DataEG","DataMu"]
@@ -639,10 +639,10 @@ def main():
             setupBranches(outTreeSdBnd,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
-            dataChain = TChain("tree")    
-            if is2016 : 
+            dataChain = TChain("tree")
+            if is2016 :
                  dataChain.Add(inputDir+chanMap[chan]+chan+"mvaOut.root")
-            else : 
+            else :
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
             fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016, 0)

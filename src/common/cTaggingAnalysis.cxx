@@ -116,14 +116,14 @@ int main(int argc, char* argv[]) {
   // Start looping over jets.
 
   for ( std::vector<TTree*>::const_iterator lIt{inputTrees.begin()}; lIt != inputTrees.end(); ++lIt ){
-    
+
     AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt}};
 
     Long64_t lNumEvents{(*lIt)->GetEntries()};
-    
+
     for ( Int_t j{0}; j < lNumEvents; j++ ){
       (*lIt)->GetEvent(j);
-      
+
       for (Int_t k{0}; k < lEvent->numJetPF2PAT; k++){
 
         Double_t lPt{lEvent->jetPF2PATPt[k]};
@@ -136,12 +136,12 @@ int main(int argc, char* argv[]) {
 	bool jetID{false};
 
 	if (
-	    ( std::abs(lEta<=3.0) && lEvent->jetPF2PATNeutralHadronEnergyFraction[k] < 0.99 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.99 &&  (lEvent->jetPF2PATNeutralMultiplicity[k] && lEvent->jetPF2PATChargedMultiplicity[k]) > 1.00 && 
-	      ( ( std::abs(lEta<=2.40) && (lEvent->jetPF2PATChargedHadronEnergyFraction[k] > 0 && lEvent->jetPF2PATChargedMultiplicity[k] > 0 && lEvent->jetPF2PATChargedEmEnergyFraction[k] < 0.99)) && std::abs(lEta > 2.40) ) ) 
-	    || (std::abs(lEta)>3.0 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.90 && lEvent->jetPF2PATNeutralMultiplicity[k] > 10) 
+	    ( std::abs(lEta<=3.0) && lEvent->jetPF2PATNeutralHadronEnergyFraction[k] < 0.99 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.99 &&  (lEvent->jetPF2PATNeutralMultiplicity[k] && lEvent->jetPF2PATChargedMultiplicity[k]) > 1.00 &&
+	      ( ( std::abs(lEta<=2.40) && (lEvent->jetPF2PATChargedHadronEnergyFraction[k] > 0 && lEvent->jetPF2PATChargedMultiplicity[k] > 0 && lEvent->jetPF2PATChargedEmEnergyFraction[k] < 0.99)) && std::abs(lEta > 2.40) ) )
+	    || (std::abs(lEta)>3.0 && lEvent->jetPF2PATNeutralEmEnergyFraction[k] < 0.90 && lEvent->jetPF2PATNeutralMultiplicity[k] > 10)
 	    )
 	  jetID = true;
-	
+
 	if (!jetID) continue;
 
 	if ( std::abs(lFlavour) <= 3 && std::abs(lFlavour) != 0 ) ++lTotalNumLjets;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
 
 	  if (lCvsBdisc >= lArrayIt && std::abs(lFlavour) == 4) ++lTotalNumCjetsCvsB[lArrayIt];
 	  if (lCvsLdisc >= lArrayIt && std::abs(lFlavour) == 4) ++lTotalNumCjetsCvsL[lArrayIt];
-	} 
+	}
 
       }
     }
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
   }
 
   TFile *outFile{new TFile{outFileString.c_str(), "RECREATE"}};
-   
+
   h_CvsBjetPassEfficiency->Write();
   h_CvsLjetPassEfficiency->Write();
 

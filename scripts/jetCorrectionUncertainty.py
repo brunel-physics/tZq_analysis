@@ -47,7 +47,7 @@ class JetCorrectionUncertainty:
         a = (highFact - lowFact)/(float(self.ptMaxJES[ptBin])-float(self.ptMinJES[ptBin]))
         b = (lowFact*float(self.ptMaxJES[ptBin]) - highFact*float(self.ptMinJES[ptBin]))/(float(self.ptMaxJES[ptBin])-float(self.ptMinJES[ptBin]))
         return a*pt + b
-    
+
 
     def getMetAfterJESUnc(self,metPx,metPy,tree,jesUD):
         for i in range(tree.numJetPF2PAT):
@@ -61,5 +61,5 @@ class JetCorrectionUncertainty:
                 metPx -= (1 - uncertainty)*tree.jetPF2PATPx[i]
                 metPy -= (1 - uncertainty)*tree.jetPF2PATPy[i]
         return (metPx,metPy)
-        
+
 

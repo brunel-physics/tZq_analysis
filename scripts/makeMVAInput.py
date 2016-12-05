@@ -307,7 +307,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         outTree.Fill()
         varMap["zWLepdelR"][0] = (zLep2 + zLep1).DeltaR(wLep)
         varMap["zmetdelPhi"][0] = (zLep2+zLep1).DeltaPhi(metVec)
-        varMap["zWLepdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wLep)        
+        varMap["zWLepdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wLep)
         varMap["lbDelR"][0] = wLep.DeltaR(jetVecs[bJets[0]])
         varMap["lbDelPhi"][0] = wLep.DeltaPhi(jetVecs[bJets[0]])
         varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
@@ -322,7 +322,7 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         varMap["lepMetHt"][0] = ht
         ht += jetHt
         varMap["totHt"][0] = ht
-        varMap["totHtOverPt"][0] = ht / math.sqrt(totPx * totPx + totPy * totPy) 
+        varMap["totHtOverPt"][0] = ht / math.sqrt(totPx * totPx + totPy * totPy)
         varMap["zMass"][0] = (zLep1+zLep2).M()
 
 
@@ -361,7 +361,7 @@ def main():
     inputDir = "mvaTest/"
     if len(sys.argv) > 2:
         inputDir = sys.argv[2]
-    
+
     outputDir = "mvaInputs/"
     if len(sys.argv) > 3:
         outputDir = sys.argv[3]
@@ -376,7 +376,7 @@ def main():
         sys.stdout.flush()
         if "WZ" in sample:
             overrideWeight = 1286770./2133868.
-        
+
         outFile = 0
         #update the appropriate root file
         outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
@@ -398,7 +398,7 @@ def main():
                     except AttributeError:
                         print syst + ": " + "0",
                         sys.stdout.flush()
-                #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does            
+                #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
                 inFile.Close()
             outFile.cd()
             outFile.Write()
@@ -425,7 +425,7 @@ def main():
         setupBranches(outTree,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
-            dataChain = TChain("tree")    
+            dataChain = TChain("tree")
 #            for run in ["A","B","C","D"]:
             for run in ["C","D"]:
                 dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
@@ -442,7 +442,7 @@ def main():
         for systPost in zEnrichSyst:
             outTreeZ = TTree("Ttree_"+outChan+"Zenriched"+systPost,"Ttree_"+outChan+"Zenriched"+systPost)
             setupBranches(outTreeZ,inputVars)
-            
+
             for chan in outChanToData[outChan]:
                 dataChainZ = TChain("tree")
 #                for run in ["A","B","C","D"]:
@@ -457,7 +457,7 @@ def main():
             outFileZ.cd()
             outFileZ.Write()
             outTreeZ.Write()
-        outFileZ.Close()        
+        outFileZ.Close()
 
 if __name__ == "__main__":
     main()

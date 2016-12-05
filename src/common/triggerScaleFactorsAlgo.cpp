@@ -36,7 +36,7 @@ TriggerScaleFactors::~TriggerScaleFactors(){}
 //This method is here to set up a load of branches in the TTrees that I will be analysing. Because it's vastly quicker to not load the whole damned thing.
 void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
   //Get electron branches
-  chain->SetBranchStatus("numElePF2PAT",1);  
+  chain->SetBranchStatus("numElePF2PAT",1);
   chain->SetBranchStatus("elePF2PATPT",1);
   chain->SetBranchStatus("elePF2PATPX",1);
   chain->SetBranchStatus("elePF2PATPY",1);
@@ -76,10 +76,10 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("muonPF2PATPX",1);
   chain->SetBranchStatus("muonPF2PATPY",1);
   chain->SetBranchStatus("muonPF2PATPZ",1);
-  chain->SetBranchStatus("muonPF2PATE",1);  
+  chain->SetBranchStatus("muonPF2PATE",1);
   chain->SetBranchStatus("muonPF2PATEta",1);
   chain->SetBranchStatus("muonPF2PATPhi",1);
-  chain->SetBranchStatus("muonPF2PATCharge",1);  
+  chain->SetBranchStatus("muonPF2PATCharge",1);
   chain->SetBranchStatus("muonPF2PATComRelIsodBeta",1);
   chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
   chain->SetBranchStatus("muonPF2PATD0",1);
@@ -271,7 +271,7 @@ void TriggerScaleFactors::runMainAnalysis(){
     systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
     pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
   }
-  
+
   puReweight = (TH1F*)(dataPU->Clone());
   puReweight->Scale(1.0/puReweight->Integral());
   mcPU->Scale(1.0/mcPU->Integral());
@@ -292,7 +292,7 @@ void TriggerScaleFactors::runMainAnalysis(){
   mcPileupFile->Close();
   systUpFile->Close();
   systDownFile->Close();
-  
+
   bool datasetFilled = false;
 
   if (totalLumi == 0.) totalLumi = usePreLumi;
@@ -367,7 +367,7 @@ void TriggerScaleFactors::runMainAnalysis(){
     for (int i = 0; i < numberOfEvents; i++) {
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
-      
+
       //Does this event pass tight electron cut?
       //Create electron index
       event->electronIndexTight = getTightElectrons( event );
@@ -414,7 +414,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberTriggeredMuons[0] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
 
         numberPassedMuonElectrons[0] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing cross trigger and muonEG selection
-        numberTriggeredMuonElectrons[0] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger	
+        numberTriggeredMuonElectrons[0] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger
 
 	// Systematic stuff
 	numberSelectedElectrons[0] += passDoubleElectronSelection*eventWeight;
@@ -553,7 +553,7 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
       if (!event->muonPF2PATTrackID[i]) continue;
       if (!event->muonPF2PATGlobalID[i]) continue;
 
-      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;   
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
       if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
       if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
       if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
@@ -567,7 +567,7 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
       // If not either track muon and global muon ...
       if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
       if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
-      
+
       bool goodGlobalMuon (true), tightSegmentCompatible (true);
 
       if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
@@ -590,7 +590,7 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
 bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElectrons ){
 
   //Check if there are at least two electrons first. Otherwise use muons.
-  
+
   float invMass (0.0);
   float pT (0.0);
 
@@ -611,7 +611,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
 		pT = (lepton1 + lepton2).Pt();
       		}
 	}
-    } 
+    }
   }
 
   else if (nElectrons == 0){

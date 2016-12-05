@@ -71,7 +71,7 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
   return 1;
 }
 
-//For reading the file config. 
+//For reading the file config.
 int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, double * totalLumi){
   std::cout << "file config: " << fileConf << std::endl;
   std::ifstream conf{fileConf};
@@ -166,11 +166,11 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
       triggerFlag = triggerFlag.substr(triggerFlag.find_first_not_of(" ="));
     }
     if (line.find("pileupDistro") == 0){
-      
+
     }
-      
-    
-    
+
+
+
   }
   conf.close();
   return 1;
@@ -193,7 +193,7 @@ int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames
     return 0;
   }
   const libconfig::Setting& root{plotCfg.getRoot()};
-  
+
   if (! root.exists("plots")){
     std::cerr << "No plots setting in the config file! What the hell are you doing?!?" << std::endl;
     return 0;

@@ -24,7 +24,7 @@ class Cuts{
   std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
   std::vector<int> makeLooseBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
   std::vector<int> makeCCuts(AnalysisEvent*, std::vector<int>);
-  
+
   std::vector<int> getTightEles(AnalysisEvent* event);
   std::vector<int> getInvIsoEles(AnalysisEvent* event);
   std::vector<int> getLooseEles(AnalysisEvent* event);
@@ -40,7 +40,7 @@ class Cuts{
   bool metFilters(AnalysisEvent*);
 
   double getChiSquared(double wMass = 0.0, double topMass = 0.0);
-  
+
   //Method for running the synchronisation with Jeremy.
   bool synchCuts(AnalysisEvent* event, float *eventWeight);
   int getLooseLepsNum(AnalysisEvent * event); //Mimic preselection skims
@@ -86,7 +86,7 @@ class Cuts{
   float tightEleMVA1_;
   float tightEleMVA2_;
   float tightEleRelIso_;
-  
+
   //Loose electron cuts
   unsigned numLooseEle_;
   float looseElePt_;
@@ -107,7 +107,7 @@ class Cuts{
   float looseMuonPt_;
   float looseMuonEta_;
   float looseMuonRelIso_;
-  
+
   //z and w inv cuts
   float invZMassCut_;
   float invWMassCut_;
@@ -133,7 +133,7 @@ class Cuts{
   unsigned maxcJets_;
   float cVsLDiscCut_;
   float cVsBDiscCut_;
-  
+
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
   std::vector<float> ptMaxJEC_;
@@ -234,7 +234,7 @@ class Cuts{
   TH2F* h_eleReco;
 
   TFile* muonIDsFile;
-  TFile* muonIsoFile;  
+  TFile* muonIsoFile;
   TFile* muonRecoFile;
   TH2F* h_muonIDs;
   TH2F* h_muonPFiso;

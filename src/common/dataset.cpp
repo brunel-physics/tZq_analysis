@@ -52,7 +52,7 @@ float Dataset::getDatasetWeight(double lumi){
 //Function to weight each event in a dataset
 float Dataset::getEventWeight(){
   return 1.;
-  
+
 }
 
 //Function that constructs a histogram of all the generator level weights from across the entire dataset
