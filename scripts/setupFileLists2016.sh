@@ -5,6 +5,7 @@ echo First deleting old filelists ...
 # Normal datasets
 
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016BFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
@@ -12,6 +13,7 @@ rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50Files.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphUnsmearedFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
@@ -51,6 +53,7 @@ echo Now outputting the lists of the dataset directories into their relevant fil
 
 # Normal datasets
 
+ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016BFiles.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
@@ -67,6 +70,7 @@ ls /scratch/data/tZqSkimsRun2016/metRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph_unsmeared/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphUnsmearedFiles.txt
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
