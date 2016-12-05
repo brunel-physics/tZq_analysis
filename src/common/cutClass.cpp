@@ -44,7 +44,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   tightEleCheckPhotonVeto_{true},
   tightEleMVA0_{0.972153}, // Medium cut
   tightEleMVA1_{0.922126}, // Medium cut
-  tightEleMVA2_{0.610764}, // Medium cut	
+  tightEleMVA2_{0.610764}, // Medium cut
   //tightEleMVA0_{0.988153}, // Tight cut
   //tightEleMVA1_{0.967910}, // Tight cut
   //tightEleMVA2_{0.841729}, // Tight cut
@@ -613,7 +613,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 	if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
 	if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
 	if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue; // Use same rel iso as tight
-	if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.144 ) continue; // Use same rel iso as loose	
+	if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.144 ) continue; // Use same rel iso as loose
 	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.174 ) continue;
 	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
 	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;

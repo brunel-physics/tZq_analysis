@@ -1024,7 +1024,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      if (weight > max) max = weight;
 	      if (weight < min) min = weight;
 	      //	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
-			
+
 	    }
 	    if (systMask == 1024) eventWeight *= max;
 	    if (systMask == 2048) eventWeight *= min;
@@ -1083,7 +1083,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    bTagEffPlots[i]->Write();
 	  }
 	}
-	
+
         delete cloneTree;
         cloneTree = nullptr;
 	outFile1->Write();

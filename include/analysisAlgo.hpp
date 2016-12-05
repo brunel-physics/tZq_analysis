@@ -116,9 +116,9 @@ class AnalysisAlgo{
 
 	// MC weight stuff
 	int sumPositiveWeights_;
-	int sumNegativeWeights_;	
-	int sumNegativeWeightsScaleUp_;	
-	int sumNegativeWeightsScaleDown_;	
+	int sumNegativeWeights_;
+	int sumNegativeWeightsScaleUp_;
+	int sumNegativeWeightsScaleDown_;
 };
 
 #endif
