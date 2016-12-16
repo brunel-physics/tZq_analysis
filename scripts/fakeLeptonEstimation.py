@@ -1,8 +1,10 @@
 #A tool to pull plots from the mva inputs and plot gaussians
 
 from ROOT import *
-import subprocess
+import math
+import os 
 import sys
+import subprocess 
 
 def sortOutLeptons(tree,channel):
     ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
@@ -83,10 +85,12 @@ def main():
 
 ##############
 
-### Number of SS events expected from data
-
   listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 
+### Number of SS events expected from data
+
+  sameSignMC_gen = 0
+  sameSignMC_fake =0
   sameSignMC = 0
   sameSignData = 0
 
@@ -107,8 +111,14 @@ def main():
       tree_SS_MC.GetEntry(event)
       weight = 1.0
       if (weighted) : weight = tree_SS_MC.eventWeight
-
       sameSignMC += 1.0*weight
+
+      if (channel == "ee") :
+        if(abs(tree_SS_MC.genElePF2PATMotherId) == 23 or abs(tree_SS_MC.genElePF2PATMotherId) == 24): sameSignMC_gen += 1.0*weight
+        else : sameSignMC_fake += 1.0*weight
+      elif (channel == "mumu") :
+        if(abs(tree_SS_MC.genMuonPF2PATMotherId) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId) == 24): sameSignMC_gen += 1.0*weight
+        else : sameSignMC_fake += 1.0*weight
 
     infile_SS_MC.Close()
 
@@ -133,8 +143,69 @@ def main():
 
   infile_SS_data.Close()
 
-##############
+### Number of OS events expected from data
 
+  oppSignMC_gen = 0
+  oppSignMC_fake = 0
+  oppSignMC = 0
+  oppSignData = 0
+
+  #Loop over all MC samples
+  for sample in listOfMCs.keys():
+    print "Doing " + sample + ": ",
+    sys.stdout.flush()
+
+    infile_OS_MC = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"mvaOut.root")
+    tree_OS_MC = infile_OS_MC.Get("tree")
+    try:
+      print str(tree_OS_MC.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_OS_MC.GetEntries() ) :
+      tree_OS_MC.GetEntry(event)
+      weight = 1.0
+      if (weighted) : weight = tree_OS_MC.eventWeight
+      oppSignMC += 1.0*weight
+
+      if (channel == "ee") :
+        if(abs(tree_OS_MC.genElePF2PATMotherId) == 23 or abs(tree_OS_MC.genElePF2PATMotherId) == 24): oppSignMC_gen += 1.0*weight
+        else : oppSignMC_fake += 1.0*weight
+      elif (channel == "mumu") :
+        if(abs(tree_OS_MC.genMuonPF2PATMotherId) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId) == 24): oppSignMC_gen += 1.0*weight
+        else : oppSignMC_fake += 1.0*weight
+
+    infile_OS_MC.Close()
+
+  #Loop over data samples
+  sys.stdout.flush()
+  infile_OS_data = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+channel+"Run2016"+channel+"mvaOut.root")
+  tree_OS_data = infile_OS_data.Get("tree")
+  try:
+    print str(tree_OS_data.GetEntriesFast())
+    sys.stdout.flush()
+  except AttributeError:
+    print "\nAttribute Error \n"
+    sys.stdout.flush()
+
+  for event in range ( tree_OS_data.GetEntries() ) :
+    tree_OS_data.GetEntry(event)
+    weight = 1.0
+    if (weighted) : weight = tree_OS_data.eventWeight
+    oppSignData += 1.0*weight
+
+  infile_OS_data.Close()
+
+##############
+#Ratio between OS and SS events
+
+  print "gen OS/SS: ", oppSignMC_gen, "/", sameSignMC_gen, " : " , oppSignMC_gen/(sameSignMC_gen + 1.0e-6)
+  print "fake OS/SS: ", oppSignMC_fake, "/", sameSignMC_fake, " : " , oppSignMC_fake/(sameSignMC_fake + 1.0e-6)
+
+##############
+#Number of expected Same sign events with no fakes - DY mis-id stuff
   eff = sameSignDY/(sameSignDY + oppSignDY)
 
   print "sameSignDY:oppSignDY = ", sameSignDY, " : " , oppSignDY
