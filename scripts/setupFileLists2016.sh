@@ -5,9 +5,11 @@ echo First deleting old filelists ...
 # Normal datasets
 
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016BFiles.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
@@ -51,9 +53,31 @@ rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarSynchFiles.txt
 echo Done!
 echo Now outputting the lists of the dataset directories into their relevant files ...
 
+# Full 2016 datasets
+ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
+
 # Normal datasets
 
-ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016BFiles.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
@@ -98,6 +122,7 @@ ls /scratch/data/tZqSkimsRun2016/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/da
 ls /scratch/data/tZqSkimsRun2016/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ4lFiles.txt
 
 # Synchronisation files
+ls /scratch/data/tZqSkimsRun2016/synch/tZq/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqSynchFiles.txt
 
 echo Done!
 echo Filelists have been updated.
