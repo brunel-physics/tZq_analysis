@@ -113,11 +113,19 @@ def main():
       if (weighted) : weight = tree_SS_MC.eventWeight
       sameSignMC += 1.0*weight
 
+      lep1ID, lep2ID, = False,False
+
       if (channel == "ee") :
-        if(abs(tree_SS_MC.genElePF2PATMotherId) == 23 or abs(tree_SS_MC.genElePF2PATMotherId) == 24): sameSignMC_gen += 1.0*weight
+        if ( abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep1Index]) == 23 or abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep1Index]) == 24 ) : lep1ID = True
+        if ( abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep2Index]) == 23 or abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep2Index]) == 24 ) : lep2ID = True
+
+        if ( lep1ID and lep2ID ) : sameSignMC_gen += 1.0*weight
         else : sameSignMC_fake += 1.0*weight
       elif (channel == "mumu") :
-        if(abs(tree_SS_MC.genMuonPF2PATMotherId) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId) == 24): sameSignMC_gen += 1.0*weight
+        if( abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep1Index]) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep1Index]) == 24 ) : lep1ID = True
+        if( abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep2Index]) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep2Index]) == 24 ) : lep2ID = True
+
+        if( lep1ID and lep2ID ): sameSignMC_gen += 1.0*weight
         else : sameSignMC_fake += 1.0*weight
 
     infile_SS_MC.Close()
@@ -170,11 +178,20 @@ def main():
       if (weighted) : weight = tree_OS_MC.eventWeight
       oppSignMC += 1.0*weight
 
+      lep1ID, lep2ID, = False,False
+
       if (channel == "ee") :
-        if(abs(tree_OS_MC.genElePF2PATMotherId) == 23 or abs(tree_OS_MC.genElePF2PATMotherId) == 24): oppSignMC_gen += 1.0*weight
+        if( abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep1Index]) == 23 or abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep1Index]) == 24 ): lep1ID = True
+        if( abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep2Index]) == 23 or abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep2Index]) == 24 ): lep2ID = True
+
+        if( lep1ID and lep2ID ) : oppSignMC_gen += 1.0*weight
         else : oppSignMC_fake += 1.0*weight
+
       elif (channel == "mumu") :
-        if(abs(tree_OS_MC.genMuonPF2PATMotherId) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId) == 24): oppSignMC_gen += 1.0*weight
+        if( abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep1Index]) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep1Index]) == 24): lep1ID = True
+        if( abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep2Index]) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep2Index]) == 24): lep2ID = True
+
+        if( lep1ID and lep2ID ) : oppSignMC_gen += 1.0*weight
         else : oppSignMC_fake += 1.0*weight
 
     infile_OS_MC.Close()
