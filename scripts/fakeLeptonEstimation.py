@@ -26,7 +26,7 @@ def main():
   channel = "ee"
 #  channel = "mumu"
 
-  weighted = False
+  weighted = True
 
 ### Number of Same Sign no Fakes stuff
 
@@ -63,7 +63,7 @@ def main():
     tree_DY.GetEntry(event)
 
     weight = 1.0
-    if (weighted) : weight = tree_DYS.eventWeight
+    if (weighted) : weight = tree_DY.eventWeight
 
     (zLep1,zLep2) = sortOutLeptons(tree_DY,channel)
     zMass = (zLep1+zLep2).M()
