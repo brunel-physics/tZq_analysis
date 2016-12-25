@@ -17,6 +17,9 @@ class TH3D;
 class TGraphAsymmErrors;
 
 class Cuts{
+
+  private:
+
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*, int syst = 0, bool isControl = false);
   bool invertIsoCut(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
   std::vector<int> makeJetCuts(AnalysisEvent*,int,float*);
@@ -134,6 +137,9 @@ class Cuts{
   float cVsLDiscCut_;
   float cVsBDiscCut_;
 
+  //Temporary jet smearing prop varaible until a more elegant solution is done.
+  float tempSmearValue_;
+
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
   std::vector<float> ptMaxJEC_;
@@ -159,6 +165,7 @@ class Cuts{
   std::ofstream step2EventDump_;
   std::ofstream step4EventDump_;
   std::ofstream step6EventDump_;
+  std::ofstream step9EventDump_;
   //Sets whether to do MC or data cuts. Set every time a new dataset is processed in the main loop.
   bool isMC_;
   std::string triggerFlag_;
@@ -201,6 +208,18 @@ class Cuts{
   //Sets trigger from config file
   std::string cutConfTrigLabel_;
 
+  TFile* electronSFsFile;
+  TFile* electronRecoFile;
+  TH2F* h_eleSFs;
+  TH2F* h_eleReco;
+
+  TFile* muonIDsFile;
+  TFile* muonIsoFile;
+  TFile* muonRecoFile;
+  TH2F* h_muonIDs;
+  TH2F* h_muonPFiso;
+  TGraphAsymmErrors* h_muonRecoGraph;
+
  public:
   Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool, const bool);
   ~Cuts();
@@ -225,20 +244,6 @@ class Cuts{
   TH1F* getSynchCutFlow();
   int numFound(){return synchCutFlowHist_->GetBinContent(4);}
   void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;}
-
-  private:
-
-  TFile* electronSFsFile;
-  TFile* electronRecoFile;
-  TH2F* h_eleSFs;
-  TH2F* h_eleReco;
-
-  TFile* muonIDsFile;
-  TFile* muonIsoFile;
-  TFile* muonRecoFile;
-  TH2F* h_muonIDs;
-  TH2F* h_muonPFiso;
-  TGraphAsymmErrors* h_muonRecoGraph;
 
 };
 

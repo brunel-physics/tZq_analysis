@@ -96,6 +96,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //cVsBDiscCut_{-0.16}, // Medium level
   //cVsBDiscCut_{-0.23}, // Loose cut
 
+  tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
+
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
   //Same for trigger flag.
@@ -219,6 +221,7 @@ Cuts::~Cuts(){
       step2EventDump_.close();
       step4EventDump_.close();
       step6EventDump_.close();
+      step9EventDump_.close();
     }
   }
 }
@@ -296,6 +299,7 @@ bool Cuts::parse_config(std::string confName){
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");
     step4EventDump_.open("step4EventDump"+postfixName_+".txt");
     step6EventDump_.open("step6EventDump"+postfixName_+".txt");
+    step9EventDump_.open("step9EventDump"+postfixName_+".txt");
   }
 
   return true;
@@ -1029,6 +1033,8 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     }
 
     jets.emplace_back(i);
+    event->jetSmearValue.emplace_back(tempSmearValue_);
+    tempSmearValue_ = 1.0; // Reset temporary smear value. Need a cleaner solution than this!
 
     if (getBTagWeight_ && ( !synchCutFlow_ || (synchCutFlow_ && !trileptonChannel_) )){
       getBWeight(event,jetVec,i,&mcTag,&mcNoTag,&dataTag,&dataNoTag,&err1,&err2,&err3,&err4);
@@ -1047,7 +1053,6 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
       bWeight -= bWeightErr;
 
     *eventWeight *= bWeight;
-
   }
 
   return jets;
@@ -1125,7 +1130,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;
   }
   else {
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 ) eeTrig = true;
+    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0 || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true;
   }
 
   //double muon triggers
@@ -1134,7 +1139,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
   }
   else {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
   }
 
   if ( cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos || cutConfTrigLabel_.find("d") != std::string::npos ){if (muEGTrig) return true;}
@@ -1148,7 +1153,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 bool Cuts::metFilters(AnalysisEvent* event){
   if ( event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0 ||  event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 || event->Flag_goodVertices <= 0 || event->Flag_eeBadScFilter <= 0 ) return false;
   if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
-  if ( is2016_ && (event->Flag_globalTightHalo2016Filter <= 0 || event->Flag_BadChargedCandidateFilter <= 0 || event->Flag_BadPFMuonFilter <= 0) ) return false;
+//  if ( is2016_ && (event->Flag_globalTightHalo2016Filter <= 0 || event->Flag_BadChargedCandidateFilter <= 0 || event->Flag_BadPFMuonFilter <= 0) ) return false;
+  if ( is2016_ && (event->Flag_globalTightHalo2016Filter <= 0 || event->Flag_chargedHadronTrackResolutionFilter <= 0 || event->Flag_muonBadTrackFilter <= 0 || event->Flag_ecalLaserCorrFilter <= 0) ) return false;
   else return true;
 }
 
@@ -1167,12 +1173,14 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   }
 
   if (singleEventInfoDump_){
-    std::cout << std::setprecision(6) << std::fixed;
+//    std::cout << std::setprecision(6) << std::fixed;
   }
+
+  if (makeEventDump_) dumpToFile(event,9);
 
   if ( !trileptonChannel_ ){
     synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-    std::cout << std::setprecision(6) << std::fixed;
+//    std::cout << std::setprecision(6) << std::fixed;
 
     if (!triggerCuts(event)) return false;
     if (!metFilters(event)) return false;
@@ -1218,16 +1226,16 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     double topMass = getTopMass(event);
 //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
 
-    if ( topMass > 130 ){
+/*    if ( topMass > 130 ){
        if ( std::abs(event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]]) == 5)
        std::cout << "jet PID/b mass/w Mass/leading b pT: " << event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]] << " / " << bVec.M() << " / " << (event->wPairQuarks.first + event->wPairQuarks.second).M() << " / " << event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]] << "\t " << std::endl;
-    }
+    }*/
 
     return true;
   }
 
   synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-    std::cout << std::setprecision(6) << std::fixed;
+//  std::cout << std::setprecision(6) << std::fixed;
 
   if (makeEventDump_) dumpToFile(event,0);
 
@@ -1314,7 +1322,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
   if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
   if (makeEventDump_) dumpToFile(event,6);
-  if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
+//  if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
   return true;
 }
 
@@ -1525,8 +1533,8 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
 //For synchronisation I am dumping the lepton information here.
 void Cuts::dumpLeptonInfo(AnalysisEvent* event){
-  std::cout << std::setprecision(6) << std::fixed;
-  std::cerr << std::setprecision(6) << std::fixed;
+//  std::cout << std::setprecision(6) << std::fixed;
+//  std::cerr << std::setprecision(6) << std::fixed;
   //Dump electron info first
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
@@ -1591,13 +1599,13 @@ void Cuts::dumpLeptonInfo(AnalysisEvent* event){
   }
   std::cout << "MET: " << event->metPF2PATEt << " | " << event->metPF2PATPt << std::endl;
 
-  std::cout << std::setprecision(1) << std::fixed;
-  std::cerr << std::setprecision(1) << std::fixed;
+//  std::cout << std::setprecision(1) << std::fixed;
+//  std::cerr << std::setprecision(1) << std::fixed;
 }
 
 void Cuts::dumpLooseLepInfo(AnalysisEvent* event){
-  std::cout << std::setprecision(6) << std::fixed;
-  std::cerr << std::setprecision(6) << std::fixed;
+//  std::cout << std::setprecision(6) << std::fixed;
+//  std::cerr << std::setprecision(6) << std::fixed;
 
   std::cout << "Electrons: " << event->numElePF2PAT << std::endl;
   for (int i{0}; i < event->numElePF2PAT; i++){
@@ -1621,8 +1629,8 @@ void Cuts::dumpLooseLepInfo(AnalysisEvent* event){
     std::cout << std::endl;
   }
 
-  std::cout << std::setprecision(1) << std::fixed;
-  std::cerr << std::setprecision(1) << std::fixed;
+//  std::cout << std::setprecision(1) << std::fixed;
+//  std::cerr << std::setprecision(1) << std::fixed;
 }
 
 double Cuts::deltaR(float eta1, float phi1, float eta2, float phi2){
@@ -1646,6 +1654,13 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   // lepton ID for step0?
   event->electronIndexTight = getTightEles(event);
   event->muonIndexTight = getTightMuons(event);
+
+  if ( step == 9 ) { // Used for 2016 debug synch
+    for ( int i = 0; i < event->numElePF2PAT; i++) {
+//      step9EventDump_.precision(3);
+      step9EventDump_ << "|" << event->eventNum << "|" << event->elePF2PATPT[i] << "|" << event->elePF2PATCutIdVeto[i] << "|" << event->elePF2PATCutIdTight[i] << "|" << std::endl;
+    }
+  }
 
   if ( step == 0 ) { // Used for 2015/2016 synch
 
@@ -2033,20 +2048,20 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.931;
-      if (syst == 1) twgt += 0.003;
+      float twgt = 0.931; // 0.931 for eff; 0.968 for SF
+      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.772;
-      if (syst == 1) twgt += 0.003;
+      float twgt = 0.772; // 0.772 for eff; 0.853 for SF
+      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.895;
-      if (syst == 1) twgt += 0.003;
+      float twgt = 0.895; // 0.895 for eff; 0.986 for SF
+      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
       if (syst == 2) twgt -= 0.003;
       return twgt;
     }
@@ -2218,7 +2233,7 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
 
   TLorentzVector returnJet;
-  float newSmearValue{1.};
+  float newSmearValue{1.0};
 
   if ( synchCutFlow_ && trileptonChannel_ ) {
 	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
@@ -2261,9 +2276,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
     returnJet *= 1+jerUncer;
   }
-
-  event->jetSmearValue.emplace_back(newSmearValue);
-
+  tempSmearValue_ = newSmearValue;
   return returnJet;
 }
 

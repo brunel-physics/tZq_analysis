@@ -2,93 +2,35 @@
 echo Updating filelists for datasets used ...
 echo First deleting old filelists ...
 
-# Normal datasets
-
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
-
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttWlnuFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttW2qFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2qFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWInclusiveFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWZ_ll_Files.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqFilesRun1.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tHqFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/wPlusJetsFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WW1l1nu2qFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WW2l2nuFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZ1l1nu2q.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZ2l2q.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZjets.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ4lFiles.txt
-
-# Synchronisation files
-
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqSynchFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZsynchFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZsynchFiles.txt
-rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarSynchFiles.txt
-
+rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/*
 
 echo Done!
 echo Now outputting the lists of the dataset directories into their relevant files ...
 
-# Full 2016 datasets
-ls /scratch/data/tZqSkimsRun2016/eeRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FullFiles.txt
 
 # Normal datasets
 
-ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/metRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/metRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/metRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/eeRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50Files.txt
@@ -99,9 +41,7 @@ ls /scratch/data/tZqSkimsRun2016/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs
 ls /scratch/data/tZqSkimsRun2016/tWZ_5f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 ls /scratch/data/tZqSkimsRun2016/tChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_ext4/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttWlnu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttWlnuFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttW2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttW2qFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt

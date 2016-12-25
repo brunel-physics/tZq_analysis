@@ -328,7 +328,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("makeMVATree,z", po::bool_switch(&makeMVATree),
      "Produce trees after event selection for multivariate analysis.")
     ("syst,v", po::value<int>(&systToRun)->default_value(0),
-     "Mask for systematics to be run. 4095 enables all systematics.")
+     "Mask for systematics to be run. 16383 enables all systematics.")
     ("channels,k", po::value<int>(&channelsToRun)->default_value(0),
      "Mask describing the channels to be run over in trilepton mode. The mask "
      "is the sum of each channel's mask, which are:\n"

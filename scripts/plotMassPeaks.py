@@ -10,13 +10,13 @@ def main():
 
   massCut = False
 
-  weighted = False
+  weighted = True
 
   sigCut = 50.0
   bkgCut = 290.0
 
   wSigma = 8.0
-  topSigma = 20.0
+  topSigma = 30.0
 
   infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_tZq.root")
   infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TT.root")
@@ -99,6 +99,7 @@ def main():
 
 
   for event in infile_tZq.Ttree_tZq :
+#    if (event.Channel != 0) : continue
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
@@ -122,6 +123,7 @@ def main():
 
   for event in infile_TT.Ttree_TT :
     weight = 1
+#    if (event.Channel != 0) : continue
     if (weighted) : weight = event.EvtWeight
 
     if ( massCut and event.topMass < 220 and event.topMass > 110 ) : TT_topMassHisto.Fill(event.topMass,weight)
@@ -143,6 +145,7 @@ def main():
     if ( chi2 >= sigCut and chi2 < bkgCut ) : TT_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
   for event in infile_DY.Ttree_DYToLL_M50 :
+#    if (event.Channel != 0) : continue
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
