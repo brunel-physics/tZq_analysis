@@ -1,0 +1,6 @@
+datasets = "configs/2015/datasets/tZq.txt";
+cuts = "configs/2015/cuts/eeeCuts.txt";
+plots = "configs/plots/plotConf.cfg";
+outputFolder = "plots/2015/tZq_trilepton/";
+outputPostfix = "eee";
+channelName = "eee";
