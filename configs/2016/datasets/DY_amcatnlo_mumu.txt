@@ -30,7 +30,7 @@ plotType = f
 
 [ttWlnu]
 fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
-totalEvents = 2404521
+totalEvents = 5280565
 crossSection = 0.2043
 runType = mc
 histoName = ttV
@@ -50,7 +50,7 @@ plotType = f
 
 [ttZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 1981476
+totalEvents = 1992438
 crossSection = 0.2529
 runType = mc
 histoName = ttV
@@ -69,8 +69,8 @@ label = ttV
 plotType = f
 
 [ttbarInclusivePowerheg]
-fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
-totalEvents = 92925926
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+totalEvents = 77229341
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -110,7 +110,7 @@ plotType = f
 
 [tWInclusive]
 fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
-totalEvents = 998400
+totalEvents = 3516550
 crossSection = 35.85
 runType = mc
 histoName = SingleTop
@@ -120,7 +120,7 @@ plotType = f
 
 [tbarWInclusive]
 fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 985000
+totalEvents = 5205966
 crossSection = 35.85
 runType = mc
 histoName = SingleTop
@@ -189,7 +189,7 @@ plotType = f
 
 [WW1l1nu2q]
 fileName = configs/2016/datasets/fileLists/WW1l1nu2qFiles.txt
-totalEvents = 8950200
+totalEvents = 8997800
 crossSection = 49.997
 runType = mc
 histoName = WW
@@ -199,7 +199,7 @@ plotType = f
 
 [WW2l2nu]
 fileName = configs/2016/datasets/fileLists/WW2l2nuFiles.txt
-totalEvents = 1996600
+totalEvents = 1999000
 crossSection = 12.178
 runType = mc
 histoName = WW
@@ -210,16 +210,16 @@ plotType = f
 [wPlusJets]
 fileName = configs/2016/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 47502020
+totalEvents = 19055602
 crossSection = 61526.7
 histoName = wJets
 colour = kGray
 label = w+jets
 plotType = f
 
-[DYJetsToLL_MM-50_amcatnlo]
+[DYJetsToLL_M-50_amcatnlo]
 fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
-totalEvents = 104113466
+totalEvents = 28968252
 crossSection = 5765.4
 runType = mc
 histoName = zPlusJets

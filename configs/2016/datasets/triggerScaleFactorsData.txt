@@ -1,6 +1,6 @@
-[ttbarInclusivePowerheg_ext3]
-fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
-totalEvents = 92925926
+[ttbarInclusivePowerheg]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+totalEvents = 77229341
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -19,4 +19,3 @@ colour = kBlack
 triggerFlag = eCt
 
 []
-
