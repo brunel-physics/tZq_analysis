@@ -2165,7 +2165,7 @@ float Cuts::muonSF(double pt, double eta, int syst){
 void Cuts::initialiseJECCors(){
   std::ifstream jecFile;
   if ( !is2016_ ) jecFile.open( "scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
-  else jecFile.open( "scaleFactors/2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  else jecFile.open( "scaleFactors/2016/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
 

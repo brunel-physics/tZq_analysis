@@ -535,7 +535,7 @@ def main():
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
-    jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+    jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
