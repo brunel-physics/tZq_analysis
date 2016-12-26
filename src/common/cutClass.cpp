@@ -1153,7 +1153,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
 bool Cuts::metFilters(AnalysisEvent* event){
   if ( event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0 ||  event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 || event->Flag_goodVertices <= 0 || event->Flag_eeBadScFilter <= 0 ) return false;
   if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
-//  if ( is2016_ && (event->Flag_globalTightHalo2016Filter <= 0 || event->Flag_BadChargedCandidateFilter <= 0 || event->Flag_BadPFMuonFilter <= 0) ) return false;
   if ( is2016_ && (event->Flag_globalTightHalo2016Filter <= 0 || event->Flag_chargedHadronTrackResolutionFilter <= 0 || event->Flag_muonBadTrackFilter <= 0 || event->Flag_ecalLaserCorrFilter <= 0) ) return false;
   else return true;
 }
@@ -2347,56 +2346,56 @@ std::pair< float, float > Cuts::jet2016SFs( float eta ) {
   float jerSigma{0.};
 
   if (eta <= 0.5) {
-    jerSF = 1.122;
-    jerSigma = 0.026;
+    jerSF = 1.109;
+    jerSigma = 0.008;
   }
   else if (eta <= 0.8) {
-    jerSF = 1.167;
-    jerSigma = 0.048;
+    jerSF = 1.138;
+    jerSigma = 0.013;
   }
   else if (eta <= 1.1) {
-    jerSF = 1.168;
-    jerSigma = 0.046;
+    jerSF = 1.114;
+    jerSigma = 0.013;
   }
   else if (eta <= 1.3) {
-    jerSF = 1.029;
-    jerSigma = 0.066;
+    jerSF = 1.123;
+    jerSigma = 0.024;
   }
   else if (eta <= 1.7) {
-    jerSF = 1.115;
-    jerSigma = 0.03;
+    jerSF = 1.084;
+    jerSigma = 0.011;
   }
   else if (eta <= 1.9) {
-    jerSF = 1.041;
-    jerSigma = 0.062;
+    jerSF = 1.082;
+    jerSigma = 0.035;
   }
   else if (eta <= 2.1) {
-    jerSF = 1.167;
-    jerSigma = 0.086;
+    jerSF = 1.140;
+    jerSigma = 0.047;
   }
   else if (eta <= 2.3) {
-    jerSF = 1.094;
-    jerSigma = 0.093;
+    jerSF = 1.067;
+    jerSigma = 0.053;
   }
   else if (eta <= 2.5) {
-    jerSF = 1.168;
-    jerSigma = 0.120;
+    jerSF = 1.177;
+    jerSigma = 0.041;
   }
   else if (eta <= 2.8) {
-    jerSF = 1.266;
-    jerSigma = 0.132;
+    jerSF = 1.364;
+    jerSigma = 0.039;
   }
   else if (eta <= 3.0){
-    jerSF = 1.595;
-    jerSigma = 0.175;
+    jerSF = 1.857;
+    jerSigma = 0.071;
   }
   else if (eta <= 3.2){
-    jerSF = 1.002;
-    jerSigma = 0.066;
+    jerSF = 1.328;
+    jerSigma = 0.022;
   }
   else {
-    jerSF = 1.226;
-    jerSigma = 0.145;
+    jerSF = 1.160;
+    jerSigma = 0.029;
   }
 
   return std::make_pair( jerSF, jerSigma );
