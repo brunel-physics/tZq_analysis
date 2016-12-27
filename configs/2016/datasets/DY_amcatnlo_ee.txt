@@ -90,8 +90,8 @@ plotType = f
 
 [tChannel]
 fileName = configs/2016/datasets/fileLists/tChannelFiles.txt
-totalEvents = 3279200
-crossSection = 137.60
+totalEvents = 67240808
+crossSection = 136.02
 runType = mc
 histoName = SingleTop
 colour = kMagenta
@@ -100,8 +100,8 @@ plotType = f
 
 [tbarChannel]
 fileName = configs/2016/datasets/fileLists/tbarChannelFiles.txt
-totalEvents = 1682400
-crossSection = 82.6669
+totalEvents = 38811017
+crossSection = 80.95
 runType = mc
 histoName = SingleTop
 colour = kMagenta
