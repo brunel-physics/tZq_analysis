@@ -409,6 +409,7 @@ public :
    Int_t	   HLT_PFHT750_4JetPt50_v6;
    Int_t	   HLT_PFHT750_4JetPt70_v1;
    Int_t	   HLT_PFHT750_4JetPt70_v2;
+   Int_t	   HLT_PFHT750_4JetPt80_v2;
    Int_t	   HLT_PFHT300_PFMET100_v1;
    Int_t	   HLT_PFHT300_PFMET100_v2;
    Int_t	   HLT_PFHT300_PFMET100_v3;
@@ -831,6 +832,7 @@ public :
    TBranch	   *b_HLT_PFHT750_4JetPt50_v6;
    TBranch	   *b_HLT_PFHT750_4JetPt70_v1;
    TBranch	   *b_HLT_PFHT750_4JetPt70_v2;
+   TBranch	   *b_HLT_PFHT750_4JetPt80_v2;
    TBranch	   *b_HLT_PFHT300_PFMET100_v1;
    TBranch	   *b_HLT_PFHT300_PFMET100_v2;
    TBranch	   *b_HLT_PFHT300_PFMET100_v3;
@@ -1385,6 +1387,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
        fChain->SetBranchAddress("HLT_PFHT750_4JetPt50_v6", &HLT_PFHT750_4JetPt50_v6, &b_HLT_PFHT750_4JetPt50_v6);
        fChain->SetBranchAddress("HLT_PFHT750_4JetPt70_v1", &HLT_PFHT750_4JetPt70_v1, &b_HLT_PFHT750_4JetPt70_v1);
        fChain->SetBranchAddress("HLT_PFHT750_4JetPt70_v2", &HLT_PFHT750_4JetPt70_v2, &b_HLT_PFHT750_4JetPt70_v2);
+       fChain->SetBranchAddress("HLT_PFHT750_4JetPt80_v2", &HLT_PFHT750_4JetPt80_v2, &b_HLT_PFHT750_4JetPt80_v2);
        fChain->SetBranchAddress("HLT_PFHT300_PFMET100_v1", &HLT_PFHT300_PFMET100_v1, &b_HLT_PFHT300_PFMET100_v1);
        fChain->SetBranchAddress("HLT_PFHT300_PFMET100_v2", &HLT_PFHT300_PFMET100_v2, &b_HLT_PFHT300_PFMET100_v2);
        fChain->SetBranchAddress("HLT_PFHT300_PFMET100_v3", &HLT_PFHT300_PFMET100_v3, &b_HLT_PFHT300_PFMET100_v3);
