@@ -171,7 +171,7 @@ plotType = f
 [ZZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 runType = mc
-totalEvents = 8968000
+totalEvents = 8842475
 crossSection = 0.564
 histoName = zz
 colour = kPink
