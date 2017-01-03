@@ -155,9 +155,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   }
   else {
     std::cout << "\nLoad 2016 electron SFs from root file ... " << std::endl;
-    electronSFsFile = new TFile("scaleFactors/2016/egammaEffi.txt_SF2D.root"); // Electron cut-based Tight ID
+    electronSFsFile = new TFile("scaleFactors/2016/egammaEffi_Tight_80X.txt_EGM2D.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
-    electronRecoFile = new TFile{"scaleFactors/2016/egammaRecoEffi.txt_SF2D.root"}; // Electron Reco SF
+    electronRecoFile = new TFile{"scaleFactors/2016/egammaRecoEffi.txt_EGM2D.root"}; // Electron Reco SF
     h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
     std::cout << "Got 2016 electron SFs!\n" << std::endl;
 
