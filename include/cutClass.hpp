@@ -64,7 +64,7 @@ class Cuts{
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*, int syst = 0);
   float eleSF(double, double, int syst = 0);
-  float muonSF(double, double, int syst = 0);
+  float muonSF(double, double, int syst = 0, int eventRun = 0);
 
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
@@ -213,11 +213,15 @@ class Cuts{
   TH2F* h_eleSFs;
   TH2F* h_eleReco;
 
-  TFile* muonIDsFile;
-  TFile* muonIsoFile;
+  TFile* muonIDsFile1;
+  TFile* muonIsoFile1;
+  TFile* muonIDsFile2;
+  TFile* muonIsoFile2;
   TFile* muonRecoFile;
-  TH2F* h_muonIDs;
-  TH2F* h_muonPFiso;
+  TH2F* h_muonIDs1;
+  TH2F* h_muonIDs2;
+  TH2F* h_muonPFiso1;
+  TH2F* h_muonPFiso2;
   TGraphAsymmErrors* h_muonRecoGraph;
 
  public:
