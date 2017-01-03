@@ -81,20 +81,20 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   numbJets_{1},
   maxbJets_{2},
   looseBjetVeto_{0},
-  bDiscCut_{0.935}, // Tight cut
-  //bDiscCut_{0.80}, // Medium level
-  //bDiscCut_{0.460}, // Loose cut
-  bLooseDiscCut_{0.460}, // Loose cut
-  bDiscSynchCut_{0.460},
+  bDiscCut_{0.9535}, // Tight cut
+  //bDiscCut_{0.8484}, // Medium level
+  //bDiscCut_{0.5426}, // Loose cut
+  bLooseDiscCut_{0.5426}, // Loose cut
+  bDiscSynchCut_{0.5426},
   //C-discriminator cut
   numcJets_{1},
   maxcJets_{1},
-  //cVsLDiscCut_{0.450}, // Tight cut
-  cVsLDiscCut_{0.050}, // Medium level
-  //cVsLDiscCut_{-0.670}, // Loose cut
-  cVsBDiscCut_{-0.35}, // Tight cut
-  //cVsBDiscCut_{-0.16}, // Medium level
-  //cVsBDiscCut_{-0.23}, // Loose cut
+  //cVsLDiscCut_{0.69}, // Tight cut
+  cVsLDiscCut_{-0.1}, // Medium level
+  //cVsLDiscCut_{-0.48}, // Loose cut
+  cVsBDiscCut_{0.45}, // Tight cut
+  //cVsBDiscCut_{0.08}, // Medium level
+  //cVsBDiscCut_{-0.17}, // Loose cut
 
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
 
