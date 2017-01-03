@@ -2117,21 +2117,21 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.931; // 0.931 for eff; 0.968 for SF
-      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
-      if (syst == 2) twgt -= 0.003;
+      float twgt = 0.922; // 0.922 for data eff; 0.973 for SF
+      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.002;
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.772; // 0.772 for eff; 0.853 for SF
-      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
-      if (syst == 2) twgt -= 0.003;
+      float twgt = 0.802; // 0.802 for eff; 0.858 for SF
+      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.002;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.895; // 0.895 for eff; 0.986 for SF
-      if (syst == 1) twgt += 0.003; // 0.003 for eff; 0.002 for SF
-      if (syst == 2) twgt -= 0.003;
+      float twgt = 0.894; // 0.894 for eff; 0.964 for SF
+      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.002;
       return twgt;
     }
     //Trilepton channels
