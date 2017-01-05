@@ -10,7 +10,7 @@ plotType = f
 
 [tHq]
 fileName = configs/2016/datasets/fileLists/tHqFiles.txt
-totalEvents = 3485999
+totalEvents = 3495799
 crossSection = 0.07096
 runType = mc
 histoName = tHq
