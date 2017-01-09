@@ -24,6 +24,7 @@ ls /scratch/data/tZqSkimsRun2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
@@ -31,6 +32,15 @@ ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
+ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
+
 ls /scratch/data/tZqSkimsRun2016/metRun2016B_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/metRun2016C_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/metRun2016D_rereco/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
@@ -39,7 +49,8 @@ ls /scratch/data/tZqSkimsRun2016/metRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/metRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/metRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 
-ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
