@@ -720,6 +720,20 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     // 2016 cuts
     else {
 
+      //Tight ID Cut
+      if (!event->muonPF2PATTrackID[i]) continue;
+      if (!event->muonPF2PATGlobalID[i]) continue;
+
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
+      if (event->muonPF2PATMatchedStations[i] < 2) continue;
+      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+      if (event->muonPF2PATMuonNHits[i] < 1) continue;
+      if (event->muonPF2PATVldPixHits[i] < 1) continue;
+      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
+
+      //ICHEP Medium Cut
+/*
       // If not either track muon and global muon ...
       if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
       if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
@@ -736,7 +750,9 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
 
       // If both good global muon and tight segment compatible are not true ...
       if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
+*/
     }
+
     muons.emplace_back(i);
   }
   return muons;
@@ -1986,8 +2002,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,event->eventRun);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,event->eventRun);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,280920);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,280920);
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],event->elePF2PATSCEta[event->wLepIndex],syst);
@@ -2002,12 +2018,12 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,event->eventRun);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,event->eventRun);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,280920);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,280920);
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
-      leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],event->muonPF2PATEta[event->muonIndexTight[0]],syst,event->eventRun);
+      leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],event->muonPF2PATEta[event->muonIndexTight[0]],syst,280920);
     }
   }
 
@@ -2123,7 +2139,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.802; // 0.802 for eff; 0.858 for SF
+      float twgt = 0.754; // 0.802 for eff; 0.858 for SF // eff pre-HIP fix: 0.754; eff post-HIP fix: 0.871
       if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= 0.002;
       return twgt;
@@ -2380,6 +2396,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
     float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
     returnJet *= 1+jerUncer;
   }
+  
   tempSmearValue_ = newSmearValue;
   return returnJet;
 }
