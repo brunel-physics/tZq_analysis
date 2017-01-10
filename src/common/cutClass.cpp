@@ -2377,7 +2377,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
   TLorentzVector returnJet;
   float newSmearValue{1.0};
 
-  if ( initialRun ) {
+  if ( !initialRun ) {
     newSmearValue = event->jetSmearValue[index];
     returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     if (isMC_){
