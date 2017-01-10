@@ -346,7 +346,11 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     if ( !makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun) ) return false;
   }
 
-  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
+  std::pair< std::vector<int>, std::vector<float> > jetInfo;
+  jetInfo = makeJetCuts(event, systToRun, eventWeight);
+  event->jetIndex = jetInfo.first;
+  event->jetSmearValue = jetInfo.second;
+
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
@@ -919,8 +923,8 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
 	    if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
 	  }
         }
-        TLorentzVector jetVec1{getJetLVec(event,jets[k],syst)};
-        TLorentzVector jetVec2{getJetLVec(event,jets[l],syst)};
+        TLorentzVector jetVec1{getJetLVec(event,jets[k],syst,false)};
+        TLorentzVector jetVec2{getJetLVec(event,jets[l],syst,false)};
 
 	TLorentzVector wQuark1{jetVec1.Px(),jetVec1.Py(),jetVec1.Pz(),jetVec1.E()};
 	TLorentzVector wQuark2{jetVec2.Px(),jetVec2.Py(),jetVec2.Pz(),jetVec2.E()};
@@ -949,7 +953,7 @@ float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::
       if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
       TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
       TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-      float invMass{(lepton1+lepton2).M()};
+      float invMass{ float( (lepton1+lepton2).M() ) };
       if( std::abs(invMass) > std::abs(closestMass) ){
         event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
         event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
@@ -969,9 +973,11 @@ float Cuts::getTopMass(AnalysisEvent *event){
   return topMass;
 }
 
-std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
+std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
 
   std::vector<int> jets;
+  std::vector<float> SFs;
+
   float mcTag{1.};
   float mcNoTag{1.};
   float dataTag{1.};
@@ -985,7 +991,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
   //  std::cout << event->eventNum << std::endl << "Jets: " << std::endl;
   for (int i{0}; i < event->numJetPF2PAT; i++){
     //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
-    TLorentzVector jetVec{getJetLVec(event,i,syst)};
+    TLorentzVector jetVec{getJetLVec(event,i,syst,true)};
     // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy), event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
     if (jetVec.Pt() <= jetPt_) continue;
     if (std::abs(jetVec.Eta()) >= jetEta_) continue;
@@ -1059,7 +1065,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     }
 
     jets.emplace_back(i);
-    event->jetSmearValue.emplace_back(tempSmearValue_);
+    SFs.emplace_back(tempSmearValue_);
     tempSmearValue_ = 1.0; // Reset temporary smear value. Need a cleaner solution than this!
 
     if (getBTagWeight_ && ( !synchCutFlow_ || (synchCutFlow_ && !trileptonChannel_) )){
@@ -1072,7 +1078,7 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag){
       bWeight = 1.;
     }
-    float bWeightErr{std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight};
+    float bWeightErr{ float( std::sqrt( pow(err1+err2,2) + pow(err3 + err4, 2)) * bWeight) };
     if (syst == 256)
       bWeight += bWeightErr;
     if (syst == 512)
@@ -1081,14 +1087,14 @@ std::vector<int> Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * event
     *eventWeight *= bWeight;
   }
 
-  return jets;
+  return std::make_pair( jets, SFs );
 }
 
 std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, int syst){
 
   std::vector<int> bJets;
-  for (auto i = 0; i != jets.size(); i++){
-    TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
+  for (unsigned int i = 0; i != jets.size(); i++){
+    TLorentzVector jetVec{getJetLVec(event,jets[i],syst,false)};
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && (synchCutFlow_ && trileptonChannel_)) continue;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ ) continue;
@@ -1103,9 +1109,9 @@ std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jet
 
   std::vector<int> bJets;
 
-  for (auto i = 0; i != jets.size(); i++){
+  for (unsigned int i = 0; i != jets.size(); i++){
 
-    TLorentzVector jetVec{getJetLVec(event,jets[i],syst)};
+    TLorentzVector jetVec{getJetLVec(event,jets[i],syst,false)};
     if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
     if (event->jetPF2PATBDiscriminator[jets[i]] <= bLooseDiscCut_) continue;
     if (jetVec.Eta() >= 2.40) continue;
@@ -1289,7 +1295,11 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
     *eventWeight *= getLeptonWeight(event,0);
 
-    event->jetIndex = makeJetCuts(event, 0, eventWeight);
+    std::pair< std::vector<int>, std::vector<float> > jetInfo;
+    jetInfo = makeJetCuts(event, 0, eventWeight);
+    event->jetIndex = jetInfo.first;
+    event->jetSmearValue = jetInfo.second;
+
     if (event->jetIndex.size() < numJets_) return false;
     if (event->jetIndex.size() > maxJets_) return false;
     synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
@@ -1308,7 +1318,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
 
 //    double topMass = (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
-    double topMass = getTopMass(event);
+//    double topMass = getTopMass(event);
 //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
 
 /*    if ( topMass > 130 ){
@@ -1370,7 +1380,10 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   //Add in extra steps here.
 
   // Jet selection
-  event->jetIndex = makeJetCuts(event, 0, eventWeight);
+  std::pair< std::vector<int>, std::vector<float> > jetInfo;
+  jetInfo = makeJetCuts(event, 0, eventWeight);
+  event->jetIndex = jetInfo.first;
+  event->jetSmearValue = jetInfo.second;
   if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
   if (event->jetIndex.size() < 1) return false;
   if (makeEventDump_) dumpToFile(event,4);
@@ -1598,7 +1611,11 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun,true))) return false;
 
-  event->jetIndex = makeJetCuts(event, systToRun, eventWeight);
+  std::pair< std::vector<int>, std::vector<float> > jetInfo;
+  jetInfo = makeJetCuts(event, systToRun, eventWeight);
+  event->jetIndex = jetInfo.first;
+  event->jetSmearValue = jetInfo.second;
+
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
@@ -1927,7 +1944,10 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   }*/
 
   float tempWeight{1.};
-  event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+  std::pair< std::vector<int>, std::vector<float> > jetInfo;
+  jetInfo = makeJetCuts(event, 0, &tempWeight);
+  event->jetIndex = jetInfo.first;
+  event->jetSmearValue = jetInfo.second;
 
   switch (step){
   case 0:
@@ -1964,7 +1984,9 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) < 3 ) step0EventDump_ << "0"; // Check to ensure there are at least three leptons - otherwise memory leak occurs.
     else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
     else step0EventDump_ << "0";
-    event->jetIndex = makeJetCuts(event, 0, &tempWeight);
+    jetInfo = makeJetCuts(event, 0, &tempWeight);
+    event->jetIndex = jetInfo.first;
+    event->jetSmearValue = jetInfo.second;
     if ( event->jetIndex.size() >= 1 ) step0EventDump_ << "1"; // Jet selection, at least one jet - step 4
     else step0EventDump_ << "0";
     event->bTagIndex = makeBCuts(event,event->jetIndex);
@@ -2350,10 +2372,20 @@ float Cuts::getJECUncertainty(float pt, float eta, int syst){
 
 }
 
-TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst){
+TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool initialRun){
 
   TLorentzVector returnJet;
   float newSmearValue{1.0};
+
+  if ( initialRun ) {
+    newSmearValue = event->jetSmearValue[index];
+    returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+    if (isMC_){
+      float jerUncer{getJECUncertainty(returnJet.Pt(),returnJet.Eta(),syst)};
+      returnJet *= 1+jerUncer;
+    }
+  return returnJet;
+  }
 
   if ( synchCutFlow_ && trileptonChannel_ ) {
 	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);

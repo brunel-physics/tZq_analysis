@@ -271,8 +271,8 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
   gErrorIgnoreLevel = kInfo;
   //Set up environment a little.
-  std::cerr << std::setprecision(1) << std::fixed;
-  std::cout << std::setprecision(1) << std::fixed;
+  std::cerr << std::setprecision(6) << std::fixed;
+  std::cout << std::setprecision(6) << std::fixed;
 
   namespace po = boost::program_options;
   po::options_description desc("Options");
