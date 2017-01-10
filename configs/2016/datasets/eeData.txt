@@ -1,6 +1,6 @@
 [eeRun2016]
 fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
-luminosity = 36273.524
+luminosity = 36627.192
 runType = data
 histoName = data
 label = Data
