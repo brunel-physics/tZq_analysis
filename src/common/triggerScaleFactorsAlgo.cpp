@@ -17,6 +17,8 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
+const bool HIP_ERA (false);
+
 TriggerScaleFactors::TriggerScaleFactors():
   postLepSelTree_{nullptr},
   postLepSelTree2_{nullptr},
@@ -412,6 +414,9 @@ void TriggerScaleFactors::runMainAnalysis(){
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
 
+      if ( HIP_ERA && event->eventRun >= 278820 ) continue;
+      if ( !HIP_ERA && event->eventRun < 278820 ) continue;
+
       //Does this event pass tight electron cut?
       //Create electron index
       event->electronIndexTight = getTightElectrons( event );
@@ -779,17 +784,13 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event ) {
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
   }
   else {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 && !HIP_ERA ) mumuTrig = true; //post-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
+    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 && !HIP_ERA ) mumuTrig = true; //post-HIP
   }
   if ( mumuTrig == true ) return true;
   else return false;
