@@ -354,9 +354,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
         if syst == 1024 or syst == 2048:
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
-        if ( SameSignMC = 0 ) : varMap["eventWeight"][0] = tree.eventWeight
         scaleFactor = 1.0 # SF to weight fake shape by
-        else varMap["eventWeight"][0] = -1.0 * tree.eventWeight * scaleFactor
+        if ( SameSignMC == 0 ) : varMap["eventWeight"][0] = tree.eventWeight
+        else : varMap["eventWeight"][0] = -1.0 * tree.eventWeight * scaleFactor
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
         varMap["leadJetPhi"][0] = jetVecs[0].Phi()
@@ -663,6 +663,8 @@ def main():
     outFakeChanToData["FakeEG"] = ["ee"]
     outFakeChanToData["FakeMu"] = ["mumu"]
 
+    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+
     #Loop over opposite sign samples to create fake shape
     for outChan in outChannels:
         print "And finally fake (non-prompt) lepton shapes estimated from data ",outChan
@@ -691,9 +693,9 @@ def main():
                 inFile = TFile(inputDir+sample+channel+"invLepmvaOut.root","READ")
                 tree = inFile.Get("tree")
                 try:
-                    print syst +  " : " + str(tree.GetEntriesFast())
+                    print str(tree.GetEntriesFast())
                     sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, jetUnc, channel, is2016, 1)
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample], jetUnc, channel, is2016, 1)
                 except AttributeError:
                     print "\nAttribute Error \n"
                     print syst + " : " + "0",
