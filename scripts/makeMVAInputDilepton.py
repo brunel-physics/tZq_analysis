@@ -326,7 +326,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, zPtEventWeight = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, SameSignMC = 0.):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0
@@ -354,7 +354,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
         if syst == 1024 or syst == 2048:
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
-        varMap["eventWeight"][0] = tree.eventWeight
+        if ( SameSignMC = 0 ) : varMap["eventWeight"][0] = tree.eventWeight
+        scaleFactor = 1.0 # SF to weight fake shape by
+        else varMap["eventWeight"][0] = -1.0 * tree.eventWeight * scaleFactor
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
         varMap["leadJetPhi"][0] = jetVecs[0].Phi()
@@ -572,7 +574,7 @@ def main():
         treeNamePostfixSig = "sig_"
         treeNamePostfixSB = "ctrl_"
 
-    #Loop over samples
+    #Loop over nominal samples
     for sample in listOfMCs.keys():
         print "Doing " + sample + ": ",
         sys.stdout.flush()
@@ -620,6 +622,7 @@ def main():
         outFile.Write()
         outFile.Close()
         print
+
     chanMap = {}
     if is2016 :
         chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016"}
@@ -655,5 +658,55 @@ def main():
             outTreeSdBnd.Write()
         outFile.Close()
 
+    outFakeChannels = ["FakeEG","FakeMu"]
+    outFakeChanToData = {}
+    outFakeChanToData["FakeEG"] = ["ee"]
+    outFakeChanToData["FakeMu"] = ["mumu"]
+
+    #Loop over opposite sign samples to create fake shape
+    for outChan in outChannels:
+        print "And finally fake (non-prompt) lepton shapes estimated from data ",outChan
+        outTreeSig = TTree("Ttree_"+treeNamePostfixSig+outChan,"Ttree_"+treeNamePostfixSig+outChan)
+        setupBranches(outTreeSig,inputVars)
+        outTreeSdBnd = 0
+        if useSidebandRegion:
+            outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
+            setupBranches(outTreeSdBnd,inputVars)
+        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
+        # Get same sign data
+        for chan in outChanToData[outChan]:
+            dataChain = TChain("tree")
+            if is2016 :
+                 dataChain.Add(inputDir+chanMap[chan]+chan+"invLepmvaOut.root")
+            else :
+                for run in ["C","D"]:
+                    dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
+            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
+
+	# Get expected real SS events from MC
+        for sample in listOfMCs.keys():
+            print "Doing SS fakes " + sample + ": ",
+            sys.stdout.flush()
+            for channel in channels:
+                inFile = TFile(inputDir+sample+channel+"invLepmvaOut.root","READ")
+                tree = inFile.Get("tree")
+                try:
+                    print syst +  " : " + str(tree.GetEntriesFast())
+                    sys.stdout.flush()
+                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, jetUnc, channel, is2016, 1)
+                except AttributeError:
+                    print "\nAttribute Error \n"
+                    print syst + " : " + "0",
+                    sys.stdout.flush()
+                   #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
+                inFile.Close()
+        outFile.cd()
+        outFile.Write()
+        outTreeSig.Write()
+        if useSidebandRegion:
+            outTreeSdBnd.Write()
+        outFile.Close()
+
 if __name__ == "__main__":
     main()
+
