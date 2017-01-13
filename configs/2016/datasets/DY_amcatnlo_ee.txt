@@ -19,7 +19,7 @@ label = Single Top
 plotType = f
 
 [tWZ]
-filename = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 totalEvents = 50000
 crossSection = 0.01123
 runType = mc

@@ -19,7 +19,7 @@ label = SingleTop
 plotType = f
 
 [tWZ]
-filename = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 totalEvents = 50000
 crossSection = 0.01123
 runType = mc
@@ -210,7 +210,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/2016/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 19055602
+totalEvents = 24120319
 crossSection = 61526.7
 histoName = wJets
 colour = kGray
