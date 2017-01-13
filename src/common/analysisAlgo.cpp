@@ -709,7 +709,7 @@ void AnalysisAlgo::runMainAnalysis(){
       if (!usePostLepTree){
 	if (!datasetFilled){
 	  if (!dataset->fillChain(datasetChain,numFiles)){
-	    std::cerr << "There was a problem constructing the chain for " << dataset->name() << ". Continuing with next dataset.\n";
+	    std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
 	    continue;
 	  }
 	  datasetFilled = true;
