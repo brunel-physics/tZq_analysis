@@ -532,8 +532,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 def main():
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
-#    listOfMCs = {}
+#    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+    listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
@@ -629,7 +629,8 @@ def main():
     else :
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
-    outChannels = ["DataEG","DataMu"]
+#    outChannels = ["DataEG","DataMu"]
+    outChannels = ["DataEG"]
     outChanToData = {}
     outChanToData["DataEG"] = ["ee"]
     outChanToData["DataMu"] = ["mumu"]
@@ -663,7 +664,7 @@ def main():
     outFakeChanToData["FakeEG"] = ["ee"]
     outFakeChanToData["FakeMu"] = ["mumu"]
 
-#    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+    listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 
     #Loop over opposite sign samples to create fake shape
     for outChan in outFakeChannels:
@@ -675,6 +676,7 @@ def main():
             outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
             setupBranches(outTreeSdBnd,inputVars)
         outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
+
         # Get same sign data
         for chan in outFakeChanToData[outChan]:
             dataChain = TChain("tree")
@@ -683,25 +685,17 @@ def main():
             else :
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
 
-	# Get expected real SS events from MC
-        for sample in listOfMCs.keys():
-            print "Doing SS fakes " + sample + ": ",
-            sys.stdout.flush()
-            for channel in channels:
-                inFile = TFile(inputDir+sample+channel+"invLepmvaOut.root","READ")
-                tree = inFile.Get("tree")
-                try:
-                    print str(tree.GetEntriesFast())
-                    sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample], jetUnc, channel, is2016, 1)
-                except AttributeError:
-                    print "\nAttribute Error \n"
-                    print syst + " : " + "0",
-                    sys.stdout.flush()
-                   #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
-                inFile.Close()
+   	    # Get expected real SS events from MC
+            for sample in listOfMCs.keys():
+               print "Doing SS fakes " + sample + "\n",
+               sys.stdout.flush()
+               dataChain.Add(inputDir+sample+chan+"invLepmvaOut.root")
+            try:
+               fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
+            except AttributeError:
+                print "\nAttribute Error \n"
+
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()
