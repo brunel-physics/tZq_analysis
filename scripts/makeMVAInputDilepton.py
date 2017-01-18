@@ -629,8 +629,7 @@ def main():
     else :
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
-#    outChannels = ["DataEG","DataMu"]
-    outChannels = ["DataEG"]
+    outChannels = ["DataEG","DataMu"]
     outChanToData = {}
     outChanToData["DataEG"] = ["ee"]
     outChanToData["DataMu"] = ["mumu"]
