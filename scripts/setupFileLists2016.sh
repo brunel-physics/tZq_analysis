@@ -2,7 +2,7 @@
 echo Updating filelists for datasets used ...
 echo First deleting old filelists ...
 
-if [ -z "$VAR" ]; then
+if [ -z "$TQZ_TOOLS_PATH" ]; then
     echo '$TQZ_TOOLS_PATH not set, setting to .'
     export TQZ_TOOLS_PATH='.'
 fi
