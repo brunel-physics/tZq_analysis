@@ -2,6 +2,12 @@
 echo Updating filelists for datasets used ...
 echo First deleting old filelists ...
 
+if [ -z "$TQZ_TOOLS_PATH" ]; then
+    echo '$TQZ_TOOLS_PATH not set, setting to .'
+    export TQZ_TOOLS_PATH='.'
+fi
+
+
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/*
 
 echo Done!
@@ -76,6 +82,17 @@ ls /scratch/data/tZqSkimsRun2016/WZJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/da
 ls /scratch/data/tZqSkimsRun2016/ZZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ4lFiles.txt
+
+# FCNC Datasets
+
+ls /scratch/data/tZqSkimsRun2016/tZq_lll_Kappa_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_lll_Kappa_Zct.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_lll_Kappa_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_lll_Kappa_Zut.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_lll_Zeta_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_lll_Zeta_Zct.txt
+
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_Kappa_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Kappa_Zct.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_Kappa_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Kappa_Zut.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_Zeta_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Zeta_Zct.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_Zeta_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Zeta_Zut.txt
 
 # Synchronisation files
 ls /scratch/data/tZqSkimsRun2016/synch/tZq/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqSynchFiles.txt
