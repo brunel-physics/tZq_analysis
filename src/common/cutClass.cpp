@@ -330,7 +330,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   if( !skipTrigger_ ) {
     if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
-    if ( !isMC_ && is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+    if ( is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
 
     if( !is2016_ && isMC_ ) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
     else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
@@ -1605,7 +1605,7 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   if( !skipTrigger_ ) {
     if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
-    if ( !isMC_ && is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
+    if ( is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
 
     if( !is2016_ && isMC_ ) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
     else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
@@ -2159,21 +2159,21 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
   else {
     //Dilepton channels
     if (channel == "ee"){
-      float twgt = 0.922; // 0.922 for data eff; 0.973 for SF
-      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.002;
+      float twgt = 0.973; // 0.922 for data eff; 0.973 for SF
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.754; // 0.802 for eff; 0.858 for SF // eff pre-HIP fix: 0.754; eff post-HIP fix: 0.871
-      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.002;
+      float twgt = 0.809; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
       return twgt;
     }
     if (channel == "emu"){
-      float twgt = 0.894; // 0.894 for eff; 0.964 for SF
-      if (syst == 1) twgt += 0.002; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.002;
+      float twgt = 0.895; // 0.964 for eff; 0.964 for SF
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
       return twgt;
     }
     //Trilepton channels
