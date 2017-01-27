@@ -2165,7 +2165,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-      float twgt = 0.809; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
+      float twgt = 0.934; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
       if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= 0.001;
       return twgt;
@@ -2312,7 +2312,7 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 void Cuts::initialiseJECCors(){
   std::ifstream jecFile;
   if ( !is2016_ ) jecFile.open( "scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
-  else jecFile.open( "scaleFactors/2016/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  else jecFile.open( "scaleFactors/2016/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
 
@@ -2772,3 +2772,4 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
   }
   return sf;
 }
+

@@ -18,6 +18,7 @@
 #include "TEfficiency.h"
 
 const bool HIP_ERA (false);
+const bool DO_HIPS (true);
 
 TriggerScaleFactors::TriggerScaleFactors():
   postLepSelTree_{nullptr},
@@ -414,8 +415,8 @@ void TriggerScaleFactors::runMainAnalysis(){
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
 
-      if ( HIP_ERA && event->eventRun >= 278820 ) continue;
-      if ( !HIP_ERA && event->eventRun < 278820 ) continue;
+      if ( HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
+      if ( !HIP_ERA && event->eventRun < 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
 
       if (!metFilters(event)) continue;
 
