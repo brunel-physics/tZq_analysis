@@ -94,6 +94,11 @@ ls /scratch/data/tZqSkimsRun2016/tZq_ll_Kappa_Zut/* -1d >> $TQZ_TOOLS_PATH/confi
 ls /scratch/data/tZqSkimsRun2016/tZq_ll_Zeta_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Zeta_Zct.txt
 ls /scratch/data/tZqSkimsRun2016/tZq_ll_Zeta_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZq_ll_Zeta_Zut.txt
 
+ls /scratch/data/tZqSkimsRun2016/ttbar_FCNC_Kappa_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbar_FCNC_Kappa_Zct.txt
+ls /scratch/data/tZqSkimsRun2016/ttbar_FCNC_Zeta_Zct/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbar_FCNC_Zeta_Zct.txt
+ls /scratch/data/tZqSkimsRun2016/ttbar_FCNC_Kappa_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbar_FCNC_Kappa_Zut.txt
+ls /scratch/data/tZqSkimsRun2016/ttbar_FCNC_Zeta_Zut/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbar_FCNC_Zeta_Zut.txt
+
 # Synchronisation files
 ls /scratch/data/tZqSkimsRun2016/synch/tZq/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqSynchFiles.txt
 
