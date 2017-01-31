@@ -2214,11 +2214,11 @@ float Cuts::eleSF(double pt, double eta, int syst){
 
   // If cut-based, std::abs eta, else just eta
   if ( pt <= maxPt ){
-    bin1 = h_eleSFs->FindBin(std::abs(eta),pt);
+    bin1 = h_eleSFs->FindBin(eta,pt);
     bin2 = h_eleReco->FindBin(eta,pt);
   }
   else {
-    bin1 = h_eleSFs->FindBin(std::abs(eta),maxPt);
+    bin1 = h_eleSFs->FindBin(eta,maxPt);
     bin2 = h_eleReco->FindBin(eta,maxPt);
   }
 
