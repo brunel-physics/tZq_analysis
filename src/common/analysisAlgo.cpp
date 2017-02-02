@@ -954,6 +954,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    continue;
 	  }
 	  eventWeight = 1;
+          //apply negative weighting for SameSign MC lepton samples so that further downstream
+	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
 	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
