@@ -326,7 +326,7 @@ def setupBranches(tree,varMap):
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
-def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, SameSignMC = 0.):
+def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2016, SameSignMC = False):
     #Fills the output tree. This is a new function because I want to access data and MC in different ways but do the same thing to them in the end.
 
     syst = 0
@@ -354,9 +354,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
         if syst == 1024 or syst == 2048:
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
-        scaleFactor = 1.0 # SF to weight fake shape by
-        if ( SameSignMC == 0 ) : varMap["eventWeight"][0] = tree.eventWeight
-        else : varMap["eventWeight"][0] = -1.0 * tree.eventWeight * scaleFactor
+        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 2.26 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.91 # SF we weight fake ee shape by
+        else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
         varMap["leadJetPhi"][0] = jetVecs[0].Phi()
@@ -650,7 +650,7 @@ def main():
             else :
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016, 0)
+            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
         outFile.cd()
         outFile.Write()
         outTreeSig.Write()
@@ -691,7 +691,7 @@ def main():
                sys.stdout.flush()
                dataChain.Add(inputDir+sample+chan+"invLepmvaOut.root")
             try:
-               fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
+               fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016, True)
             except AttributeError:
                 print "\nAttribute Error \n"
 
