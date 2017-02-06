@@ -50,7 +50,7 @@ plotType = f
 
 [ttZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 1992438
+totalEvents = 7974473
 crossSection = 0.2529
 runType = mc
 histoName = ttZ
