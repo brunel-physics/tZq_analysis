@@ -7,7 +7,6 @@ if [ -z "$TQZ_TOOLS_PATH" ]; then
     export TQZ_TOOLS_PATH='.'
 fi
 
-
 rm $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/*
 
 echo Done!
