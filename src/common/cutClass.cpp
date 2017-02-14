@@ -18,6 +18,8 @@
 
 #include <libconfig.h++>
 
+//#define HIP_ERA
+
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
@@ -2171,10 +2173,19 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
+#ifdef HIP_ERA
+      float twgt = 0.809; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
+      return twgt;
+#endif
+
+#ifndef HIP_ERA
       float twgt = 0.934; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
       if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= 0.001;
       return twgt;
+#endif
     }
     if (channel == "emu"){
       float twgt = 0.964; // 0.964 for eff; 0.964 for SF
@@ -2260,18 +2271,18 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
   }
 
   else { // Run2016 needs separate treatments in pre and post HIP eras
-    if ( eventRun < 278820 ) { //RunsB-F, pre-fix era
+#ifdef HIP_ERA
       if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
       else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
       if ( pt <= maxIsoPt ) binIso = h_muonPFiso1->FindBin(std::abs(eta),pt);
       else binIso = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
-    }
-    else { //RunsG-H, post-fix era
+#endif
+#ifndef HIP_ERA
       if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
       else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
       if ( pt <= maxIsoPt ) binIso = h_muonPFiso2->FindBin(std::abs(eta),pt);
       else binIso = h_muonPFiso2->FindBin(std::abs(eta),maxIsoPt);
-    }
+#endif
   }
 
   float muonIdSF {1.0}, muonPFisoSF {1.0};
@@ -2279,10 +2290,16 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
   if ( !is2016_ ) muonIdSF = h_muonIDs1->GetBinContent(binId);
   if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso);
 
-  if ( is2016_ && eventRun < 278820 ) muonIdSF = h_muonIDs1->GetBinContent(binId);
-  if ( is2016_ && eventRun < 278820 ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso);
-  if ( is2016_ && eventRun >= 278820 ) muonIdSF = h_muonIDs2->GetBinContent(binId);
-  if ( is2016_ && eventRun >= 278820 )  muonPFisoSF = h_muonPFiso2->GetBinContent(binIso);
+  if ( is2016_ ) {
+#ifdef HIP_ERA
+    muonIdSF = h_muonIDs1->GetBinContent(binId);
+    muonPFisoSF = h_muonPFiso1->GetBinContent(binIso);
+#endif
+#ifndef HIP_ERA
+    muonIdSF = h_muonIDs2->GetBinContent(binId);
+    muonPFisoSF = h_muonPFiso2->GetBinContent(binIso);
+  }
+#endif
 
 // Muon Reco SF not applied currently as unsure how relevant it is post-ICHEP era
 //  float muonRecoSF = 1.0;
@@ -2294,10 +2311,15 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( !is2016_) muonIdSF    += h_muonIDs1->GetBinError(binId);
     if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso);
 
-    if ( is2016_ && eventRun < 278820 ) muonIdSF += h_muonIDs1->GetBinError(binId);
-    if ( is2016_ && eventRun < 278820 ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso);
-    if ( is2016_ && eventRun >= 278820 ) muonIdSF += h_muonIDs2->GetBinError(binId);
-    if ( is2016_ && eventRun >= 278820 ) muonPFisoSF += h_muonPFiso2->GetBinError(binIso);
+    if ( is2016_ ) {
+#ifdef HIP_ERA
+      muonIdSF += h_muonIDs1->GetBinError(binId);
+      muonPFisoSF += h_muonPFiso1->GetBinError(binIso);
+#endif
+#ifndef HIP_ERA
+      muonIdSF += h_muonIDs2->GetBinError(binId);
+      muonPFisoSF += h_muonPFiso2->GetBinError(binIso);
+#endif
 
 //    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
   }
@@ -2306,11 +2328,15 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( !is2016_) muonIdSF    -= h_muonIDs1->GetBinError(binId);
     if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso);
 
-    if ( is2016_ && eventRun < 278820 ) muonIdSF -= h_muonIDs1->GetBinError(binId);
-    if ( is2016_ && eventRun < 278820 ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso);
-    if ( is2016_ && eventRun >= 278820 ) muonIdSF -= h_muonIDs2->GetBinError(binId);
-    if ( is2016_ && eventRun >= 278820 ) muonPFisoSF -= h_muonPFiso2->GetBinError(binIso);
-
+    if ( is2016_ ) {
+#ifdef HIP_ERA
+      muonIdSF -= h_muonIDs1->GetBinError(binId);
+      muonPFisoSF -= h_muonPFiso1->GetBinError(binIso);
+#endif
+#ifndef HIP_ERA
+      muonIdSF -= h_muonIDs2->GetBinError(binId);
+      muonPFisoSF -= h_muonPFiso2->GetBinError(binIso);
+#endif
 //    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
   }
 
