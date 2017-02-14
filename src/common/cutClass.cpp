@@ -2322,6 +2322,7 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 #endif
 
 //    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
+    }
   }
 
   if ( syst == 2 ) {
@@ -2338,8 +2339,8 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
       muonPFisoSF -= h_muonPFiso2->GetBinError(binIso);
 #endif
 //    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
+    }
   }
-
   return muonIdSF*muonPFisoSF; //*muonRecoSF;
 }
 
