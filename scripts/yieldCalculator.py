@@ -30,6 +30,6 @@ for syst in systs:
     tree = infile.Get("Ttree_"+sample+syst)
     for event in tree :
         if ( channelIndex == event.Channel ) : syst_yield += event.EvtWeight
-    print "syst yield for ", syst, " : ", syst_yield, " / abs diff : ", syst_yield-nom_yield, ", rel diff : ", (syst_yield-nom_yield)/nom_yield*100.0, "%"
+    print "syst yield for ", syst, " : ", syst_yield, " / abs diff : ", syst_yield-nom_yield, ", rel diff : ", (syst_yield-nom_yield)/(nom_yield)*100.0, "%"
 
 
