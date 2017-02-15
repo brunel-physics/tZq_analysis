@@ -18,7 +18,7 @@
 
 #include <libconfig.h++>
 
-//#define HIP_ERA
+#define HIP_ERA
 
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
@@ -2277,6 +2277,7 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
       if ( pt <= maxIsoPt ) binIso = h_muonPFiso1->FindBin(std::abs(eta),pt);
       else binIso = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
 #endif
+
 #ifndef HIP_ERA
       if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
       else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
@@ -2298,8 +2299,8 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 #ifndef HIP_ERA
     muonIdSF = h_muonIDs2->GetBinContent(binId);
     muonPFisoSF = h_muonPFiso2->GetBinContent(binIso);
-  }
 #endif
+  }
 
 // Muon Reco SF not applied currently as unsure how relevant it is post-ICHEP era
 //  float muonRecoSF = 1.0;
