@@ -26,7 +26,7 @@ def main():
   channel = "ee"
 #  channel = "mumu"
 
-  weighted = True
+  weighted = False
 
 ### Number of Same Sign no Fakes stuff
 
@@ -86,140 +86,48 @@ def main():
 ##############
 
   listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+#  listOfMCs = {"tZq":"tZq"}
 
 ### Number of SS events expected from data
 
-  sameSignMC_gen = 0
-  sameSignMC_fake =0
-  sameSignMC = 0
-  sameSignData = 0
+  genGen= 0.
+  fakeGen = 0.
 
   #Loop over all MC samples
   for sample in listOfMCs.keys():
     print "Doing " + sample + ": ",
     sys.stdout.flush()
-    infile_SS_MC = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"invLepmvaOut.root")
-    tree_SS_MC = infile_SS_MC.Get("tree")
+#    infile_MC = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"mvaOut.root")
+    infile_MC = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"invLepmvaOut.root")
+    tree_MC = infile_MC.Get("tree")
     try:
-      print str(tree_SS_MC.GetEntriesFast())
+      print str(tree_MC.GetEntriesFast())
       sys.stdout.flush()
     except AttributeError:
       print "\nAttribute Error \n"
       sys.stdout.flush()
 
-    for event in range ( tree_SS_MC.GetEntries() ) :
-      tree_SS_MC.GetEntry(event)
-      weight = 1.0
-      if (weighted) : weight = tree_SS_MC.eventWeight
-      sameSignMC += 1.0*weight
-
-      lep1ID, lep2ID, = False,False
+    for event in range ( tree_MC.GetEntries() ) :
+      tree_MC.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC.eventWeight
 
       if (channel == "ee") :
-        if ( abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep1Index]) == 23 or abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep1Index]) == 24 ) : lep1ID = True
-        if ( abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep2Index]) == 23 or abs(tree_SS_MC.genElePF2PATMotherId[tree_SS_MC.zLep2Index]) == 24 ) : lep2ID = True
-
-        if ( lep1ID and lep2ID ) : sameSignMC_gen += 1.0*weight
-        else : sameSignMC_fake += 1.0*weight
-      elif (channel == "mumu") :
-        if( abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep1Index]) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep1Index]) == 24 ) : lep1ID = True
-        if( abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep2Index]) == 23 or abs(tree_SS_MC.genMuonPF2PATMotherId[tree_SS_MC.zLep2Index]) == 24 ) : lep2ID = True
-
-        if( lep1ID and lep2ID ): sameSignMC_gen += 1.0*weight
-        else : sameSignMC_fake += 1.0*weight
-
-    infile_SS_MC.Close()
-
-  #Loop over data samples
-  print "Doing " + channel + ": ",
-  sys.stdout.flush()
-  infile_SS_data = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+channel+"Run2016"+channel+"invLepmvaOut.root")
-  tree_SS_data = infile_SS_data.Get("tree")
-  try:
-    print str(tree_SS_data.GetEntriesFast())
-    sys.stdout.flush()
-  except AttributeError:
-    print "\nAttribute Error \n"
-    sys.stdout.flush()
-
-  for event in range ( tree_SS_data.GetEntries() ) :
-    tree_SS_data.GetEntry(event)
-    weight = 1.0
-    if (weighted) : weight = tree_SS_data.eventWeight
-
-    sameSignData += 1.0*weight
-
-  infile_SS_data.Close()
-
-### Number of OS events expected from data
-
-  oppSignMC_gen = 0
-  oppSignMC_fake = 0
-  oppSignMC = 0
-  oppSignData = 0
-
-  #Loop over all MC samples
-  for sample in listOfMCs.keys():
-    print "Doing " + sample + ": ",
-    sys.stdout.flush()
-
-    infile_OS_MC = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"mvaOut.root")
-    tree_OS_MC = infile_OS_MC.Get("tree")
-    try:
-      print str(tree_OS_MC.GetEntriesFast())
-      sys.stdout.flush()
-    except AttributeError:
-      print "\nAttribute Error \n"
-      sys.stdout.flush()
-
-    for event in range ( tree_OS_MC.GetEntries() ) :
-      tree_OS_MC.GetEntry(event)
-      weight = 1.0
-      if (weighted) : weight = tree_OS_MC.eventWeight
-      oppSignMC += 1.0*weight
-
-      lep1ID, lep2ID, = False,False
-
-      if (channel == "ee") :
-        if( abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep1Index]) == 23 or abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep1Index]) == 24 ): lep1ID = True
-        if( abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep2Index]) == 23 or abs(tree_OS_MC.genElePF2PATMotherId[tree_OS_MC.zLep2Index]) == 24 ): lep2ID = True
-
-        if( lep1ID and lep2ID ) : oppSignMC_gen += 1.0*weight
-        else : oppSignMC_fake += 1.0*weight
+         if (tree_MC.genElePF2PATPromptDecayed[tree_MC.zLep1Index] == 1 or tree_MC.genElePF2PATPromptFinalState[tree_MC.zLep1Index] == 1 ) : genGen += 1.0 * weight
+         else  : fakeGen += 1.0 * weight
+         if (tree_MC.genElePF2PATPromptDecayed[tree_MC.zLep2Index] == 1 or tree_MC.genElePF2PATPromptFinalState[tree_MC.zLep2Index] == 1 ) : genGen += 1.0 * weight
+         else : fakeGen += 1.0 * weight
 
       elif (channel == "mumu") :
-        if( abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep1Index]) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep1Index]) == 24): lep1ID = True
-        if( abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep2Index]) == 23 or abs(tree_OS_MC.genMuonPF2PATMotherId[tree_OS_MC.zLep2Index]) == 24): lep2ID = True
+         if (tree_MC.genMuonPF2PATPromptDecayed[tree_MC.zLep1Index] == 1 or tree_MC.genMuonPF2PATPromptFinalState[tree_MC.zLep1Index] == 1 ) : genGen += 1.0 * weight
+         else  : fakeGen += 1.0 * weight
+         if (tree_MC.genMuonPF2PATPromptDecayed[tree_MC.zLep2Index] == 1 or tree_MC.genMuonPF2PATPromptFinalState[tree_MC.zLep2Index] == 1 ) : genGen += 1.0 * weight
+         else : fakeGen += 1.0 * weight
 
-        if( lep1ID and lep2ID ) : oppSignMC_gen += 1.0*weight
-        else : oppSignMC_fake += 1.0*weight
+    infile_MC.Close()
 
-    infile_OS_MC.Close()
-
-  #Loop over data samples
-  sys.stdout.flush()
-  infile_OS_data = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+channel+"Run2016"+channel+"mvaOut.root")
-  tree_OS_data = infile_OS_data.Get("tree")
-  try:
-    print str(tree_OS_data.GetEntriesFast())
-    sys.stdout.flush()
-  except AttributeError:
-    print "\nAttribute Error \n"
-    sys.stdout.flush()
-
-  for event in range ( tree_OS_data.GetEntries() ) :
-    tree_OS_data.GetEntry(event)
-    weight = 1.0
-    if (weighted) : weight = tree_OS_data.eventWeight
-    oppSignData += 1.0*weight
-
-  infile_OS_data.Close()
-
-##############
-#Ratio between OS and SS events
-
-  print "gen OS/SS: ", oppSignMC_gen, "/", sameSignMC_gen, " : " , oppSignMC_gen/(sameSignMC_gen + 1.0e-6)
-  print "fake OS/SS: ", oppSignMC_fake, "/", sameSignMC_fake, " : " , oppSignMC_fake/(sameSignMC_fake + 1.0e-6)
+  print "number of prompt (final state or decayed) gen particles: ", genGen
+  print "number of non-prompt (final state or decayed) gen particles: ", fakeGen
 
 ##############
 #Number of expected Same sign events with no fakes - DY mis-id stuff
