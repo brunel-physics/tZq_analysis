@@ -18,7 +18,7 @@
 
 #include <libconfig.h++>
 
-#define HIP_ERA
+//#define HIP_ERA
 
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
@@ -866,8 +866,6 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         }
         else {
           if ( !(event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) ) continue; // check electron pair have correct charge for same sign control region.
-	  if ( isMC_ && event->elePF2PATCharge[electrons[i]] != event->genElePF2PATCharge[electrons[i]] ) continue; // check to ensure this is a real same-sign event (no charge misidentification).
-	  if ( isMC_ && event->elePF2PATCharge[electrons[j]] != event->genElePF2PATCharge[electrons[j]] ) continue; // check to ensure this is a real same-sign event (no charge misidentification).
      }
         TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
         TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
@@ -893,8 +891,6 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         }
         else {
   	  if ( !(event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue;
-	  if ( isMC_ && event->muonPF2PATCharge[muons[i]] != event->genMuonPF2PATCharge[muons[i]] ) continue; // check to ensure this is a real same-sign event (no charge misidentification).
-	  if ( isMC_ && event->muonPF2PATCharge[muons[j]] != event->genMuonPF2PATCharge[muons[j]] ) continue; // check to ensure this is a real same-sign event (no charge misidentification).
         }
 	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
 	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
