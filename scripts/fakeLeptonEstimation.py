@@ -23,118 +23,257 @@ def sortOutLeptons(tree,channel):
 def main():
 
   era = "2016"
-  channel = "ee"
-#  channel = "mumu"
 
-  weighted = False
+  weighted = True
+
+  mzCut = sys.argv[1]
+  mzStr = mzCut.split(".")[0]
+
+  mwCut = sys.argv[2]
+  mwStr = mwCut.split(".")[0]
 
 ### Number of Same Sign no Fakes stuff
 
   zRefMass = 91.1
   zWindow = 5.0
-  sameSignDY = 0
-  oppSignDY = 0
 
-  infile_DY = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"mvaOut.root")
-  tree_DY = infile_DY.Get("tree")
+  sameSignDY_ee = 0
+  oppSignDY_ee = 0
 
-  infile_DY_SS = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50"+channel+"invLepmvaOut.root")
-  tree_DY_SS = infile_DY_SS.Get("tree")
+  sameSignDY_mumu = 0
+  oppSignDY_mumu = 0
+
+  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50eemvaOut.root")
+  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50mumumvaOut.root")
+  tree_DY_ee = infile_DY_ee.Get("tree")
+  tree_DY_mumu = infile_DY_mumu.Get("tree")
+
+  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50eeinvLepmvaOut.root")
+  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50mumuinvLepmvaOut.root")
+  tree_DY_SS_ee = infile_DY_SS_ee.Get("tree")
+  tree_DY_SS_mumu = infile_DY_SS_mumu.Get("tree")
 
   ## DY Histos
 
-  DY_zMassSameOppHisto = TH1D("DY_zMassOppSignHisto","Z Mass Histo from Opposite Sign events", 300, 0.0, 300.0)
-  DY_zMassSameSignHisto = TH1D("DY_zMassSameSignHisto","Z Mass Histo from Same Sign events", 300, 0.0, 300.0)
+  DY_zMassSameOppHisto_ee = TH1D("DY_zMassOppSignHisto_ee","Z Mass Histo (ee) from Opposite Sign events", 300, 0.0, 300.0)
+  DY_zMassSameSignHisto_ee = TH1D("DY_zMassSameSignHisto_ee","Z Mass Histo from (ee) Same Sign events", 300, 0.0, 300.0)
+  DY_zMassSameOppHisto_mumu = TH1D("DY_zMassOppSignHisto_mumu","Z Mass Histo from (mumu) Opposite Sign events", 300, 0.0, 300.0)
+  DY_zMassSameSignHisto_mumu = TH1D("DY_zMassSameSignHisto_mumu","Z Mass Histo from (mumu) Same Sign events", 300, 0.0, 300.0)
 
-  for event in range ( tree_DY_SS.GetEntries() ) :
-    tree_DY_SS.GetEntry(event)
+  for event in range ( tree_DY_SS_ee.GetEntries() ) :
+    tree_DY_SS_ee.GetEntry(event)
 
     weight = 1
-    if (weighted) : weight = tree_DY_SS.eventWeight
+    if (weighted) : weight = tree_DY_SS_ee.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS,channel)
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_ee,"ee")
     zMass = (zLep1+zLep2).M()
 
-    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY += 1*weight
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY_ee += 1*weight
 
-    DY_zMassSameSignHisto.Fill(zMass,weight)
+    DY_zMassSameSignHisto_ee.Fill(zMass,weight)
 
-  for event in range ( tree_DY.GetEntries() ) :
-    tree_DY.GetEntry(event)
+  for event in range ( tree_DY_SS_mumu.GetEntries() ) :
+    tree_DY_SS_mumu.GetEntry(event)
+
+    weight = 1
+    if (weighted) : weight = tree_DY_SS_mumu.eventWeight
+
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_mumu,"mumu")
+    zMass = (zLep1+zLep2).M()
+
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY_mumu += 1*weight
+
+    DY_zMassSameSignHisto_mumu.Fill(zMass,weight)
+
+  for event in range ( tree_DY_ee.GetEntries() ) :
+    tree_DY_ee.GetEntry(event)
 
     weight = 1.0
-    if (weighted) : weight = tree_DY.eventWeight
+    if (weighted) : weight = tree_DY_ee.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY,channel)
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_ee,"ee")
     zMass = (zLep1+zLep2).M()
 
-    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY += 1.0*weight
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY_ee += 1.0*weight
 
-    DY_zMassOppSignHisto.Fill(zMass,weight)
+    DY_zMassOppSignHisto_ee.Fill(zMass,weight)
 
+  for event in range ( tree_DY_mumu.GetEntries() ) :
+    tree_DY_mumu.GetEntry(event)
+
+    weight = 1.0
+    if (weighted) : weight = tree_DY_mumu.eventWeight
+
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_mumu,"mumu")
+    zMass = (zLep1+zLep2).M()
+
+    if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY_mumu += 1.0*weight
+
+    DY_zMassOppSignHisto_mumu.Fill(zMass,weight)
 
   subprocess.call("mkdir plots/fakeLeptons/",shell=True)
   subprocess.call("mkdir plots/fakeLeptons/DY/",shell=True)
 
 #  DY_zMassHisto.Fit("gaus")
 
-  DY_zMassSameSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_SameSign.root")
-  DY_zMassOppSignHisto.SaveAs("plots/fakeLeptons/DY/zMass_"+channel+"_OppSign.root")
+  DY_zMassSameSignHisto_ee.SaveAs("plots/fakeLeptons/DY/zMass_ee_SameSign.root")
+  DY_zMassOppSignHisto_ee.SaveAs("plots/fakeLeptons/DY/zMass_ee_OppSign.root")
+  DY_zMassSameSignHisto_mumu.SaveAs("plots/fakeLeptons/DY/zMass_mumu_SameSign.root")
+  DY_zMassOppSignHisto_mumu.SaveAs("plots/fakeLeptons/DY/zMass_mumu_OppSign.root")
 
-  infile_DY_SS.Close()
+  infile_DY_SS_ee.Close()
+  infile_DY_SS_mumu.Close()
+  infile_DY_ee.Close()
+  infile_DY_mumu.Close()
 
 ##############
-
+	
   listOfMCs = {"WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #  listOfMCs = {"tZq":"tZq"}
 
 ### Number of SS events expected from data
 
-  genGen= 0.
-  fakeGen = 0.
+  genGen_ee = 0.
+  fakeGen_ee = 0.
+  genGen_mumu = 0.
+  fakeGen_mumu = 0.
+
+  genGen_inv_ee = 0.
+  fakeGen_inv_ee = 0.
+  genGen_inv_mumu = 0.
+  fakeGen_inv_mumu = 0.
 
   #Loop over all MC samples
   for sample in listOfMCs.keys():
     print "Doing " + sample + ": ",
     sys.stdout.flush()
-#    infile_MC = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"mvaOut.root")
-    infile_MC = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz5mw50/"+sample+channel+"invLepmvaOut.root")
-    tree_MC = infile_MC.Get("tree")
+    infile_MC_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"eemvaOut.root")
+    infile_MC_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumumvaOut.root")
+    infile_MC_inv_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"eeinvLepmvaOut.root")
+    infile_MC_inv_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumuinvLepmvaOut.root")
+
+    tree_MC_ee = infile_MC_ee.Get("tree")
     try:
-      print str(tree_MC.GetEntriesFast())
+      print str(tree_MC_ee.GetEntriesFast())
       sys.stdout.flush()
     except AttributeError:
       print "\nAttribute Error \n"
       sys.stdout.flush()
 
-    for event in range ( tree_MC.GetEntries() ) :
-      tree_MC.GetEntry(event)
+    for event in range ( tree_MC_ee.GetEntries() ) :
+      tree_MC_ee.GetEntry(event)
       weight = 1
-      if (weighted) : weight = tree_MC.eventWeight
+      if (weighted) : weight = tree_MC_ee.eventWeight
 
-      if (channel == "ee") :
-         if (tree_MC.genElePF2PATPromptDecayed[tree_MC.zLep1Index] == 1 or tree_MC.genElePF2PATPromptFinalState[tree_MC.zLep1Index] == 1 ) : genGen += 1.0 * weight
-         else  : fakeGen += 1.0 * weight
-         if (tree_MC.genElePF2PATPromptDecayed[tree_MC.zLep2Index] == 1 or tree_MC.genElePF2PATPromptFinalState[tree_MC.zLep2Index] == 1 ) : genGen += 1.0 * weight
-         else : fakeGen += 1.0 * weight
+      lep1_ee = 0
+      lep2_ee = 0
+      if (tree_MC_ee.genElePF2PATPromptDecayed[tree_MC_ee.zLep1Index] == 1 or tree_MC_ee.genElePF2PATPromptFinalState[tree_MC_ee.zLep1Index] == 1 ) : lep1_ee = 1
+      if (tree_MC_ee.genElePF2PATPromptDecayed[tree_MC_ee.zLep2Index] == 1 or tree_MC_ee.genElePF2PATPromptFinalState[tree_MC_ee.zLep2Index] == 1 ) : lep2_ee = 1
 
-      elif (channel == "mumu") :
-         if (tree_MC.genMuonPF2PATPromptDecayed[tree_MC.zLep1Index] == 1 or tree_MC.genMuonPF2PATPromptFinalState[tree_MC.zLep1Index] == 1 ) : genGen += 1.0 * weight
-         else  : fakeGen += 1.0 * weight
-         if (tree_MC.genMuonPF2PATPromptDecayed[tree_MC.zLep2Index] == 1 or tree_MC.genMuonPF2PATPromptFinalState[tree_MC.zLep2Index] == 1 ) : genGen += 1.0 * weight
-         else : fakeGen += 1.0 * weight
+      if ( lep1_ee == 1 and lep2_ee == 1 ) : genGen_ee += 1.0 * weight
+      else: fakeGen_ee += 1.0 * weight
 
-    infile_MC.Close()
+    infile_MC_ee.Close()
 
-  print "number of prompt (final state or decayed) gen particles: ", genGen
-  print "number of non-prompt (final state or decayed) gen particles: ", fakeGen
+    tree_MC_mumu = infile_MC_mumu.Get("tree")
+    try:
+      print str(tree_MC_mumu.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_MC_mumu.GetEntries() ) :
+      tree_MC_mumu.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC_mumu.eventWeight
+
+      lep1_mumu = 0
+      lep2_mumu = 0
+ 
+      if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep1Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep1Index] == 1 ) : lep1_mumu = 1
+      if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep2Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep2Index] == 1 ) : lep2_mumu = 1
+
+      if ( lep1_mumu == 1 and lep2_mumu == 1 ) : genGen_mumu += 1.0 * weight
+      else: fakeGen_mumu += 1.0 * weight
+
+    infile_MC_mumu.Close()
+
+    tree_MC_inv_ee = infile_MC_inv_ee.Get("tree")
+    try:
+      print str(tree_MC_inv_ee.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_MC_inv_ee.GetEntries() ) :
+      tree_MC_inv_ee.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC_inv_ee.eventWeight
+
+      lep1_inv_ee = 0
+      lep2_inv_ee = 0
+
+      if (tree_MC_inv_ee.genElePF2PATPromptDecayed[tree_MC_inv_ee.zLep1Index] == 1 or tree_MC_inv_ee.genElePF2PATPromptFinalState[tree_MC_inv_ee.zLep1Index] == 1 ) : lep1_inv_ee = 1
+      if (tree_MC_inv_ee.genElePF2PATPromptDecayed[tree_MC_inv_ee.zLep2Index] == 1 or tree_MC_inv_ee.genElePF2PATPromptFinalState[tree_MC_inv_ee.zLep2Index] == 1 ) : lep2_inv_ee = 1
+
+      if ( lep1_inv_ee == 1 and lep2_inv_ee == 1 ) : genGen_inv_ee += 1.0 * weight
+      else: fakeGen_inv_ee += 1.0 * weight
+
+    infile_MC_inv_ee.Close()
+
+    tree_MC_inv_mumu = infile_MC_inv_mumu.Get("tree")
+    try:
+      print str(tree_MC_inv_mumu.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_MC_inv_mumu.GetEntries() ) :
+      tree_MC_inv_mumu.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC_inv_mumu.eventWeight
+
+      lep1_inv_mumu = 0
+      lep2_inv_mumu = 0
+
+      if (tree_MC_inv_mumu.genMuonPF2PATPromptDecayed[tree_MC_inv_mumu.zLep1Index] == 1 or tree_MC_inv_mumu.genMuonPF2PATPromptFinalState[tree_MC_inv_mumu.zLep1Index] == 1 ) : lep1_inv_mumu = 1
+      if (tree_MC_inv_mumu.genMuonPF2PATPromptDecayed[tree_MC_inv_mumu.zLep2Index] == 1 or tree_MC_inv_mumu.genMuonPF2PATPromptFinalState[tree_MC_inv_mumu.zLep2Index] == 1 ) : lep2_inv_mumu = 1
+
+      if ( lep1_inv_mumu == 1 and lep2_inv_mumu == 1 ) : genGen_inv_mumu += 1.0 * weight
+      else: fakeGen_inv_mumu += 1.0 * weight
+
+    infile_MC_inv_mumu.Close()
+
+  print "number of prompt (final state or decayed) OS electron gen particles: ", genGen_ee
+  print "number of non-prompt (final state or decayed) OS electron gen particles: ", fakeGen_ee
+
+  print "number of prompt (final state or decayed) SS electron gen particles: ", genGen_inv_ee
+  print "number of non-prompt (final state or decayed) SS electron gen particles: ", fakeGen_inv_ee
+
+  print "number of prompt (final state or decayed) OS muon gen particles: ", genGen_mumu
+  print "number of non-prompt (final state or decayed) OS muon gen particles: ", fakeGen_mumu
+
+  print "number of prompt (final state or decayed) SS muon gen particles: ", genGen_inv_mumu
+  print "number of non-prompt (final state or decayed) SS muon gen particles: ", fakeGen_inv_mumu
+
+  print "number of OS/SS prompt electron gen-matched particles: ", abs( genGen_ee/(genGen_inv_ee + 1.0e-06) )
+  print "number of OS/SS prompt muon gen-matched particles: ", abs( genGen_mumu/(genGen_inv_mumu + 1.0e-06) )
+
+  print "number of OS/SS non-prompt electron gen-matched particles: ", abs( fakeGen_ee/(fakeGen_inv_ee + 1.0e-06) )
+  print "number of OS/SS non-prompt muon gen-matched particles: ", abs( fakeGen_mumu/(fakeGen_inv_mumu + 1.0e-06) )
 
 ##############
 #Number of expected Same sign events with no fakes - DY mis-id stuff
-  eff = sameSignDY/(sameSignDY + oppSignDY)
+  eff_ee = sameSignDY_ee/(sameSignDY_ee + oppSignDY_ee)
+  eff_mumu = sameSignDY_mumu/(sameSignDY_mumu + oppSignDY_mumu)
 
-  print "sameSignDY:oppSignDY = ", sameSignDY, " : " , oppSignDY
-  print "Efficiency coefficient for calculating the number of expected same sign events with no fakes = ", eff
+  print "ee sameSignDY:oppSignDY = ", sameSignDY_ee, " : " , oppSignDY_ee
+  print "mumu sameSignDY:oppSignDY = ", sameSignDY_mumu, " : " , oppSignDY_mumu
+  print "Efficiency coefficient for calculating the number of expected same sign events with no fakes ee/mumu = ", eff_ee, "/", eff_mumu
 
 if __name__ == "__main__":
     main()
