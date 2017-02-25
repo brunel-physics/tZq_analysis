@@ -356,9 +356,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
 	## SFs for fake lepton estimation normilisation
 	## mz5mw50, ee = 15.166, mumu, 1.91
-	## mz50mw50, ee = 14.821, mumu, 10.401
-        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 14.821 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 10.401 # SF we weight fake ee shape by
+	## mz50mw50, ee = 14.414, mumu, 10.911
+        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 14.414 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 10.911 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
