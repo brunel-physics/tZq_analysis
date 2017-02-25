@@ -21,4 +21,4 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
 subprocess.call("mkdir /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
 
 print "python scripts/makeMVAInputDileptonFakeShapes.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion
-subprocess.call("scripts/makeMVAInputDileptonFakeShapes.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion,shell=True)
+subprocess.call("python scripts/makeMVAInputDileptonFakeShapes.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2016 "+useSideBandRegion,shell=True)
