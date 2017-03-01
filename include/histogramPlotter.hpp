@@ -20,6 +20,7 @@ class HistogramPlotter{
   std::string lumiStr_;
   std::string outputFolder_; //Where the plots will be saved. Make sure to inclue the final /...
   std::string postfix_; //Will be appended to name of saved files. Defaults to aPostfix. Set with setter.
+  const bool is2016_; //Era
 
   //Orders of various things and information regarding plotting.
   std::vector<std::string> plotOrder_;
@@ -41,7 +42,7 @@ class HistogramPlotter{
 
  public:
  //Constructor
-  HistogramPlotter(std::vector<std::string>, std::vector<std::string>, std::map<std::string,datasetInfo>);
+  HistogramPlotter(std::vector<std::string>, std::vector<std::string>, std::map<std::string,datasetInfo>, const bool);
   ~HistogramPlotter();
   //methods to set various bits of information in the class. This is so that it doesn't have to set in the constructor. Defaults to current stuff, but can be changed outside.
   void setLabelTextSize(float size);

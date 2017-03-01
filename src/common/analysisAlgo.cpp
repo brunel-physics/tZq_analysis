@@ -1163,7 +1163,7 @@ void AnalysisAlgo::savePlots()
   //Now test out the histogram plotter class I just wrote.
   //Make the plotting object.
   if (plots||infoDump){
-    HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos);
+    HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos,is2016_);
     plotObj.setLabelOne("CMS Preliminary");
     plotObj.setLabelTwo("Some amount of lumi");
     plotObj.setPostfix("");
