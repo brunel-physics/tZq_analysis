@@ -109,16 +109,17 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
-  TLegend* legend_{new TLegend{0.7,0.7,0.94,0.94}};
-  legend_->SetFillStyle(1001);
-  legend_->SetBorderSize(1);
-  legend_->SetFillColor(kWhite);
+  TLegend* legend_{new TLegend{0.62,0.42,0.92,0.60}};
+//  legend_->SetFillStyle(1001);
+  legend_->SetFillStyle(0);
+  legend_->SetBorderSize(0);
+//  legend_->SetFillColor(kWhite);
   for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
     legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
 
   //Initialise the stack
-  THStack* mcStack{new THStack{plotName.c_str(),(plotName+";"+subLabel+";Events").c_str()}};
+  THStack* mcStack{new THStack{plotName.c_str(),(plotName+";;Events").c_str()}};
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -126,7 +127,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     plotMap[*plot_iter]->SetLineWidth(1);
     if( *plot_iter == "data"){
       plotMap["data"]->SetMarkerStyle(20);
-      plotMap["data"]->SetMarkerSize(1.0);
+      plotMap["data"]->SetMarkerSize(0.9);
       plotMap["data"]->SetMarkerColor(kBlack);
       continue;
     }
@@ -211,6 +212,12 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack->GetXaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
 
+  if (xAxisLabels.size() > 0){
+    for (unsigned i{1}; i <= xAxisLabels.size(); i++){
+      mcStack->GetXaxis()->SetBinLabel(i,"");
+    }
+  }
+
   legend_->Draw();
 
   if ( !BLIND_PLOTS ) {
@@ -224,11 +231,12 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy_2->SetBottomMargin(0.08);
     canvy_2->SetRightMargin(0.1);
     canvy_2->SetFillStyle(0);
+    canvy_2->SetGridy();
 
     ratioHisto->SetStats(false);
     ratioHisto->SetMinimum(0.5);
     ratioHisto->SetMaximum(1.5);
-    ratioHisto->SetTitle("; ; data/MC");
+    ratioHisto->SetTitle(";;data/MC");
     ratioHisto->GetXaxis()->SetNdivisions(6,5,0);
     ratioHisto->GetYaxis()->SetNdivisions(6,5,0);
 
