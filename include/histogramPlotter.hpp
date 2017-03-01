@@ -35,6 +35,10 @@ class HistogramPlotter{
   TPad* canvy_1;
   TPad* canvy_2;
 
+  // writes the lumi information and the CMS "logo" in the FigGuidelines style
+  void CMS_lumi ( TPad*, int period = 1, int = 10);
+  void setTDRStyle ();
+
  public:
  //Constructor
   HistogramPlotter(std::vector<std::string>, std::vector<std::string>, std::map<std::string,datasetInfo>);
