@@ -202,6 +202,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   mcStack->Draw("");
+  mcStack->GetHistogram()->GetXaxis()->SetLabelOffset(999);
 
   setLabelThree("");
   //labelThree_->Draw();
@@ -258,9 +259,9 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     ratioHisto->GetXaxis()->SetLabelSize(0.12);
     ratioHisto->GetXaxis()->SetLabelOffset(0.018);
     ratioHisto->GetYaxis()->SetLabelSize(0.06);
-    ratioHisto->GetYaxis()->SetTitleSize(0.09);
-    ratioHisto->GetYaxis()->SetTitleOffset(0.28);
-    ratioHisto->GetYaxis()->SetTitleOffset( L/W * 2.35 );
+    ratioHisto->GetYaxis()->SetTitleSize(0.12);
+    ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );
+    ratioHisto->GetYaxis()->CenterTitle();
 
     if (xAxisLabels.size() > 0){
       for (unsigned i{1}; i <= xAxisLabels.size(); i++){
