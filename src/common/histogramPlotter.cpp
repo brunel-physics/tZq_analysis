@@ -217,6 +217,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack->SetMaximum(max*1.1);
   mcStack->GetXaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
+  mcStack->GetYaxis()->SetTitleOffset( L/W * 8.6 );
 
   if (xAxisLabels.size() > 0){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
