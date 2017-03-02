@@ -450,7 +450,7 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
     {
       if( posX==0) 
 	{
-	  posX_ =   l +  relPosX*(1-l-r);
+	  posX_ =   l +  relPosX*(1.75-l-r);
 	  posY_ =   1-t+lumiTextOffset*t;
 	}
       latex.SetTextFont(extraTextFont);
