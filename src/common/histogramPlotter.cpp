@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( true );
+const bool BLIND_PLOTS( false );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
@@ -189,10 +189,16 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy_1 = new TPad("canvy_1", "newpad",0.01,0.315,0.99,0.99);
     canvy_1->Draw();
     canvy_1->cd();
-    canvy_1->SetTopMargin(0.08);
-    canvy_1->SetBottomMargin(0.08);
-    canvy_1->SetRightMargin(0.1);
     canvy_1->SetFillColor(0);
+    canvy_1->SetBorderMode(0);
+    canvy_1->SetFrameFillStyle(0);
+    canvy_1->SetFrameBorderMode(0);
+    canvy_1->SetLeftMargin( L/W );
+    canvy_1->SetRightMargin( R/W );
+    canvy_1->SetTopMargin( T/H );
+    canvy_1->SetBottomMargin( B/H * 0.3 );
+    canvy_1->SetTickx(0);
+    canvy_1->SetTicky(0);
   }
 
   mcStack->Draw("");
@@ -228,11 +234,18 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   //  canvy_2->SetOptStat(0);
     canvy_2->Draw();
     canvy_2->cd();
-    canvy_2->SetTopMargin(0.05);
-    canvy_2->SetBottomMargin(0.08);
-    canvy_2->SetRightMargin(0.1);
-    canvy_2->SetFillStyle(0);
-    canvy_2->SetGridy();
+
+    canvy_2->SetFillColor(0);
+    canvy_2->SetBorderMode(0);
+    canvy_2->SetFrameFillStyle(0);
+    canvy_2->SetFrameBorderMode(0);
+    canvy_2->SetLeftMargin( L/W );
+    canvy_2->SetRightMargin( R/W );
+    canvy_2->SetTopMargin( T/H );
+    canvy_2->SetBottomMargin( B/H );
+    canvy_2->SetTickx(0);
+    canvy_2->SetTicky(0);
+    canvy_2->SetGridy(1);
 
     ratioHisto->SetStats(false);
     ratioHisto->SetMinimum(0.5);
@@ -256,11 +269,18 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   // writing the lumi information and the CMS "logo"
-  CMS_lumi ( canvy, period, pos );
-  canvy->Update();
-  canvy->RedrawAxis();
-  canvy->Draw();
-
+  if ( BLIND_PLOTS ) {
+    CMS_lumi ( canvy, period, pos );
+    canvy->Update();
+    canvy->RedrawAxis();
+    canvy->Draw();
+  }
+  else {
+    CMS_lumi ( canvy_1, period, pos );
+    canvy_1->Update();
+    canvy_1->RedrawAxis();
+    canvy_1->Draw();
+  }
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + extensions_[ext_it]).c_str());
