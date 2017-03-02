@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( false );
+const bool BLIND_PLOTS( true );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
@@ -214,7 +214,8 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   if (xAxisLabels.size() > 0){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
-      mcStack->GetXaxis()->SetBinLabel(i,"");
+      if ( !BLIND_PLOTS ) mcStack->GetXaxis()->SetBinLabel(i,"");
+      else mcStack->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
     }
   }
 
