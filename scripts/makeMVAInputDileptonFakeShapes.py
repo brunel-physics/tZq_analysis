@@ -356,9 +356,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
 	## SFs for fake lepton estimation normilisation
 	## mz5mw50, ee = 15.166, mumu, 1.91
+	## mz15mw50, ee = 19.592, mumu, 9.702
 	## mz50mw50, ee = 14.732, mumu, 10.934
-        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 14.732 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 10.934 # SF we weight fake ee shape by
+        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 19.592 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 9.702 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
@@ -540,7 +541,7 @@ def main():
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
-    jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt")
+    jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
     channelToDataset = {"ee":"DataEG","mumu":"DataMu"}

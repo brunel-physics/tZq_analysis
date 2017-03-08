@@ -18,7 +18,7 @@
 
 #include <libconfig.h++>
 
-//#define HIP_ERA
+#define HIP_ERA
 
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
@@ -2344,7 +2344,7 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 void Cuts::initialiseJECCors(){
   std::ifstream jecFile;
   if ( !is2016_ ) jecFile.open( "scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
-  else jecFile.open( "scaleFactors/2016/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  else jecFile.open( "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
 
