@@ -355,9 +355,24 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         if syst == 1024 or syst == 2048:
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
 	## SFs for fake lepton estimation normilisation
-	## mz5mw50, ee = 15.166, mumu, 1.91
-	## mz15mw50, ee = 19.592, mumu, 9.702
-	## mz50mw50, ee = 14.732, mumu, 10.934
+	## mz15mw50, ee = 19.592, mumu = 9.702
+	## mz20mw50, ee = 17.382, mumu = 23.140
+	## mz25mw50, ee = 15.552, mumu = 10.101
+	## mz30mw50, ee = 15.130, mumu = 9.506
+	## mz40mw50, ee = 14.189, mumu = 9.546
+	## mz50mw50, ee = 14.732, mumu = 10.934
+	## mz15mw40, ee = , mumu = 
+	## mz20mw40, ee = , mumu = 
+	## mz25mw40, ee = , mumu = 
+	## mz30mw40, ee = , mumu = 
+	## mz40mw40, ee = , mumu =
+	## mz50mw40, ee = , mumu =
+	## mz15mw30, ee = , mumu =
+	## mz20mw30, ee = , mumu =
+	## mz25mw30, ee = , mumu =
+	## mz30mw30, ee = , mumu =
+	## mz40mw30, ee = , mumu =
+	## mz50mw30, ee = , mumu =
         if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 19.592 # SF we weight fake ee shape by
         elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 9.702 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
