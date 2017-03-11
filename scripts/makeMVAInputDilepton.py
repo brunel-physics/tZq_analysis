@@ -367,12 +367,12 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         ## mz30mw40, ee = , mumu =
         ## mz40mw40, ee = , mumu =
         ## mz50mw40, ee = , mumu =
-        ## mz15mw30, ee = , mumu =
-        ## mz20mw30, ee = , mumu =
-        ## mz25mw30, ee = , mumu =
-        ## mz30mw30, ee = , mumu =
-        ## mz40mw30, ee = , mumu =
-        ## mz50mw30, ee = , mumu =
+        ## mz15mw30, ee = 27.186, mumu = 9.005
+        ## mz20mw30, ee = 19.084, mumu = 9.679
+        ## mz25mw30, ee = 14.854, mumu = 8.893
+        ## mz30mw30, ee = 14.363, mumu = 8.405
+        ## mz40mw30, ee = 14.189, mumu = 9.546
+        ## mz50mw30, ee = 14.302, mumu = 9.991
         if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 14.732 # SF we weight fake ee shape by
         elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 10.934 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
