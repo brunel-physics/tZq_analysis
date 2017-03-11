@@ -356,7 +356,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
         ## SFs for fake lepton estimation normilisation
         ## mz15mw50, ee = 19.592, mumu = 9.702
-        ## mz20mw50, ee = 17.382, mumu = 23.140
+        ## mz20mw50, ee = 17.382, mumu = 10.491
         ## mz25mw50, ee = 15.552, mumu = 10.101
         ## mz30mw50, ee = 15.130, mumu = 9.506
         ## mz40mw50, ee = 14.189, mumu = 9.546
