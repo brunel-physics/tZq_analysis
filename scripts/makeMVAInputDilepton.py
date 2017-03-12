@@ -361,12 +361,12 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         ## mz30mw50, ee = 15.130, mumu = 9.506
         ## mz40mw50, ee = 14.189, mumu = 9.546
         ## mz50mw50, ee = 14.732, mumu = 10.934
-        ## mz15mw40, ee = , mumu =
-        ## mz20mw40, ee = , mumu =
-        ## mz25mw40, ee = , mumu =
-        ## mz30mw40, ee = , mumu =
-        ## mz40mw40, ee = , mumu =
-        ## mz50mw40, ee = , mumu =
+        ## mz15mw40, ee = 20.570, mumu = 9.922
+        ## mz20mw40, ee = 17.820, mumu = 10.352
+        ## mz25mw40, ee = 14.910, mumu = 9.799
+        ## mz30mw40, ee = 14.476, mumu = 9.079
+        ## mz40mw40, ee = 13.282, mumu = 9.186
+        ## mz50mw40, ee = 13.667, mumu = 10.584
         ## mz15mw30, ee = 27.186, mumu = 9.005
         ## mz20mw30, ee = 19.084, mumu = 9.679
         ## mz25mw30, ee = 14.854, mumu = 8.893
