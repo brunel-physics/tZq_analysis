@@ -18,8 +18,6 @@
 
 #include <libconfig.h++>
 
-#define HIP_ERA
-
 Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, bool dumpEventNumber, const bool trileptonChannel, const bool is2016, const bool isFCNC, const bool isCtag ):
 
   //Do plots?
@@ -99,6 +97,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //cVsBDiscCut_{-0.17}, // Loose cut
 
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
+  lumiRunsBCDEF_{19677.115}, // Lumi for hip era runs
+  lumiRunsGH_{}, // Lumi for post-hip era runs
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
@@ -2169,19 +2169,11 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-#ifdef HIP_ERA
-      float twgt = 0.809; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
+// eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
+      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
       return twgt;
-#endif
-
-#ifndef HIP_ERA
-      float twgt = 0.934; // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
-      return twgt;
-#endif
     }
     if (channel == "emu"){
       float twgt = 0.964; // 0.964 for eff; 0.964 for SF
@@ -2257,45 +2249,36 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 
   double maxIdPt{h_muonIDs1->GetYaxis()->GetXmax()};
   double maxIsoPt{h_muonPFiso1->GetYaxis()->GetXmax()};
-  unsigned binId {0}, binIso {0};
+  unsigned binId1 {0}, binIso1 {0};
+  unsigned binId2 {0}, binIso2 {0};
 
   if ( !is2016_ ) {
-    if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
-    else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-    if ( pt <= maxIsoPt ) binIso = h_muonPFiso1->FindBin(std::abs(eta),pt);
-    else binIso = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
+    if ( pt <= maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
+    else binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
+    if ( pt <= maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
+    else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
   }
 
   else { // Run2016 needs separate treatments in pre and post HIP eras
-#ifdef HIP_ERA
-      if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
-      else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-      if ( pt <= maxIsoPt ) binIso = h_muonPFiso1->FindBin(std::abs(eta),pt);
-      else binIso = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
-#endif
+      if ( pt <= maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
+      else binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
+      if ( pt <= maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
+      else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
 
-#ifndef HIP_ERA
-      if ( pt <= maxIdPt ) binId = h_muonIDs1->FindBin(std::abs(eta),pt);
-      else binId = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-      if ( pt <= maxIsoPt ) binIso = h_muonPFiso2->FindBin(std::abs(eta),pt);
-      else binIso = h_muonPFiso2->FindBin(std::abs(eta),maxIsoPt);
-#endif
+      if ( pt <= maxIdPt ) binId2 = h_muonIDs1->FindBin(std::abs(eta),pt);
+      else binId2 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
+      if ( pt <= maxIsoPt ) binIso2 = h_muonPFiso2->FindBin(std::abs(eta),pt);
+      else binIso2 = h_muonPFiso2->FindBin(std::abs(eta),maxIsoPt);
   }
 
   float muonIdSF {1.0}, muonPFisoSF {1.0};
 
-  if ( !is2016_ ) muonIdSF = h_muonIDs1->GetBinContent(binId);
-  if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso);
+  if ( !is2016_ ) muonIdSF = h_muonIDs1->GetBinContent(binId1);
+  if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
 
   if ( is2016_ ) {
-#ifdef HIP_ERA
-    muonIdSF = h_muonIDs1->GetBinContent(binId);
-    muonPFisoSF = h_muonPFiso1->GetBinContent(binIso);
-#endif
-#ifndef HIP_ERA
-    muonIdSF = h_muonIDs2->GetBinContent(binId);
-    muonPFisoSF = h_muonPFiso2->GetBinContent(binIso);
-#endif
+    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
   }
 
 // Muon Reco SF not applied currently as unsure how relevant it is post-ICHEP era
@@ -2305,36 +2288,23 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 //  }
 
   if ( syst == 1 ) {
-    if ( !is2016_) muonIdSF    += h_muonIDs1->GetBinError(binId);
-    if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso);
+    if ( !is2016_) muonIdSF    += h_muonIDs1->GetBinError(binId1);
+    if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-#ifdef HIP_ERA
-      muonIdSF += h_muonIDs1->GetBinError(binId);
-      muonPFisoSF += h_muonPFiso1->GetBinError(binIso);
-#endif
-#ifndef HIP_ERA
-      muonIdSF += h_muonIDs2->GetBinError(binId);
-      muonPFisoSF += h_muonPFiso2->GetBinError(binIso);
-#endif
-
+      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
     }
   }
 
   if ( syst == 2 ) {
-    if ( !is2016_) muonIdSF    -= h_muonIDs1->GetBinError(binId);
-    if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso);
+    if ( !is2016_) muonIdSF    -= h_muonIDs1->GetBinError(binId1);
+    if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-#ifdef HIP_ERA
-      muonIdSF -= h_muonIDs1->GetBinError(binId);
-      muonPFisoSF -= h_muonPFiso1->GetBinError(binIso);
-#endif
-#ifndef HIP_ERA
-      muonIdSF -= h_muonIDs2->GetBinError(binId);
-      muonPFisoSF -= h_muonPFiso2->GetBinError(binIso);
-#endif
+      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
     }
   }

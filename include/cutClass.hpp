@@ -140,6 +140,10 @@ class Cuts{
   //Temporary jet smearing prop varaible until a more elegant solution is done.
   float tempSmearValue_;
 
+  // lumi for pre-hip and post-hip era
+  float lumiRunsBCDEF_;
+  float lumiRunsGH_;
+
   //Some things that will be used for JEC uncertainties.
   std::vector<float> ptMinJEC_;
   std::vector<float> ptMaxJEC_;
