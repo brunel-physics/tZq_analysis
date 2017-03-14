@@ -355,26 +355,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         if syst == 1024 or syst == 2048:
             metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
         ## SFs for fake lepton estimation normilisation
-        ## mz15mw50, ee = 19.592, mumu = 9.702
-        ## mz20mw50, ee = 17.382, mumu = 10.491
-        ## mz25mw50, ee = 15.552, mumu = 10.101
-        ## mz30mw50, ee = 15.130, mumu = 9.506
-        ## mz40mw50, ee = 14.189, mumu = 9.546
-        ## mz50mw50, ee = 14.732, mumu = 10.934
-        ## mz15mw40, ee = 20.570, mumu = 9.922
-        ## mz20mw40, ee = 17.820, mumu = 10.352
-        ## mz25mw40, ee = 14.910, mumu = 9.799
-        ## mz30mw40, ee = 14.476, mumu = 9.079
-        ## mz40mw40, ee = 13.282, mumu = 9.186
-        ## mz50mw40, ee = 13.667, mumu = 10.584
-        ## mz15mw30, ee = 27.186, mumu = 9.005
-        ## mz20mw30, ee = 19.084, mumu = 9.679
-        ## mz25mw30, ee = 14.854, mumu = 8.893
-        ## mz30mw30, ee = 14.363, mumu = 8.405
-        ## mz40mw30, ee = 14.189, mumu = 9.546
-        ## mz50mw30, ee = 14.302, mumu = 9.991
-        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 14.732 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 10.934 # SF we weight fake ee shape by
+        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.392 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.222 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
