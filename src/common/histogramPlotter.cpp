@@ -328,7 +328,7 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
   // ratio of "CMS" and extra text size
   float extraOverCmsTextSize  = 0.76;
 
-  TString lumi_2016 = "35.82 fb^{-1}";
+  TString lumi_2016 = "35.86 fb^{-1}";
   TString lumi_2015 = "2.26 fb^{-1}";
   TString lumi_sqrtS = "";
 
