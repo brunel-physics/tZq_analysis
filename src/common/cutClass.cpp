@@ -168,7 +168,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIDsFile2 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
     muonIsoFile1 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
     muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsB-F - pre-HIP fix
-    muonRecoFile = new TFile{"scaleFactors/2016/MuonReco_RunBCD_prompt80X_9p2.root"};
+    muonRecoFile = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEFGH.root"};
 
     muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
     muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
@@ -178,7 +178,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
     h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
     h_muonPFiso2 = dynamic_cast<TH2F*>(muonIsoFile2->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
-    h_muonRecoGraph = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile->Get("ratio_eta")); // HIP issue means muon tracking RECO efficiency != ~1
+    h_muonRecoGraph = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile->Get("ratio_eff_eta3_dr030e030_corr"));
     std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
 
@@ -2169,7 +2169,8 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       return twgt;
     }
     if (channel == "mumu"){
-// eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.934 for post-HIP fix
+      // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
+      // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.935 for post-HIP fix
       float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
       if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
@@ -2281,20 +2282,19 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
   }
 
-// Muon Reco SF not applied currently as unsure how relevant it is post-ICHEP era
-//  float muonRecoSF = 1.0;
-//  if ( is2016_ ) {
-//    muonRecoSF = h_muonRecoGraph->Eval(eta);
-//  }
+  float muonRecoSF = 1.0;
+  if ( is2016_ ) {
+    muonRecoSF = h_muonRecoGraph->Eval(eta);
+  }
 
   if ( syst == 1 ) {
     if ( !is2016_) muonIdSF    += h_muonIDs1->GetBinError(binId1);
     if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
+      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
+      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
+    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
     }
   }
 
@@ -2303,12 +2303,12 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
+      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
+      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
+    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
     }
   }
-  return muonIdSF*muonPFisoSF; //*muonRecoSF;
+  return muonIdSF*muonPFisoSF*muonRecoSF;
 }
 
 void Cuts::initialiseJECCors(){
