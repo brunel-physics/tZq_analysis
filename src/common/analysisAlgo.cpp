@@ -424,7 +424,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;
-  if (!Parser::parse_config(config,&datasets,lumiPtr,&plotNames,&xMin,&xMax,&nBins,&fillExp,&xAxisLabels,&cutStage,cutConfName,plotConfName,&outFolder,&postfix,&channel)){
+  if (!Parser::parse_config(config,&datasets,lumiPtr,&plotTitles,&plotNames,&xMin,&xMax,&nBins,&fillExp,&xAxisLabels,&cutStage,cutConfName,plotConfName,&outFolder,&postfix,&channel)){
     std::cerr << "There was an error parsing the config file.\n";
     exit(0);
   }
@@ -700,7 +700,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
 	      for (unsigned j{0}; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j]] = new Plots{plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_};
+		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j]] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_};
 	      }
 	    }
 	  }//end cutFlow find loop

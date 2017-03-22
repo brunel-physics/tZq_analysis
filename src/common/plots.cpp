@@ -7,7 +7,7 @@
 
 #include "TH1F.h"
 
-Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned thisCutStage, std::string postfixName, const bool trileptonChannel):
+Plots::Plots(std::vector<std::string> titles, std::vector<std::string> names, std::vector<float> xMins, std::vector<float> xMaxs, std::vector<int> nBins, std::vector<std::string> fillExps, std::vector<std::string>  xAxisLabels, std::vector<int> cutStage, unsigned thisCutStage, std::string postfixName, const bool trileptonChannel):
 
   trileptonChannel_{trileptonChannel}
 
@@ -19,7 +19,7 @@ Plots::Plots(std::vector<std::string> names, std::vector<float> xMins, std::vect
   for (unsigned i{0}; i < names.size(); i++){
     std::string plotName = names[i] + "_" + postfixName;
     plotPoint[i].name = plotName;
-    plotPoint[i].title = names[i];
+    plotPoint[i].title = titles[i];
     plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
     plotPoint[i].xAxisLabel = xAxisLabels[i];
     plotPoint[i].plotHist = new TH1F{plotName.c_str(),(plotName + ";" + plotPoint[i].xAxisLabel).c_str(),nBins[i],xMins[i],xMaxs[i]};

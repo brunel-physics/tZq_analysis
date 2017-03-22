@@ -90,6 +90,7 @@ class AnalysisAlgo{
 	std::vector<std::string> plotsVec;
 
 	// variables for plotting.
+	std::vector<std::string> plotTitles;
 	std::vector<std::string> plotNames;
 	std::vector<float> xMin;
 	std::vector<float> xMax;

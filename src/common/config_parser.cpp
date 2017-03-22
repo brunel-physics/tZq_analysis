@@ -33,7 +33,7 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
   return 1;
 }
 
-int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, double * lumi,std::vector<std::string>*plotNames,std::vector<float>*xMin,std::vector<float>*xMax,std::vector<int>*nBins,std::vector<std::string>*fillExp,std::vector<std::string>*xAxisLabels,std::vector<int>*cutStage,std::string* cutsConfName,std::string* plotConfName, std::string* outFolder, std::string* postfix, std::string* channel){
+int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, double * lumi, std::vector<std::string>* plotTitles, std::vector<std::string>*plotNames,std::vector<float>*xMin,std::vector<float>*xMax,std::vector<int>*nBins,std::vector<std::string>*fillExp,std::vector<std::string>*xAxisLabels,std::vector<int>*cutStage,std::string* cutsConfName,std::string* plotConfName, std::string* outFolder, std::string* postfix, std::string* channel){
   //Re-write config parser here.
   libconfig::Config config;
 
@@ -60,7 +60,7 @@ int Parser::parse_config(std::string conf, std::vector<Dataset> * datasets, doub
     root.lookupValue("cuts",*cutsConfName);
   if (*plotConfName == "") // If you haven't already chosen the plots to use, use the ones here.
     root.lookupValue("plots",*plotConfName);
-  if (!parse_plots(*plotConfName,plotNames,xMin,xMax,nBins,fillExp,xAxisLabels,cutStage)){
+  if (!parse_plots(*plotConfName,plotTitles,plotNames,xMin,xMax,nBins,fillExp,xAxisLabels,cutStage)){
     std::cerr << "There was a problem parsing the plots" << std::endl;
     return 0;
   }
@@ -176,7 +176,7 @@ int Parser::parse_files(std::string fileConf, std::vector<Dataset> * datasets, d
   return 1;
 }
 
-int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames,std::vector<float> *xMin,std::vector<float> *xMax,std::vector<int> *nBins,std::vector<std::string> *fillExp,std::vector<std::string> *xAxisLabels, std::vector<int>*cutStage){
+int Parser::parse_plots(std::string plotConf, std::vector<std::string> *plotTitles, std::vector<std::string> *plotNames,std::vector<float> *xMin,std::vector<float> *xMax,std::vector<int> *nBins,std::vector<std::string> *fillExp,std::vector<std::string> *xAxisLabels, std::vector<int>*cutStage){
   //make the object
   libconfig::Config plotCfg;
 
@@ -199,6 +199,7 @@ int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames
     return 0;
   }
   libconfig::Setting& plots{root["plots"]};
+  std::string titleT;
   std::string nameT;
   std::string fillExpT;
   std::string xAxisLabelT;
@@ -208,6 +209,8 @@ int Parser::parse_plots(std::string plotConf,std::vector<std::string> *plotNames
   int cutStageT;
   for (int i{0}; i < plots.getLength(); i++){
     const libconfig::Setting &plot{plots[i]};
+    plot.lookupValue("title",titleT);
+    plotTitles->emplace_back(titleT);
     plot.lookupValue("name",nameT);
     plotNames->emplace_back(nameT);
     plot.lookupValue("xMin",xMinT);
