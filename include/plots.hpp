@@ -157,6 +157,7 @@ class Plots{
 
 struct plot{
   std::string name;
+  std::string title;
   TH1F* plotHist;
   float (Plots::*fillExp)(AnalysisEvent*);
   std::string xAxisLabel;

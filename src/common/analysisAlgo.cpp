@@ -1180,7 +1180,7 @@ void AnalysisAlgo::savePlots()
     	cutFlowLabels.emplace_back(*lIt);
     }
 
-    plotObj.makePlot(cutFlowMap,"cutFlow",cutFlowLabels);
+    plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
   }
   if (synchCutFlow){
     cutObj->getSynchCutFlow();

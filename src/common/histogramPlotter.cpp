@@ -86,26 +86,26 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
 	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
-      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].name,firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel);
+      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].title,firstIt->second[*stageIt]->getPlotPoint()[i].name,firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel);
     }
   }
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName){
+void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotTitle, std::string plotName){
   std::vector<std::string> blankLabels;
-  makePlot(plotMap,plotName,"",blankLabels);
+  makePlot(plotMap,plotTitle,plotName,"",blankLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::vector<std::string> xAxisLabels){
-  makePlot(plotMap,plotName,"",xAxisLabels);
+void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotTitle, std::string plotName, std::vector<std::string> xAxisLabels){
+  makePlot(plotMap,plotTitle,plotName,"",xAxisLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel){
+void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotTitle, std::string plotName, std::string subLabel){
   std::vector<std::string> blankLabels;
-  makePlot(plotMap,plotName,subLabel,blankLabels);
+  makePlot(plotMap,plotTitle,plotName,subLabel,blankLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
+void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotTitle, std::string plotName, std::string subLabel, std::vector<std::string> xAxisLabels){
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
@@ -119,7 +119,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   //Initialise the stack
-  THStack* mcStack{new THStack{plotName.c_str(),(plotName+";;Events").c_str()}};
+  THStack* mcStack{new THStack{plotName.c_str(),(plotTitle+";;Events").c_str()}};
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
