@@ -957,8 +957,8 @@ float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::
       TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
       float invMass{ float( (lepton1+lepton2).M() ) };
       if( std::abs(invMass) > std::abs(closestMass) ){
-        event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-        event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+        event->zPairLeptons.first = lepton1;
+        event->zPairLeptons.second = lepton2;
         closestMass = invMass;
       }
     }

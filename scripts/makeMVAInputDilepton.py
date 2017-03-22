@@ -32,6 +32,10 @@ def sortOutLeptons(tree,channel):
     if channel == "mumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
+    if channel == "emu":
+        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
+        zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
+
     return (zLep1,zLep2)
 
 def sortOutHadronicW(tree,channel):
@@ -336,6 +340,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
     if "__met__minus" in label:
         syst = 2048
 
+    if channel == "emu":
+        varMap["chan"][0] = 2
     if channel == "ee":
         varMap["chan"][0] = 1
     if channel == "mumu":
@@ -376,6 +382,11 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	if channel == "mumu":
             varMap["lep1RelIso"][0] = tree.muonPF2PATComRelIsodBeta[tree.zLep1Index]
 	    varMap["lep1D0"][0] = tree.muonPF2PATDBPV[tree.zLep1Index]
+	    varMap["lep2RelIso"][0] = tree.muonPF2PATComRelIsodBeta[tree.zLep2Index]
+	    varMap["lep2D0"][0] = tree.muonPF2PATDBPV[tree.zLep2Index]
+        if channel == "emu":
+            varMap["lep1RelIso"][0] = tree.elePF2PATComRelIsoRho[tree.zLep1Index]
+	    varMap["lep1D0"][0] = tree.elePF2PATD0PV[tree.zLep1Index]
 	    varMap["lep2RelIso"][0] = tree.muonPF2PATComRelIsodBeta[tree.zLep2Index]
 	    varMap["lep2D0"][0] = tree.muonPF2PATDBPV[tree.zLep2Index]
 
@@ -541,7 +552,7 @@ def main():
     jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt")
 
     #mapping of channels to dataTypes
-    channelToDataset = {"ee":"DataEG","mumu":"DataMu"}
+    channelToDataset = {"ee":"DataEG","mumu":"DataMu","emu":"MuonEG"}
 
     #systematics list
     systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
@@ -626,7 +637,7 @@ def main():
 
     chanMap = {}
     if is2016 :
-        chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016"}
+        chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016","emu":"emuRun2016"}
     else :
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
 
@@ -634,6 +645,7 @@ def main():
     outChanToData = {}
     outChanToData["DataEG"] = ["ee"]
     outChanToData["DataMu"] = ["mumu"]
+    outChanToData["MuonEG"] = ["emu"]
 
     for outChan in outChannels:
         print "Data ",outChan

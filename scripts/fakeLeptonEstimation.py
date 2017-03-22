@@ -43,13 +43,13 @@ def main():
   sameSignDY_mumu = 0
   oppSignDY_mumu = 0
 
-  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50eemvaOut.root")
-  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50mumumvaOut.root")
+  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50eemvaOut.root")
+  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50mumumvaOut.root")
   tree_DY_ee = infile_DY_ee.Get("tree")
   tree_DY_mumu = infile_DY_mumu.Get("tree")
 
-  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50eeinvLepmvaOut.root")
-  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz100mw50/DYJetsToLL_M-50mumuinvLepmvaOut.root")
+  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50eeinvLepmvaOut.root")
+  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50mumuinvLepmvaOut.root")
   tree_DY_SS_ee = infile_DY_SS_ee.Get("tree")
   tree_DY_SS_mumu = infile_DY_SS_mumu.Get("tree")
 
