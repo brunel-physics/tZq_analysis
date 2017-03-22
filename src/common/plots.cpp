@@ -975,6 +975,6 @@ void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight){
 void Plots::saveAllPlots(){
   for (unsigned i{0}; i < plotPoint.size(); i++){
     plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".root").c_str());
-//    plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".png").c_str());
+//    plotPoint[i].plotHist->SaveAs(("plots/"+plotPoint[i].name + ".pdf").c_str());
   }
 }

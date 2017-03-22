@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( false );
+const bool BLIND_PLOTS( true );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
@@ -86,7 +86,8 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
 	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
-      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].title,firstIt->second[*stageIt]->getPlotPoint()[i].name,firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel);
+      std::vector<std::string> xAxisLabel = {firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel};
+      makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].title,firstIt->second[*stageIt]->getPlotPoint()[i].name,xAxisLabel);
     }
   }
 }
@@ -118,8 +119,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
   }
 
+  std::string xAxisLabel {""};
+  if ( xAxisLabels.size() < 2 ) xAxisLabel = xAxisLabels[0]; 
+
   //Initialise the stack
-  THStack* mcStack{new THStack{plotName.c_str(),(plotTitle+";;Events").c_str()}};
+  THStack* mcStack{new THStack{plotName.c_str(),(plotTitle+";"+xAxisLabel+";Events").c_str()}};
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
@@ -221,7 +225,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetTitleOffset( L/W * 8.6 );
 
-  if (xAxisLabels.size() > 0){
+  if (xAxisLabels.size() > 1){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
       if ( !BLIND_PLOTS ) mcStack->GetXaxis()->SetBinLabel(i,"");
       else mcStack->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
@@ -264,7 +268,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );
     ratioHisto->GetYaxis()->CenterTitle();
 
-    if (xAxisLabels.size() > 0){
+    if (xAxisLabels.size() > 1){
       for (unsigned i{1}; i <= xAxisLabels.size(); i++){
         ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
       }
