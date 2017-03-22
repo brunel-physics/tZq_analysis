@@ -202,7 +202,8 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   }
 
   mcStack->Draw("");
-  mcStack->GetHistogram()->GetXaxis()->SetLabelOffset(999);
+
+  if ( !BLIND_PLOTS ) mcStack->GetHistogram()->GetXaxis()->SetLabelOffset(999);
 
   setLabelThree("");
   //labelThree_->Draw();
