@@ -269,9 +269,14 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
     ratioHisto->GetXaxis()->SetTitleSize(0.11);
 //    ratioHisto->GetXaxis()->SetTitleOffset(0.018);
-    if ( xAxisLabels.size() > 1 )    ratioHisto->GetXaxis()->SetLabelSize(0.14);
-    else    ratioHisto->GetXaxis()->SetLabelSize(0.104);
-    ratioHisto->GetXaxis()->SetLabelOffset(0.018);
+    if ( xAxisLabels.size() > 1 ) {
+      ratioHisto->GetXaxis()->SetLabelSize(0.14);
+      ratioHisto->GetXaxis()->SetLabelOffset(0.030);
+    }
+    else {
+      ratioHisto->GetXaxis()->SetLabelSize(0.104);
+      ratioHisto->GetXaxis()->SetLabelOffset(0.018);
+    }
     ratioHisto->GetYaxis()->SetLabelSize(0.06);
     ratioHisto->GetYaxis()->SetTitleSize(0.12);
     ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );

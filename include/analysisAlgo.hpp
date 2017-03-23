@@ -80,7 +80,7 @@ class AnalysisAlgo{
 	std::map<std::string, std::map<std::string, std::map<std::string, Plots*> > > plotsMap;
 	std::map<std::string, TH1F*> cutFlowMap;
 
-	std::vector<std::string> stageNames;
+	std::vector< std::pair<std::string,std::string> > stageNames;
 
 	//A couple of things for plotting. These will soon be set in a config file.
 	std::vector<std::string> legOrder;
