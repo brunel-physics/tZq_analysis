@@ -1175,6 +1175,7 @@ void AnalysisAlgo::savePlots()
 	plotObj.plotHistos(plotsMap[plotsVec[i]]);
     }
 
+    // cut flow x axis labels
     std::vector<std::string> cutFlowLabels;
     for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
     	cutFlowLabels.emplace_back(*lIt);
