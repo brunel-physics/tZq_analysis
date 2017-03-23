@@ -10,6 +10,9 @@
 #include "config_parser.hpp"
 #include "AnalysisEvent.hpp"
 
+#include <libconfig.h++>
+#include <LHAPDF/LHAPDF.h>
+
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>

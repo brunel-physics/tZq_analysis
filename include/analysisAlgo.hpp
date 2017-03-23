@@ -7,9 +7,6 @@
 #include "histogramPlotter.hpp"
 #include "dataset.hpp"
 
-#include <libconfig.h++>
-#include <LHAPDF/LHAPDF.h>
-
 #include <map>
 
 class TH1F;
