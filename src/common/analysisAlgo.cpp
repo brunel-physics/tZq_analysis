@@ -572,12 +572,12 @@ void AnalysisAlgo::setupPlots()
 {
   //Do a little initialisation for the plots here. Will later on be done in a config file.
   //Initialise plot stage names.
-  stageNames.emplace_back("lepSel");
-  stageNames.emplace_back("zMass");
-  stageNames.emplace_back("jetSel");
-  stageNames.emplace_back("bTag");
-  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back("wMass");}
-  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back("cTag");}
+  stageNames.emplace_back( std::make_pair ("lepSel","Lepton Cuts") );
+  stageNames.emplace_back( std::make_pair ("zMass","Z Mass Cuts") );
+  stageNames.emplace_back( std::make_pair ("jetSel","Jet Cuts") );
+  stageNames.emplace_back( std::make_pair ("bTag","b-tag Cuts") );
+  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
+  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back( std::make_pair ("cTag","c-tag Cuts") );}
 }
 
 void AnalysisAlgo::runMainAnalysis(){
@@ -700,7 +700,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      }
 	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
 	      for (unsigned j{0}; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j]] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j]+systNames[systInd]+"_"+channel, trileptonChannel_};
+		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
 	      }
 	    }
 	  }//end cutFlow find loop
@@ -1136,7 +1136,7 @@ void AnalysisAlgo::runMainAnalysis(){
       if (infoDump){
 	std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
 	for (int i{0}; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
-	  std::cout << stageNames[i] << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
+	  std::cout << stageNames[i].first << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
 	}
       }
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
@@ -1177,8 +1177,8 @@ void AnalysisAlgo::savePlots()
 
     // cut flow x axis labels
     std::vector<std::string> cutFlowLabels;
-    for ( std::vector<std::string>::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-    	cutFlowLabels.emplace_back(*lIt);
+    for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
+    	cutFlowLabels.emplace_back( (*lIt).second );
     }
 
     plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
@@ -1202,7 +1202,7 @@ void AnalysisAlgo::savePlots()
 	    systMask = systMask << 1;
 	    continue;
 	  }
-	  delete plotsMap[systNames[systInd]][dataset->getFillHisto()][stageNames[j]];
+	  delete plotsMap[systNames[systInd]][dataset->getFillHisto()][stageNames[j].first];
 	  if (systInd > 0) systMask = systMask << 1;
 	}
       }
