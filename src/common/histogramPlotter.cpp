@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( true );
+const bool BLIND_PLOTS( false );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
@@ -237,7 +237,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   if ( !BLIND_PLOTS ) {
     // Bottom ratio plots
     canvy->cd();
-    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.315);
+    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.0225,0.99,0.3275);
   //  canvy_2->SetOptStat(0);
     canvy_2->Draw();
     canvy_2->cd();
@@ -257,11 +257,13 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     ratioHisto->SetStats(false);
     ratioHisto->SetMinimum(0.5);
     ratioHisto->SetMaximum(1.5);
-    ratioHisto->SetTitle(";;data/MC");
+    ratioHisto->SetTitle( (";"+xAxisLabel+";data/MC").c_str() );
     ratioHisto->GetXaxis()->SetNdivisions(6,5,0);
     ratioHisto->GetYaxis()->SetNdivisions(6,5,0);
 
-    ratioHisto->GetXaxis()->SetLabelSize(0.12);
+    ratioHisto->GetXaxis()->SetTitleSize(0.11);
+//    ratioHisto->GetXaxis()->SetTitleOffset(0.018);
+    ratioHisto->GetXaxis()->SetLabelSize(0.11);
     ratioHisto->GetXaxis()->SetLabelOffset(0.018);
     ratioHisto->GetYaxis()->SetLabelSize(0.06);
     ratioHisto->GetYaxis()->SetTitleSize(0.12);
