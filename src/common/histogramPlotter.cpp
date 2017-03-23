@@ -237,7 +237,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   if ( !BLIND_PLOTS ) {
     // Bottom ratio plots
     canvy->cd();
-    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.0225,0.99,0.3275);
+    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.3275);
   //  canvy_2->SetOptStat(0);
     canvy_2->Draw();
     canvy_2->cd();
@@ -249,7 +249,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     canvy_2->SetLeftMargin( L/W );
     canvy_2->SetRightMargin( R/W );
     canvy_2->SetTopMargin( T/H );
-    canvy_2->SetBottomMargin( B/H );
+    canvy_2->SetBottomMargin( B/H * 2.1 );
     canvy_2->SetTickx(0);
     canvy_2->SetTicky(0);
     canvy_2->SetGridy(1);
