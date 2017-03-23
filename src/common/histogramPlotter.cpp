@@ -261,20 +261,21 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
     ratioHisto->GetXaxis()->SetNdivisions(6,5,0);
     ratioHisto->GetYaxis()->SetNdivisions(6,5,0);
 
-    ratioHisto->GetXaxis()->SetTitleSize(0.11);
-//    ratioHisto->GetXaxis()->SetTitleOffset(0.018);
-    ratioHisto->GetXaxis()->SetLabelSize(0.11);
-    ratioHisto->GetXaxis()->SetLabelOffset(0.018);
-    ratioHisto->GetYaxis()->SetLabelSize(0.06);
-    ratioHisto->GetYaxis()->SetTitleSize(0.12);
-    ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );
-    ratioHisto->GetYaxis()->CenterTitle();
-
     if (xAxisLabels.size() > 1){
       for (unsigned i{1}; i <= xAxisLabels.size(); i++){
         ratioHisto->GetXaxis()->SetBinLabel(i,xAxisLabels[i-1].c_str());
       }
     }
+
+    ratioHisto->GetXaxis()->SetTitleSize(0.11);
+//    ratioHisto->GetXaxis()->SetTitleOffset(0.018);
+    if ( xAxisLabels.size() > 1 )    ratioHisto->GetXaxis()->SetLabelSize(0.14);
+    else    ratioHisto->GetXaxis()->SetLabelSize(0.104);
+    ratioHisto->GetXaxis()->SetLabelOffset(0.018);
+    ratioHisto->GetYaxis()->SetLabelSize(0.06);
+    ratioHisto->GetYaxis()->SetTitleSize(0.12);
+    ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );
+    ratioHisto->GetYaxis()->CenterTitle();
 
     ratioHisto->Draw("e x0, SCAT");
   }
