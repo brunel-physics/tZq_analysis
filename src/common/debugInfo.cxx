@@ -90,9 +90,9 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
 
 void DebugInfo::runMainAnalysis(){
 
-  TH1F* histChannel = new TH1F("histChannel", "channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",2,0.0,1.0);
-  TH1F* histNumJets = new TH1F("histNumJets", "number of jets vs RunH/RunsB-G;# jets;RunH/RunsB-G",10,0.0,9.0);
-  TH1F* histNumBJets = new TH1F("histNumBJets", "number of b-jets vs RunH/RunsB-G;# b-jets;RunH/RunsB-G",5,0.0,4.0);
+  TH1F* histChannel = new TH1F("histChannel", "channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",2,0.5,2.5);
+  TH1F* histNumJets = new TH1F("histNumJets", "number of jets vs RunH/RunsB-G;# jets;RunH/RunsB-G",10,-0.5,9.5);
+  TH1F* histNumBJets = new TH1F("histNumBJets", "number of b-jets vs RunH/RunsB-G;# b-jets;RunH/RunsB-G",5,-0.5,4.5);
 
   std::pair< int, int > numElectrons {0,0};
   std::pair< int, int > numMuons {0,0};
@@ -139,7 +139,7 @@ void DebugInfo::runMainAnalysis(){
         else numJets[event->numJetPF2PAT].second += 1;
       }
       unsigned int bJets {0};
-      for (unsigned int j = 0; j< event->numJetPF2PAT; j++) {
+      for (int j = 0; j< event->numJetPF2PAT; j++) {
         if ( event->jetPF2PATBDiscriminator[i] > 0.5426 ) bJets += 1;
       }
       if ( bJets < 5 ) {
@@ -150,8 +150,14 @@ void DebugInfo::runMainAnalysis(){
     delete datasetChain;
   } //end dataset loop
 
-  histChannel->Fill(1, numElectrons.second/(numElectrons.first+1.0e-06));
-  histChannel->Fill(2, numMuons.second/(numMuons.first+1.0e-06));
+//  std::cout << "numElectrons.first/numElectrons.second : " << numElectrons.first << "/" << numElectrons.second << std::endl;
+//  std::cout << "numMuons.first/numMuons.second : " << numMuons.first << "/" << numMuons.second << std::endl;
+
+  float electronFraction = float(numElectrons.second)/(float(numElectrons.first)+1.0e-06);
+  float muonFraction = float(numMuons.second)/(float(numMuons.first)+1.0e-06);
+
+  histChannel->Fill(1, electronFraction);
+  histChannel->Fill(2, muonFraction);
 
 
   for ( int i = 0; i < 10; i++ ) {
@@ -164,7 +170,10 @@ void DebugInfo::runMainAnalysis(){
   histChannel->GetXaxis()->SetBinLabel(1,"ee");
   histChannel->GetXaxis()->SetBinLabel(2,"#mu#mu");
 
-  mkdir( (outFolder+postfix).c_str(),0700);
+  histNumJets->SetMinimum(0.0);
+  histNumBJets->SetMinimum(0.0);
+
+  mkdir( (outFolder).c_str(),0700);
   TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
   histChannel->Write();
   histNumJets->Write();
