@@ -45,6 +45,8 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
      "Set postfix for plots. Overrides the config file.")
     ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.)")
+    ("MC,m", po::bool_switch(&isMC_),
+     "Running over Monte Carlo.")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.");
   po::variables_map vm;
@@ -126,25 +128,37 @@ void DebugInfo::runMainAnalysis(){
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
       if ( event->numElePF2PAT == 2 ) {
-        if ( event->eventRun <= 280385 ) numElectrons.first += 1; // If Runs B-G
-        else numElectrons.second += 1; // else if Run H
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numElectrons.first += 1; // If Runs B-G
+          else numElectrons.second += 1; // else if Run H
+        }
+        else numElectrons.first += 1; // just MC
       }
       if ( event->numMuonPF2PAT == 2 ) {
-        if ( event->eventRun <= 280385 ) numMuons.first += 1; // If Runs B-G
-        else numMuons.second += 1; // else if Run H
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numMuons.first += 1; // If Runs B-G
+          else numMuons.second += 1; // else if Run H
+        }
+        else numMuons.first += 1; // just MC
       }
 
       if ( event->numJetPF2PAT < 10 ) {
-        if ( event->eventRun <= 280385) numJets[event->numJetPF2PAT].first += 1;
-        else numJets[event->numJetPF2PAT].second += 1;
+        if (!isMC_){
+          if ( event->eventRun <= 280385) numJets[event->numJetPF2PAT].first += 1;
+          else numJets[event->numJetPF2PAT].second += 1;
+        }
+        else numJets[event->numJetPF2PAT].first += 1; // just MC
       }
       unsigned int bJets {0};
       for (int j = 0; j< event->numJetPF2PAT; j++) {
         if ( event->jetPF2PATBDiscriminator[i] > 0.5426 ) bJets += 1;
       }
       if ( bJets < 5 ) {
-        if ( event->eventRun <= 280385) numBJets[bJets].first += 1;
-        else numBJets[bJets].second += 1;
+        if (!isMC_){
+          if ( event->eventRun <= 280385) numBJets[bJets].first += 1;
+          else numBJets[bJets].second += 1;
+        }
+        else numBJets[bJets].first += 1; // just MC
       }
     }
     delete datasetChain;
@@ -156,15 +170,18 @@ void DebugInfo::runMainAnalysis(){
   float electronFraction = float(numElectrons.second)/(float(numElectrons.first)+1.0e-06);
   float muonFraction = float(numMuons.second)/(float(numMuons.first)+1.0e-06);
 
-  histChannel->Fill(1, electronFraction);
-  histChannel->Fill(2, muonFraction);
-
+  if (!isMC_) histChannel->Fill(1, electronFraction);
+  else histChannel->Fill(1, numElectrons.first);
+  if (!isMC_) histChannel->Fill(2, muonFraction);
+  else histChannel->Fill(2, numMuons.first);
 
   for ( int i = 0; i < 10; i++ ) {
-    histNumJets->Fill(i, numJets[i].second/(numJets[i].first+1.0e-06));
+    if (!isMC_) histNumJets->Fill(i, numJets[i].second/(numJets[i].first+1.0e-06));
+    else histNumJets->Fill(i, numJets[i].first);
   }
   for ( int i = 0; i < 5; i++ ) {
-    histNumBJets->Fill(i, numBJets[i].second/(numBJets[i].first+1.0e-06));
+    if (!isMC_) histNumBJets->Fill(i, numBJets[i].second/(numBJets[i].first+1.0e-06));
+    else histNumBJets->Fill(i, numBJets[i].first);
   }
 
   histChannel->GetXaxis()->SetBinLabel(1,"ee");

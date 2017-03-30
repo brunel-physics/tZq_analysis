@@ -35,6 +35,7 @@ class DebugInfo{
 	private:
 
         bool is2016_;
+        bool isMC_;
 
 	std::string config;
 	double usePreLumi;
