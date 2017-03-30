@@ -170,6 +170,7 @@ void DebugInfo::runMainAnalysis(){
   histChannel->GetXaxis()->SetBinLabel(1,"ee");
   histChannel->GetXaxis()->SetBinLabel(2,"#mu#mu");
 
+  histChannel->SetMinimum(0.0);
   histNumJets->SetMinimum(0.0);
   histNumBJets->SetMinimum(0.0);
 
