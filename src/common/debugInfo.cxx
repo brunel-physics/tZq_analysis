@@ -93,11 +93,16 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
 void DebugInfo::runMainAnalysis(){
 
   TH1F* histChannel = new TH1F("histChannel", "channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",2,0.5,2.5);
+  TH1F* histTrileptonChannel = new TH1F("histChannel", "trilepton channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",4,0.5,4.5);
   TH1F* histNumJets = new TH1F("histNumJets", "number of jets vs RunH/RunsB-G;# jets;RunH/RunsB-G",10,-0.5,9.5);
   TH1F* histNumBJets = new TH1F("histNumBJets", "number of b-jets vs RunH/RunsB-G;# b-jets;RunH/RunsB-G",5,-0.5,4.5);
 
   std::pair< int, int > numElectrons {0,0};
   std::pair< int, int > numMuons {0,0};
+  std::pair< int, int > numEEE {0,0};
+  std::pair< int, int > numEEMU {0,0};
+  std::pair< int, int > numEMUMU {0,0};
+  std::pair< int, int > numMUMUMU {0,0};
   std::pair< int, int > numJets[10] {{0,0}};
   std::pair< int, int > numBJets[5] {{0,0}};
 
@@ -127,19 +132,48 @@ void DebugInfo::runMainAnalysis(){
     for (int i = 0; i < numberOfEvents; i++) {
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
-      if ( event->numElePF2PAT == 2 ) {
+      if ( event->numElePF2PAT == 2 && event->numMuonPF2PAT == 0 ) {
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numElectrons.first += 1; // If Runs B-G
           else numElectrons.second += 1; // else if Run H
         }
         else numElectrons.first += 1; // just MC
       }
-      if ( event->numMuonPF2PAT == 2 ) {
+      if ( event->numMuonPF2PAT == 2 && event->numElePF2PAT == 0 ) {
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numMuons.first += 1; // If Runs B-G
           else numMuons.second += 1; // else if Run H
         }
         else numMuons.first += 1; // just MC
+      }
+
+      if ( event->numElePF2PAT == 3 && event->numMuonPF2PAT == 0 ) {
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numEEE.first += 1; // If Runs B-G
+          else numEEE.second += 1; // else if Run H
+        }
+        else numEEE.first += 1; // just MC
+      }
+      if ( event->numElePF2PAT == 2 && event->numMuonPF2PAT == 1 ) {
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numEEMU.first += 1; // If Runs B-G
+          else numEEMU.second += 1; // else if Run H
+        }
+        else numEEMU.first += 1; // just MC
+      }
+      if ( event->numElePF2PAT == 1 && event->numMuonPF2PAT == 2 ) {
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numEMUMU.first += 1; // If Runs B-G
+          else numEMUMU.second += 1; // else if Run H
+        }
+        else numEMUMU.first += 1; // just MC
+      }
+      if ( event->numElePF2PAT == 0 && event->numMuonPF2PAT == 3 ) {
+        if (!isMC_){
+          if ( event->eventRun <= 280385 ) numMUMUMU.first += 1; // If Runs B-G
+          else numMUMUMU.second += 1; // else if Run H
+        }
+        else numMUMUMU.first += 1; // just MC
       }
 
       if ( event->numJetPF2PAT < 10 ) {
@@ -175,6 +209,20 @@ void DebugInfo::runMainAnalysis(){
   if (!isMC_) histChannel->Fill(2, muonFraction);
   else histChannel->Fill(2, numMuons.first);
 
+  float eeeFraction = float(numEEE.second)/(float(numEEE.first)+1.0e-06);
+  float eemuFraction = float(numEEMU.second)/(float(numEEMU.first)+1.0e-06);
+  float emumuFraction = float(numEMUMU.second)/(float(numEMUMU.first)+1.0e-06);
+  float mumumuFraction = float(numMUMUMU.second)/(float(numMUMUMU.first)+1.0e-06);
+
+  if (!isMC_) histTrileptonChannel->Fill(1, eeeFraction);
+  else histTrileptonChannel->Fill(1, numEEE.first);
+  if (!isMC_) histTrileptonChannel->Fill(2, eemuFraction);
+  else histTrileptonChannel->Fill(2, numEEMU.first);
+  if (!isMC_) histTrileptonChannel->Fill(3, emumuFraction);
+  else histTrileptonChannel->Fill(3, numEMUMU.first);
+  if (!isMC_) histTrileptonChannel->Fill(4, mumumuFraction);
+  else histTrileptonChannel->Fill(4, numMUMUMU.first);
+
   for ( int i = 0; i < 10; i++ ) {
     if (!isMC_) histNumJets->Fill(i, numJets[i].second/(numJets[i].first+1.0e-06));
     else histNumJets->Fill(i, numJets[i].first);
@@ -186,6 +234,11 @@ void DebugInfo::runMainAnalysis(){
 
   histChannel->GetXaxis()->SetBinLabel(1,"ee");
   histChannel->GetXaxis()->SetBinLabel(2,"#mu#mu");
+
+  histTrileptonChannel->GetXaxis()->SetBinLabel(1,"eee");
+  histTrileptonChannel->GetXaxis()->SetBinLabel(2,"ee#mu");
+  histTrileptonChannel->GetXaxis()->SetBinLabel(3,"e#mu#mu");
+  histTrileptonChannel->GetXaxis()->SetBinLabel(4,"#mu#mu#mu");
 
   histChannel->SetMinimum(0.0);
   histNumJets->SetMinimum(0.0);
