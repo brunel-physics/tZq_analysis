@@ -93,7 +93,7 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
 void DebugInfo::runMainAnalysis(){
 
   TH1F* histChannel = new TH1F("histChannel", "channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",2,0.5,2.5);
-  TH1F* histTrileptonChannel = new TH1F("histChannel", "trilepton channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",4,0.5,4.5);
+  TH1F* histTrileptonChannel = new TH1F("histTrileptonChannel", "trilepton channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",4,0.5,4.5);
   TH1F* histNumJets = new TH1F("histNumJets", "number of jets vs RunH/RunsB-G;# jets;RunH/RunsB-G",10,-0.5,9.5);
   TH1F* histNumBJets = new TH1F("histNumBJets", "number of b-jets vs RunH/RunsB-G;# b-jets;RunH/RunsB-G",5,-0.5,4.5);
 
