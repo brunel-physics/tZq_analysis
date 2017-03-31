@@ -320,6 +320,10 @@ public :
    Double_t weight_muF0p5muR0p5;
    Double_t weight_muF2muR2;
    Double_t origWeightForNorm;
+   Double_t weight_pdfMax;
+   Double_t weight_pdfMin;
+   Double_t weight_alphaMax;
+   Double_t weight_alphaMin;
    // Int_t    numVert;
 
    //2015 Data Triggers
@@ -751,6 +755,10 @@ public :
    TBranch	  *b_weight_muF0p5muR0p5;   //!
    TBranch	  *b_weight_muF2muR2;   //!
    TBranch	  *b_origWeightForNorm;   //!
+   TBranch	  *b_weight_pdfMax;   //!
+   TBranch	  *b_weight_pdfMin;   //!
+   TBranch	  *b_weight_alphaMax;   //!
+   TBranch	  *b_weight_alphaMin;   //!
    //   TBranch        *b_numVert;    //!
 
    //2015 Lepton and MET Triggers
@@ -1305,6 +1313,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("weight_muF0p5muR0p5", &weight_muF0p5muR0p5, &b_weight_muF0p5muR0p5);
      fChain->SetBranchAddress("weight_muF2muR2", &weight_muF2muR2, &b_weight_muF2muR2);
      fChain->SetBranchAddress("origWeightForNorm", &origWeightForNorm, &b_origWeightForNorm);
+     fChain->SetBranchAddress("weight_pdfMax", &weight_pdfMax, &b_weight_pdfMax);
+     fChain->SetBranchAddress("weight_pdfMin", &weight_pdfMin, &b_weight_pdfMin);
+     fChain->SetBranchAddress("weight_alphaMax", &weight_alphaMax, &b_weight_alphaMax);
+     fChain->SetBranchAddress("weight_alphaMin", &weight_alphaMin, &b_weight_alphaMin);
    }
    // 2015 triggers and MET filters
    if( !is2016 ) {

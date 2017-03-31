@@ -551,7 +551,6 @@ void AnalysisAlgo::setupSystematics()
     //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
     //    LHAPDF::initPDFSet(1, "cteq6lg.LHgrid");
   }
-//  LHAPDF::initPDFSet(1, "CT10nnlo.LHgrid");
 }
 
 void AnalysisAlgo::setupCuts()
@@ -980,8 +979,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systInd) systMask = systMask << 1;
 	    continue;
 	  }
-	  //Do PDF reweighting things here
-	  if (systMask == 1024 || systMask == 2048){
+	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
+          //Everything else uses LHE event weights
+	  if ( systMask == 1024 || systMask == 2048 ){
+	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" ) {
 	    //std::cout << std::setprecision(15) << eventWeight << " ";
 	    LHAPDF::usePDFMember(1,0);
 	    float q{event->genPDFScale};
@@ -1014,12 +1015,18 @@ void AnalysisAlgo::runMainAnalysis(){
 	      if (weight > max) max = weight;
 	      if (weight < min) min = weight;
 	      //	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
-
+	      
 	    }
 	    if (systMask == 1024) eventWeight *= max;
 	    if (systMask == 2048) eventWeight *= min;
 	    //std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
 	    //std::cout << std::setprecision(9) << " " << min << " " << max << " " << eventWeight << std::endl;
+	    }
+	    //LHE event weights for everything else
+	    else {
+	      if (systMask == 1024) eventWeight *= event->weight_pdfMax;
+	      if (systMask == 2048) eventWeight *= event->weight_pdfMin;
+	    }
 	  }
 	  //      if (synchCutFlow){
 	  //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
