@@ -247,6 +247,7 @@ void DebugInfo::runMainAnalysis(){
   mkdir( (outFolder).c_str(),0700);
   TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
   histChannel->Write();
+  histTrileptonChannel->Write();
   histNumJets->Write();
   histNumBJets->Write();
   outFile->Close();
