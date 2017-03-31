@@ -331,7 +331,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("makeMVATree,z", po::bool_switch(&makeMVATree),
      "Produce trees after event selection for multivariate analysis.")
     ("syst,v", po::value<int>(&systToRun)->default_value(0),
-     "Mask for systematics to be run. 16383 enables all systematics.")
+     "Mask for systematics to be run. 65535 enables all systematics.")
     ("channels,k", po::value<int>(&channelsToRun)->default_value(0),
      "Mask describing the channels to be run over in trilepton mode. The mask "
      "is the sum of each channel's mask, which are:\n"
@@ -496,6 +496,8 @@ void AnalysisAlgo::setupSystematics()
   systNames.emplace_back("__pdf__minus");
   systNames.emplace_back("__ME_PS__plus");
   systNames.emplace_back("__ME_PS__minus");
+  systNames.emplace_back("__alphaS__plus");
+  systNames.emplace_back("__alphaS__minus");
 
   if ( !is2016_ ) { // If 2015 mode, get 2015 PU
     //Make pileupReweighting stuff here
@@ -983,50 +985,54 @@ void AnalysisAlgo::runMainAnalysis(){
           //Everything else uses LHE event weights
 	  if ( systMask == 1024 || systMask == 2048 ){
 	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" ) {
-	    //std::cout << std::setprecision(15) << eventWeight << " ";
-	    LHAPDF::usePDFMember(1,0);
-	    float q{event->genPDFScale};
-	    float x1{event->genPDFx1};
-	    float x2{event->genPDFx2};
-	    int id1{event->genPDFf1};
-	    int id2{event->genPDFf2};
-	    if (id2 == 21) id2 = 0;
-	    if (id1 == 21) id1 = 0;
-	    double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
-	    double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
-	    std::vector<float> pdf_weights;
-	    //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
-	    //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
-	    float min{1};
-	    float max{1};
-	    float pdfWeightUp{0};
-	    float pdfWeightDown{0};
-	    for (int j{1}; j <= 50; j++){
-	      LHAPDF::usePDFMember(1,j);
-	      double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
-	      double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
-	      //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
-	      double weight{1};
-	      if( (xpdf1 * xpdf2) > 0.00001)
-		weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
-	      pdf_weights.emplace_back(weight);
-	      if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
-	      if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
-	      if (weight > max) max = weight;
-	      if (weight < min) min = weight;
-	      //	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
+	      //std::cout << std::setprecision(15) << eventWeight << " ";
+	      LHAPDF::usePDFMember(1,0);
+	      float q{event->genPDFScale};
+	      float x1{event->genPDFx1};
+	      float x2{event->genPDFx2};
+	      int id1{event->genPDFf1};
+	      int id2{event->genPDFf2};
+	      if (id2 == 21) id2 = 0;
+	      if (id1 == 21) id1 = 0;
+	      double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
+	      double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
+	      std::vector<float> pdf_weights;
+	      //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
+	      //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
+	      float min{1};
+	      float max{1};
+	      float pdfWeightUp{0};
+	      float pdfWeightDown{0};
+	      for (int j{1}; j <= 50; j++){
+		LHAPDF::usePDFMember(1,j);
+		double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
+		double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
+		//std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
+		double weight{1};
+		if( (xpdf1 * xpdf2) > 0.00001)
+		  weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
+		pdf_weights.emplace_back(weight);
+		if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
+		if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
+		if (weight > max) max = weight;
+		if (weight < min) min = weight;
+		//	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
 	      
-	    }
-	    if (systMask == 1024) eventWeight *= max;
-	    if (systMask == 2048) eventWeight *= min;
-	    //std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
+	      }
+	      if (systMask == 1024) eventWeight *= max;
+	      if (systMask == 2048) eventWeight *= min;
+	      //std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
 	    //std::cout << std::setprecision(9) << " " << min << " " << max << " " << eventWeight << std::endl;
 	    }
 	    //LHE event weights for everything else
 	    else {
-	      if (systMask == 1024) eventWeight *= event->weight_pdfMax;
-	      if (systMask == 2048) eventWeight *= event->weight_pdfMin;
+	      if (systMask == 1024) eventWeight *= event->weight_pdfMax; //Max
+	      if (systMask == 2048) eventWeight *= event->weight_pdfMin; //Min
 	    }
+	  }
+	  if ( systMask == 16384 || systMask == 32768 ){
+	    if (systMask == 16384) eventWeight *= event->weight_alphaMin; // Max, but incorrectly named branch
+	    if (systMask == 32768) eventWeight *= event->weight_alphaMax; // Min, but incorrectly named branch
 	  }
 	  //      if (synchCutFlow){
 	  //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
