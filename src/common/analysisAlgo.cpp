@@ -549,7 +549,7 @@ void AnalysisAlgo::setupSystematics()
 
   //Initialise PDFs
   if (systToRun & 1024 || systToRun & 2048){
-    LHAPDF::initPDFSet(1, "CT14nnlo.LHgrid");
+    LHAPDF::initPDFSet(1, "NNPDF30_nlo_nf_5_pdfas.LHgrid");
     //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
     //    LHAPDF::initPDFSet(1, "cteq6lg.LHgrid");
   }
@@ -1003,7 +1003,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      float max{1};
 	      float pdfWeightUp{0};
 	      float pdfWeightDown{0};
-	      for (int j{1}; j <= 50; j++){
+	      for (int j{1}; j <= 100; j++){
 		LHAPDF::usePDFMember(1,j);
 		double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
 		double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
