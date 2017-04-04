@@ -220,6 +220,8 @@ def setupInputVars():
     inputVars["minZJetPhi"] = array('f',[0.])
     inputVars["totHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
+    inputVars["jetMass"] = array('f',[0.])
+    inputVars["jetMass3"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
     inputVars["chi2"] = array('f',[0.])
     return inputVars
@@ -327,6 +329,8 @@ def setupBranches(tree,varMap):
     tree.Branch("zjminPhi",varMap["minZJetPhi"],"zjminPhi/F")
     tree.Branch("totHt",varMap["totHt"],"totHt/F")
     tree.Branch("jetHt",varMap["jetHt"],"jetHt/F")
+    tree.Branch("jetMass",varMap["jetMass"],"jetMass/F")
+    tree.Branch("jetMass3",varMap["jetMass3"],"jetMass3/F")
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
 
@@ -506,8 +510,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	varMap["zl2Quark2DelPhi"][0] = (zLep2).DeltaPhi(wQuark2)
         varMap["minZJetR"][0] = 3.0
         jetHt = 0.
+        jetVector = TLorentzVector();
         for i in range(len(jetVecs)):
             jetHt += jetVecs[i].Pt()
+            jetVector += jetVecs[i]
             if jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
             if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
@@ -520,6 +526,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         ht += zLep1.Pt() + zLep2.Pt()
         varMap["lepHt"][0] = ht
         varMap["jetHt"][0] = jetHt
+        varMap["jetMass"][0] = jetVector.M()
+        varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
 	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
         ht += jetHt
         varMap["totHt"][0] = ht

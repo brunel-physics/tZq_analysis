@@ -140,6 +140,8 @@ def setupInputVars():
     inputVars["totHt"] = array('f',[0.])
     inputVars["lepHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
+    inputVars["jetMass"] = array('f',[0.])
+    inputVars["jetMass3"] = array('f',[0.])
     inputVars["lepMetHt"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
     inputVars["zMass"] = array('f',[0.])
@@ -188,6 +190,8 @@ def setupBranches(tree,varMap):
     tree.Branch("tree_totHt",varMap["totHt"],"tree_totHt/F")
     tree.Branch("tree_lepHt",varMap["lepHt"],"tree_lepHt/F")
     tree.Branch("tree_jetHt",varMap["jetHt"],"tree_jetHt/F")
+    tree.Branch("tree_jetMass",varMap["jetMass"],"tree_jetMass/F")
+    tree.Branch("tree_jetMass3",varMap["jetMass3"],"tree_jetMass3/F")
     tree.Branch("tree_lepMetHt",varMap["lepMetHt"],"tree_lepMetHt/F")
     tree.Branch("tree_totHtOverPt",varMap["totHtOverPt"],"tree_totHtOverPt/F")
     tree.Branch("tree_zMass",varMap["zMass"],"tree_zMass/F")
@@ -300,8 +304,10 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
             varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1])
         varMap["minZJetR"][0] = 3.0
         jetHt = 0.
+        jetVector = TLorentzVector();
         for i in range(len(jetVecs)):
             jetHt += jetVecs[i].Pt()
+            jetVector += jetVecs[i]
             if jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
         outTree.Fill()
@@ -319,6 +325,8 @@ def fillTree(outTree, varMap, tree, label, channel, jetUnc, overRideWeight = -1.
         varMap["lepHt"][0] = ht
         ht += metVec.Pt()
         varMap["jetHt"][0] = jetHt
+        varMap["jetMass"][0] = jetVector.M()
+        varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
         varMap["lepMetHt"][0] = ht
         ht += jetHt
         varMap["totHt"][0] = ht
