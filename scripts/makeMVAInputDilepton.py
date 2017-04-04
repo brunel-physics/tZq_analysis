@@ -527,7 +527,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["lepHt"][0] = ht
         varMap["jetHt"][0] = jetHt
         varMap["jetMass"][0] = jetVector.M()
-        varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
+        if channel !=  "emu": varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
+        else : varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1]).M()
 	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
         ht += jetHt
         varMap["totHt"][0] = ht

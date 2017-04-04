@@ -22,7 +22,7 @@ class Cuts{
 
   bool makeLeptonCuts(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*, int syst = 0, bool isControl = false);
   bool invertIsoCut(AnalysisEvent*,float*,std::map<std::string,Plots*>, TH1F*);
-  std::pair< std::vector<int>, std::vector<float> >  makeJetCuts(AnalysisEvent*,int,float*);
+  std::pair< std::vector<int>, std::vector<float> >  makeJetCuts(AnalysisEvent*,int,float*, bool isProper = true);
   std::vector<int> makeMetCuts(AnalysisEvent*);
   std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
   std::vector<int> makeLooseBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);

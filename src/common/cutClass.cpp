@@ -468,12 +468,14 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
     * eventWeight *= getLeptonWeight(event,syst);
 
+  event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
   if (std::abs(invZmass) < 106 && isControl) return false;
 
+  event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
 
@@ -975,7 +977,7 @@ float Cuts::getTopMass(AnalysisEvent *event){
   return topMass;
 }
 
-std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight){
+std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEvent *event, int syst, float * eventWeight, bool isProper){
 
   std::vector<int> jets;
   std::vector<float> SFs;
@@ -1075,7 +1077,7 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
     }
   }
   //Evaluate b-tag weight for event here.
-  if (getBTagWeight_){
+  if (getBTagWeight_ && isProper){
     float bWeight{(dataNoTag * dataTag)/(mcNoTag * mcTag)};
     if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0 || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag || dataNoTag != dataNoTag){
       bWeight = 1.;
