@@ -1,13 +1,3 @@
-[tZq]
-fileName = configs/2016/datasets/fileLists/tZqFiles.txt
-totalEvents = 14509520
-crossSection = 0.0758
-runType = mc
-histoName = tZq
-colour = kYellow
-label = tZq
-plotType = f
-
 [tHq]
 fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3495799
@@ -16,56 +6,6 @@ runType = mc
 histoName = SingleTop
 colour = kMagenta
 label = Single Top
-plotType = f
-
-[tWZ]
-fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
-totalEvents = 50000
-crossSection = 0.01123
-runType = mc
-histoName = SingleTop
-colour = kMagenta
-label = Single Top
-plotType = f
-
-[ttWlnu]
-fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
-totalEvents = 5280565
-crossSection = 0.2043
-runType = mc
-histoName = ttV
-colour = kGreen
-label = ttV
-plotType = f
-
-[ttW2q]
-fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
-totalEvents = 833298
-crossSection = 0.4062
-runType = mc
-histoName = ttV
-colour = kGreen
-label = ttV
-plotType = f
-
-[ttZ2l2nu]
-fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 7974473
-crossSection = 0.2529
-runType = mc
-histoName = ttV
-colour = kGreen
-label = ttV
-plotType = f
-
-[ttZ2q]
-fileName = configs/2016/datasets/fileLists/ttZ2qFiles.txt
-totalEvents = 749400
-crossSection = 0.5297
-runType = mc
-histoName = ttV
-colour = kGreen
-label = ttV
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -102,26 +42,6 @@ plotType = f
 fileName = configs/2016/datasets/fileLists/tbarChannelFiles.txt
 totalEvents = 38811017
 crossSection = 80.95
-runType = mc
-histoName = SingleTop
-colour = kMagenta
-label = Single Top
-plotType = f
-
-[tWInclusive]
-fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
-totalEvents = 3516550
-crossSection = 35.85
-runType = mc
-histoName = SingleTop
-colour = kMagenta
-label = Single Top
-plotType = f
-
-[tbarWInclusive]
-fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 5205966
-crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
@@ -225,6 +145,86 @@ runType = mc
 histoName = zPlusJets
 colour = kBlue
 label = zPlusJets
+plotType = f
+
+[ttWlnu]
+fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
+totalEvents = 5280565
+crossSection = 0.2043
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttW2q]
+fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
+totalEvents = 833298
+crossSection = 0.4062
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttZ2l2nu]
+fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
+totalEvents = 7974473
+crossSection = 0.2529
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttZ2q]
+fileName = configs/2016/datasets/fileLists/ttZ2qFiles.txt
+totalEvents = 749400
+crossSection = 0.5297
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[tWInclusive]
+fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
+totalEvents = 3516550
+crossSection = 35.85
+runType = mc
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
+plotType = f
+
+[tbarWInclusive]
+fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
+totalEvents = 5205966
+crossSection = 35.85
+runType = mc
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
+plotType = f
+
+[tWZ]
+fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+totalEvents = 50000
+crossSection = 0.01123
+runType = mc
+histoName = SingleTop
+colour = kMagenta
+label = Single Top
+plotType = f
+
+[tZq]
+fileName = configs/2016/datasets/fileLists/tZqFiles.txt
+totalEvents = 14509520
+crossSection = 0.0758
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
 plotType = f
 
 [DYJetsToLL_M-10To50_amcatnlo]
