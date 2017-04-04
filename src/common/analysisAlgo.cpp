@@ -580,7 +580,7 @@ void AnalysisAlgo::setupPlots()
   stageNames.emplace_back( std::make_pair ("zMass","Z Mass Cuts") );
   stageNames.emplace_back( std::make_pair ("jetSel","Jet Cuts") );
   stageNames.emplace_back( std::make_pair ("bTag","b-tag Cuts") );
-  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
+  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
   if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back( std::make_pair ("cTag","c-tag Cuts") );}
 }
 

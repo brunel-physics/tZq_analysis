@@ -1,5 +1,5 @@
 datasets = "configs/2016/datasets/muEGDataMC.txt";
-cuts = "configs/2016/cuts/emuCuts.txt";
+cuts = "configs/2016/cuts/eeCuts.txt";
 plots = "configs/plots/plotConf.cfg";
 outputFolder = "plots/2016/emu/";
 outputPostfix = "emu";
