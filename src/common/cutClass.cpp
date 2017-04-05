@@ -1018,8 +1018,9 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
           if ( event->jetPF2PATChargedEmEnergyFraction[i] >= 0.99 ) jetId = false;
 	}
       }
-      else if ( std::abs( jetVec.Eta() ) <= 3.0 && std::abs( jetVec.Eta() ) > 2.40 ) {
-        if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.90 ) jetId = false;
+      else if ( std::abs( jetVec.Eta() ) <= 3.0 && std::abs( jetVec.Eta() ) > 2.70 ) {
+        if ( event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98 ) jetId = false;
+        if ( event->jetPF2PATNeutralEmEnergyFraction[i] <= 0.01 ) jetId = false;
         if ( event->jetPF2PATNeutralMultiplicity[i] <= 2 ) jetId = false;
       }
       else if ( std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
