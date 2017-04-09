@@ -951,6 +951,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
 	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
+//	      std::cout << std::setprecision(5) << std::fixed;
+//            std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
+//            std::cout << "generator level SF = " << generatorWeight << std::endl;
+//            std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
 	  }
 	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.

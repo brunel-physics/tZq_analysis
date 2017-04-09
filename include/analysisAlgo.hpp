@@ -113,10 +113,10 @@ class AnalysisAlgo{
 	TH1F* puSystDown;
 
 	// MC weight stuff
-	int sumPositiveWeights_;
-	int sumNegativeWeights_;
-	int sumNegativeWeightsScaleUp_;
-	int sumNegativeWeightsScaleDown_;
+	double sumPositiveWeights_;
+	double sumNegativeWeights_;
+	double sumNegativeWeightsScaleUp_;
+	double sumNegativeWeightsScaleDown_;
 };
 
 #endif
