@@ -28,7 +28,7 @@ cuts =
 		pt = 40.0;
 		eta = 4.7;
 		numJets = 4;
-		maxJets = 8;
+		maxJets = 6;
 		numbJets = 1;
 		maxbJets = 2;
 	}
