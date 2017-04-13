@@ -132,14 +132,65 @@ void DebugInfo::runMainAnalysis(){
     for (int i = 0; i < numberOfEvents; i++) {
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
+
+// MET Triggers
+/*
+      bool metTrig = false;
+      if( event->HLT_MET250_v2 > 0 ) metTrig = true;
+      if( event->HLT_MET250_v3 > 0 ) metTrig = true;
+      if( event->HLT_MET250_v4 > 0 ) metTrig = true;
+      if( event->HLT_MET250_v5 > 0 ) metTrig = true;
+
+      if( event->HLT_PFHT300_PFMET100_v1 > 0 ) > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET100_v2 > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET100_v3 > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET100_v4 > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET110_v4 > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET110_v5 > 0 ) metTrig = true;
+      if( event->HLT_PFHT300_PFMET110_v6 > 0 ) metTrig = true;
+
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v3 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v4 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v5 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v6 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v7 > 0 ) metTrig = true;
+      if( event->HLT_PFMET120_PFMHT120_IDTight_v8 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v2 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v3 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v4 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v5 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v6 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v7 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v8 > 0 ) metTrig = true;
+      if( event->HLT_PFMET170_HBHECleaned_v9 > 0 ) metTrig = true;
+
+      if ( !metTrig ) continue;
+*/
+
       if ( event->numElePF2PAT == 2 && event->numMuonPF2PAT == 0 ) {
+        if ( event->elePF2PATPT[0] < 15.0 ) continue;
+        if ( event->elePF2PATPT[1] < 15.0 ) continue;
+        if ( event->elePF2PATCharge[0] * event->elePF2PATCharge[1] >= 0 )  continue; // check electron pair have correct charge.
+        TLorentzVector lepton1{event->elePF2PATGsfPx[0],event->elePF2PATGsfPy[0],event->elePF2PATGsfPz[0],event->elePF2PATGsfE[0]};
+        TLorentzVector lepton2{event->elePF2PATGsfPx[1],event->elePF2PATGsfPy[1],event->elePF2PATGsfPz[1],event->elePF2PATGsfE[1]};
+        double invMass{(lepton1 + lepton2).M() -91.1};
+	if (std::abs(invMass) > 30.0 ) continue;
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numElectrons.first += 1; // If Runs B-G
           else numElectrons.second += 1; // else if Run H
         }
         else numElectrons.first += 1; // just MC
       }
+
       if ( event->numMuonPF2PAT == 2 && event->numElePF2PAT == 0 ) {
+        if ( event->muonPF2PATPt[0] < 15.0 ) continue;
+        if ( event->muonPF2PATPt[1] < 15.0 ) continue;
+        if ( event->muonPF2PATCharge[0] * event->muonPF2PATCharge[1] >= 0 ) continue;
+	TLorentzVector lepton1{event->muonPF2PATPX[0],event->muonPF2PATPY[0],event->muonPF2PATPZ[0],event->muonPF2PATE[0]};
+	TLorentzVector lepton2{event->muonPF2PATPX[1],event->muonPF2PATPY[1],event->muonPF2PATPZ[1],event->muonPF2PATE[1]};
+        double invMass{(lepton1 + lepton2).M() -91.1};
+	if (std::abs(invMass) > 30.0 ) continue;
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numMuons.first += 1; // If Runs B-G
           else numMuons.second += 1; // else if Run H
@@ -148,6 +199,9 @@ void DebugInfo::runMainAnalysis(){
       }
 
       if ( event->numElePF2PAT == 3 && event->numMuonPF2PAT == 0 ) {
+//        if ( event->elePF2PATPT[0] < 15.0 ) continue;
+//        if ( event->elePF2PATPT[1] < 15.0 ) continue;
+//        if ( event->elePF2PATPT[2] < 15.0 ) continue;
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numEEE.first += 1; // If Runs B-G
           else numEEE.second += 1; // else if Run H
@@ -155,6 +209,10 @@ void DebugInfo::runMainAnalysis(){
         else numEEE.first += 1; // just MC
       }
       if ( event->numElePF2PAT == 2 && event->numMuonPF2PAT == 1 ) {
+//        if ( event->elePF2PATPT[0] < 15.0 ) continue;
+//        if ( event->elePF2PATPT[1] < 15.0 ) continue;
+//        if ( event->muonPF2PATPt[0] < 15.0 ) continue;
+//        if ( event->elePF2PATCharge[0] * event->elePF2PATCharge[1] >= 0 )  continue; // check electron pair have correct charge.
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numEEMU.first += 1; // If Runs B-G
           else numEEMU.second += 1; // else if Run H
@@ -162,6 +220,10 @@ void DebugInfo::runMainAnalysis(){
         else numEEMU.first += 1; // just MC
       }
       if ( event->numElePF2PAT == 1 && event->numMuonPF2PAT == 2 ) {
+//        if ( event->elePF2PATPT[0] < 15.0 ) continue;
+//        if ( event->muonPF2PATPt[0] < 15.0 ) continue;
+//        if ( event->muonPF2PATPt[1] < 15.0 ) continue;
+//        if ( event->muonPF2PATCharge[0] * event->muonPF2PATCharge[1] >= 0 ) continue;
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numEMUMU.first += 1; // If Runs B-G
           else numEMUMU.second += 1; // else if Run H
@@ -169,6 +231,9 @@ void DebugInfo::runMainAnalysis(){
         else numEMUMU.first += 1; // just MC
       }
       if ( event->numElePF2PAT == 0 && event->numMuonPF2PAT == 3 ) {
+//        if ( event->muonPF2PATPt[0] < 15.0 ) continue;
+//        if ( event->muonPF2PATPt[1] < 15.0 ) continue;
+//        if ( event->muonPF2PATPt[2] < 15.0 ) continue;
         if (!isMC_){
           if ( event->eventRun <= 280385 ) numMUMUMU.first += 1; // If Runs B-G
           else numMUMUMU.second += 1; // else if Run H
