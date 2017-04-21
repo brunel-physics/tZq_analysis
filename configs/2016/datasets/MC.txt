@@ -1,11 +1,21 @@
-[tHq]
-fileName = configs/2016/datasets/fileLists/tHqFiles.txt
-totalEvents = 3495799
-crossSection = 0.07096
+[DYJetsToLL_M-50]
+fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+totalEvents = 145803217
+crossSection = 5765.4
 runType = mc
-histoName = tHq
-colour = kCyan
-label = tHq
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[DYJetsToLL_M-10To50]
+fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
+totalEvents = 35291566
+crossSection = 18610.0
+runType = mc
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -16,6 +26,16 @@ runType = mc
 histoName = ttbar
 colour = kRed
 label = ttbar
+plotType = f
+
+[tHq]
+fileName = configs/2016/datasets/fileLists/tHqFiles.txt
+totalEvents = 3495799
+crossSection = 0.07096
+runType = mc
+histoName = tHq
+colour = kCyan
+label = tHq
 plotType = f
 
 [sChannel]
@@ -138,16 +158,6 @@ colour = kSpring
 label = w+jets
 plotType = f
 
-[DYJetsToLL_M-50]
-fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
-totalEvents = 145803217
-crossSection = 5765.4
-runType = mc
-histoName = zPlusJets
-colour = kBlue
-label = zPlusJets
-plotType = f
-
 [ttWlnu]
 fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 5280565
@@ -226,16 +236,6 @@ runType = mc
 histoName = tZq
 colour = kYellow
 label = tZq
-plotType = f
-
-[DYJetsToLL_M-10To50]
-fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
-totalEvents = 35291566
-crossSection = 18610.0
-runType = mc
-histoName = zPlusJets
-colour = kBlue
-label = zPlusJets
 plotType = f
 
 []
