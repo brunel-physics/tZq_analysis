@@ -167,8 +167,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIDsFile1 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
     muonIDsFile2 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
     muonIsoFile1 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
-    muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsB-F - pre-HIP fix
-    muonRecoFile = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEFGH.root"};
+    muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
+    muonRecoFile = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEF.root"};
 
     muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
     muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
@@ -2174,9 +2174,13 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
     if (channel == "mumu"){
       // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
       // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.935 for post-HIP fix
-      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+      // new debug values 0.798/0.924
+//      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+//      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
+//      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+      float twgt = 0.809;
+      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ );
+      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ );
       return twgt;
     }
     if (channel == "emu"){
@@ -2281,8 +2285,11 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
   if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
 
   if ( is2016_ ) {
-    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+
+    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
+    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
   }
 
   float muonRecoSF = 1.0;
@@ -2295,8 +2302,10 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
-      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
+//      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
+//      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
+      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
+      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
     if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
     }
   }
@@ -2306,8 +2315,10 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
 
     if ( is2016_ ) {
-      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
-      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
+//      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
+//      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
+      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
+      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
     if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
     }
   }
@@ -2728,6 +2739,8 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
   }
 
   else { // is 2016
+
+    // TIGHT 
     if (flavour == 0) { // B flavour
       if ( type == 0 ) sf = 0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x)));
       if ( type == 1 ) {
@@ -2784,6 +2797,126 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
       if (type == -1) sf = (0.971945+163.215/(x*x)+0.000517836*x)*(1-(0.291298+-0.000222983*x+1.69699e-07*x*x));
     }
   }
+
+/*
+    // MEDIUM
+    if (flavour == 0) { // B flavour
+      if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+      if ( type == 1 ) {
+        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
+        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
+        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
+        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
+        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
+        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
+        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
+        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
+        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
+      }
+      if ( type == -1 ) {
+        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
+        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
+        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
+        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
+        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
+        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
+        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
+        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
+        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
+      }
+    }
+    if (flavour == 1) { // C flavour
+      if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+      if ( type == 1 ) {
+        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
+        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
+        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
+        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
+        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
+        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
+        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
+        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
+        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
+      }
+      if ( type == -1 ) {
+        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
+        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
+        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
+        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
+        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
+        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
+        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
+        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
+        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
+     }
+    }
+    if (flavour == 2) { // UDSG flavour
+      if (type == 0)  sf = 1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x;
+      if (type == 1)  sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1+(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
+      if (type == -1) sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1-(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
+    }
+  }
+*/
+/*
+    // LOOSE
+    if (flavour == 0) { // B flavour
+      if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
+      if ( type == 1 ) {
+        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.025442773476243019;
+        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013995612040162086;
+        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01321903895586729;
+        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013857406564056873;
+        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013207088224589825;
+        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.011531321331858635;
+        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01834111288189888;
+        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.018383314833045006;
+        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.022504881024360657;
+      }
+      if ( type == -1 ) {
+        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.025442773476243019;
+        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013995612040162086;
+        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01321903895586729;
+        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013857406564056873;
+        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013207088224589825;
+        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.011531321331858635;
+        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01834111288189888;
+        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.018383314833045006;
+        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.022504881024360657;
+      }
+    }
+    if (flavour == 1) { // C flavour
+      if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
+      if ( type == 1 ) {
+        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.063606932759284973;
+        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034989029169082642;
+        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033047597855329514;
+        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034643515944480896;
+        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033017721027135849;
+        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.028828304260969162;
+        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045852780342102051;
+        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045958288013935089;
+        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.056262202560901642;
+      }
+      if ( type == -1 ) {
+        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.063606932759284973;
+        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034989029169082642;
+        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033047597855329514;
+        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034643515944480896;
+        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033017721027135849;
+        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.028828304260969162;
+        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045852780342102051;
+        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045958288013935089;
+        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.056262202560901642;
+     }
+    }
+    if (flavour == 2) { // UDSG flavour
+      if (type == 0)  sf = 1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x;
+      if (type == 1)  sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1+(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
+      if (type == -1) sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1-(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
+    }
+  }
+*/
+
   return sf;
 }
 
