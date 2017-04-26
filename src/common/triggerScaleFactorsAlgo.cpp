@@ -17,7 +17,7 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (false);
+const bool HIP_ERA (true);
 const bool DO_HIPS (true);
 
 TriggerScaleFactors::TriggerScaleFactors():
@@ -189,6 +189,11 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
     chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
+    chain->SetBranchStatus("HLT_MET200_v1",1);
+    chain->SetBranchStatus("HLT_MET200_v2",1);
+    chain->SetBranchStatus("HLT_MET200_v3",1);
+    chain->SetBranchStatus("HLT_MET200_v4",1);
+    chain->SetBranchStatus("HLT_MET200_v5",1);
     chain->SetBranchStatus("HLT_MET250_v1",1);
     chain->SetBranchStatus("HLT_MET250_v2",1);
     chain->SetBranchStatus("HLT_MET250_v3",1);
@@ -845,6 +850,11 @@ bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event, bool isMC ) {
     if ( event->HLT_MET250_v1 > 0 ) metTrig = true;
   }
   else {
+    if ( event->HLT_MET200_v1 > 0 ) metTrig = true;
+    if ( event->HLT_MET200_v2 > 0 ) metTrig = true;
+    if ( event->HLT_MET200_v3 > 0 ) metTrig = true;
+    if ( event->HLT_MET200_v4 > 0 ) metTrig = true;
+    if ( event->HLT_MET200_v5 > 0 ) metTrig = true;
     if ( event->HLT_MET250_v1 > 0 ) metTrig = true;
     if ( event->HLT_MET250_v2 > 0 ) metTrig = true;
     if ( event->HLT_MET250_v3 > 0 ) metTrig = true;
@@ -865,7 +875,7 @@ bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event, bool isMC ) {
     if ( event->HLT_PFMET170_HBHECleaned_v7 > 0 ) metTrig = true;
     if ( event->HLT_PFMET170_HBHECleaned_v8 > 0 ) metTrig = true;
     if ( event->HLT_PFMET170_HBHECleaned_v9 > 0 ) metTrig = true;
-    if ( event->HLT_PFHT800_v2 > 0 ) metTrig = true;
+/*    if ( event->HLT_PFHT800_v2 > 0 ) metTrig = true;
     if ( event->HLT_PFHT800_v3 > 0 ) metTrig = true;
     if ( event->HLT_PFHT800_v4 > 0 ) metTrig = true;
     if ( event->HLT_PFHT800_v5 > 0 ) metTrig = true;
@@ -878,7 +888,7 @@ bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event, bool isMC ) {
     if ( event->HLT_PFHT750_4JetPt50_v6 > 0 ) metTrig = true;
     if ( event->HLT_PFHT750_4JetPt70_v1 > 0 ) metTrig = true;
     if ( event->HLT_PFHT750_4JetPt70_v2 > 0 ) metTrig = true;
-    if ( event->HLT_PFHT750_4JetPt80_v2 > 0 ) metTrig = true;
+    if ( event->HLT_PFHT750_4JetPt80_v2 > 0 ) metTrig = true;*/
     if ( event->HLT_PFHT300_PFMET100_v1 > 0 ) metTrig = true;
     if ( event->HLT_PFHT300_PFMET100_v2 > 0 ) metTrig = true;
     if ( event->HLT_PFHT300_PFMET100_v3 > 0 ) metTrig = true;
