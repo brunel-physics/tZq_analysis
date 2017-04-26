@@ -2178,7 +2178,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
       float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
       if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//      float twgt = 0.809;
+//      float twgt = 0.935;
 //      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ );
 //      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ );
       return twgt;
@@ -2222,7 +2222,7 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
 
 float Cuts::eleSF(double pt, double eta, int syst){
 
-  double maxPt{h_eleSFs->GetYaxis()->GetXmax()};
+  double maxPt{h_eleSFs->GetYaxis()->GetXmax()-0.1};
   unsigned bin1{0}, bin2{0};
 
   // If cut-based, std::abs eta, else just eta
@@ -2255,8 +2255,8 @@ float Cuts::eleSF(double pt, double eta, int syst){
 
 float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
 
-  double maxIdPt{h_muonIDs1->GetYaxis()->GetXmax()};
-  double maxIsoPt{h_muonPFiso1->GetYaxis()->GetXmax()};
+  double maxIdPt{h_muonIDs1->GetYaxis()->GetXmax()-0.1};
+  double maxIsoPt{h_muonPFiso1->GetYaxis()->GetXmax()-0.1};
   unsigned binId1 {0}, binIso1 {0};
   unsigned binId2 {0}, binIso2 {0};
 
@@ -2268,9 +2268,9 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
   }
 
   else { // Run2016 needs separate treatments in pre and post HIP eras
-      if ( pt <= maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
+      if ( pt < maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
       else binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-      if ( pt <= maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
+      if ( pt < maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
       else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
 
       if ( pt <= maxIdPt ) binId2 = h_muonIDs1->FindBin(std::abs(eta),pt);
@@ -2288,8 +2288,8 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
     muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
-//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
-//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
+//    muonIdSF = ( h_muonIDs1->GetBinContent(binId2) );
+//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso2) );
   }
 
   float muonRecoSF = 1.0;
@@ -2304,8 +2304,8 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( is2016_ ) {
       muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
       muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
-//      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
-//      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
+//      muonIdSF += ( h_muonIDs1->GetBinError(binId2) );
+//      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso2) );
     if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
     }
   }
@@ -2317,8 +2317,8 @@ float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
     if ( is2016_ ) {
       muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
       muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
-//      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
-//      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
+//      muonIdSF -= ( h_muonIDs1->GetBinError(binId2) );
+//      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso2) );
     if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
     }
   }
