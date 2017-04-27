@@ -619,26 +619,36 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
       if (event->muonPF2PATMatchedStations[i] < 2) continue;
 //    }
     // 2016 cuts
-/*    else {
+    else {
 
+      if (!event->muonPF2PATTrackID[i]) continue;
+      if (!event->muonPF2PATGlobalID[i]) continue;
+
+      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
+      if (event->muonPF2PATMatchedStations[i] < 2) continue;
+      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+      if (event->muonPF2PATMuonNHits[i] < 1) continue;
+      if (event->muonPF2PATVldPixHits[i] < 1) continue;
+      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
+
+      //ICHEP Medium Cut
+/*
       // If not either track muon and global muon ...
       if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
       if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
-
       bool goodGlobalMuon (true), tightSegmentCompatible (true);
-
       if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
       if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
       if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
       if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
       if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
-
       if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
-
       // If both good global muon and tight segment compatible are not true ...
       if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
-    }
 */
+    }
+
   muons.emplace_back(i);
   }
   return muons;
