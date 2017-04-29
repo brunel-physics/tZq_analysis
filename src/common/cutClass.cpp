@@ -466,7 +466,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     exit(0);
   }
 
-    * eventWeight *= getLeptonWeight(event,syst);
+  * eventWeight *= getLeptonWeight(event,syst);
 
   event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
@@ -2173,9 +2173,8 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
     }
     if (channel == "mumu"){
       // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
-      // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.935 for post-HIP fix
-      // new debug values 0.798/0.924
-      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.934 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+      // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.944 for post-HIP fix
+      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
       if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //      float twgt = 0.809;
