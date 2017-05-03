@@ -1,0 +1,7 @@
+datasets = "configs/2016/datasets/mumuDataMC_RunD.txt";
+cuts = "configs/2016/cuts/eeCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2016/mumu_RunD/";
+outputPostfix = "mumu_RunB";
+channelName = "mumu";
+
