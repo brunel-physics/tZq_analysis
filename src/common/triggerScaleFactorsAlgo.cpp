@@ -17,7 +17,7 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (true);
+const bool HIP_ERA (false);
 const bool DO_HIPS (true);
 
 TriggerScaleFactors::TriggerScaleFactors():
@@ -833,6 +833,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
   }
   else {
     if ( !isMC ) {
+      
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
@@ -840,6 +841,39 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 && HIP_ERA ) mumuTrig = true; //pre-HIP
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 && !HIP_ERA ) mumuTrig = true; //post-HIP
+      
+/*
+//Run B
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+
+//Run C
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+
+//Run D
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
+
+//Run E
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
+
+//Run F
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
+
+//Run G
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
+
+//Run H
+//      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
+//      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
+*/
     }
     else {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
