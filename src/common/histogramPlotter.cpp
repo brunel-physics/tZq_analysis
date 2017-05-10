@@ -325,6 +325,7 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
   TString cmsText     = "CMS";
   float cmsTextFont   = 61;  // default is helvetic-bold
   TString extraText   = "Preliminary";
+//  TString extraText   = "WORK IN PROGRESS";
   float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
