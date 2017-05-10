@@ -11,30 +11,29 @@ def main():
   massCut = False
 
   weighted = True
-
   sigCut = 50.0
   bkgCut = 290.0
 
   wSigma = 8.0
   topSigma = 30.0
 
-  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_tZq.root")
-  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TT.root")
-  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_DYToLL_M50.root")
+  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_tZq.root")
+  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TT.root")
+  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M50.root")
 
-  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_DYToLL_M10To50.root")
-  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TbartChan.root")
-  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TbartW.root")
-  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_THQ.root")
-  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TsChan.root")
-  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TtChan.root")
-  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TtW.root")
-  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TTW.root")
-  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_TTZ.root")
-  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_Wjets.root")
-  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_WW.root")
-  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_WZ.root")
-  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz5mw50/histofile_ZZ.root")
+  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M10To50.root")
+  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartChan.root")
+  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartW.root")
+  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_THQ.root")
+  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TsChan.root")
+  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TtChan.root")
+  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TtW.root")
+  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TTW.root")
+  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TTZ.root")
+  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_Wjets.root")
+  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_WW.root")
+  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_WZ.root")
+  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_ZZ.root")
 
 
   # tZq Histos
@@ -44,11 +43,11 @@ def main():
   tZq_chi2Histo = ROOT.TH1D("tZq_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
 
   tZq_topVsWmassHisto = ROOT.TH2D("tZq_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  tZq_topVsWsignalHisto = ROOT.TH2D("tZq_topVsWsignalHisto", "Top mass vs W Mass for signal region, m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  tZq_topVsWcontrolHisto = ROOT.TH2D("tZq_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  tZq_topVsWsignalHisto = ROOT.TH2D("tZq_topVsWsignalHisto", "Top mass vs W Mass for signal region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
+  tZq_topVsWcontrolHisto = ROOT.TH2D("tZq_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
 
   tZq_topVsChi2Histo  = ROOT.TH2D("tZq_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
-  tZq_wVsChi2Histo    = ROOT.TH2D("tZq_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
+  tZq_wVsChi2Histo    = ROOT.TH2D("tZq_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 150, 0., 150., 300, 0., 300.)
 
   tZq_wVsTopvsChi2Histo = ROOT.TH3D("tZq_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
@@ -74,8 +73,8 @@ def main():
   DY_chi2Histo = ROOT.TH1D("DY_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
 
   DY_topVsWmassHisto = ROOT.TH2D("DY_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  DY_topVsWsignalHisto = ROOT.TH2D("DY_topVsWsignalHisto", "Top mass vs W Mass for signal region, m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  DY_topVsWcontrolHisto = ROOT.TH2D("DY_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  DY_topVsWsignalHisto = ROOT.TH2D("DY_topVsWsignalHisto", "Top mass vs W Mass for signal region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
+  DY_topVsWcontrolHisto = ROOT.TH2D("DY_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
 
   DY_topVsChi2Histo  = ROOT.TH2D("DY_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
   DY_wVsChi2Histo    = ROOT.TH2D("DY_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
@@ -531,6 +530,9 @@ def main():
 
   tZq_topMassHisto.Fit("gaus")
   tZq_wMassHisto.Fit("gaus")
+
+  tZq_topVsWsignalHisto.GetZaxis().SetRangeUser(0.0, 0.1)
+  tZq_topVsWcontrolHisto.GetZaxis().SetRangeUser(0.0, 0.1)
 
   tZq_topMassHisto.SaveAs("plots/chiSquared/tZq/topMass.root")
   tZq_wMassHisto.SaveAs("plots/chiSquared/tZq/wMass.root")
