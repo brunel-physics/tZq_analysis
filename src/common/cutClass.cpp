@@ -168,7 +168,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIDsFile2 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
     muonIsoFile1 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
     muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
-    muonRecoFile = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEF.root"};
+    muonRecoFile = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEFGH.root"};
 
     muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
     muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
@@ -2173,11 +2173,13 @@ float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
     }
     if (channel == "mumu"){
       // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
-      // eff pre-HIP fix: 0.756; eff post-HIP fix: 0.873; SF pre-HIP fix 0.809 and 0.944 for post-HIP fix
+      // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
       float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
       if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
       if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//      float twgt = 0.809;
+      // mumu separate runs SFs
+      // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
+//      float twgt = 0.824;
 //      if (syst == 1) twgt += ( 0.001 );
 //      if (syst == 2) twgt -= ( 0.001 );
       return twgt;
