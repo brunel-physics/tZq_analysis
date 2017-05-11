@@ -31,6 +31,8 @@ class AnalysisAlgo{
 
 	private:
 
+        void produceTriggerSkims();
+
 	std::string config;
  	bool plots;
 	double usePreLumi;
@@ -48,6 +50,7 @@ class AnalysisAlgo{
 	int numFiles;
 	bool readEventList;
 	bool dumpEventNumbers;
+        bool makePostTriggerTree;
 	bool makePostLepTree;
 	bool makeMVATree;
 	bool usePostLepTree;
