@@ -39,7 +39,7 @@ class Cuts{
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>, int syst = 0);
   float getTTbarCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getTopMass(AnalysisEvent*);
-  bool triggerCuts(AnalysisEvent*);
+  bool triggerCuts(AnalysisEvent*, float *, int syst = 0);
   bool metFilters(AnalysisEvent*);
 
   double getChiSquared(double wMass = 0.0, double topMass = 0.0);
@@ -56,10 +56,6 @@ class Cuts{
   //Simple deltaR function, because the reco namespace doesn't work or something
   double deltaR(float,float,float,float);
   void dumpToFile(AnalysisEvent * event, int);
-
-  //Function to get trigger SFs
-  float get2015TriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
-  float get2016TriggerSF(int syst = 0, double eta1 = 999., double eta2 = 999.);
 
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*, int syst = 0);

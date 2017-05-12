@@ -104,7 +104,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   isMC_{true},
   //Same for trigger flag.
   triggerFlag_{},
-  //Make cloned tree false for now
+  //Make cloned lepton sel tree false for now
   postLepSelTree_{nullptr},
   postLepSelTree2_{nullptr},
   postLepSelTree3_{nullptr},
@@ -322,7 +322,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   //If we're doing synchronisation, do this function.
   if (synchCutFlow_){
     return synchCuts(event, eventWeight);
-  }
+  }  
 
   //If emu and dilepton - doing ttbar background estimation
 
@@ -331,11 +331,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   }
 
   if( !skipTrigger_ ) {
-    if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
-    if ( is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
-
-    if( !is2016_ && isMC_ ) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
-    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
+    if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
+    if ( is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger for data and 2016, exclude MC.
   }
 
   if (!metFilters(event)) return false;
@@ -1144,13 +1141,15 @@ void Cuts::setTightEle(float,float,float)
 {
 }
 
-bool Cuts::triggerCuts(AnalysisEvent* event){
+bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   if (skipTrigger_) return true;
 
   if (synchCutFlow_){
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0)
       return true;
   }
+
+  // TRIGGER LOGIC
 
   //MuEG triggers
   bool muEGTrig{false};
@@ -1236,9 +1235,143 @@ bool Cuts::triggerCuts(AnalysisEvent* event){
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
   }
 
-  if ( cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos || cutConfTrigLabel_.find("d") != std::string::npos ){if (muEGTrig) return true;}
-  if ( cutConfTrigLabel_.find("e") != std::string::npos ){ if ( eeTrig && !(muEGTrig || mumuTrig) ) return true; }
-  if ( cutConfTrigLabel_.find("m") != std::string::npos ){ if ( mumuTrig && !(eeTrig || muEGTrig) ) return true; }
+  // TRIGGER SFs
+  // NB, Synch logic doesn't allow for them to be applied currently
+
+  std::string channel = "";
+
+  //Dilepton channels
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
+  //Trilepton channels
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
+
+  float twgt {1.0};
+
+  if ( !is2016_ && isMC_ ) { // Apply SFs to MC if 2015
+    //Dilepton channels
+    if (channel == "ee"){
+      twgt = 0.954; // tight=0.954; medium=0.958
+      if (syst == 1) twgt = 0.963;
+      if(syst == 2) twgt = 0.945;
+    }
+    else if (channel == "mumu"){
+      twgt = 0.927; // tight=0.934; medium=0.931
+      if (syst == 1) twgt = 0.932;
+      if (syst == 2) twgt = 0.922;
+    }
+    else if (channel == "emu"){
+      twgt = 0.969;
+      if (syst == 1) twgt += 0.006;
+      if (syst == 2) twgt -= 0.006;
+    }
+    //Trilepton channels
+    else if (channel == "eee"){
+      twgt = 0.987;
+      if (syst == 1) twgt += 0.036;
+      if (syst == 2) twgt -= 0.036;
+    }
+    else if (channel == "eemu"){
+      twgt = 0.987;
+      if (syst == 1) twgt += 0.035;
+      if (syst == 2) twgt -= 0.035;
+    }
+    else if (channel == "emumu"){
+      twgt = 0.886;
+      if (syst == 1) twgt += 0.042;
+      if (syst == 2) twgt -= 0.042;
+    }
+    else if (channel == "mumumu"){
+      twgt = 0.9871;
+      if (syst == 1) twgt += 0.0242;
+      if (syst == 2) twgt -= 0.0212;
+    }
+    else {
+      std::cout << "Trigger not found!" << std::endl;
+      twgt =  0.0; // Return 0.0 if trigger isn't found.
+    }
+  }
+
+  else if ( is2016_ && isMC_ ) { // Apply SFs to MC if 2016
+    //Dilepton channels
+    if (channel == "ee"){
+      twgt = 0.973; // 0.922 for data eff; 0.973 for SF
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
+    }
+    else if (channel == "mumu"){
+      // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
+      // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
+      twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+      // mumu separate runs SFs
+      // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
+//      twgt = 0.824;
+//      if (syst == 1) twgt += ( 0.001 );
+//      if (syst == 2) twgt -= ( 0.001 );
+    }
+    else if (channel == "emu"){
+      twgt = 0.964; // 0.964 for eff; 0.964 for SF
+      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+      if (syst == 2) twgt -= 0.001;
+    }
+    //Trilepton channels
+    else if (channel == "eee"){
+      twgt = 0.894;
+      if (syst == 1) twgt += 0.003;
+      if (syst == 2) twgt -= 0.003;
+    }
+    else if (channel == "eemu"){
+      twgt = 0.987;
+      if (syst == 1) twgt += 0.035;
+      if (syst == 2) twgt -= 0.035;
+    }
+    else if (channel == "emumu"){
+      twgt = 0.886;
+      if (syst == 1) twgt += 0.042;
+      if (syst == 2) twgt -= 0.042;
+    }
+    else if (channel == "mumumu"){
+      twgt = 0.9871;
+      if (syst == 1) twgt += 0.0242;
+      if (syst == 2) twgt -= 0.0212;
+    }
+    else {
+      std::cout << "Trigger not found!" << std::endl;
+      twgt = 0.0; // Return 0.0 if trigger isn't found.
+    }
+  }
+
+  // Check which trigger fired and if it correctly corresponds to the channel being scanned over.
+
+  // Is emu, eemu or emumu?
+  if ( cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos || cutConfTrigLabel_.find("d") != std::string::npos ) {
+    if (muEGTrig)
+    {
+      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
+      return true;
+    }
+  }
+  // Is ee or eee?
+  if ( cutConfTrigLabel_.find("e") != std::string::npos ) { 
+    if ( eeTrig && !(muEGTrig || mumuTrig) ) { 
+      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
+      return true;
+    } 
+  }
+  // Is mumu or mumumu?
+  if ( cutConfTrigLabel_.find("m") != std::string::npos ) { 
+    if ( mumuTrig && !(eeTrig || muEGTrig) )
+    {
+      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
+      return true;
+    }
+  }
 
   return false;
 }
@@ -1284,7 +1417,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
 //    std::cout << std::setprecision(6) << std::fixed;
 
-    if (!triggerCuts(event)) return false;
+    if (!triggerCuts(event, eventWeight, 0)) return false;
     if (!metFilters(event)) return false;
 
     synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
@@ -1345,11 +1478,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
   if (makeEventDump_) dumpToFile(event,0);
 
-  if (!triggerCuts(event)) return false;
-//  if( !skipTrigger_ && isMC_ ) {
-//    if( !is2016_ ) *eventWeight *= get2015TriggerSF (systToRun);
-//    else *eventWeight *= get2016TriggerSF (systToRun);
-//  }
+  if (!triggerCuts(event, eventWeight, 0)) return false;
 
   synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
 
@@ -1611,11 +1740,8 @@ double Cuts::getChiSquared( double wMass, double topMass ){
 bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
 
   if( !skipTrigger_ ) {
-    if ( !is2016_ ) if (!triggerCuts(event)) return false; // Do trigger on MC and data for 2015
-    if ( is2016_ ) if (!triggerCuts(event)) return false; // Do trigger for data and 2016, exclude MC.
-
-    if( !is2016_ && isMC_ ) *eventWeight *= get2015TriggerSF (systToRun); // Apply SFs to MC if 2015
-    else if ( is2016_ && isMC_ ) *eventWeight *= get2016TriggerSF (systToRun); // Apply data efficiencies onto MC if 2016 due to incomplete trigger menu
+    if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
+    if ( is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger for data and 2016, exclude MC.
   }
 
   if (!metFilters(event)) return false;
@@ -1986,7 +2112,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     step0EventDump_.precision(3);
     step0EventDump_ << event->metPF2PATPt << "|";
     // Synch Cut Flow stuff
-    if ( triggerCuts(event) ) step0EventDump_ << "1"; // Trigger Selection - step 0
+    if ( triggerCuts(event, &tempWeight, 0) ) step0EventDump_ << "1"; // Trigger Selection - step 0
     else step0EventDump_ << "0";
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) == 3 ) step0EventDump_ << "1"; // 3 tight lepton selection - step 1
     else step0EventDump_ << "0";
@@ -2068,157 +2194,6 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
 
   return leptonWeight;
 
-}
-
-float Cuts::get2015TriggerSF(int syst, double eta1, double eta2){
-
-  std::string channel = "";
-
-  //Dilepton channels
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
-  //Trilepton channels
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
-
-  //If using SFs based on eta?
-  if ( std::abs(eta1) <= 5.0 && std::abs(eta2) <= 5.0 ) {
-	std::cout << "Not implemented yet. Don't pass eta values!" << std::endl;
-	exit(999);
-  }
-
-  //If no pT or eta dependancy ...
-  else {
-    //Dilepton channels
-    if (channel == "ee"){
-      float twgt = 0.954; // tight=0.954; medium=0.958
-      if (syst == 1) twgt = 0.963;
-      if(syst == 2) twgt = 0.945;
-      return twgt;
-    }
-    if (channel == "mumu"){
-      float twgt = 0.927; // tight=0.934; medium=0.931
-      if (syst == 1) twgt = 0.932;
-      if (syst == 2) twgt = 0.922;
-      return twgt;
-    }
-    if (channel == "emu"){
-      float twgt = 0.969;
-      if (syst == 1) twgt += 0.006;
-      if (syst == 2) twgt -= 0.006;
-      return twgt;
-    }
-    //Trilepton channels
-    if (channel == "eee"){
-      float twgt = 0.987;
-      if (syst == 1) twgt += 0.036;
-      if (syst == 2) twgt -= 0.036;
-      return twgt;
-    }
-    if (channel == "eemu"){
-      float twgt = 0.987;
-      if (syst == 1) twgt += 0.035;
-      if (syst == 2) twgt -= 0.035;
-      return twgt;
-    }
-    if (channel == "emumu"){
-      float twgt = 0.886;
-      if (syst == 1) twgt += 0.042;
-      if (syst == 2) twgt -= 0.042;
-      return twgt;
-    }
-    if (channel == "mumumu"){
-      float twgt = 0.9871;
-      if (syst == 1) twgt += 0.0242;
-      if (syst == 2) twgt -= 0.0212;
-      return twgt;
-    }
-  }
-
- std::cout << "Trigger not found!" << std::endl;
- return 0.0; // Return 0.0 if trigger isn't found.
-}
-
-float Cuts::get2016TriggerSF(int syst, double eta1, double eta2){
-
-  std::string channel = "";
-
-  //Dilepton channels
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
-  //Trilepton channels
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
-
-  //If using SFs based on eta?
-  if ( std::abs(eta1) <= 5.0 && std::abs(eta2) <= 5.0 ) {
-	std::cout << "Not implemented yet. Don't pass eta values!" << std::endl;
-	exit(999);
-  }
-
-  //If no pT or eta dependancy ...
-  else {
-    //Dilepton channels
-    if (channel == "ee"){
-      float twgt = 0.973; // 0.922 for data eff; 0.973 for SF
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
-      return twgt;
-    }
-    if (channel == "mumu"){
-      // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
-      // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
-      float twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-      // mumu separate runs SFs
-      // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
-//      float twgt = 0.824;
-//      if (syst == 1) twgt += ( 0.001 );
-//      if (syst == 2) twgt -= ( 0.001 );
-      return twgt;
-    }
-    if (channel == "emu"){
-      float twgt = 0.964; // 0.964 for eff; 0.964 for SF
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
-      return twgt;
-    }
-    //Trilepton channels
-    if (channel == "eee"){
-      float twgt = 0.894;
-      if (syst == 1) twgt += 0.003;
-      if (syst == 2) twgt -= 0.003;
-      return twgt;
-    }
-    if (channel == "eemu"){
-      float twgt = 0.987;
-      if (syst == 1) twgt += 0.035;
-      if (syst == 2) twgt -= 0.035;
-      return twgt;
-    }
-    if (channel == "emumu"){
-      float twgt = 0.886;
-      if (syst == 1) twgt += 0.042;
-      if (syst == 2) twgt -= 0.042;
-      return twgt;
-    }
-    if (channel == "mumumu"){
-      float twgt = 0.9871;
-      if (syst == 1) twgt += 0.0242;
-      if (syst == 2) twgt -= 0.0212;
-      return twgt;
-    }
-  }
-
- std::cout << "Trigger not found!" << std::endl;
- return 0.0; // Return 0.0 if trigger isn't found.
 }
 
 float Cuts::eleSF(double pt, double eta, int syst){
