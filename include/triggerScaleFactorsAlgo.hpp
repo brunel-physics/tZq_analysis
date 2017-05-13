@@ -73,25 +73,31 @@ class TriggerScaleFactors{
 	bool passDileptonSelection(AnalysisEvent*,int);
 
 	// trigger cuts
+	bool singleElectronTriggerCut(AnalysisEvent*, bool);
 	bool doubleElectronTriggerCut(AnalysisEvent*, bool);
 	bool muonElectronTriggerCut(AnalysisEvent*, bool);
+	bool singleMuonTriggerCut(AnalysisEvent*, bool);
 	bool doubleMuonTriggerCut(AnalysisEvent*, bool);
-	bool metTriggerCut(AnalysisEvent*, bool);
+	bool metTriggerCut(AnalysisEvent*);
 	bool metFilters(AnalysisEvent*);
 
 	//Efficiencies
 	double numberPassedElectrons[2];
-	double numberTriggeredElectrons[2];
+	double numberTriggeredSingleElectrons[2];
+	double numberTriggeredDoubleElectrons[2];
 	double numberPassedMuons[2];
-	double numberTriggeredMuons[2];
+	double numberTriggeredSingleMuons[2];
+	double numberTriggeredDoubleMuons[2];
 	double numberPassedMuonElectrons[2];
 	double numberTriggeredMuonElectrons[2];
 	//Systematic variables
 	double numberSelectedElectrons[2];
 	double numberSelectedMuons[2];
 	double numberSelectedMuonElectrons[2];
-        double numberSelectedElectronsTriggered[2];
-	double numberSelectedMuonsTriggered[2];
+        double numberSelectedSingleElectronsTriggered[2];
+        double numberSelectedDoubleElectronsTriggered[2];
+	double numberSelectedSingleMuonsTriggered[2];
+	double numberSelectedDoubleMuonsTriggered[2];
 	double numberSelectedMuonElectronsTriggered[2];
 };
 

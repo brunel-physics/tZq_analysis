@@ -485,25 +485,25 @@ void TriggerScaleFactors::runMainAnalysis(){
 
       //Does event pass Single Electron trigger and the electron selection?
       if ( passDoubleElectronSelection ) triggerSingleElectron 	  = ( singleElectronTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleElectronSelection ) triggerMetSingleElectron = ( singleElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event, dataset->isMC() ) );
+      if ( passDoubleElectronSelection ) triggerMetSingleElectron = ( singleElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
       //Does event pass Single Muon trigger and the muon selection?
       if ( passDoubleMuonSelection )  triggerSingleMuon 	  = ( singleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleMuonSelection )  triggerMetSingleMuon 	  = ( singleMuonTriggerCut( event, dataset->isMC() )*metTriggerCut( event, dataset->isMC() ) );
+      if ( passDoubleMuonSelection )  triggerMetSingleMuon 	  = ( singleMuonTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
       //Does event pass both single electron and single muon triggers and the MuonEG event selection?
 
       //Does event pass Double EG trigger and the electron selection?
       if ( passDoubleElectronSelection ) triggerDoubleEG 	= ( doubleElectronTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleElectronSelection ) triggerMetDoubleEG 	= ( doubleElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event, dataset->isMC() ) );
+      if ( passDoubleElectronSelection ) triggerMetDoubleEG 	= ( doubleElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
       //Does event pass Double Muon trigger and the muon selection?
       if ( passDoubleMuonSelection )  triggerDoubleMuon = ( doubleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleMuonSelection )  triggerMetDoubleMuon = ( doubleMuonTriggerCut( event, dataset->isMC() )*metTriggerCut( event, dataset->isMC() ) );
+      if ( passDoubleMuonSelection )  triggerMetDoubleMuon = ( doubleMuonTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
       //Does event pass Muon EG trigger and the muon selection?
       if ( passMuonElectronSelection )  triggerMuonElectron = ( muonElectronTriggerCut( event, dataset->isMC() ) );
-      if ( passMuonElectronSelection )  triggerMetMuonElectron = ( muonElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event, dataset->isMC() ) );
+      if ( passMuonElectronSelection )  triggerMetMuonElectron = ( muonElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
       //Does event pass either double lepton seletion and the MET triggers?
-      if ( passDoubleElectronSelection ) triggerMetElectronSelection = ( metTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleMuonSelection ) triggerMetMuonSelection = ( metTriggerCut( event, dataset->isMC() ) );
-      if ( passMuonElectronSelection )  triggerMetMuonElectronSelection = ( metTriggerCut( event, dataset->isMC() ) );
+      if ( passDoubleElectronSelection ) triggerMetElectronSelection = ( metTriggerCut( event ) );
+      if ( passDoubleMuonSelection ) triggerMetMuonSelection = ( metTriggerCut( event ) );
+      if ( passMuonElectronSelection )  triggerMetMuonElectronSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) {
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
@@ -977,7 +977,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
   else return false;
 }
 
-bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event, bool isMC ) {
+bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
   bool metTrig {false}; 
   if ( !is2016_ ) {
     if ( event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0 ) metTrig = true;
@@ -1060,7 +1060,7 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event) {
     if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
     if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
   }
-  else return true;
+  return true;
 }
 
 void TriggerScaleFactors::savePlots()
