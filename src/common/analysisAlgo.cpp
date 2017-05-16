@@ -1337,9 +1337,6 @@ void AnalysisAlgo::produceTriggerSkims(){
   TFile * outFile3{nullptr};
   TTree * cloneTree3{nullptr};
 
-  if (totalLumi == 0.) totalLumi = usePreLumi;
-  std::cout << "Using lumi: " << totalLumi << std::endl;
-
   std::set< std::pair < Int_t, Int_t > > triggerDoubleCountCheck;
 
   std::string channelString;
@@ -1425,7 +1422,8 @@ void AnalysisAlgo::produceTriggerSkims(){
 
           if ( eeTrig ) {
 	    triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
-    	    // fill trigger skims
+            foundEvents++;
+  	    // fill trigger skims
     	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	    else {
       	      if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
@@ -1452,6 +1450,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
 	    else {
               triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+              foundEvents++;
     	      // fill trigger skims
     	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	      else {
@@ -1482,6 +1481,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 
           if ( mumuTrig ) {
             triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+            foundEvents++;
     	    // fill trigger skims
     	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	    else {
@@ -1514,6 +1514,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 	    else {
               triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
     	      // fill trigger skims
+              foundEvents++;
     	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
    	      else {
       	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
@@ -1560,6 +1561,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 	  }
           if ( muEGTrig ) {
 	    triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+            foundEvents++;
     	    // fill trigger skims
     	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	    else {
@@ -1588,6 +1590,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
 	    else {
               triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+              foundEvents++;
     	      // fill trigger skims
     	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	      else {
@@ -1619,6 +1622,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 	    else {
 	      triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
     	      // fill trigger skims
+              foundEvents++;
     	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
     	      else {
       	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
@@ -1630,7 +1634,6 @@ void AnalysisAlgo::produceTriggerSkims(){
 	}
       } 
       // end emu channel search
-      foundEvents++;
     } //end event loop
 
   } //end dataset loop
