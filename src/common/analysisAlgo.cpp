@@ -1372,7 +1372,7 @@ void AnalysisAlgo::produceTriggerSkims(){
 
     datasetFilled = false;
     TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
-    std::cerr << "Processing dataset " << dataset->name() << std::endl;
+    std::cerr << "Processing dataset " << dataset->name() << "\n" << std::endl;
 
     if (!datasetFilled){
       if (!dataset->fillChain(datasetChain,numFiles)){
@@ -1423,7 +1423,15 @@ void AnalysisAlgo::produceTriggerSkims(){
           if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0 ) eeTrig = true;
           if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true;
 
-          if ( eeTrig ) triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+          if ( eeTrig ) {
+	    triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	    // fill trigger skims
+    	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	    else {
+      	      if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	      else cloneTree3->Fill();
+    	    }
+	  }
 	  else continue;
 	}
 	// Then look for runs where single electron trigger fires but doubleEG trigger does not.
@@ -1442,16 +1450,24 @@ void AnalysisAlgo::produceTriggerSkims(){
             auto it = triggerDoubleCountCheck.find( std::make_pair( event->eventRun, event->eventNum ) );
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
-	    else triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+	    else {
+              triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	      // fill trigger skims
+    	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	      else {
+      	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	        else cloneTree3->Fill();
+	      }
+            }
           }
 	  else continue;
 	}	
       } // end ee channel search
 
       if ( channelsToRun == 2 ) {
+        bool mumuTrig{false};
 	// Do doubleMuon trigger checks here
 	if ( dataset->getTriggerFlag() == "mCt" ){
-	  bool mumuTrig{false};
           if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
           if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
           if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
@@ -1464,7 +1480,15 @@ void AnalysisAlgo::produceTriggerSkims(){
           if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
           if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
 
-          if ( mumuTrig ) triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+          if ( mumuTrig ) {
+            triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	    // fill trigger skims
+    	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	    else {
+      	      if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	      else cloneTree3->Fill();
+    	    }
+          }
 	  else continue;
 	}
 
@@ -1483,11 +1507,20 @@ void AnalysisAlgo::produceTriggerSkims(){
 
 	  // If single Muon triggered fired, check to see if event also fired a DoubleMuon trigger
 	  if ( muTrig ) {
+
             auto it = triggerDoubleCountCheck.find( std::make_pair( event->eventRun, event->eventNum ) );
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
-	    else triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
-          }
+	    else {
+              triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	      // fill trigger skims
+    	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+   	      else {
+      	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	   	else cloneTree3->Fill();
+    	        }
+              }
+            }
 	  else continue;
 	}
       }
@@ -1525,7 +1558,15 @@ void AnalysisAlgo::produceTriggerSkims(){
             if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
             if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
 	  }
-          if ( muEGTrig ) triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+          if ( muEGTrig ) {
+	    triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	    // fill trigger skims
+    	    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	    else {
+      	      if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	      else cloneTree3->Fill();
+    	    }
+          }
           else continue;
 	}
 
@@ -1545,7 +1586,15 @@ void AnalysisAlgo::produceTriggerSkims(){
             auto it = triggerDoubleCountCheck.find( std::make_pair( event->eventRun, event->eventNum ) );
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
-	    else triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+	    else {
+              triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	      // fill trigger skims
+    	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	      else {
+      	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+                else cloneTree3->Fill();
+    	      }
+            }
           }
 	  else continue;
 	}
@@ -1567,20 +1616,23 @@ void AnalysisAlgo::produceTriggerSkims(){
             auto it = triggerDoubleCountCheck.find( std::make_pair( event->eventRun, event->eventNum ) );
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) continue;
-	    else triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+	    else {
+	      triggerDoubleCountCheck.emplace( std::make_pair(event->eventRun, event->eventNum) );
+    	      // fill trigger skims
+    	      if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
+    	      else {
+      	        if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
+      	        else cloneTree3->Fill();
+    	      }
+            }
 	  }
 	  else continue;
 	}
       } 
       // end emu channel search
+      foundEvents++;
     } //end event loop
-    foundEvents++;
-    // fill trigger skims
-    if ( cloneTree->GetEntriesFast() < 4000000 ) cloneTree->Fill();
-    else {
-      if ( cloneTree2->GetEntriesFast() < 4000000 ) cloneTree2->Fill();
-      else cloneTree3->Fill();
-    }
+
   } //end dataset loop
 
   outFile1->cd();
@@ -1607,8 +1659,8 @@ void AnalysisAlgo::produceTriggerSkims(){
   outFile2->Close();
   outFile3->Close();
 
-  delete cloneTree;
-  delete cloneTree2;
-  delete cloneTree3;
+  //  delete cloneTree;
+  //  delete cloneTree2;
+  //  delete cloneTree3;
 
 }
