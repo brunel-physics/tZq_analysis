@@ -26,6 +26,9 @@ int main (int argc, char* argv[])
   std::string datasetName;
   std::string channel;
 
+  int singleElectron {0}, dupElectron {0};
+  int singleMuon {0}, dupMuon {0};
+
   const std::string postTriggerSkimDir{std::string{"/scratch/data/TopPhysics/postTriggerSkims2016/"}};
 
   // Define command-line flags
@@ -192,6 +195,7 @@ int main (int argc, char* argv[])
   for (const auto& singleLeptonDir: singleLeptonDirs) { // for each single lepton input directory
     for (const auto& file : boost::make_iterator_range(fs::directory_iterator{singleLeptonDir}, {}))  {  // for each file in directory
       const std::string path {file.path().string()};
+      std::cout << "path: " << path << std::endl;
 
       if (!fs::is_regular_file(file.status()) || !std::regex_match(path, mask)) {
 	
@@ -234,8 +238,9 @@ int main (int argc, char* argv[])
 
 	  if ( eTrig ) {
             auto it = triggerDoubleCountCheck.find( std::make_pair( event.eventRun, event.eventNum ) );
+	    singleElectron++;
 	    // If event has already been found ... skip event
-	    if ( it != triggerDoubleCountCheck.end() ) std::cout << "Event already found in DoubleEG" << std::endl;
+	    if ( it != triggerDoubleCountCheck.end() ) dupElectron++;
 	    else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
@@ -256,9 +261,10 @@ int main (int argc, char* argv[])
 
 	  // If single Muon triggered fired, check to see if event also fired a DoubleMuon trigger
 	  if ( muTrig ) {
+	    singleMuon++;
             auto it = triggerDoubleCountCheck.find( std::make_pair( event.eventRun, event.eventNum ) );
 	    // If event has already been found ... skip event
-	    if ( it != triggerDoubleCountCheck.end() ) std::cout << "Event already found in DoubleMuon" << std::endl;
+	    if ( it != triggerDoubleCountCheck.end() ) dupMuon++;
             else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
@@ -290,9 +296,15 @@ int main (int argc, char* argv[])
 
 	  // If either single lepton  triggered fired, check to see if event also fired a MuonEG trigger
 	  if ( eTrig || muTrig ) {
+            if ( eTrig ) singleElectron++;
+            if ( muTrig ) singleMuon++;
             auto it = triggerDoubleCountCheck.find( std::make_pair( event.eventRun, event.eventNum ) );
 	    // If event has already been found ... skip event
-	    if ( it == triggerDoubleCountCheck.end() ) {
+	    if ( it != triggerDoubleCountCheck.end() ) {
+              if ( eTrig )  dupElectron++;
+              if ( muTrig ) dupMuon++;
+	    }
+            else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
 	    }
@@ -309,4 +321,8 @@ int main (int argc, char* argv[])
       std::cout << std::endl;
     }
   }
+
+  if ( channel == "ee" || channel == "emu" )    std::cout << "Total single electron triggers fired/single electron trigger without double lepton trigger: " << dupElectron << " / " << singleElectron << std::endl;
+  if ( channel == "mumu" || channel == "emu" )  std::cout << "Total single muon triggers fired/single muon trigger without double lepton trigger: " << dupMuon << " / " << singleMuon << std::endl;
+
 }
