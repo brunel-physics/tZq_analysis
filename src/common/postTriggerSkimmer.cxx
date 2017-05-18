@@ -241,6 +241,7 @@ int main (int argc, char* argv[])
 	    singleElectron++;
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) dupElectron++;
+	    // If event has not already been found, add to new skim
 	    else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
@@ -265,6 +266,7 @@ int main (int argc, char* argv[])
             auto it = triggerDoubleCountCheck.find( std::make_pair( event.eventRun, event.eventNum ) );
 	    // If event has already been found ... skip event
 	    if ( it != triggerDoubleCountCheck.end() ) dupMuon++;
+	    // If event has not already been found, add to new skim
             else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
@@ -304,6 +306,7 @@ int main (int argc, char* argv[])
               if ( eTrig )  dupElectron++;
               if ( muTrig ) dupMuon++;
 	    }
+	    // If event has not already been found, add to new skim
             else {
               triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
@@ -322,7 +325,7 @@ int main (int argc, char* argv[])
     }
   }
 
-  if ( channel == "ee" || channel == "emu" )    std::cout << "Total single electron triggers fired/single electron trigger without double lepton trigger: " << dupElectron << " / " << singleElectron << std::endl;
-  if ( channel == "mumu" || channel == "emu" )  std::cout << "Total single muon triggers fired/single muon trigger without double lepton trigger: " << dupMuon << " / " << singleMuon << std::endl;
+  if ( channel == "ee" || channel == "emu" )    std::cout << "Single electron trigger fired with double lepton trigger/Total single electron triggers fired: " << dupElectron << " / " << singleElectron << std::endl;
+  if ( channel == "mumu" || channel == "emu" )  std::cout << "Single muon trigger fired with double lepton trigger/Total single muon triggers fired: " << dupMuon << " / " << singleMuon << std::endl;
 
 }
