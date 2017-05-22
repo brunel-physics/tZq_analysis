@@ -15,70 +15,46 @@ echo Now outputting the lists of the dataset directories into their relevant fil
 
 # Normal datasets
 
-ls /scratch/data/tZqSkimsRun2016/eRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/eeRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
 
-ls /scratch/data/tZqSkimsRun2016/muRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
 
-ls /scratch/data/tZqSkimsRun2016/muRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016BFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016CFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016DFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016EFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016FFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016GFiles.txt
-ls /scratch/data/tZqSkimsRun2016/muRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/muRun2016HFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
 
-ls /scratch/data/tZqSkimsRun2016/eeRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/eeRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/eeRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
 
-ls /scratch/data/tZqSkimsRun2016/emuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/emuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/emuRun2016Files.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
 
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016Files.txt
-
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
-
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016BFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016CFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016DFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016EFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016GFiles.txt
-ls /scratch/data/tZqSkimsRun2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016HFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016BFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016CFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016D/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016DFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016E/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016EFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016FFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016GFiles.txt
+ls /scratch/data/TopPhysics/postTriggerSkims2016/mumuRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/mumuRun2016HFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/metRun2016B/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
 ls /scratch/data/tZqSkimsRun2016/metRun2016C/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016Files.txt
