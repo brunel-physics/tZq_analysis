@@ -1150,9 +1150,14 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   }
 
   // TRIGGER LOGIC
+  bool eTrig{false};
+  bool muTrig{false};
+
+  bool muEGTrig{false};
+  bool eeTrig{false};
+  bool mumuTrig{false};
 
   //MuEG triggers
-  bool muEGTrig{false};
   if ( !is2016_ ) {
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 ) muEGTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 ) muEGTrig = true;
@@ -1197,7 +1202,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   }
 
   //double electron triggers
-  bool eeTrig{false};
   if ( !is2016_ ) {
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) eeTrig = true;
     if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) eeTrig = true;
@@ -1214,7 +1218,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   }
 
   //double muon triggers
-  bool mumuTrig{false};
   if ( !is2016_ ) {
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
@@ -1235,6 +1238,30 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
   }
 
+  //single electron triggers
+
+  if ( is2016_ ) { // Only avaliable in 2016, not 2015!
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0 ) eTrig = true;
+    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0 ) eTrig = true;
+  }
+
+  //double muon triggers
+    if ( is2016_ ) { // Only avaliable in 2016, not 2015!
+    if ( event->HLT_IsoMu24_v1 > 0 ) muTrig = true;
+    if ( event->HLT_IsoMu24_v2 > 0 ) muTrig = true;
+    if ( event->HLT_IsoMu24_v3 > 0 ) muTrig = true;
+    if ( event->HLT_IsoMu24_v4 > 0 ) muTrig = true;
+    if ( event->HLT_IsoTkMu24_v1 > 0 ) muTrig = true;
+    if ( event->HLT_IsoTkMu24_v2 > 0 ) muTrig = true;
+    if ( event->HLT_IsoTkMu24_v3 > 0 ) muTrig = true;
+    if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
+  }
+
   // TRIGGER SFs
   // NB, Synch logic doesn't allow for them to be applied currently
 
@@ -1244,6 +1271,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
+
   //Trilepton channels
   if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
   if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
@@ -1252,9 +1280,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
   float twgt {1.0};
 
-  if ( !is2016_ && isMC_ ) { // Apply SFs to MC if 2015
+  if ( !is2016_ && isMC_ ) { // Apply SFs to MC if 2015; no single lepton logic is present due to inclusion of single lepton triggers from 2016 onwards only
     //Dilepton channels
-    if (channel == "ee"){
+   if ( channel == "ee" ){
       twgt = 0.954; // tight=0.954; medium=0.958
       if (syst == 1) twgt = 0.963;
       if(syst == 2) twgt = 0.945;
@@ -1299,27 +1327,73 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   else if ( is2016_ && isMC_ ) { // Apply SFs to MC if 2016
     //Dilepton channels
     if (channel == "ee"){
-      twgt = 0.973; // 0.922 for data eff; 0.973 for SF
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
+      if ( eeTrig ) { // If doubleEG trigger fires, regardless of singleElectron trigger
+        twgt = 0.973; // 0.922 for data eff; 0.973 for SF
+        if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+        if (syst == 2) twgt -= 0.001;
+      }
+      if ( eTrig && !eeTrig ) { // If only singleElectron trigger fires
+        twgt = 0.999; // 0.949 for data eff; 0.949 for MC eff; 0.999 for SF
+        if (syst == 1) twgt += 0.000; // 0.002 for data eff; 0.002 for MC eff; 0.000 for SF
+        if (syst == 2) twgt -= 0.000;
+      }
     }
     else if (channel == "mumu"){
-      // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
-      // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
-      twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-      if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-      // mumu separate runs SFs
-      // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
-//      twgt = 0.824;
-//      if (syst == 1) twgt += ( 0.001 );
-//      if (syst == 2) twgt -= ( 0.001 );
+      if ( mumuTrig ) { // If doubleMuon trigger fires, regardless of singleMuon trigger
+        // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
+        // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
+        twgt = ( 0.809 * lumiRunsBCDEF_ + 0.944 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
+        if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        // mumu separate runs SFs
+        // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
+  //      twgt = 0.824;
+  //      if (syst == 1) twgt += ( 0.001 );
+  //      if (syst == 2) twgt -= ( 0.001 );
+      }
+      if ( muTrig && !mumuTrig ) { // If only singleMuon trigger fires
+	// Pre-hip fix
+//        twgt = 1.007; // 0.981 for data eff; 0.974 for MC eff; 1.007 for SF
+//        if (syst == 1) twgt += 0.001; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
+//        if (syst == 2) twgt -= 0.001;
+	// Post-hip fix
+//        twgt = 0.995; // 0.969 for data eff; 0.974 for MC eff; 0.995 for SF
+//        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
+//        if (syst == 2) twgt -= 0.000;
+	// Weighted across both epochs
+        twgt = ( 1.007 * lumiRunsBCDEF_ + 0.995 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+
+	// All runs
+//        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
+//        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
+//        if (syst == 2) twgt -= 0.000;
+
+      }
     }
-    else if (channel == "emu"){
-      twgt = 0.964; // 0.964 for eff; 0.964 for SF
-      if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-      if (syst == 2) twgt -= 0.001;
-    }
+    else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
+      if ( muEGTrig ) {
+        twgt = 0.964; // 0.964 for eff; 0.964 for SF
+        if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
+        if (syst == 2) twgt -= 0.001;
+      }
+/*      if ( eTrig && !muTrig && !muEGTrig ) { // If only singleElectron fires
+        twgt = 0.983 // 0.974 for data eff; 0.974 for MC eff; 0.983 for SF
+        if (syst == 1) twgt += 0.001;
+        if (syst == 2) twgt -= 0.001;
+      }
+      if ( muTrig && !eTrig && !muEGTrig ) { // If only singleMuon fires
+        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
+        if (syst == 1) twgt += 0.001;
+        if (syst == 2) twgt -= 0.001;
+      }
+      if ( eTrig && muTrig && !muEGTrig ) { // If singleElectron and singleMuon fires but MuonEG does not
+        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
+        if (syst == 1) twgt += 0.001;
+        if (syst == 2) twgt -= 0.001;
+      }
+*/    }
     //Trilepton channels
     else if (channel == "eee"){
       twgt = 0.894;
@@ -1350,29 +1424,33 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   // Check which trigger fired and if it correctly corresponds to the channel being scanned over.
 
   // Is emu, eemu or emumu?
-  if ( cutConfTrigLabel_.find("d1") != std::string::npos || cutConfTrigLabel_.find("d2") != std::string::npos || cutConfTrigLabel_.find("d") != std::string::npos ) {
+  if ( channel == "eemu" || channel == "emumu" || channel == "emu" ) {
     if (muEGTrig)
-    {
-      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
-      return true;
-    }
-  }
-  // Is ee or eee?
-  if ( cutConfTrigLabel_.find("e") != std::string::npos ) { 
-    if ( eeTrig && !(muEGTrig || mumuTrig) ) { 
-      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
-      return true;
-    } 
-  }
-  // Is mumu or mumumu?
-  if ( cutConfTrigLabel_.find("m") != std::string::npos ) { 
-    if ( mumuTrig && !(eeTrig || muEGTrig) )
+//    if (muEGTrig || eTrig || muTrig)
     {
       if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
       return true;
     }
   }
 
+  // Is ee or eee?
+  if ( channel == "ee" || channel == "eee" ) { 
+//    if ( eeTrig && !(muEGTrig || mumuTrig) ) { 
+    if ( (eeTrig || eTrig) && !(muEGTrig || mumuTrig || muTrig) ) { 
+      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
+      return true;
+    } 
+  }
+
+  // Is mumu or mumumu?
+  if ( channel == "mumu" || channel == "mumumu" ) { 
+//    if ( mumuTrig && !(eeTrig || muEGTrig) )
+    if ( (mumuTrig || muTrig) && !(eeTrig || muEGTrig || eTrig) )
+    {
+      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
+      return true;
+    }
+  }
   return false;
 }
 
@@ -1390,7 +1468,7 @@ bool Cuts::metFilters(AnalysisEvent* event){
     if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
     if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
   }
-  else return true;
+  return true;
 }
 
 //Does the cuts required for the synchronisation.
@@ -2161,8 +2239,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
     }
     else{
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,280920);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,280920);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
     }
     if (numTightEle_ == 3 || numTightEle_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],event->elePF2PATSCEta[event->wLepIndex],syst);
@@ -2177,12 +2255,12 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
     }
     else if (numTightMu_ == 2){
-      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst,280920);
-      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst,280920);
+      leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+      leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
-      leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],event->muonPF2PATEta[event->muonIndexTight[0]],syst,280920);
+      leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],event->muonPF2PATEta[event->muonIndexTight[0]],syst);
     }
   }
 
@@ -2229,7 +2307,7 @@ float Cuts::eleSF(double pt, double eta, int syst){
   return eleIdSF*eleRecoSF;
 }
 
-float Cuts::muonSF(double pt, double eta, int syst, int eventRun){
+float Cuts::muonSF(double pt, double eta, int syst){
 
   double maxIdPt{h_muonIDs1->GetYaxis()->GetXmax()-0.1};
   double maxIsoPt{h_muonPFiso1->GetYaxis()->GetXmax()-0.1};
