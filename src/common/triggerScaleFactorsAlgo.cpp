@@ -17,8 +17,8 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (false);
-const bool DO_HIPS (true);
+const bool HIP_ERA (true);
+const bool DO_HIPS (false);
 
 TriggerScaleFactors::TriggerScaleFactors():
   postLepSelTree_{nullptr},
@@ -948,6 +948,7 @@ bool TriggerScaleFactors::singleMuonTriggerCut( AnalysisEvent* event, bool isMC 
   if ( !is2016_ ) return false; // Single lepton paths not implemented for 2015
   else {
     if ( !isMC ) {
+
       if ( event->HLT_IsoMu24_v1 > 0 ) muTrig = true;
       if ( event->HLT_IsoMu24_v2 > 0 ) muTrig = true;
       if ( event->HLT_IsoMu24_v3 > 0 ) muTrig = true;
@@ -956,6 +957,39 @@ bool TriggerScaleFactors::singleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_IsoTkMu24_v2 > 0 ) muTrig = true;
       if ( event->HLT_IsoTkMu24_v3 > 0 ) muTrig = true;
       if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
+
+/*
+//Run B
+      if ( event->HLT_IsoMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_IsoTkMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+      if ( event->HLT_IsoTkMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+
+//Run C
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+
+//Run D
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
+
+//Run E
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
+
+//Run F
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
+
+//Run G
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
+
+//Run H
+//      if ( event->HLT_IsoMu24_v4 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
+//      if ( event->HLT_IsoTkMu24_v4 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
+*/
+
     }
     else {
       if ( event->HLT_IsoMu24_v4 > 0 ) muTrig = true;
