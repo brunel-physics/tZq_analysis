@@ -92,6 +92,9 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
 
 void DebugInfo::runMainAnalysis(){
 
+  TH1F* histMuChannel = new TH1F("histMuChannel", "mu trigger yields vs Run;",7,0.5,7.5);
+  TH1F* histMuMuChannel = new TH1F("histMuMuChannel", "mu trigger yields vs Run;",7,0.5,7.5);
+
   TH1F* histChannel = new TH1F("histChannel", "channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",2,0.5,2.5);
   TH1F* histTrileptonChannel = new TH1F("histTrileptonChannel", "trilepton channel yields vs RunH/RunsB-G;channel;RunH/RunsB-G",4,0.5,4.5);
   TH1F* histNumJets = new TH1F("histNumJets", "number of jets vs RunH/RunsB-G;# jets;RunH/RunsB-G",10,-0.5,9.5);
@@ -129,6 +132,7 @@ void DebugInfo::runMainAnalysis(){
     if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
     auto  lEventTimer = new TMVA::Timer (numberOfEvents, "Running over dataset ...", false);
     lEventTimer->DrawProgressBar(0, "");
+    if ( numberOfEvents < 1 ) continue;
     for (int i = 0; i < numberOfEvents; i++) {
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
@@ -168,6 +172,53 @@ void DebugInfo::runMainAnalysis(){
       if ( !metTrig ) continue;
 */
 
+// Muon Triggers
+      bool muTrig{false};
+
+      if ( event->HLT_IsoMu24_v1 > 0 ) muTrig = true;
+      if ( event->HLT_IsoMu24_v2 > 0 ) muTrig = true;
+      if ( event->HLT_IsoMu24_v3 > 0 ) muTrig = true;
+      if ( event->HLT_IsoMu24_v4 > 0 ) muTrig = true;
+      if ( event->HLT_IsoTkMu24_v1 > 0 ) muTrig = true;
+      if ( event->HLT_IsoTkMu24_v2 > 0 ) muTrig = true;
+      if ( event->HLT_IsoTkMu24_v3 > 0 ) muTrig = true;
+      if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
+
+// Double Muon Trigger
+      bool mumuTrig{false};
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
+
+      int runBin {-1};
+      if ( event->eventRun >= 272007 && event->eventRun < 275657 ) runBin = 1; //Run B
+      if ( event->eventRun >= 275657 && event->eventRun < 276315 ) runBin = 2; //Run C
+      if ( event->eventRun >= 276315 && event->eventRun < 276831 ) runBin = 3; //Run D
+      if ( event->eventRun >= 276831 && event->eventRun < 277772 ) runBin = 4; //Run E
+      if ( event->eventRun >= 277772 && event->eventRun < 278820 ) runBin = 5; //Run F
+      if ( event->eventRun >= 278820 && event->eventRun < 280919 ) runBin = 6; //Run G
+      if ( event->eventRun >= 280919 ) runBin = 7; //Run H
+
+      double lumi = 0.0;
+      if ( runBin == 1 ) lumi = 5784.596;
+      if ( runBin == 2 ) lumi = 2573.399;
+      if ( runBin == 3 ) lumi = 4248.384;
+      if ( runBin == 4 ) lumi = 4009.132;
+      if ( runBin == 5 ) lumi = 3101.618;
+      if ( runBin == 6 ) lumi = 7540.488;
+      if ( runBin == 7 ) lumi = 8605.690;
+
+      histMuChannel->Fill(runBin, muTrig*lumi);
+      histMuMuChannel->Fill(runBin, mumuTrig*lumi);
+
       if ( event->numElePF2PAT == 2 && event->numMuonPF2PAT == 0 ) {
         if ( event->elePF2PATPT[0] < 15.0 ) continue;
         if ( event->elePF2PATPT[1] < 15.0 ) continue;
@@ -197,7 +248,7 @@ void DebugInfo::runMainAnalysis(){
         }
         else numMuons.first += 1; // just MC
       }
-
+/*
       if ( event->numElePF2PAT == 3 && event->numMuonPF2PAT == 0 ) {
 //        if ( event->elePF2PATPT[0] < 15.0 ) continue;
 //        if ( event->elePF2PATPT[1] < 15.0 ) continue;
@@ -240,7 +291,8 @@ void DebugInfo::runMainAnalysis(){
         }
         else numMUMUMU.first += 1; // just MC
       }
-
+*/
+      if ( event->numJetPF2PAT < 0 ) continue;
       if ( event->numJetPF2PAT < 10 ) {
         if (!isMC_){
           if ( event->eventRun <= 280385) numJets[event->numJetPF2PAT].first += 1;
@@ -249,6 +301,7 @@ void DebugInfo::runMainAnalysis(){
         else numJets[event->numJetPF2PAT].first += 1; // just MC
       }
       unsigned int bJets {0};
+      if ( event->numJetPF2PAT < 1 ) continue;
       for (int j = 0; j< event->numJetPF2PAT; j++) {
         if ( event->jetPF2PATBDiscriminator[i] > 0.5426 ) bJets += 1;
       }
@@ -297,6 +350,22 @@ void DebugInfo::runMainAnalysis(){
     else histNumBJets->Fill(i, numBJets[i].first);
   }
 
+  histMuChannel->GetXaxis()->SetBinLabel(1,"B");
+  histMuChannel->GetXaxis()->SetBinLabel(2,"C");
+  histMuChannel->GetXaxis()->SetBinLabel(3,"D");
+  histMuChannel->GetXaxis()->SetBinLabel(4,"E");
+  histMuChannel->GetXaxis()->SetBinLabel(5,"F");
+  histMuChannel->GetXaxis()->SetBinLabel(6,"G");
+  histMuChannel->GetXaxis()->SetBinLabel(7,"H");
+
+  histMuMuChannel->GetXaxis()->SetBinLabel(1,"B");
+  histMuMuChannel->GetXaxis()->SetBinLabel(2,"C");
+  histMuMuChannel->GetXaxis()->SetBinLabel(3,"D");
+  histMuMuChannel->GetXaxis()->SetBinLabel(4,"E");
+  histMuMuChannel->GetXaxis()->SetBinLabel(5,"F");
+  histMuMuChannel->GetXaxis()->SetBinLabel(6,"G");
+  histMuMuChannel->GetXaxis()->SetBinLabel(7,"H");
+
   histChannel->GetXaxis()->SetBinLabel(1,"ee");
   histChannel->GetXaxis()->SetBinLabel(2,"#mu#mu");
 
@@ -311,6 +380,9 @@ void DebugInfo::runMainAnalysis(){
 
   mkdir( (outFolder).c_str(),0700);
   TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
+
+  histMuChannel->Write();
+  histMuMuChannel->Write();
   histChannel->Write();
   histTrileptonChannel->Write();
   histNumJets->Write();
@@ -431,6 +503,35 @@ void DebugInfo::setBranchStatusAll(TTree * chain, bool isMC, std::string trigger
     chain->SetBranchStatus("HLT_PFHT750_4JetPt50_v3",1);
   }
   else {
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v1",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v2",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v3",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v4",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v5",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v6",1);
+    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v7",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v1",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v2",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v3",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v4",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v5",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v6",1);
+    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v7",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v2",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v3",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v4",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v5",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v6",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v7",1);
+    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v8",1);
+    chain->SetBranchStatus("HLT_IsoMu24_v1",1);
+    chain->SetBranchStatus("HLT_IsoMu24_v2",1);
+    chain->SetBranchStatus("HLT_IsoMu24_v3",1);
+    chain->SetBranchStatus("HLT_IsoMu24_v4",1);
+    chain->SetBranchStatus("HLT_IsoTkMu24_v1",1);
+    chain->SetBranchStatus("HLT_IsoTkMu24_v2",1);
+    chain->SetBranchStatus("HLT_IsoTkMu24_v3",1);
+    chain->SetBranchStatus("HLT_IsoTkMu24_v4",1);
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5",1);
