@@ -960,34 +960,34 @@ bool TriggerScaleFactors::singleMuonTriggerCut( AnalysisEvent* event, bool isMC 
 
 /*
 //Run B
-      if ( event->HLT_IsoMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
-      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
-      if ( event->HLT_IsoTkMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
-      if ( event->HLT_IsoTkMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) mumuTrig = true; // RunB
+//      if ( event->HLT_IsoMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) muTrig = true; // RunB
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) muTrig = true; // RunB
+//      if ( event->HLT_IsoTkMu24_v1 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) muTrig = true; // RunB
+//      if ( event->HLT_IsoTkMu24_v2 > 0 && event->eventRun >= 272007 && event->eventRun < 275657 ) muTrig = true; // RunB
 
 //Run C
-//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
-//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) mumuTrig = true; // RunC
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) muTrig = true; // RunC
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 275657 && event->eventRun < 276315 ) muTrig = true; // RunC
 
 //Run D
-//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
-//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) mumuTrig = true; // RunD
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) muTrig = true; // RunD
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276315 && event->eventRun < 276831 ) muTrig = true; // RunD
 
 //Run E
-//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
-//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) mumuTrig = true; // RunE
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) muTrig = true; // RunE
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 276831 && event->eventRun < 277772 ) muTrig = true; // RunE
 
 //Run F
-//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
-//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) mumuTrig = true; // RunF
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) muTrig = true; // RunF
+//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 277772 && event->eventRun < 278820 ) muTrig = true; // RunF
 
 //Run G
-//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
-//      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) mumuTrig = true; // RunG
+//      if ( event->HLT_IsoMu24_v2 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) muTrig = true; // RunG
+      if ( event->HLT_IsoTkMu24_v3 > 0 && event->eventRun >= 278820 && event->eventRun < 280919 ) muTrig = true; // RunG
 
 //Run H
-//      if ( event->HLT_IsoMu24_v4 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
-//      if ( event->HLT_IsoTkMu24_v4 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
+//      if ( event->HLT_IsoMu24_v4 > 0 && event->eventRun >= 280919 ) muTrig = true; // RunH
+//      if ( event->HLT_IsoTkMu24_v4 > 0 && event->eventRun >= 280919 ) muTrig = true; // RunH
 */
 
     }

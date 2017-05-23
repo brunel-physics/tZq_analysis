@@ -1365,6 +1365,11 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
+        // mumu separate runs SFs
+        // RunB: 0.994; RunC: 0.974; RunD: 0.996; RunE: 0.995; RunF: 0.965; RunG: 1.007; RunH: 1.006
+  //      twgt = 0.994;
+  //      if (syst == 1) twgt += ( 0.001 );
+  //      if (syst == 2) twgt -= ( 0.001 );
 	// All runs
 //        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
 //        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
