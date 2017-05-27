@@ -6,7 +6,7 @@ histoName = data
 label = Data
 plotType = p
 colour = kBlack
-triggerFlag = eCt
+triggerFlag = mCt
 
 []
 
