@@ -1,4 +1,5 @@
 #include "cutClass.hpp"
+#include "RoccoR.hpp"
 
 #include "TLorentzVector.h"
 #include "TRandom.h"
@@ -1030,6 +1031,21 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
 
     double deltaLep{10000};
 
+/*
+    // Electron cleaning for synch
+    for ( unsigned int lep = 0; lep < event->electronIndexTight.size(); lep++ ) {
+      TLorentzVector tempVec{ event->elePF2PATGsfPx[event->electronIndexTight[lep]], event->elePF2PATGsfPy[event->electronIndexTight[lep]], event->elePF2PATGsfPz[event->electronIndexTight[lep]], event->elePF2PATGsfE[event->electronIndexTight[lep]] };
+      if (deltaLep > deltaR( tempVec.Eta(), tempVec.Phi(), jetVec.Eta(),jetVec.Phi() ) ) 
+        deltaLep = deltaR( tempVec.Eta(), tempVec.Phi(), jetVec.Eta(),jetVec.Phi());
+    }
+
+    // Muon cleaning for synch
+    for	( unsigned int lep {0}; lep < event->muonIndexTight.size(); lep++ ) {
+      TLorentzVector tempVec{ event->muonPF2PATPX[event->muonIndexTight[lep]],event->muonPF2PATPY[event->muonIndexTight[lep]],event->muonPF2PATPZ[event->muonIndexTight[lep]],event->muonPF2PATE[event->muonIndexTight[lep]] };
+      if (deltaLep > deltaR( tempVec.Eta(), tempVec.Phi(), jetVec.Eta(),jetVec.Phi())) deltaLep = deltaR( tempVec.Eta(), tempVec.Phi(), jetVec.Eta(),jetVec.Phi());
+    }
+*/
+
     if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi()))
       deltaLep = deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi());
     if (deltaLep > deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),jetVec.Eta(),jetVec.Phi()))
@@ -1347,9 +1363,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         // mumu separate runs SFs
         // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
-  //      twgt = 0.824;
-  //      if (syst == 1) twgt += ( 0.001 );
-  //      if (syst == 2) twgt -= ( 0.001 );
+//         twgt = 0.809;
+//        if (syst == 1) twgt += ( 0.001 );
+//        if (syst == 2) twgt -= ( 0.001 );
       }
       if ( muTrig && !mumuTrig ) { // If only singleMuon trigger fires
 	// Pre-hip fix
@@ -1367,9 +1383,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
         // mumu separate runs SFs
         // RunB: 0.994; RunC: 0.974; RunD: 0.996; RunE: 0.995; RunF: 0.965; RunG: 1.007; RunH: 1.006
-  //      twgt = 0.994;
-  //      if (syst == 1) twgt += ( 0.001 );
-  //      if (syst == 2) twgt -= ( 0.001 );
+//        twgt = 0.994;
+//        if (syst == 1) twgt += ( 0.001 );
+//        if (syst == 2) twgt -= ( 0.001 );
 	// All runs
 //        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
 //        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
@@ -1615,7 +1631,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
   // bTag selection
   event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
-  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
+//  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
   if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
   if (event->bTagIndex.size() != 1) return false;
   synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
@@ -1978,10 +1994,40 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   event->muonIndexTight = getTightMuons(event);
 
   if ( step == 9 ) { // Used for 2016 debug synch
-    for ( int i = 0; i < event->numElePF2PAT; i++) {
-//      step9EventDump_.precision(3);
-      step9EventDump_ << "|" << event->eventNum << "|" << event->elePF2PATPT[i] << "|" << event->elePF2PATCutIdVeto[i] << "|" << event->elePF2PATCutIdTight[i] << "|" << std::endl;
-    }
+//    step9EventDump_.precision(3);
+    bool synchTrigger {false};
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) synchTrigger = true;
+    if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) synchTrigger = true;
+
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
+
+    float tempWeight{1.};
+    std::pair< std::vector<int>, std::vector<float> > jetInfo;
+    jetInfo = makeJetCuts(event, 0, &tempWeight);
+    event->jetIndex = jetInfo.first;
+
+    step9EventDump_ << event->eventNum << " " << event->numElePF2PAT << " " << event->numMuonPF2PAT << " " << event->numJetPF2PAT << " " << event->electronIndexTight.size() << " " << event->muonIndexTight.size() << " " << event->jetIndex.size() << " " << synchTrigger << std::endl;
   }
 
   if ( step == 0 ) { // Used for 2015/2016 synch
@@ -2214,8 +2260,8 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     else step0EventDump_ << "0";
     if ( std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi()))) > mTWCutSynch_ ) step0EventDump_ << "1"; // MET selection, step 6
     else step0EventDump_ << "0";
-    if ( (getTopMass(event) < TopMassCutUpper_) && (getTopMass(event) > TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
-    else step0EventDump_ << "0";
+//    if ( (getTopMass(event) < TopMassCutUpper_) && (getTopMass(event) > TopMassCutLower_) ) step0EventDump_ << "1"; // Top Mass cut, step 7
+//    else step0EventDump_ << "0";
     step0EventDump_ << std::endl;
     break;
   case 2:
@@ -2350,6 +2396,8 @@ float Cuts::muonSF(double pt, double eta, int syst){
 //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
   }
 
+
+
   float muonRecoSF = 1.0;
   if ( is2016_ ) {
     muonRecoSF = h_muonRecoGraph->Eval(eta);
@@ -2364,8 +2412,8 @@ float Cuts::muonSF(double pt, double eta, int syst){
       muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
 //      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
-    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
     }
+    if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
   }
 
   if ( syst == 2 ) {
@@ -2377,8 +2425,8 @@ float Cuts::muonSF(double pt, double eta, int syst){
       muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
 //      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
-    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
     }
+    if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
   }
   return muonIdSF*muonPFisoSF*muonRecoSF;
 }

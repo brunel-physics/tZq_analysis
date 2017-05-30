@@ -60,7 +60,7 @@ class Cuts{
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*, int syst = 0);
   float eleSF(double, double, int syst = 0);
-  float muonSF(double, double, int syst = 0, int eventRun = 0);
+  float muonSF(double, double, int syst = 0);
 
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
