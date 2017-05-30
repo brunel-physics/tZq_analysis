@@ -85,20 +85,33 @@ class TriggerScaleFactors{
 	double numberPassedElectrons[2];
 	double numberTriggeredSingleElectrons[2];
 	double numberTriggeredDoubleElectrons[2];
+
 	double numberPassedMuons[2];
 	double numberTriggeredSingleMuons[2];
 	double numberTriggeredDoubleMuons[2];
+
 	double numberPassedMuonElectrons[2];
+	double numberTriggeredMuonEgSingleElectrons[2];
+	double numberTriggeredMuonEgSingleMuons[2];
+	double numberTriggeredMuonEgSingleElectronSingleMuon[2];
 	double numberTriggeredMuonElectrons[2];
+
 	//Systematic variables
 	double numberSelectedElectrons[2];
 	double numberSelectedMuons[2];
 	double numberSelectedMuonElectrons[2];
+
         double numberSelectedSingleElectronsTriggered[2];
         double numberSelectedDoubleElectronsTriggered[2];
+
 	double numberSelectedSingleMuonsTriggered[2];
 	double numberSelectedDoubleMuonsTriggered[2];
-	double numberSelectedMuonElectronsTriggered[2];
+
+	double numberSelectedMuonEgSingleElectronTriggered[2]; // Single EG for MuonEG
+	double numberSelectedMuonEgSingleMuonTriggered[2]; // Single Muon for MuonEG
+	double numberSelectedMuonEgSingleMuonSingleElectronTriggered[2]; // Single EG + Single Muon for MuonEG
+	double numberSelectedMuonElectronsTriggered[2]; // Double MuonEG
+
 };
 
 #endif

@@ -72,14 +72,13 @@ int main (int argc, char* argv[])
   int fileNum{0};
   
   std::set< std::pair < Int_t, Int_t > > triggerDoubleCountCheck;
-  
+ 
   for (const auto& dileptonDir: dileptonDirs) {  // for each dilepton input directory
     for (const auto& file : boost::make_iterator_range(fs::directory_iterator{dileptonDir}, {}))  {  // for each file in directory
       const std::string path {file.path().string()};
       std::cout << "path: " << path << std::endl;
 
       if (!fs::is_regular_file(file.status()) || !std::regex_match(path, mask)) {
-	
 	continue;  // skip if not a root file
       }
 
@@ -197,8 +196,7 @@ int main (int argc, char* argv[])
       const std::string path {file.path().string()};
       std::cout << "path: " << path << std::endl;
 
-      if (!fs::is_regular_file(file.status()) || !std::regex_match(path, mask)) {
-	
+      if (!fs::is_regular_file(file.status()) || !std::regex_match(path, mask)) {	
 	continue;  // skip if not a root file
       }
 
@@ -210,7 +208,7 @@ int main (int argc, char* argv[])
 	fileNum++;
 	continue;
       }
-      
+
       TChain datasetChain{"tree"};
       datasetChain.Add(path.c_str());
       TTree * const outTree = datasetChain.CloneTree(0);
