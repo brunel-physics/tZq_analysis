@@ -1,5 +1,6 @@
 #include "TRandom3.h"
 #include "TMath.h"
+#include <sstream>
 
 struct CrystalBall{
     static const double pi;
@@ -89,10 +90,13 @@ struct CrystalBall{
 	return m - S2*s*TMath::ErfInverse((D - u/Ns ) / SPiO2);
     }
 };
+
+// No need to redeclare as they are found in <sstream>
+/*
 const double CrystalBall::pi    = TMath::Pi();
 const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
 const double CrystalBall::S2    = sqrt(2.0);
-
+*/
 
 class RocRes{
     private:
