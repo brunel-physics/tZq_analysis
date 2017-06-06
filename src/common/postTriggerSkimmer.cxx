@@ -188,6 +188,8 @@ int main (int argc, char* argv[])
 	
       fileNum++;
       std::cout << std::endl;
+
+     delete outTree;
     }
   }
   
@@ -241,7 +243,7 @@ int main (int argc, char* argv[])
 	    if ( it != triggerDoubleCountCheck.end() ) dupElectron++;
 	    // If event has not already been found, add to new skim
 	    else {
-              triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
+              //triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
 	    }
 	  }
@@ -266,7 +268,7 @@ int main (int argc, char* argv[])
 	    if ( it != triggerDoubleCountCheck.end() ) dupMuon++;
 	    // If event has not already been found, add to new skim
             else {
-              triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
+              //triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
 	    }
 	  }
@@ -306,7 +308,7 @@ int main (int argc, char* argv[])
 	    }
 	    // If event has not already been found, add to new skim
             else {
-              triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
+              //triggerDoubleCountCheck.emplace( std::make_pair(event.eventRun, event.eventNum) );
 	      outTree->Fill();
 	    }
 	  }
@@ -320,6 +322,8 @@ int main (int argc, char* argv[])
 	
       fileNum++;
       std::cout << std::endl;
+
+      delete outTree;
     }
   }
 
