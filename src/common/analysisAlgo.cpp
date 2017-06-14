@@ -911,6 +911,7 @@ void AnalysisAlgo::runMainAnalysis(){
       int wQuark2Index{-1};
       int jetInd[15];  // The index of the selected jets;
       int bJetInd[10]; // Index of selected b-jets;
+      float muonMomentumSF[3] {};
       float jetSmearValue[15] {};
       //Now add in the branches:
 
@@ -946,7 +947,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
 	  }
 	  mvaTree[systIn]->Branch("jetInd",jetInd,"jetInd[15]/I");
-	  mvaTree[systIn]->Branch("jetSmearValue",jetSmearValue,"jetSmearValue[15]/F");
+	  mvaTree[systIn]->Branch("muonMomentumSF",muonMomentumSF,"muonMomentumSF[3]/F");
+	  mvaTree[systIn]->Branch("jetSmearValue",jetSmearValue,"jetSmearValue[3]/F");
 	  mvaTree[systIn]->Branch("bJetInd",bJetInd,"jetInd[10]/I");
 
 	  if (systIn > 0) systMask = systMask << 1;
@@ -1103,7 +1105,12 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (makeMVATree){
 	    zLep1Index = event->zPairIndex.first;
 	    zLep2Index = event->zPairIndex.second;
-	    if (trileptonChannel_) wLepIndex = event->wLepIndex;
+            muonMomentumSF[0] = event->muonMomentumSF[0];
+            muonMomentumSF[1] = event->muonMomentumSF[1];
+	    if (trileptonChannel_) {
+              wLepIndex = event->wLepIndex;
+	      muonMomentumSF[2] = event->muonMomentumSF[2];
+            }
 	    else if (!trileptonChannel_){
 	      wQuark1Index = event->wPairIndex.first;
 	      wQuark2Index = event->wPairIndex.second;

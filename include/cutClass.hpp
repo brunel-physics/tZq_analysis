@@ -2,6 +2,8 @@
 #define _cutClass_hpp_
 
 #include "AnalysisEvent.hpp"
+#include "RoccoR.hpp"
+
 #include <vector>
 #include <map>
 #include "plots.hpp"
@@ -60,7 +62,7 @@ class Cuts{
   //Function to get lepton SF
   float getLeptonWeight(AnalysisEvent*, int syst = 0);
   float eleSF(double, double, int syst = 0);
-  float muonSF(double, double, int syst = 0);
+  float muonSF(double, double,int syst = 0);
 
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
@@ -133,6 +135,9 @@ class Cuts{
   float cVsLDiscCut_;
   float cVsBDiscCut_;
 
+  // Rochester Corrections
+  RoccoR rc_;
+
   //Temporary jet smearing prop varaible until a more elegant solution is done.
   float tempSmearValue_;
 
@@ -184,6 +189,7 @@ class Cuts{
   //And the efficiency plots.
   std::vector<TH2D*> bTagEffPlots_;
   bool getBTagWeight_;
+
   //bTag callibration for SFs
   BTagCalibration calib2015;
   BTagCalibration calib2016;

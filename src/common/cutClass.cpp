@@ -1,5 +1,4 @@
 #include "cutClass.hpp"
-#include "RoccoR.hpp"
 
 #include "TLorentzVector.h"
 #include "TRandom.h"
@@ -97,6 +96,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //cVsBDiscCut_{0.08}, // Medium level
   //cVsBDiscCut_{-0.17}, // Loose cut
 
+  rc_{"scaleFactors/2016/rcdata.2016.v3"},
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
   lumiRunsBCDEF_{19677.115}, // Lumi for hip era runs
   lumiRunsGH_{}, // Lumi for post-hip era runs
@@ -445,6 +445,22 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
     }
   }
+
+  // DO ROCHESTER CORRECTIONS HERE
+  std::vector<float> SFs;
+
+  for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
+    float tempSF {1.0};
+    if ( is2016_ ) {
+      if ( isMC_ ) tempSF = rc_.kScaleAndSmearMC( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], gRandom->Rndm(), gRandom->Rndm(), 0, 0 );
+      else tempSF = rc_.kScaleDT( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], 0, 0 );
+    }
+    SFs.emplace_back(tempSF);
+  }
+ 
+  event->muonMomentumSF = SFs;
+
+  // FINISH ROCHESTER CORRECTIONS BIT
 
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass{9999.};
@@ -894,6 +910,10 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         }
 	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]],event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
 	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
+
+	//Apply Rochester Corrections
+	
+
 	double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
@@ -2428,6 +2448,7 @@ float Cuts::muonSF(double pt, double eta, int syst){
     }
     if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
   }
+
   return muonIdSF*muonPFisoSF*muonRecoSF;
 }
 

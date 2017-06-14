@@ -977,6 +977,7 @@ public :
    std::pair<int,int> zPairIndex;
 
    std::vector<float> jetSmearValue;
+   std::vector<float> muonMomentumSF;
 
    std::pair<TLorentzVector,TLorentzVector> wPairQuarks;
    std::pair<int,int> wPairIndex;

@@ -173,7 +173,7 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
     return event->elePF2PATPT[event->electronIndexTight[0]];
   }
   else{
-    return event->muonPF2PATPt[event->muonIndexTight[0]];
+    return event->muonPF2PATPt[event->muonIndexTight[0]]*event->muonMomentumSF[event->muonIndexTight[0]];
   }
   return -10;
 }
@@ -187,7 +187,7 @@ float Plots::fillLepton1Eta(AnalysisEvent* event){
 float Plots::fillLepton2Pt(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return event->elePF2PATPT[event->electronIndexTight[1]];
-  else return  event->muonPF2PATPt[1];
+  else return  event->muonPF2PATPt[event->muonIndexTight[1]]*event->muonMomentumSF[event->muonIndexTight[1]];
   return -10;
 }
 
