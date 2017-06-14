@@ -1,6 +1,14 @@
+#ifndef ElectroWeakAnalysis_RoccoR
+#define ElectroWeakAnalysis_RoccoR
+
 #include "TRandom3.h"
 #include "TMath.h"
+
 #include <sstream>
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+#include <fstream>
 
 struct CrystalBall{
     static const double pi;
@@ -91,12 +99,9 @@ struct CrystalBall{
     }
 };
 
-// No need to redeclare as they are found in <sstream>
-/*
-const double CrystalBall::pi    = TMath::Pi();
-const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
-const double CrystalBall::S2    = sqrt(2.0);
-*/
+//const double CrystalBall::pi    = TMath::Pi();
+//const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
+//const double CrystalBall::S2    = sqrt(2.0);
 
 class RocRes{
     private:
@@ -223,4 +228,6 @@ class RoccoR{
     private:
 	std::vector<std::vector<RocOne> > RC;
 };
+
+#endif
 

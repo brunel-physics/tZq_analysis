@@ -1,12 +1,17 @@
-#ifndef ElectroWeakAnalysis_RoccoR
-#define ElectroWeakAnalysis_RoccoR
+//#ifndef ElectroWeakAnalysis_RoccoR
+//#define ElectroWeakAnalysis_RoccoR
 
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
 #include "TSystem.h"
+#include "TMath.h"
 #include "RoccoR.hpp"
+
+const double CrystalBall::pi    = TMath::Pi();
+const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
+const double CrystalBall::S2    = sqrt(2.0);
 
 int RocRes::getBin(double x, const int NN, const double *b) const{
     for(int i=0; i<NN; ++i) if(x<b[i+1]) return i;
@@ -54,29 +59,29 @@ int RocRes::getNBinMC(double v, int H) const{
 void RocRes::dumpParams(){
     using namespace std;
 
-    cout << NMIN << endl;
-    cout << NTRK << endl;
-    cout << NETA << endl;
-    for(int H=0; H<NETA+1; ++H) cout << BETA[H] << " ";
-    cout << endl;
+    std::cout << NMIN << std::endl;
+    std::cout << NTRK << std::endl;
+    std::cout << NETA << std::endl;
+    for(int H=0; H<NETA+1; ++H) std::cout << BETA[H] << " ";
+    std::cout << std::endl;
     for(int H=0; H<NETA; ++H){
 	for(int F=0; F<NTRK; ++F){
-	    cout << Form("%8.4f %8.4f %8.4f | ", width[H][F], alpha[H][F], power[H][F]);
+	    std::cout << Form("%8.4f %8.4f %8.4f | ", width[H][F], alpha[H][F], power[H][F]);
 	}
-	cout << endl;
+	std::cout << std::endl;
     }
     for(int H=0; H<NETA; ++H){
 	for(int F=0; F<NTRK+1; ++F){
-	    cout << Form("%8.4f %8.4f| ", ntrk[H][F], dtrk[H][F]);
+	    std::cout << Form("%8.4f %8.4f| ", ntrk[H][F], dtrk[H][F]);
 	}
-	cout << endl;
+	std::cout << std::endl;
     }
     for(int H=0; H<NETA; ++H){
 	for(int F=0; F<NTRK; ++F){
 	    cb[H][F].init(0.0, width[H][F], alpha[H][F], power[H][F]);
-	    cout << Form("%8.4f %8.4f %8.4f | ", rmsA[H][F], rmsB[H][F], rmsC[H][F]);
+	    std::cout << Form("%8.4f %8.4f %8.4f | ", rmsA[H][F], rmsB[H][F], rmsC[H][F]);
 	}
-	cout << endl;
+	std::cout << std::endl;
     }
 }
 
@@ -387,5 +392,4 @@ double RoccoR::kScaleFromGenMC(int Q, double pt, double eta, double phi, int n, 
 }
 
 
-#endif
-
+//#endif
