@@ -119,6 +119,7 @@ def setupInputVars():
     #Make the variables we want to save
     inputVars = {}
     inputVars["eventWeight"] = array('f',[0.])
+    inputVars["eventNumber"] = array('f',[0.])
     inputVars["mTW"] = array('f',[0.])
     inputVars["wQuark1Pt"] = array('f',[0.])
     inputVars["wQuark1Eta"] = array('f',[0.])
@@ -228,6 +229,7 @@ def setupInputVars():
 
 def setupBranches(tree,varMap):
     tree.Branch("EvtWeight", varMap["eventWeight"], "EvtWeight/F")
+    tree.Branch("EvtNumber", varMap["eventNumber"], "EvtNumber/F")
     tree.Branch("mTW", varMap["mTW"], "mTW/F")
     tree.Branch("wQuark1Pt", varMap["wQuark1Pt"], "wQuark1Pt/F")
     tree.Branch("wQuark1Eta", varMap["wQuark1Eta"], "wQuark1Eta/F")
@@ -356,6 +358,11 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             #Fill some plots here. Let's make an example mTW plot.
             #Make a config that'll do this for me? I've done these before so should be easy. Fill expressions could be a pain?
         tree.GetEntry(event)
+
+	##Save event number for debugging
+	varMap["eventNumber"][0] = tree.eventNum
+	
+	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
