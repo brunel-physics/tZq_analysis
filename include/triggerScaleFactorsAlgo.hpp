@@ -39,14 +39,7 @@ class TriggerScaleFactors{
 	long nEvents;
 	std::string outFolder;
 	std::string postfix;
-	bool makePostLepTree;
-	bool usePostLepTree;
 	int numFiles;
-
-	//For producing post-lepsel skims
-	TTree* postLepSelTree_;
-	TTree* postLepSelTree2_;
-	TTree* postLepSelTree3_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;
@@ -73,27 +66,20 @@ class TriggerScaleFactors{
 	bool passDileptonSelection(AnalysisEvent*,int);
 
 	// trigger cuts
-	bool singleElectronTriggerCut(AnalysisEvent*, bool);
 	bool doubleElectronTriggerCut(AnalysisEvent*, bool);
 	bool muonElectronTriggerCut(AnalysisEvent*, bool);
-	bool singleMuonTriggerCut(AnalysisEvent*, bool);
 	bool doubleMuonTriggerCut(AnalysisEvent*, bool);
 	bool metTriggerCut(AnalysisEvent*);
 	bool metFilters(AnalysisEvent*);
 
 	//Efficiencies
 	double numberPassedElectrons[2];
-	double numberTriggeredSingleElectrons[2];
 	double numberTriggeredDoubleElectrons[2];
 
 	double numberPassedMuons[2];
-	double numberTriggeredSingleMuons[2];
 	double numberTriggeredDoubleMuons[2];
 
 	double numberPassedMuonElectrons[2];
-	double numberTriggeredMuonEgSingleElectrons[2];
-	double numberTriggeredMuonEgSingleMuons[2];
-	double numberTriggeredMuonEgSingleElectronSingleMuon[2];
 	double numberTriggeredMuonElectrons[2];
 
 	//Systematic variables
@@ -101,15 +87,8 @@ class TriggerScaleFactors{
 	double numberSelectedMuons[2];
 	double numberSelectedMuonElectrons[2];
 
-        double numberSelectedSingleElectronsTriggered[2];
         double numberSelectedDoubleElectronsTriggered[2];
-
-	double numberSelectedSingleMuonsTriggered[2];
 	double numberSelectedDoubleMuonsTriggered[2];
-
-	double numberSelectedMuonEgSingleElectronTriggered[2]; // Single EG for MuonEG
-	double numberSelectedMuonEgSingleMuonTriggered[2]; // Single Muon for MuonEG
-	double numberSelectedMuonEgSingleMuonSingleElectronTriggered[2]; // Single EG + Single Muon for MuonEG
 	double numberSelectedMuonElectronsTriggered[2]; // Double MuonEG
 
 };

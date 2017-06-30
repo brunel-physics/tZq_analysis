@@ -18,39 +18,24 @@
 #include "TEfficiency.h"
 
 const bool HIP_ERA (true);
-const bool DO_HIPS (false);
+const bool DO_HIPS (true);
 
 TriggerScaleFactors::TriggerScaleFactors():
-  postLepSelTree_{nullptr},
-  postLepSelTree2_{nullptr},
-  postLepSelTree3_{nullptr},
-
   numberPassedElectrons(),
-  numberTriggeredSingleElectrons(),
   numberTriggeredDoubleElectrons(),
 
   numberPassedMuons(),
-  numberTriggeredSingleMuons(),
   numberTriggeredDoubleMuons(),
 
   numberPassedMuonElectrons(),
-  numberTriggeredMuonEgSingleElectrons(),
-  numberTriggeredMuonEgSingleMuons(),
-  numberTriggeredMuonEgSingleElectronSingleMuon(),
   numberTriggeredMuonElectrons(),
 
   numberSelectedElectrons(),
   numberSelectedMuons(),
   numberSelectedMuonElectrons(),
 
-  numberSelectedSingleElectronsTriggered(),
   numberSelectedDoubleElectronsTriggered(),
-  numberSelectedSingleMuonsTriggered(),
   numberSelectedDoubleMuonsTriggered(),
-
-  numberSelectedMuonEgSingleElectronTriggered(),
-  numberSelectedMuonEgSingleMuonTriggered(),
-  numberSelectedMuonEgSingleMuonSingleElectronTriggered(),
   numberSelectedMuonElectronsTriggered()
 {}
 
@@ -302,10 +287,6 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
      "Set postfix for plots. Overrides the config file.")
     ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.)")
-    (",g", po::bool_switch(&makePostLepTree),
-     "Make post lepton selection trees.")
-    (",u", po::bool_switch(&usePostLepTree),
-     "Use post lepton selection trees.")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.");
   po::variables_map vm;
@@ -403,14 +384,12 @@ void TriggerScaleFactors::runMainAnalysis(){
     TChain * datasetChain = new TChain(dataset->treeName().c_str());
 
     std::cerr << "Processing dataset " << dataset->name() << std::endl;
-    if (!usePostLepTree){
-      if (!datasetFilled){
-	if (!dataset->fillChain(datasetChain,numFiles)){
-	  std::cerr << "There was a problem constructing the chain for " << dataset->name() << ". Continuing with next dataset.\n";
-	  continue;
-	}
-	datasetFilled = true;
+    if (!datasetFilled){
+      if (!dataset->fillChain(datasetChain,numFiles)){
+        std::cerr << "There was a problem constructing the chain for " << dataset->name() << ". Continuing with next dataset.\n";
+	continue;
       }
+      datasetFilled = true;
     }
 
     else{
@@ -438,21 +417,6 @@ void TriggerScaleFactors::runMainAnalysis(){
 
     TFile * outFile3{nullptr};
     TTree * cloneTree3{nullptr};
-
-    if (makePostLepTree){
-      outFile1 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim.root").c_str(),"RECREATE"};
-      outFile2 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim1.root").c_str(),"RECREATE"};
-      outFile3 = new TFile{("/scratch/data/TopPhysics/miniSkims2015/"+dataset->name() + postfix + "SmallSkim2.root").c_str(),"RECREATE"};
-      cloneTree = datasetChain->CloneTree(0);
-      cloneTree->SetDirectory(outFile1);
-      cloneTree2 = datasetChain->CloneTree(0);
-      cloneTree2->SetDirectory(outFile2);
-      cloneTree3 = datasetChain->CloneTree(0);
-      cloneTree3->SetDirectory(outFile3);
-      postLepSelTree_ = cloneTree;
-      postLepSelTree2_ = cloneTree2;
-      postLepSelTree3_ = cloneTree3;
-    }
 
     double eventWeight = 1.0;
 
@@ -485,51 +449,20 @@ void TriggerScaleFactors::runMainAnalysis(){
 
       bool passMuonElectronSelection ( passDileptonSelection( event , 1 ) );
 
-      if ( (passDoubleElectronSelection || passDoubleMuonSelection) && makePostLepTree ) {
-	if(postLepSelTree_) {
-	  if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
-	  else {
-	    if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
-	    else postLepSelTree3_->Fill();
-	  }
-	}
-      }
-
-      //Single Lepton Triggering stuff
-      int triggerSingleElectron (0), triggerSingleMuon (0); // Passes Single Lepton Triggers for same flavour leptons
-      int triggerMetSingleElectron (0), triggerMetSingleMuon (0); // Passes Single Lepton and MET triggers for same flavour leptons
-
-      int triggerMuonEgSingleElectron(0), triggerMuonEgSingleMuon (0), triggerMuonEgSingleElectronSingleMuon (0); // Passes Single Lepton Triggers for different flavour leptons
-      int triggerMetMuonEgSingleElectron (0), triggerMetMuonEgSingleMuon (0), triggerMetMuonEgSingleElectronSingleMuon (0); // Passes Single Lepton and MET triggers for opposite flavour leptons
-
-      //Double Lepton Triggering stuff
+      //Triggering stuff
       int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMuonElectron (0); // Passes Double Lepton Trigger
       int triggerMetDoubleEG (0), triggerMetDoubleMuon (0), triggerMetMuonElectron (0); // Passes Double Lepton and MET triggers
 
       //Passes event selection and MET triggers
       int triggerMetElectronSelection (0), triggerMetMuonSelection (0), triggerMetMuonElectronSelection (0); // Passes lepton selection and MET triggers
 
-      //Does event pass Single Electron trigger and the electron selection?
-      if ( passDoubleElectronSelection ) triggerSingleElectron 	  = ( singleElectronTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleElectronSelection ) triggerMetSingleElectron = ( singleElectronTriggerCut( event, dataset->isMC() ) * metTriggerCut( event ) );
-      //Does event pass Single Muon trigger and the muon selection?
-      if ( passDoubleMuonSelection )  triggerSingleMuon 	  = ( singleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passDoubleMuonSelection )  triggerMetSingleMuon 	  = ( singleMuonTriggerCut( event, dataset->isMC() ) * metTriggerCut( event ) );
-      //Does event pass either/both single electron and single muon triggers and the MuonEG event selection?
-      if ( passMuonElectronSelection ) triggerMuonEgSingleElectron = ( singleElectronTriggerCut( event, dataset->isMC() ) * singleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passMuonElectronSelection ) triggerMetMuonEgSingleElectron = ( singleElectronTriggerCut( event, dataset->isMC() ) * singleMuonTriggerCut( event, dataset->isMC() ) * metTriggerCut ( event ) );
-      if ( passMuonElectronSelection ) triggerMuonEgSingleMuon = ( singleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passMuonElectronSelection ) triggerMetMuonEgSingleMuon = ( singleMuonTriggerCut( event, dataset->isMC() ) * metTriggerCut ( event ) );
-      if ( passMuonElectronSelection ) triggerMuonEgSingleElectronSingleMuon = ( singleElectronTriggerCut( event, dataset->isMC() ) * singleMuonTriggerCut( event, dataset->isMC() ) );
-      if ( passMuonElectronSelection ) triggerMetMuonEgSingleElectronSingleMuon = ( singleElectronTriggerCut( event, dataset->isMC() ) * singleMuonTriggerCut( event, dataset->isMC() ) * metTriggerCut ( event ) );
-
-      //Does event pass Double EG trigger and the electron selection?
+      //Does event pass Single/Double EG trigger and the electron selection?
       if ( passDoubleElectronSelection ) triggerDoubleEG 	= ( doubleElectronTriggerCut( event, dataset->isMC() ) );
       if ( passDoubleElectronSelection ) triggerMetDoubleEG 	= ( doubleElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
-      //Does event pass Double Muon trigger and the muon selection?
+      //Does event pass Single/Double Muon trigger and the muon selection?
       if ( passDoubleMuonSelection )  triggerDoubleMuon = ( doubleMuonTriggerCut( event, dataset->isMC() ) );
       if ( passDoubleMuonSelection )  triggerMetDoubleMuon = ( doubleMuonTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
-      //Does event pass Muon EG trigger and the muon selection?
+      //Does event pass Single Electron/Single Muon/MuonEG trigger and the muon selection?
       if ( passMuonElectronSelection )  triggerMuonElectron = ( muonElectronTriggerCut( event, dataset->isMC() ) );
       if ( passMuonElectronSelection )  triggerMetMuonElectron = ( muonElectronTriggerCut( event, dataset->isMC() )*metTriggerCut( event ) );
 
@@ -541,19 +474,10 @@ void TriggerScaleFactors::runMainAnalysis(){
 
       if ( dataset->isMC() ) { // If is MC
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
-        numberTriggeredSingleElectrons[0] += triggerMetSingleElectron*eventWeight; //Number of electrons passing both cross trigger+electron selection AND single EG trigger
 	numberTriggeredDoubleElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
-
 	numberPassedMuons[0] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
-	numberTriggeredSingleMuons[0] += triggerMetSingleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND single muon trigger
 	numberTriggeredDoubleMuons[0] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
-
         numberPassedMuonElectrons[0] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing cross trigger and muonEG selection
-	//Single Lepton(s)
-        numberTriggeredMuonEgSingleElectrons[0] += triggerMetMuonEgSingleElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND single Electron trigger
-        numberTriggeredMuonEgSingleMuons[0] += triggerMetMuonEgSingleMuon*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND single Muon trigger
-        numberTriggeredMuonEgSingleElectronSingleMuon[0] += triggerMetMuonEgSingleElectronSingleMuon*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND singleEG+singleMuon triggers
-	//Dilepton
         numberTriggeredMuonElectrons[0] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger
 
 	// Systematic stuff
@@ -561,73 +485,23 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberSelectedMuons[0] += passDoubleMuonSelection*eventWeight;
 	numberSelectedMuonElectrons[0] += passMuonElectronSelection*eventWeight;
 
-	numberSelectedSingleElectronsTriggered[0] += triggerSingleElectron*eventWeight;;
 	numberSelectedDoubleElectronsTriggered[0] += triggerDoubleEG*eventWeight;;
-
-	numberSelectedSingleMuonsTriggered[0] += triggerSingleMuon*eventWeight;
 	numberSelectedDoubleMuonsTriggered[0] += triggerDoubleMuon*eventWeight;
-
-        numberSelectedMuonEgSingleElectronTriggered[0] += triggerMuonEgSingleElectron*eventWeight;
-        numberSelectedMuonEgSingleMuonTriggered[0] += triggerMuonEgSingleMuon*eventWeight;
-        numberSelectedMuonEgSingleMuonSingleElectronTriggered[0] += triggerMuonEgSingleElectronSingleMuon*eventWeight;
 	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;
       }
       else { // Else is data
 
 	numberPassedElectrons[1] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
-        numberTriggeredSingleElectrons[1] += triggerMetSingleElectron*eventWeight; //Number of electrons passing both cross trigger+electron selection AND single EG trigger
 	numberTriggeredDoubleElectrons[1] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
-
 	numberPassedMuons[1] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
-	numberTriggeredSingleMuons[1] += triggerMetSingleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND single muon trigger
 	numberTriggeredDoubleMuons[1] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
-
         numberPassedMuonElectrons[1] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing cross trigger and muonEG selection
-
-	//Single Lepton(s)
-        numberTriggeredMuonEgSingleElectrons[1] += triggerMetMuonEgSingleElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND single Electron trigger
-        numberTriggeredMuonEgSingleMuons[1] += triggerMetMuonEgSingleMuon*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND single Muon trigger
-        numberTriggeredMuonEgSingleElectronSingleMuon[1] += triggerMetMuonEgSingleElectronSingleMuon*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND singleEG+singleMuon triggers
-	//Dilepton
         numberTriggeredMuonElectrons[1] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger
 
 	// NB No systematic stuff required for data
       }
 
     }
-
-    if (makePostLepTree){
-      outFile1->cd();
-      std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
-      std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
-      cloneTree->Write();
-
-      delete cloneTree;
-      cloneTree = nullptr;
-      outFile1->Write();
-      outFile1->Close();
-
-      //If we have any events in the second tree:
-      if (cloneTree2->GetEntries() > 0){
-	std::cout << "There are " << cloneTree2->GetEntries() << " entries in the second tree!" << std::endl;
-	outFile2->cd();
-	cloneTree2->Write();
-	outFile2->Write();
-      }
-      if (cloneTree3->GetEntries() > 0){
-	std::cout << "There are " << cloneTree3->GetEntries() << " entries in the third tree! What a lot of trees we've made." << std::endl;
-	outFile3->cd();
-	cloneTree3->Write();
-	outFile3->Write();
-      }
-      delete cloneTree2;
-      delete cloneTree3;
-      cloneTree2 = nullptr;
-      cloneTree3 = nullptr;
-      outFile2->Close();
-      outFile3->Close();
-    }
-
 
     delete datasetChain;
   } //end dataset loop
@@ -641,7 +515,7 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
 
     if (tempVec.Pt() <= 20.0 && !is2016_) continue;
     if (tempVec.Pt() <= 25.0 && is2016_) continue;
-    if (std::abs(tempVec.Eta()) >= 2.40) continue;
+    if (std::abs(tempVec.Eta()) >= 2.50) continue;
 
     // 2015 cuts
     if ( !is2016_ ) {
@@ -705,7 +579,7 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
     if ( event->muonPF2PATPt[i] <= 20.0 ) continue;
-    if (std::abs(event->muonPF2PATEta[i]) >= 2.50) continue;
+    if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
 
 //    if ( !is2016_ ) {
@@ -764,6 +638,8 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
   float invMass (0.0);
   float pT (0.0);
 
+  //DoubleEG
+
   if (nElectrons == 2){
     std::vector<int> leptons = event->electronIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
@@ -784,11 +660,12 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
     }
   }
 
+  // DoubleMuon
   else if (nElectrons == 0){
     std::vector<int> leptons = event->muonIndexTight;
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
-	if (event->muonPF2PATCharge[leptons[i]] * event->muonPF2PATCharge[leptons[j]] >= 0) continue;
+	if (event->muonPF2PATCharge[leptons[i]] * event->muonPF2PATCharge[leptons[j]] >= 0) continue; 
 	TLorentzVector lepton1 = TLorentzVector(event->muonPF2PATPX[leptons[i]],event->muonPF2PATPY[leptons[i]],event->muonPF2PATPZ[leptons[i]],event->muonPF2PATE[leptons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[leptons[j]],event->muonPF2PATPY[leptons[j]],event->muonPF2PATPZ[leptons[j]],event->muonPF2PATE[leptons[j]]);
 	float candidateMass = (lepton1 + lepton2).M();
@@ -804,12 +681,13 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
     }
   }
 
+  // MuonEG
   else if (nElectrons == 1){
     std::vector<int> electrons = event->electronIndexTight;
     std::vector<int> muons = event->muonIndexTight;
     for ( unsigned i = 0; i < electrons.size(); i++ ){
       for ( unsigned j = 0; j < muons.size(); j++ ){
-        if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) continue; // check muon-electron pair have correct charge.
+        if ( !(event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue; // check muon-electron pair have correct (same) charge.
         TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
 	float candidateMass = (lepton1 + lepton2).M();
@@ -834,7 +712,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
   else return false;
 }
 
-bool TriggerScaleFactors::singleElectronTriggerCut( AnalysisEvent* event, bool isMC ) {
+bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool eTrig{false};
 
   if ( !is2016_ ) return false; // Single lepton paths not implemented for 2015
@@ -852,11 +730,7 @@ bool TriggerScaleFactors::singleElectronTriggerCut( AnalysisEvent* event, bool i
       if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0 ) eTrig = true;
     }
   }
-  if ( eTrig == true) return true;
-  else return false;
-}
 
-bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool eeTrig{false};
   if ( !is2016_ ) {
     if ( !isMC ) {
@@ -882,7 +756,7 @@ bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool i
       if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true; 
    }
   }
-  if ( eeTrig == true) return true;
+  if ( eeTrig == true || eTrig == true ) return true;
   else return false;
 }
 
@@ -927,7 +801,7 @@ bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event, bool isM
         if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) muEGTrig = true;
-        if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
+	        if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
       }
@@ -943,7 +817,7 @@ bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event, bool isM
   else return false;
 }
 
-bool TriggerScaleFactors::singleMuonTriggerCut( AnalysisEvent* event, bool isMC ) {
+bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool muTrig{false};
   if ( !is2016_ ) return false; // Single lepton paths not implemented for 2015
   else {
@@ -996,12 +870,7 @@ bool TriggerScaleFactors::singleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
     }
   }
-  if ( muTrig == true) return true;
-  else return false;
-}
 
-
-bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool mumuTrig{false};
   if ( !is2016_ ) {
     if ( !isMC ) {
@@ -1064,7 +933,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true; //post-HIP
     }
   }
-  if ( mumuTrig == true ) return true;
+  if ( mumuTrig == true || muTrig == true ) return true;
   else return false;
 }
 
@@ -1158,26 +1027,12 @@ void TriggerScaleFactors::savePlots()
 {
   // Calculate MC efficiency
 
-  //// Single Lepton Triggers
-  double singleElectronEfficiencyMC 	  = numberTriggeredSingleElectrons[0]/(numberPassedElectrons[0]+1.0e-6);
-  double singleMuonEfficiencyMC 	  = numberTriggeredSingleMuons[0]/(numberPassedMuons[0]+1.0e-6);
-  double muonEgSingleElectronEfficiencyMC = numberTriggeredMuonEgSingleElectrons[0]/(numberPassedMuonElectrons[0]+1.0e-6);
-  double muonEgSingleMuonEfficiencyMC 	  = numberTriggeredMuonEgSingleMuons[0]/(numberPassedMuonElectrons[0]+1.0e-6);
-  double muonEgSingleElectronSingleMuonEfficiencyMC = numberTriggeredMuonEgSingleElectronSingleMuon[0]/(numberPassedMuonElectrons[0]+1.0e-6);
-
-  //// DoubleLeptonTriggers
-  double doubleElectronEfficiencyMC 	  = numberTriggeredDoubleElectrons[0]/(numberPassedElectrons[0]+1.0e-6);
-  double doubleMuonEfficiencyMC 	  = numberTriggeredDoubleMuons[0]/(numberPassedMuons[0]+1.0e-6);
-  double muonElectronEfficiencyMC = numberTriggeredMuonElectrons[0]/(numberPassedMuonElectrons[0]+1.0e-6);
+  //// LeptonTriggers
+  double doubleElectronEfficiencyMC 	= numberTriggeredDoubleElectrons[0]/(numberPassedElectrons[0]+1.0e-6);
+  double doubleMuonEfficiencyMC 	= numberTriggeredDoubleMuons[0]/(numberPassedMuons[0]+1.0e-6);
+  double muonElectronEfficiencyMC 	= numberTriggeredMuonElectrons[0]/(numberPassedMuonElectrons[0]+1.0e-6);
 
   // Calculate Data efficiency
-
-  //// Single Lepton Triggers
-  double singleElectronEfficiencyData	   = numberTriggeredSingleElectrons[1]/(numberPassedElectrons[1]+1.0e-6);
-  double singleMuonEfficiencyData 	   = numberTriggeredSingleMuons[1]/(numberPassedMuons[1]+1.0e-6);
-  double muonEgSingleElectronEfficiencyData 		= numberTriggeredMuonEgSingleElectrons[1]/(numberPassedMuonElectrons[1]+1.0e-6);
-  double muonEgSingleMuonEfficiencyData 	  	= numberTriggeredMuonEgSingleMuons[1]/(numberPassedMuonElectrons[1]+1.0e-6);
-  double muonEgSingleElectronSingleMuonEfficiencyData 	= numberTriggeredMuonEgSingleElectronSingleMuon[1]/(numberPassedMuonElectrons[1]+1.0e-6);
 
   //// DoubleLeptonTriggers
   double doubleElectronEfficiencyData	= numberTriggeredDoubleElectrons[1]/(numberPassedElectrons[1]+1.0e-6);
@@ -1186,29 +1041,12 @@ void TriggerScaleFactors::savePlots()
 
   // Calculate SF
 
-  //// Single Lepton Triggers
-  double singleElectronSF 		= singleElectronEfficiencyData/(singleElectronEfficiencyMC+1.0e-6);
-  double singleMuonSF 			= singleMuonEfficiencyData/(singleMuonEfficiencyMC+1.0e-6);
-  double singleMuonEgSingleElectronSF 			= muonEgSingleElectronEfficiencyData/(muonEgSingleElectronEfficiencyMC+1.0e-6);
-  double singleMuonEgSingleMuonSF 			= muonEgSingleMuonEfficiencyData/(muonEgSingleMuonEfficiencyMC+1.0e-6);
-  double singleMuonEgSingleElectronSingleMuonSF 	= muonEgSingleElectronSingleMuonEfficiencyData/(muonEgSingleElectronSingleMuonEfficiencyMC+1.0e-6);
-
-  //// DoubleLeptonTriggers
+  //// LeptonTriggers
   double doubleElectronSF 	= doubleElectronEfficiencyData/(doubleElectronEfficiencyMC+1.0e-6);
   double doubleMuonSF 		= doubleMuonEfficiencyData/(doubleMuonEfficiencyMC+1.0e-6);
   double muonElectronSF 	= muonElectronEfficiencyData/(muonElectronEfficiencyMC+1.0e-6);
 
   // Calculate alphas
-
-  //// Single Lepton Triggers
-  double alphaSingleElectron    		= ( (numberSelectedSingleElectronsTriggered[0]/numberSelectedElectrons[0])*(numberPassedElectrons[0]/numberSelectedElectrons[0]) )/(numberTriggeredSingleElectrons[0]/numberSelectedElectrons[0]+1.0e-6);
-  double alphaSingleMuon        		= ( (numberSelectedSingleMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredSingleMuons[0]/numberSelectedMuons[0]+1.0e-6);
-
-  double alphaMuonEgSingleElectron		= ( (numberSelectedMuonEgSingleElectronTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonEgSingleElectrons[0]/numberSelectedMuonElectrons[0]+1.0e-6);
-  double alphaMuonEgSingleMuon			= ( (numberSelectedMuonEgSingleMuonTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonEgSingleMuons[0]/numberSelectedMuonElectrons[0]+1.0e-6);
-  double alphaMuonEgSingleElectronSingleMuon	= ( (numberSelectedMuonEgSingleMuonSingleElectronTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonEgSingleElectronSingleMuon[0]/numberSelectedMuonElectrons[0]+1.0e-6);
-
-  //// DoubleLeptonTriggers
   double alphaDoubleElectron    = ( (numberSelectedDoubleElectronsTriggered[0]/numberSelectedElectrons[0])*(numberPassedElectrons[0]/numberSelectedElectrons[0]) )/(numberTriggeredDoubleElectrons[0]/numberSelectedElectrons[0]+1.0e-6);
   double alphaDoubleMuon        = ( (numberSelectedDoubleMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredDoubleMuons[0]/numberSelectedMuons[0]+1.0e-6);
   double alphaMuonElectron 	= ( (numberSelectedMuonElectronsTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonElectrons[0]/numberSelectedMuonElectrons[0]+1.0e-6);
@@ -1216,64 +1054,7 @@ void TriggerScaleFactors::savePlots()
   // Calculate uncertainities
   double level = 0.60;
 
-  //// Single Lepton Triggers
-
-  double singleElectronDataUpperUncert = singleElectronEfficiencyData-TEfficiency::ClopperPearson(numberPassedElectrons[1], numberTriggeredSingleElectrons[1], level, true);
-  double singleElectronMcUpperUncert   = singleElectronEfficiencyMC-TEfficiency::ClopperPearson(numberPassedElectrons[0], numberTriggeredSingleElectrons[0], level, true);
-  double singleElectronDataLowerUncert = singleElectronEfficiencyData-TEfficiency::ClopperPearson(numberPassedElectrons[1], numberTriggeredSingleElectrons[1], level, false);
-  double singleElectronMcLowerUncert   = singleElectronEfficiencyMC-TEfficiency::ClopperPearson(numberPassedElectrons[0], numberTriggeredSingleElectrons[0], level, false);
-
-  double singleMuonDataUpperUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuons[1], numberTriggeredSingleMuons[1], level, true);
-  double singleMuonMcUpperUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuons[0], numberTriggeredSingleMuons[0], level, true);
-  double singleMuonDataLowerUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuons[1], numberTriggeredSingleMuons[1], level, false);
-  double singleMuonMcLowerUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuons[0], numberTriggeredSingleMuons[0], level, false);
-
-  double muonEgSingleElectronDataUpperUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleElectrons[1], level, true);
-  double muonEgSingleElectronMcUpperUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleElectrons[0], level, true);
-  double muonEgSingleElectronDataLowerUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleElectrons[1], level, false);
-  double muonEgSingleElectronMcLowerUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleElectrons[0], level, false);
-
-  double muonEgSingleMuonDataUpperUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleMuons[1], level, true);
-  double muonEgSingleMuonMcUpperUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleMuons[0], level, true);
-  double muonEgSingleMuonDataLowerUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleMuons[1], level, false);
-  double muonEgSingleMuonMcLowerUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleMuons[0], level, false);
-
-  double muonEgSingleMuonSingleElectronDataUpperUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleElectronSingleMuon[1], level, true);
-  double muonEgSingleMuonSingleElectronMcUpperUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleElectronSingleMuon[0], level, true);
-  double muonEgSingleMuonSingleElectronDataLowerUncert = singleMuonEfficiencyData-TEfficiency::ClopperPearson(numberPassedMuonElectrons[1], numberTriggeredMuonEgSingleElectronSingleMuon[1], level, false);
-  double muonEgSingleMuonSingleElectronMcLowerUncert   = singleMuonEfficiencyMC-TEfficiency::ClopperPearson(numberPassedMuonElectrons[0], numberTriggeredMuonEgSingleElectronSingleMuon[0], level, false);
-
-  double singleEleSfUp = (singleElectronEfficiencyData+singleElectronDataUpperUncert)/(singleElectronEfficiencyMC-singleElectronMcLowerUncert+1.0e-6) - singleElectronSF;
-  double singleEleSfDown = (singleElectronEfficiencyData+singleElectronDataLowerUncert)/(singleElectronEfficiencyMC-singleElectronMcUpperUncert+1.0e-6) - singleElectronSF;
-  double singleEleSfUncert = 0.0;
-  if ( singleEleSfUp > singleEleSfDown ) singleEleSfUncert = singleEleSfUp;
-  else singleEleSfUncert = singleEleSfDown;
-
-  double singleMuonSfUp = (singleMuonEfficiencyData+singleMuonDataUpperUncert)/(singleMuonEfficiencyMC-singleMuonMcLowerUncert+1.0e-6) - singleMuonSF;
-  double singleMuonSfDown = (singleMuonEfficiencyData+singleMuonDataLowerUncert)/(singleMuonEfficiencyMC-singleMuonMcUpperUncert+1.0e-6) - singleMuonSF;
-  double singleMuonSfUncert = 0.0;
-  if ( singleMuonSfUp > singleMuonSfDown ) singleMuonSfUncert = singleMuonSfUp;
-  else singleMuonSfUncert = singleMuonSfDown;
-
-  double muonEgSingleElectronSfUp = (muonEgSingleElectronEfficiencyData+muonEgSingleElectronDataUpperUncert)/(muonEgSingleElectronEfficiencyMC-muonEgSingleElectronMcLowerUncert+1.0e-6) - singleMuonEgSingleElectronSF;
-  double muonEgSingleElectronSfDown = (muonEgSingleElectronEfficiencyData+muonEgSingleElectronDataLowerUncert)/(muonEgSingleElectronEfficiencyMC-muonEgSingleElectronMcUpperUncert+1.0e-6) - singleMuonEgSingleElectronSF;
-  double muonEgSingleElectronSfUncert = 0.0;
-  if ( muonEgSingleElectronSfUp > muonEgSingleElectronSfDown ) muonEgSingleElectronSfUncert = muonEgSingleElectronSfUp;
-  else muonEgSingleElectronSfUncert = muonEgSingleElectronSfDown;
-
-  double muonEgSingleMuonSfUp = (muonEgSingleMuonEfficiencyData+muonEgSingleMuonDataUpperUncert)/(muonEgSingleMuonEfficiencyMC-muonEgSingleMuonMcLowerUncert+1.0e-6) - singleMuonEgSingleMuonSF;
-  double muonEgSingleMuonSfDown = (muonEgSingleMuonEfficiencyData+muonEgSingleMuonDataLowerUncert)/(muonEgSingleMuonEfficiencyMC-muonEgSingleMuonMcUpperUncert+1.0e-6) - singleMuonEgSingleMuonSF;
-  double muonEgSingleMuonSfUncert = 0.0;
-  if ( muonEgSingleMuonSfUp > muonEgSingleMuonSfDown ) muonEgSingleMuonSfUncert = muonEgSingleMuonSfUp;
-  else muonEgSingleMuonSfUncert = muonEgSingleMuonSfDown;
-
-  double muonEgSingleElectronSingleMuonSfUp = (muonEgSingleElectronSingleMuonEfficiencyData+muonEgSingleMuonSingleElectronDataUpperUncert)/(muonEgSingleElectronSingleMuonEfficiencyMC-muonEgSingleMuonSingleElectronMcLowerUncert+1.0e-6) - singleMuonEgSingleElectronSingleMuonSF;
-  double muonEgSingleElectronSingleMuonSfDown = (muonEgSingleElectronSingleMuonEfficiencyData+muonEgSingleMuonSingleElectronDataLowerUncert)/(muonEgSingleElectronSingleMuonEfficiencyMC-muonEgSingleMuonSingleElectronMcUpperUncert+1.0e-6) - singleMuonEgSingleElectronSingleMuonSF;
-  double muonEgSingleElectronSingleMuonSfUncert = 0.0;
-  if ( muonEgSingleElectronSingleMuonSfUp > muonEgSingleElectronSingleMuonSfDown ) muonEgSingleElectronSingleMuonSfUncert = muonEgSingleElectronSingleMuonSfUp;
-  else muonEgSingleElectronSingleMuonSfUncert = muonEgSingleElectronSingleMuonSfDown;
-
-  //// DoubleLeptonTriggers
+  //// LeptonTriggers
 
   double doubleElectronDataUpperUncert = doubleElectronEfficiencyData-TEfficiency::ClopperPearson(numberPassedElectrons[1], numberTriggeredDoubleElectrons[1], level, true);
   double doubleElectronMcUpperUncert   = doubleElectronEfficiencyMC-TEfficiency::ClopperPearson(numberPassedElectrons[0], numberTriggeredDoubleElectrons[0], level, true);
@@ -1310,41 +1091,6 @@ void TriggerScaleFactors::savePlots()
 
   // Print output
 
-  std::cout << "SINGLE LEPTON TRIGGERS: " << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << "Single Electron data efficiency: " << singleElectronEfficiencyData << " +/- " << singleElectronDataUpperUncert << "/" << singleElectronDataLowerUncert << std::endl;
-  std::cout << "Single Electron MC efficiency: " << singleElectronEfficiencyMC << " +/- " << singleElectronMcUpperUncert << "/" << singleElectronMcLowerUncert << std::endl;
-  std::cout << "Single Electron trigger SF: " << singleElectronSF << " +/- " << singleEleSfUncert << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << "Single Muon data efficiency: " << singleMuonEfficiencyData << " +/- " << singleMuonDataUpperUncert << "/" << singleMuonDataLowerUncert << std::endl;
-  std::cout << "Single Muon MC efficiency: " << singleMuonEfficiencyMC << " +/- " << singleMuonMcUpperUncert << "/" << singleMuonMcLowerUncert << std::endl;
-  std::cout << "Single Muon trigger SF: " << singleMuonSF << " +/- " << singleMuonSfUncert << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-
-  std::cout << "MuonEG (single electron trigger):" << std::endl;
-  std::cout << "MuonEG data efficiency: " << muonEgSingleElectronEfficiencyData << " +/- " << muonEgSingleElectronDataUpperUncert << "/" << muonEgSingleElectronDataLowerUncert << std::endl;
-  std::cout << "MuonEG MC efficiency: " << muonEgSingleElectronEfficiencyMC << " +/- " << muonEgSingleElectronMcUpperUncert << " / " << muonEgSingleElectronMcLowerUncert << std::endl;
-  std::cout << "MuonEG trigger SF: " << singleMuonEgSingleElectronSF << " +/- " << muonEgSingleElectronSfUncert << std::endl;
-
-  std::cout << "\nMuonEG (single muon trigger):" << std::endl;
-  std::cout << "MuonEG data efficiency: " << muonEgSingleMuonEfficiencyData << " +/- " << muonEgSingleMuonDataUpperUncert << "/" << muonEgSingleMuonDataLowerUncert << std::endl;
-  std::cout << "MuonEG MC efficiency: " << muonEgSingleMuonEfficiencyMC << " +/- " << muonEgSingleMuonMcUpperUncert << " / " << muonEgSingleMuonMcLowerUncert << std::endl;
-  std::cout << "MuonEG trigger SF: " << singleMuonEgSingleMuonSF << " +/- " << muonEgSingleMuonSfUncert << std::endl;
-
-  std::cout << "\nMuonEG (single electron AND single muon trigger):" << std::endl;
-  std::cout << "MuonEG data efficiency: " << muonEgSingleElectronSingleMuonEfficiencyData << " +/- " << muonEgSingleMuonSingleElectronDataUpperUncert << "/" << muonEgSingleMuonSingleElectronDataLowerUncert << std::endl;
-  std::cout << "MuonEG MC efficiency: " <<  muonEgSingleElectronSingleMuonEfficiencyMC << " +/- " << muonEgSingleMuonSingleElectronMcUpperUncert << " / " << muonEgSingleMuonSingleElectronMcLowerUncert << std::endl;
-  std::cout << "MuonEG trigger SF: " << singleMuonEgSingleElectronSingleMuonSF << " +/- " << muonEgSingleElectronSingleMuonSfUncert << std::endl;
-
-  std::cout << "-----------------------------------------------------------" << std::endl;
-
-  std::cout << "alpha for SingleElectron/SingleMuon Triggers: " << alphaSingleElectron << "/" << alphaSingleMuon << std::endl;
-  std::cout << "alpha for SingleElectron/SingleMuon/SingleEG+SingleMuon for MuonEG Triggers: " << alphaMuonEgSingleElectron << "/" << alphaMuonEgSingleMuon << "/" << alphaMuonEgSingleElectronSingleMuon << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
-
-  std::cout << "DOUBLE LEPTON TRIGGERS: " << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "Double Electron data efficiency: " << doubleElectronEfficiencyData << " +/- " << doubleElectronDataUpperUncert << "/" << doubleElectronDataLowerUncert << std::endl;
@@ -1363,28 +1109,5 @@ void TriggerScaleFactors::savePlots()
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
 
-/*
-  TH2F* histEfficiencies = new TH2F("histEleEfficiencies", "Efficiencies and Scale Factors of dilepton triggers.; ; Channel.",3,0.0,3.0, 2,0.0,2.0);
-  histEfficiencies->Fill(0.5,0.5, doubleElectronEfficiencyData);
-  histEfficiencies->Fill(1.5,0.5, doubleElectronEfficiencyMC);
-  histEfficiencies->Fill(2.5,0.5, doueblElectronSF);
-
-  histEfficiencies->Fill(0.5,1.5, doubleMuonEfficiencyData);
-  histEfficiencies->Fill(1.5,1.5, doubleMuonEfficiencyMC);
-  histEfficiencies->Fill(2.5,1.5, muonSF);
-
-  histEfficiencies->GetXaxis()->SetBinLabel(1,"Data #epsilon");
-  histEfficiencies->GetXaxis()->SetBinLabel(2,"MC #epsilon");
-  histEfficiencies->GetXaxis()->SetBinLabel(2,"SF");
-  histEfficiencies->GetYaxis()->SetBinLabel(1,"ee trigger");
-  histEfficiencies->GetYaxis()->SetBinLabel(2,"#mu#mu trigger");
-
-  histEfficiencies->SetStats(kFALSE);
-
-  mkdir( (outFolder+postfix).c_str(),0700);
-  TFile* outFile = new TFile ( (outFolder+postfix+".root").c_str(), "RECREATE" );
-  histEfficiencies->Write();
-  outFile->Close();
-*/
 }
 
