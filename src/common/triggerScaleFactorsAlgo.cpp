@@ -408,16 +408,6 @@ void TriggerScaleFactors::runMainAnalysis(){
 
     AnalysisEvent * event = new AnalysisEvent(dataset->isMC(),dataset->getTriggerFlag(),datasetChain, is2016_, true);
 
-    //Adding in some stuff here to make a skim file out of post lep sel stuff
-    TFile * outFile1{nullptr};
-    TTree * cloneTree{nullptr};
-
-    TFile * outFile2{nullptr};
-    TTree * cloneTree2{nullptr};
-
-    TFile * outFile3{nullptr};
-    TTree * cloneTree3{nullptr};
-
     double eventWeight = 1.0;
 
     double pileupWeight = puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert));
@@ -801,7 +791,7 @@ bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event, bool isM
         if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) muEGTrig = true;
-	        if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
+	if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
         if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
       }
