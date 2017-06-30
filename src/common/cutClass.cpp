@@ -468,7 +468,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
  
   event->muonMomentumSF = SFs;
 
-
   // FINISH ROCHESTER CORRECTIONS BIT
 
   //Should I make it return which leptons are the zMass candidate? Probably.
@@ -917,6 +916,7 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         else {
   	  if ( !(event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue;
         }
+
 //	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]], event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
 //	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]], event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
 
@@ -1373,22 +1373,17 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   else if ( is2016_ && isMC_ ) { // Apply SFs to MC if 2016
     //Dilepton channels
     if (channel == "ee"){
-      if ( eeTrig ) { // If doubleEG trigger fires, regardless of singleElectron trigger
+      if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
         twgt = 0.967; // 0.922 for data eff; 0.973 for SF
         if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
         if (syst == 2) twgt -= 0.001;
       }
-      if ( eTrig && !eeTrig ) { // If only singleElectron trigger fires
-        twgt = 0.989; // 0.949 for data eff; 0.949 for MC eff; 0.999 for SF
-        if (syst == 1) twgt += 0.000; // 0.002 for data eff; 0.002 for MC eff; 0.000 for SF
-        if (syst == 2) twgt -= 0.000;
-      }
     }
     else if (channel == "mumu"){
-      if ( mumuTrig ) { // If doubleMuon trigger fires, regardless of singleMuon trigger
+      if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
         // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
         // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
-        twgt = ( 0.801* lumiRunsBCDEF_ + 0.943 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.801 * lumiRunsBCDEF_ + 0.943 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
         if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         // mumu separate runs SFs
@@ -1397,31 +1392,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 //        if (syst == 1) twgt += ( 0.001 );
 //        if (syst == 2) twgt -= ( 0.001 );
       }
-      if ( muTrig && !mumuTrig ) { // If only singleMuon trigger fires
-	// Pre-hip fix
-//        twgt = 1.007; // 0.981 for data eff; 0.974 for MC eff; 1.007 for SF
-//        if (syst == 1) twgt += 0.001; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
-//        if (syst == 2) twgt -= 0.001;
-	// Post-hip fix
-//        twgt = 0.995; // 0.969 for data eff; 0.974 for MC eff; 0.995 for SF
-//        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
-//        if (syst == 2) twgt -= 0.000;
-	// Weighted across both epochs
-        twgt = ( 0.989 * lumiRunsBCDEF_ + 0.998 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-        if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-        if (syst == 2) twgt -= ( 0.001 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-
-        // mumu separate runs SFs
-        // RunB: 0.994; RunC: 0.974; RunD: 0.996; RunE: 0.995; RunF: 0.965; RunG: 1.007; RunH: 1.006
-//        twgt = 0.994;
-//        if (syst == 1) twgt += ( 0.001 );
-//        if (syst == 2) twgt -= ( 0.001 );
-	// All runs
-//        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
-//        if (syst == 1) twgt += 0.000; // 0.001 for data eff; 0.001 for MC eff; 0.000 for SF
-//        if (syst == 2) twgt -= 0.000;
-
-      }
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
@@ -1429,22 +1399,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
         if (syst == 2) twgt -= 0.001;
       }
-/*      if ( eTrig && !muTrig && !muEGTrig ) { // If only singleElectron fires
-        twgt = 0.983 // 0.974 for data eff; 0.974 for MC eff; 0.983 for SF
-        if (syst == 1) twgt += 0.001;
-        if (syst == 2) twgt -= 0.001;
-      }
-      if ( muTrig && !eTrig && !muEGTrig ) { // If only singleMuon fires
-        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
-        if (syst == 1) twgt += 0.001;
-        if (syst == 2) twgt -= 0.001;
-      }
-      if ( eTrig && muTrig && !muEGTrig ) { // If singleElectron and singleMuon fires but MuonEG does not
-        twgt = 1.000 // 0.974 for data eff; 0.974 for MC eff; 1.000 for SF
-        if (syst == 1) twgt += 0.001;
-        if (syst == 2) twgt -= 0.001;
-      }
-*/    }
+    }
+
     //Trilepton channels
     else if (channel == "eee"){
       twgt = 0.894;
@@ -1477,7 +1433,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   // Is emu, eemu or emumu?
   if ( channel == "eemu" || channel == "emumu" || channel == "emu" ) {
     if (muEGTrig)
-//    if (muEGTrig || eTrig || muTrig)
     {
       if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
       return true;
