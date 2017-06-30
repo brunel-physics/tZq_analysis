@@ -38,6 +38,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_{3},
   tightElePt_{20.},
+  tightElePtLeading_{20.},
   tightEleEta_{2.5},
   tightEled0_{0.011811},
   tightEleMissLayers_{3}, //Cut based has barrel =2; endcap: veto=3, others=1
@@ -52,6 +53,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //Loose electron initialisation
   numLooseEle_{3},
   looseElePt_{20},
+  looseElePtLeading_{20},
   looseEleEta_{2.5},
   looseEleMVA0_{0.972153},
   looseEleMVA1_{0.922126},
@@ -60,11 +62,13 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //Tight muon initialisation
   numTightMu_{0},
   tightMuonPt_{20.},
+  tightMuonPtLeading_{20.},
   tightMuonEta_{2.4},
   tightMuonRelIso_{0.15},
   //Loose muons
   numLooseMu_{0},
   looseMuonPt_{20.},
+  looseMuonPtLeading_{20.},
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
   //zMass cuts
@@ -274,6 +278,7 @@ bool Cuts::parse_config(std::string confName){
   if (cuts.exists("tightElectrons")){
     libconfig::Setting& eles = cuts["tightElectrons"];
     eles.lookupValue("pt",tightElePt_);
+    eles.lookupValue("ptLeading",tightElePtLeading_);
     eles.lookupValue("eta",tightEleEta_);
     eles.lookupValue("relIso",tightEleRelIso_);
     eles.lookupValue("number",numTightEle_);
@@ -281,6 +286,7 @@ bool Cuts::parse_config(std::string confName){
   if (cuts.exists("looseElectrons")){
     libconfig::Setting& eles = cuts["looseElectrons"];
     eles.lookupValue("pt",looseElePt_);
+    eles.lookupValue("ptLeading",looseElePtLeading_);
     eles.lookupValue("eta",looseEleEta_);
     eles.lookupValue("relIso",looseEleRelIso_);
     eles.lookupValue("number",numLooseEle_);
@@ -288,6 +294,7 @@ bool Cuts::parse_config(std::string confName){
   if (cuts.exists("tightMuons")){
     libconfig::Setting& mus = cuts["tightMuons"];
     mus.lookupValue("pt",tightMuonPt_);
+    mus.lookupValue("ptLeading",tightMuonPtLeading_);
     mus.lookupValue("eta",tightMuonEta_);
     mus.lookupValue("relIso",tightMuonRelIso_);
     mus.lookupValue("number",numTightMu_);
@@ -295,6 +302,7 @@ bool Cuts::parse_config(std::string confName){
   if (cuts.exists("looseMuons")){
     libconfig::Setting& mus = cuts["looseMuons"];
     mus.lookupValue("pt",looseMuonPt_);
+    mus.lookupValue("ptLeading",looseMuonPtLeading_);
     mus.lookupValue("eta",looseMuonEta_);
     mus.lookupValue("relIso",looseMuonRelIso_);
     mus.lookupValue("number",numLooseMu_);
@@ -895,6 +903,9 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
         double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
+
+//	  if ( lepton1.Pt() <= lepton2.Pt() ) std::cout << "i/j: " << i << "/"<< j << " : " << lepton1.Pt() << "/" << lepton2.Pt() << " : " << event->elePF2PATPT[i] << "/" << event->elePF2PATPT[j] << std::endl;
+
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
 	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];

@@ -79,6 +79,7 @@ class Cuts{
   // Tight electron cuts
   unsigned numTightEle_;
   float tightElePt_;
+  float tightElePtLeading_;
   float tightEleEta_;
   float tightEled0_;
   int tightEleMissLayers_;
@@ -91,6 +92,7 @@ class Cuts{
   //Loose electron cuts
   unsigned numLooseEle_;
   float looseElePt_;
+  float looseElePtLeading_;
   float looseEleEta_;
   float looseEleMVA0_;
   float looseEleMVA1_;
@@ -100,12 +102,14 @@ class Cuts{
   //Tight muon cuts
   unsigned numTightMu_;
   float tightMuonPt_;
+  float tightMuonPtLeading_;
   float tightMuonEta_;
   float tightMuonRelIso_;
 
   //Loose muon cuts
   unsigned numLooseMu_;
   float looseMuonPt_;
+  float looseMuonPtLeading_;
   float looseMuonEta_;
   float looseMuonRelIso_;
 
