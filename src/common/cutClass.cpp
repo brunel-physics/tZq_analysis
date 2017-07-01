@@ -917,9 +917,6 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
 
         double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
-
-	  if ( lepton1.Pt() <= lepton2.Pt() ) std::cout << "i/j: " << i << "/"<< j << " : " << lepton1.Pt() << "/" << lepton2.Pt() << " : " << event->elePF2PATPT[i] << "/" << event->elePF2PATPT[j] << std::endl;
-
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
 	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
