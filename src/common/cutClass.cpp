@@ -1399,14 +1399,14 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.967; // 0.922 for data eff; 0.973 for SF
-        if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-        if (syst == 2) twgt -= 0.001;
+        twgt = 0.988; // 0.979 for data eff; 0.988 for SF
+        if (syst == 1) twgt += 0.000; // 0.001 for eff; 0.000 for SF
+        if (syst == 2) twgt -= 0.000;
       }
     }
     else if (channel == "mumu"){
       if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
-        // eff across all runs: 0.739 +/- 0.002; SF across all runs: 0.790 +/- 0.001
+        // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
         // eff pre-HIP fix: 0.756 +/- 0.002; eff post-HIP fix: 0.883 +/- 0.002; SF pre-HIP fix 0.809 +/- 0.001 and 0.944 +/- 0.001 for post-HIP fix
         twgt = ( 0.801 * lumiRunsBCDEF_ + 0.943 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.001 * lumiRunsBCDEF_ + 0.001 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); // 0.002 for eff; 0.001 for SF
@@ -1420,9 +1420,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 0.964; // 0.964 for eff; 0.964 for SF
-        if (syst == 1) twgt += 0.001; // 0.002 for eff; 0.001 for SF
-        if (syst == 2) twgt -= 0.001;
+        twgt = 0.995; // 0.878 for eff; 0.995 for SF
+        if (syst == 1) twgt += 0.006; // 0.011 for eff; 0.006 for SF
+        if (syst == 2) twgt -= 0.006;
       }
     }
 
