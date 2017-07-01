@@ -37,8 +37,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_{3},
-  tightElePt_{20.},
-  tightElePtLeading_{20.},
+  tightElePt_{25.},
+  tightElePtLeading_{35.},
   tightEleEta_{2.5},
   tightEled0_{0.011811},
   tightEleMissLayers_{3}, //Cut based has barrel =2; endcap: veto=3, others=1
@@ -52,8 +52,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   tightEleRelIso_{0.107587},
   //Loose electron initialisation
   numLooseEle_{3},
-  looseElePt_{20},
-  looseElePtLeading_{20},
+  looseElePt_{25},
+  looseElePtLeading_{35},
   looseEleEta_{2.5},
   looseEleMVA0_{0.972153},
   looseEleMVA1_{0.922126},
@@ -62,13 +62,13 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //Tight muon initialisation
   numTightMu_{0},
   tightMuonPt_{20.},
-  tightMuonPtLeading_{20.},
+  tightMuonPtLeading_{27.},
   tightMuonEta_{2.4},
   tightMuonRelIso_{0.15},
   //Loose muons
   numLooseMu_{0},
   looseMuonPt_{20.},
-  looseMuonPtLeading_{20.},
+  looseMuonPtLeading_{27.},
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
   //zMass cuts
@@ -441,7 +441,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 //Make lepton cuts. Will become customisable in a config later on.
 bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int syst, bool isControl){
 
-  //Do lepton selection.
+  ////Do lepton selection.
+
   event->electronIndexTight = getTightEles(event);
   if (event->electronIndexTight.size() != numTightEle_) return false;
   event->electronIndexLoose = getLooseEles(event);
@@ -519,7 +520,9 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
 
-    if (tempVec.Pt() <= tightElePt_) continue;
+    if ( electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= tightElePt_) continue;
+
     if (std::abs(tempVec.Eta()) >= tightEleEta_) continue;
 
     // 2015 cuts
@@ -639,7 +642,9 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
   for (int i{0}; i < event->numElePF2PAT; i++){
     TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
 
-    if (tempVec.Pt() < tightElePt_) continue;
+    if ( electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= looseElePt_) continue;
+
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
 
     // 2015 cuts
@@ -737,7 +742,9 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-    if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
+
     if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
@@ -800,7 +807,10 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   std::vector<int> muons;
   for (int i{0}; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
-    if (event->muonPF2PATPt[i] <= tightMuonPt_) continue;
+
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
+
     if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
     if (event->muonPF2PATGlobalID[i] || event->muonPF2PATTrackID[i])
@@ -899,12 +909,16 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         else {
           if ( !(event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) ) continue; // check electron pair have correct charge for same sign control region.
      }
-        TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
+        TLorentzVector lepton1{event->elePF2PATPX[electrons[i]],event->elePF2PATPY[electrons[i]],event->elePF2PATPZ[electrons[i]],event->elePF2PATE[electrons[i]]};
+        TLorentzVector lepton2{event->elePF2PATPX[electrons[j]],event->elePF2PATPY[electrons[j]],event->elePF2PATPZ[electrons[j]],event->elePF2PATE[electrons[j]]};
+
+//        TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
+//        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
+
         double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
 
-//	  if ( lepton1.Pt() <= lepton2.Pt() ) std::cout << "i/j: " << i << "/"<< j << " : " << lepton1.Pt() << "/" << lepton2.Pt() << " : " << event->elePF2PATPT[i] << "/" << event->elePF2PATPT[j] << std::endl;
+	  if ( lepton1.Pt() <= lepton2.Pt() ) std::cout << "i/j: " << i << "/"<< j << " : " << lepton1.Pt() << "/" << lepton2.Pt() << " : " << event->elePF2PATPT[i] << "/" << event->elePF2PATPT[j] << std::endl;
 
 	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
 	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
