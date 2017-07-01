@@ -464,7 +464,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   }
 
   // DO ROCHESTER CORRECTIONS HERE
-  std::vector<float> SFs;
+  std::vector<float> SFs = {1.0};
 
   for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
     float tempSF {1.0};
