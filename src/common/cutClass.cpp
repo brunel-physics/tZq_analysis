@@ -2398,13 +2398,13 @@ float Cuts::eleSF(double pt, double eta, int syst){
   if ( syst == 1 ) {
     eleIdSF   += h_eleSFs->GetBinError(bin1);
     eleRecoSF += h_eleReco->GetBinError(bin2);
-    if ( pt > 80.0 ) eleRecoSF += 0.01;
+    if ( pt > 80.0 || pt <= 20.0 ) eleRecoSF += 0.01;
   }
 
   if ( syst == 2 ) {
     eleIdSF   -= h_eleSFs->GetBinError(bin1);
     eleRecoSF -= h_eleReco->GetBinError(bin2);
-    if ( pt > 80.0 ) eleRecoSF -= 0.01;
+    if ( pt > 80.0 || pt <= 20.0 ) eleRecoSF -= 0.01;
   }
 
   return eleIdSF*eleRecoSF;
