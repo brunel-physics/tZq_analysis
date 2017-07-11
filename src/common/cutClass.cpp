@@ -37,7 +37,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   // Set all default parameters. These will be editable later on, probably.
   numTightEle_{3},
-  tightElePt_{25.},
+  tightElePt_{15.},
   tightElePtLeading_{35.},
   tightEleEta_{2.5},
   tightEled0_{0.011811},
@@ -52,8 +52,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   tightEleRelIso_{0.107587},
   //Loose electron initialisation
   numLooseEle_{3},
-  looseElePt_{25},
-  looseElePtLeading_{35},
+  looseElePt_{15.},
+  looseElePtLeading_{35.},
   looseEleEta_{2.5},
   looseEleMVA0_{0.972153},
   looseEleMVA1_{0.922126},
@@ -61,13 +61,13 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   looseEleRelIso_{0.15},
   //Tight muon initialisation
   numTightMu_{0},
-  tightMuonPt_{20.},
+  tightMuonPt_{12.},
   tightMuonPtLeading_{27.},
   tightMuonEta_{2.4},
   tightMuonRelIso_{0.15},
   //Loose muons
   numLooseMu_{0},
-  looseMuonPt_{20.},
+  looseMuonPt_{12.},
   looseMuonPtLeading_{27.},
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
@@ -102,8 +102,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   rc_{"scaleFactors/2016/rcdata.2016.v3"},
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
-  lumiRunsBCDEF_{19677.115}, // Lumi for hip era runs
-  lumiRunsGH_{}, // Lumi for post-hip era runs
+  lumiRunsBCDEF_{19717.13}, // Lumi for hip era runs
+  lumiRunsGH_{16146.178}, // Lumi for post-hip era runs
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
@@ -129,6 +129,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
 {
   //Space here in case other stuff needs to be done.
+
+  std::cout << "lumi set for Runs B-F: " << lumiRunsBCDEF_ << std::endl;
+  std::cout << "lumi set for Runs G-H: " << lumiRunsGH_ << std::endl;
 
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
@@ -463,6 +466,25 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     }
   }
 
+/*
+  // Single Muon ROOT File SFs
+  double maxSfPt{h_muonHlt1->GetYaxis()->GetXmax()-0.1};
+  unsigned binSf1 {0}, binSf2 {0};
+  for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
+    if ( is2016_ && isMC) {
+      double pt {event->muonPF2PATPt[*muonIt]}, eta{event->muonPF2PATEta[*muonIt]};
+      double twgt {1.0};
+
+      if ( pt < maxSfPt ) binSf1 = h_muonHlt1->FindBin( std::abs( eta ), pt ); 
+      else binSf1 = h_muonHlt1->FindBin( std::abs( eta ), maxSfPt ); 
+      if ( pt < maxSfPt ) binSf2 = h_muonHlt2->FindBin( std::abs( eta ), pt ); 
+      else binSf2 = h_muonHlt2->FindBin( std::abs( eta ), maxSfPt ); 
+
+      *eventWeight *= 
+    }
+*/
+
+
   // DO ROCHESTER CORRECTIONS HERE
   std::vector<float> SFs = {1.0};
 
@@ -476,6 +498,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   }
  
   event->muonMomentumSF = SFs;
+
 
   // FINISH ROCHESTER CORRECTIONS BIT
 
@@ -504,6 +527,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
+//  if (std::abs(invZmass) <= invZMassCut_ && !isControl) return false;
   if (std::abs(invZmass) < 106 && isControl) return false;
 
   event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
@@ -515,13 +539,18 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
 std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
   std::vector<int> electrons;
+
   for (int i{0}; i < event->numElePF2PAT; i++){
 
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
 
+//    std::cout << __LINE__ << " : " << electrons.size() << " / " << tempVec.Pt() << std::endl;
+
     if ( electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= tightElePt_) continue;
+
+//    if ( tempVec.Pt() <= tightElePt_) continue;
 
     if (std::abs(tempVec.Eta()) >= tightEleEta_) continue;
 
@@ -645,6 +674,8 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
     if ( electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= looseElePt_) continue;
 
+//    if ( tempVec.Pt() <= looseElePt_) continue;
+
     if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
 
     // 2015 cuts
@@ -745,6 +776,8 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
 
+//    if ( event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
+
     if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
@@ -808,8 +841,10 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   for (int i{0}; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
+   if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
+
+//    if ( event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_) continue;
@@ -1283,7 +1318,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0 ) eeTrig = true;
     if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true;
   }
-
+/*
   //double muon triggers
   if ( !is2016_ ) {
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
@@ -1305,7 +1340,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
   }
-
+*/
   //single electron triggers
 
   if ( is2016_ ) { // Only avaliable in 2016, not 2015!
@@ -1396,23 +1431,30 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.988; // 0.979 for data eff; 0.988 for SF
+	// 0.989
+        twgt = 0.989; // 0.979 for data eff; 0.988 for SF
         if (syst == 1) twgt += 0.000; // 0.001 for eff; 0.000 for SF
         if (syst == 2) twgt -= 0.000;
       }
     }
     else if (channel == "mumu"){
       if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
+
+	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
+	// Double muon only: (preHIP) 0.807+/-0.001 (postHIP) 0.943+/-0.001
+
         // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
         // eff pre-HIP fix: 0.979 +/- 0.001; eff post-HIP fix: 0.990 +/- 0.001; SF pre-HIP fix 0.987 +/- 0.000 and 0.999 +/- 0.000 for post-HIP fix
-        twgt = ( 0.987 * lumiRunsBCDEF_ + 0.999 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.991 * lumiRunsBCDEF_ + 1.002 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+
         // mumu separate runs SFs
-        // RunB: 0.824; RunC: 0.793; RunD: 0.799; RunE: 0.789; RunF: 0.831; RunG: 0.941; RunH: 0.947
+        // RunB: 0.987; RunC: 0.981; RunD: 0.988; RunE: 0.985; RunF: 0.993; RunG: 0.999; RunH: 0.998
 //         twgt = 0.809;
 //        if (syst == 1) twgt += ( 0.001 );
 //        if (syst == 2) twgt -= ( 0.001 );
+
       }
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
@@ -2309,8 +2351,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
   }
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first],syst);
-      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
+      leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
+      leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
     }
     else if (numTightMu_ == 2){
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
@@ -2335,12 +2377,15 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
 float Cuts::eleSF(double pt, double eta, int syst){
 
   double maxPt{h_eleSFs->GetYaxis()->GetXmax()-0.1};
+  double minRecoPt{h_eleReco->GetYaxis()->GetXmin()+0.1};
   unsigned bin1{0}, bin2{0};
 
   // If cut-based, std::abs eta, else just eta
   if ( pt <= maxPt ){
     bin1 = h_eleSFs->FindBin(eta,pt);
-    bin2 = h_eleReco->FindBin(eta,pt);
+    // Reco SF has a min to consider
+    if ( pt > minRecoPt ) bin2 = h_eleReco->FindBin(eta,pt);
+    else bin2 = h_eleReco->FindBin(eta, minRecoPt);
   }
   else {
     bin1 = h_eleSFs->FindBin(eta,maxPt);
