@@ -2414,26 +2414,35 @@ float Cuts::muonSF(double pt, double eta, int syst){
 
   double maxIdPt{h_muonIDs1->GetYaxis()->GetXmax()-0.1};
   double maxIsoPt{h_muonPFiso1->GetYaxis()->GetXmax()-0.1};
+  double minIdPt{h_muonIDs1->GetYaxis()->GetXmin()+0.1};
+  double minIsoPt{h_muonPFiso1->GetYaxis()->GetXmin()+0.1};
+
   unsigned binId1 {0}, binIso1 {0};
   unsigned binId2 {0}, binIso2 {0};
 
   if ( !is2016_ ) {
-    if ( pt <= maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
-    else binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-    if ( pt <= maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
-    else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
+    if ( pt > maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
+    else if ( pt < minIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),minIdPt);
+    else binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
+    if ( pt > maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
+    else if ( pt < minIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),minIsoPt);
+    else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
   }
 
   else { // Run2016 needs separate treatments in pre and post HIP eras
-      if ( pt < maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
-      else binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-      if ( pt < maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
-      else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
+    if ( pt > maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
+    else if ( pt < minIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),minIdPt);
+    else binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
+    if ( pt > maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
+    else if ( pt < minIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),minIsoPt);
+    else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
 
-      if ( pt <= maxIdPt ) binId2 = h_muonIDs1->FindBin(std::abs(eta),pt);
-      else binId2 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-      if ( pt <= maxIsoPt ) binIso2 = h_muonPFiso2->FindBin(std::abs(eta),pt);
-      else binIso2 = h_muonPFiso2->FindBin(std::abs(eta),maxIsoPt);
+    if ( pt > maxIdPt ) binId2 = h_muonIDs2->FindBin(std::abs(eta),maxIdPt);
+    else if ( pt < minIdPt ) binId2 = h_muonIDs2->FindBin(std::abs(eta),minIdPt);
+    else binId2 = h_muonIDs2->FindBin(std::abs(eta),pt);
+    if ( pt > maxIsoPt ) binIso2 = h_muonPFiso2->FindBin(std::abs(eta),maxIsoPt);
+    else if ( pt < minIsoPt ) binIso2 = h_muonPFiso2->FindBin(std::abs(eta),minIsoPt);
+    else binIso2 = h_muonPFiso2->FindBin(std::abs(eta),pt);
   }
 
   float muonIdSF {1.0}, muonPFisoSF {1.0};
