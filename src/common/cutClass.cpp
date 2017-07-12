@@ -1318,7 +1318,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0 ) eeTrig = true;
     if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true;
   }
-/*
+
   //double muon triggers
   if ( !is2016_ ) {
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
@@ -1340,7 +1340,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
   }
-*/
+
   //single electron triggers
 
   if ( is2016_ ) { // Only avaliable in 2016, not 2015!
@@ -1445,7 +1445,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
         // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
         // eff pre-HIP fix: 0.979 +/- 0.001; eff post-HIP fix: 0.990 +/- 0.001; SF pre-HIP fix 0.987 +/- 0.000 and 0.999 +/- 0.000 for post-HIP fix
-        twgt = ( 0.991 * lumiRunsBCDEF_ + 1.002 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.987 * lumiRunsBCDEF_ + 0.999 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
