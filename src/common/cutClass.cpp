@@ -165,6 +165,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   }
   else {
     std::cout << "\nLoad 2016 electron SFs from root file ... " << std::endl;
+    electronHltFile = new TFile("scaleFactors/2016/HLT_Ele32_eta2p1_WPTight_Gsf_FullRunRange.root"); // Single Electron HLT SF
+    h_eleHlt = dynamic_cast<TH2F*>(electronHltFile->Get("SF"));
     electronSFsFile = new TFile("scaleFactors/2016/egammaEffi_Tight_80X.txt_EGM2D.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
     electronRecoFile = new TFile{"scaleFactors/2016/egammaRecoEffi.txt_EGM2D.root"}; // Electron Reco SF
@@ -465,25 +467,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
     }
   }
-
-/*
-  // Single Muon ROOT File SFs
-  double maxSfPt{h_muonHlt1->GetYaxis()->GetXmax()-0.1};
-  unsigned binSf1 {0}, binSf2 {0};
-  for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
-    if ( is2016_ && isMC) {
-      double pt {event->muonPF2PATPt[*muonIt]}, eta{event->muonPF2PATEta[*muonIt]};
-      double twgt {1.0};
-
-      if ( pt < maxSfPt ) binSf1 = h_muonHlt1->FindBin( std::abs( eta ), pt ); 
-      else binSf1 = h_muonHlt1->FindBin( std::abs( eta ), maxSfPt ); 
-      if ( pt < maxSfPt ) binSf2 = h_muonHlt2->FindBin( std::abs( eta ), pt ); 
-      else binSf2 = h_muonHlt2->FindBin( std::abs( eta ), maxSfPt ); 
-
-      *eventWeight *= 
-    }
-*/
-
 
   // DO ROCHESTER CORRECTIONS HERE
   std::vector<float> SFs = {1.0};
@@ -1445,6 +1428,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
         // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
         // eff pre-HIP fix: 0.979 +/- 0.001; eff post-HIP fix: 0.990 +/- 0.001; SF pre-HIP fix 0.987 +/- 0.000 and 0.999 +/- 0.000 for post-HIP fix
+//        twgt = 1.0;
         twgt = ( 0.987 * lumiRunsBCDEF_ + 0.999 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
@@ -2353,10 +2337,19 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
     if (numTightEle_ == 2){
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
+
+	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
+//      leptonWeight *= singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
+//      leptonWeight *= singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
+
     }
     else if (numTightMu_ == 2){
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
+
+	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
+//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
@@ -2491,6 +2484,59 @@ float Cuts::muonSF(double pt, double eta, int syst){
   }
 
   return muonIdSF*muonPFisoSF*muonRecoSF;
+}
+
+float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
+
+  // Single Electron ROOT File SFs
+  double twgt {1.0};
+
+  double maxSfPt{h_eleHlt->GetYaxis()->GetXmax()-0.1};
+  double minSfPt{h_eleHlt->GetYaxis()->GetXmin()+0.1};
+
+  unsigned binSf {0};
+
+  if ( !is2016_ ) return 1.0;
+  else {
+    if ( pt > maxSfPt ) binSf = h_eleHlt->FindBin(std::abs(eta),maxSfPt);
+    else if ( pt < minSfPt ) binSf = h_eleHlt->FindBin(std::abs(eta),minSfPt);
+    else binSf = h_eleHlt->FindBin(std::abs(eta),pt);
+  }
+
+  twgt = h_eleHlt->GetBinContent(binSf);
+
+  if ( syst == 1 ) twgt += h_eleHlt->GetBinError(binSf);
+  if ( syst == 2 ) twgt -= h_eleHlt->GetBinError(binSf);
+
+  return twgt;
+}
+
+float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
+
+  // Single Muon ROOT File SFs
+  double twgt {1.0};
+
+  double maxSfPt{h_muonHlt1->GetYaxis()->GetXmax()-0.1};
+  double minSfPt{h_muonHlt1->GetYaxis()->GetXmin()+0.1};
+
+  unsigned binSf1 {0}, binSf2 {0};
+
+  if ( !is2016_ ) return 1.0;
+  else {
+    if ( pt > maxSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),maxSfPt);
+    else if ( pt < minSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),minSfPt);
+    else binSf1 = h_muonHlt1->FindBin(std::abs(eta),pt);
+
+    if ( pt > maxSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),maxSfPt);
+    else if ( pt < minSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),minSfPt);
+    else binSf2 = h_muonHlt2->FindBin(std::abs(eta),pt);
+
+    twgt = ( h_muonHlt1->GetBinContent(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinContent(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+
+    if ( syst == 1 ) twgt += ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    if ( syst == 2 ) twgt -= ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+  }
+  return twgt;
 }
 
 void Cuts::initialiseJECCors(){

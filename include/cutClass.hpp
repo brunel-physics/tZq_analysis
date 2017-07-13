@@ -63,6 +63,8 @@ class Cuts{
   float getLeptonWeight(AnalysisEvent*, int syst = 0);
   float eleSF(double, double, int syst = 0);
   float muonSF(double, double,int syst = 0);
+  float singleElectronTriggerSF(double, double,int syst = 0);
+  float singleMuonTriggerSF(double, double,int syst = 0);
 
   //set to true to fill in histograms/spit out other info
   bool doPlots_;
@@ -218,8 +220,10 @@ class Cuts{
   //Sets trigger from config file
   std::string cutConfTrigLabel_;
 
+  TFile* electronHltFile;
   TFile* electronSFsFile;
   TFile* electronRecoFile;
+  TH2F* h_eleHlt;
   TH2F* h_eleSFs;
   TH2F* h_eleReco;
 
