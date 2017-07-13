@@ -824,7 +824,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   for (int i{0}; i < event->numMuonPF2PAT; i++){
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-   if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
 
 //    if ( event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
@@ -846,7 +846,7 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
       for (unsigned j{i + 1}; j < electrons.size(); j++) {
 	if (event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] > 0) continue;
 	TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-    TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
+        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
 	double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
 	  // set up the tlorentz vectors in the event. For plotting and jazz.
@@ -927,11 +927,12 @@ float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, s
         else {
           if ( !(event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) ) continue; // check electron pair have correct charge for same sign control region.
      }
-        TLorentzVector lepton1{event->elePF2PATPX[electrons[i]],event->elePF2PATPY[electrons[i]],event->elePF2PATPZ[electrons[i]],event->elePF2PATE[electrons[i]]};
-        TLorentzVector lepton2{event->elePF2PATPX[electrons[j]],event->elePF2PATPY[electrons[j]],event->elePF2PATPZ[electrons[j]],event->elePF2PATE[electrons[j]]};
 
-//        TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-//        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
+//        TLorentzVector lepton1{event->elePF2PATPX[electrons[i]],event->elePF2PATPY[electrons[i]],event->elePF2PATPZ[electrons[i]],event->elePF2PATE[electrons[i]]};
+//        TLorentzVector lepton2{event->elePF2PATPX[electrons[j]],event->elePF2PATPY[electrons[j]],event->elePF2PATPZ[electrons[j]],event->elePF2PATE[electrons[j]]};
+
+        TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
+        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
 
         double invMass{(lepton1 + lepton2).M() -91.1};
 	if (std::abs(invMass) < std::abs(closestMass)){
