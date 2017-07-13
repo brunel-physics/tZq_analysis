@@ -1414,8 +1414,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-	// 0.989
-        twgt = 0.989; // 0.979 for data eff; 0.988 for SF
+        twgt = 0.988; // 0.979 for data eff; 0.988 for SF
         if (syst == 1) twgt += 0.000; // 0.001 for eff; 0.000 for SF
         if (syst == 2) twgt -= 0.000;
       }
