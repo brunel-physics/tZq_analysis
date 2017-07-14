@@ -535,7 +535,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
 
 //    if ( tempVec.Pt() <= tightElePt_) continue;
 
-    if (std::abs(tempVec.Eta()) >= tightEleEta_) continue;
+    if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_) continue;
 
     // 2015 cuts
     if ( !is2016_ ) {
@@ -631,7 +631,7 @@ std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
         if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
         if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ ) continue;
       }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
+      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50_ ){ // Endcap cut-based ID
         if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0292 ) continue;
         if ( std::abs(event->elePF2PATDeltaEtaSeedSC[i]) >= 0.00605 ) continue;
         if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0394 ) continue;
@@ -659,7 +659,7 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
 
 //    if ( tempVec.Pt() <= looseElePt_) continue;
 
-    if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
+    if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)continue;
 
     // 2015 cuts
     if ( !is2016_ ) {
@@ -1726,7 +1726,7 @@ int Cuts::getLooseElecs(AnalysisEvent* event){
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
     if (tempVec.Pt() < 20) continue;
-    if (std::abs(tempVec.Eta()) > 2.5)continue;
+    if (std::abs(tempVec.Eta()) > tightEleEta_)continue;
     looseLeps++;
   }
   return looseLeps;
@@ -2319,8 +2319,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
   float leptonWeight{1.};
   if (trileptonChannel_ == true){
     if (numTightEle_ > 1){
-      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.first],event->elePF2PATSCEta[event->zPairIndex.first],syst);
-      leptonWeight *= eleSF(event->elePF2PATPT[event->zPairIndex.second],event->elePF2PATSCEta[event->zPairIndex.second],syst);
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->elePF2PATSCEta[event->zPairIndex.first],syst);
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->elePF2PATSCEta[event->zPairIndex.second],syst);
     }
     else{
       leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
@@ -2335,8 +2335,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
   }
   else if(trileptonChannel_ == false){
     if (numTightEle_ == 2){
-      leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
-      leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
+      leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),event->elePF2PATSCEta[event->zPairIndex.first],syst);
+      leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),event->elePF2PATSCEta[event->zPairIndex.second],syst);
 
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
 //      leptonWeight *= singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
