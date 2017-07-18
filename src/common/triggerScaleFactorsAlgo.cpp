@@ -508,7 +508,7 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && is2016_ ) continue;
 
-    if ( std::abs(event->elePF2PATSCEta[i]) > 2.50) continue;
+    if ( std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
 
     // 2015 cuts
     if ( !is2016_ ) {
@@ -571,8 +571,10 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 27. ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. ) continue;
+    if (event->muonPF2PATPt[i] <= 20.0 && !is2016_) continue;
+
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 27. && is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
