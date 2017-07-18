@@ -213,8 +213,8 @@ void DebugInfo::runMainAnalysis(){
       if ( runBin == 3 ) lumi = 4248.384;
       if ( runBin == 4 ) lumi = 4009.132;
       if ( runBin == 5 ) lumi = 3101.618;
-      if ( runBin == 6 ) lumi = 7540.488;
-      if ( runBin == 7 ) lumi = 8605.690;
+      if ( runBin == 6 ) { std::cout << "runBin: " << runBin << std::endl; lumi = 7540.488;}
+      if ( runBin == 7 ) { std::cout << "runBin: " << runBin << std::endl; lumi = 8605.690;}
 
       histMuChannel->Fill(runBin, muTrig*lumi);
       histMuMuChannel->Fill(runBin, mumuTrig*lumi);
