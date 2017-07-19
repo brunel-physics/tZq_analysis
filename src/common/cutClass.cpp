@@ -474,7 +474,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
     float tempSF {1.0};
     if ( is2016_ ) {
-      if ( isMC_ ) tempSF = rc_.kScaleAndSmearMC( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], gRandom->Rndm(), gRandom->Rndm(), 0, 0 );
+      if ( isMC_ ) tempSF = rc_.kScaleAndSmearMC( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], event->muonPF2PATTkLysWithMeasurements[*muonIt], gRandom->Rndm(), gRandom->Rndm(), 0, 0 );
       else tempSF = rc_.kScaleDT( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], 0, 0 );
     }
     SFs.emplace_back(tempSF);
