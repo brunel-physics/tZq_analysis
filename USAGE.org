@@ -90,17 +90,30 @@ the configuration file, there is an argument which overrides this:
 
 The first stage of producing results involves the creating of skim
 files. Before running this stage, the directory =skims= needs creating.
-To create the skims one uses the following command:
+
+To create the post-trigger skims (where the singlel and double lepton datasets are combined, with double counting being avoided), one uses the following command:
 
 #+BEGIN_SRC sh
-    ./tbZAnal.exe -c <user-config-file> -g -j
+    ./postTriggerSkimmer.exe -c <channel> -d <double-lepton-dir(s)> -s <single-lepton-dir(s)> -o <output-dir-name>
+#+END_SRC
+
+The arguments are described as follows:
+
+-  =-c <channel>=: channel being looked over. So if combining single and double MuonEG datasets, this would be <emu>.
+-  =-d=: the location of the double lepton input dataset(s) skims from the nTupliser.
+-  =-s <bit-mask>=: the location of the single lepton input dataset(s) skims from the nTupliser.
+-  =-o <output-dir-name>=: the output directory name. So if combining single and double MuonEG datasets for Run2016C, this would be <emuRun2016C>.
+
+To create the MC and post-trigger skims one uses the following command:
+
+#+BEGIN_SRC sh
+    ./analysisMain.exe -c <user-config-file> -g
 #+END_SRC
 
 The arguments are described as follows:
 
 -  =-c <user-config-file>=: see above.
--  =-g=: make post-lepton selection trees in the skim files.
--  =-j=: make the B-Tagging efficiency trees in the skim file
+-  =-g=: make post-lepton selection trees (including b-tagging efficiency trees) in the skim files.
 -  =-k <bit-mask>=: see above (optional).
 
 * Creating mvaFiles
@@ -111,7 +124,7 @@ mva files. Before running this stage, the directories =mvaTest=,
 files one uses the following command:
 
 #+BEGIN_SRC sh
-    ./tbZAnal.exe -c <user-config-file> -u -v <SYST> -z
+    ./analysisMain.exe.exe -c <user-config-file> -u -v <SYST> -z
 #+END_SRC
 
 The arguments are described as follows:
@@ -180,7 +193,7 @@ could be =eemu=) needs creating. To create the plots one uses the
 following command:
 
 #+BEGIN_SRC sh
-    ./tbZAnal.exe -c <user-config-file> -p
+    ./analysisMain.exe -c <user-config-file> -p
 #+END_SRC
 
 The arguments are described as follows:
