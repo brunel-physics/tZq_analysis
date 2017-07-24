@@ -29,7 +29,7 @@ int main (int argc, char* argv[])
   int singleElectron {0}, dupElectron {0};
   int singleMuon {0}, dupMuon {0};
 
-  const std::string postTriggerSkimDir{std::string{"/scratch/data/TopPhysics/postTriggerSkims2016/"}};
+  const std::string postTriggerSkimDir{std::string{"/data0/data/TopPhysics/postTriggerSkims2016/"}};
 
   // Define command-line flags
   namespace po = boost::program_options;
