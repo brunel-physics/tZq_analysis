@@ -17,7 +17,7 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (true);
+const bool HIP_ERA (false);
 const bool DO_HIPS (true);
 
 TriggerScaleFactors::TriggerScaleFactors():
@@ -426,7 +426,7 @@ void TriggerScaleFactors::runMainAnalysis(){
       if ( HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
       if ( !HIP_ERA && event->eventRun < 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
 
-      if (!metFilters(event)) continue;
+      if ( !metFilters(event, dataset->isMC()) ) continue;
 
       //Does this event pass tight electron cut?
       //Create electron index
@@ -1006,7 +1006,7 @@ bool TriggerScaleFactors::metTriggerCut( AnalysisEvent* event ) {
   else return false;
 }
 
-bool TriggerScaleFactors::metFilters(AnalysisEvent* event) {
+bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC) {
   if ( event->Flag_HBHENoiseFilter <= 0 ) return false;
   if ( event->Flag_HBHENoiseIsoFilter <= 0 ) return false;
   if ( event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 ) return false;
@@ -1018,6 +1018,7 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event) {
     if ( event->Flag_chargedHadronTrackResolutionFilter <= 0 ) return false;
     if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
     if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
+    if ( event->Flag_noBadMuons <= 0 && !isMC ) return false;
   }
   return true;
 }

@@ -468,6 +468,11 @@ public :
    Int_t           Flag_muonBadTrackFilter;
    Int_t	   Flag_ecalLaserCorrFilter;
 
+   //Feb2017 rereco Filters
+   Int_t	   Flag_badMuons;
+   Int_t	   Flag_duplicateMuons;
+   Int_t	   Flag_noBadMuons;
+
    //2015 and 2016 Triggers
    Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
    Int_t           HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2;
@@ -932,6 +937,11 @@ public :
 //   TBranch	  *b_Flag_BadPFMuonFilter;
    TBranch        *b_Flag_muonBadTrackFilter;
    TBranch        *b_Flag_ecalLaserCorrFilter;
+
+   //Feb2017 rereco Filters
+   TBranch        *b_Flag_badMuons;
+   TBranch        *b_Flag_duplicateMuons;
+   TBranch        *b_Flag_noBadMuons;
 
    //2015 and 2016 MET Triggers
    TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2;
@@ -1531,6 +1541,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
 //     fChain->SetBranchAddress("Flag_BadPFMuonFilter", &Flag_BadPFMuonFilter, &b_Flag_BadPFMuonFilter);
      fChain->SetBranchAddress("Flag_muonBadTrackFilter", &Flag_muonBadTrackFilter, &b_Flag_muonBadTrackFilter);
      fChain->SetBranchAddress("Flag_ecalLaserCorrFilter", &Flag_ecalLaserCorrFilter, &b_Flag_ecalLaserCorrFilter);
+     //Feb2017 rereco filter branches
+     fChain->SetBranchAddress("Flag_badMuons", &Flag_badMuons, &b_Flag_badMuons);
+     fChain->SetBranchAddress("Flag_duplicateMuons", &Flag_duplicateMuons, &b_Flag_duplicateMuons);
+     fChain->SetBranchAddress("Flag_noBadMuons", &Flag_noBadMuons, &b_Flag_noBadMuons);
    }
 
    // 2015 and 2016 triggers and MET filters

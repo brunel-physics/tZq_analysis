@@ -70,7 +70,7 @@ class TriggerScaleFactors{
 	bool muonElectronTriggerCut(AnalysisEvent*, bool);
 	bool doubleMuonTriggerCut(AnalysisEvent*, bool);
 	bool metTriggerCut(AnalysisEvent*);
-	bool metFilters(AnalysisEvent*);
+	bool metFilters(AnalysisEvent*,bool);
 
 	//Efficiencies
 	double numberPassedElectrons[2];

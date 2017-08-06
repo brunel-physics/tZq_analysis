@@ -1428,6 +1428,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
         // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
         // eff pre-HIP fix: 0.979 +/- 0.001; eff post-HIP fix: 0.990 +/- 0.001; SF pre-HIP fix 0.987 +/- 0.000 and 0.999 +/- 0.000 for post-HIP fix
+	// Feb rereco- SF pre-HIP: 0.987 +/- 0.000 and SF post-HIP: 0.998 +/- 0.000
 //        twgt = 1.0;
         twgt = ( 0.987 * lumiRunsBCDEF_ + 0.999 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
@@ -1521,6 +1522,7 @@ bool Cuts::metFilters(AnalysisEvent* event){
     if ( event->Flag_chargedHadronTrackResolutionFilter <= 0 ) return false;
     if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
     if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
+    if ( !isMC_ && event->Flag_noBadMuons <= 0 ) return false;
   }
   return true;
 }
