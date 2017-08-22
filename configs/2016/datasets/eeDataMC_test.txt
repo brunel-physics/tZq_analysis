@@ -1,6 +1,6 @@
-[DYJetsToLL_M-50_amcatnlo]
-fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
-totalEvents = 151023640
+[DYJetsToLL_M-50]
+fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+totalEvents = 145803217
 crossSection = 5765.4
 runType = mc
 histoName = zPlusJets
@@ -8,9 +8,9 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_M-10To50_amcatnlo]
-fileName = configs/2016/datasets/fileLists/DYJets10To50Files.txt
-totalEvents = 106269624
+[DYJetsToLL_M-10To50]
+fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
+totalEvents = 35291566
 crossSection = 18610.0
 runType = mc
 histoName = zPlusJets
@@ -35,7 +35,7 @@ crossSection = 0.07096
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [sChannel]
@@ -45,7 +45,7 @@ crossSection = 10.32
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tChannel]
@@ -55,7 +55,7 @@ crossSection = 136.02
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tbarChannel]
@@ -65,7 +65,7 @@ crossSection = 80.95
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [WZ1l1nu2q]
@@ -204,7 +204,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tbarWInclusive]
@@ -214,7 +214,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tWZ]
@@ -224,7 +224,7 @@ crossSection = 0.01123
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tZq]
@@ -237,10 +237,9 @@ colour = kYellow
 label = tZq
 plotType = f
 
-
 [eeRun2016]
 fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
-luminosity = 35599.008
+luminosity = 35788.388
 runType = data
 histoName = data
 label = Data
