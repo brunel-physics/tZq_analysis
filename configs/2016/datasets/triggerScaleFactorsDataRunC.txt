@@ -10,7 +10,7 @@ plotType = f
 
 [metRun2016RunC]
 fileName = configs/2016/datasets/fileLists/metRun2016CFiles.txt
-luminosity = 2573.399
+luminosity = 2566.924
 runType = data
 histoName = data
 label = Data

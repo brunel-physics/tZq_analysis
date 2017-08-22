@@ -18,7 +18,7 @@
 #include "TEfficiency.h"
 
 const bool HIP_ERA (false);
-const bool DO_HIPS (true);
+const bool DO_HIPS (false);
 
 TriggerScaleFactors::TriggerScaleFactors():
   numberPassedElectrons(),
@@ -313,7 +313,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
   gErrorIgnoreLevel = kInfo;
 
   //Set up environment a little.
-  std::cout << std::setprecision(3) << std::fixed;
+  std::cout << std::setprecision(5) << std::fixed;
 
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;

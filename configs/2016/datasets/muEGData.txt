@@ -1,6 +1,6 @@
 [emuRun2016]
 fileName = configs/2016/datasets/fileLists/emuRun2016Files.txt
-luminosity = 35823.293
+luminosity = 35792.978
 runType = data
 histoName = data
 label = Data
