@@ -102,8 +102,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   rc_{"scaleFactors/2016/rcdata.2016.v3"},
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
-  lumiRunsBCDEF_{19717.13}, // Lumi for hip era runs
-  lumiRunsGH_{16146.178}, // Lumi for post-hip era runs
+  lumiRunsBCDEF_{19648.534}, // Lumi for hip era runs
+  lumiRunsGH_{16144.444}, // Lumi for post-hip era runs
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
@@ -1415,9 +1415,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.999; // 0.979 for data eff; 0.988 for SF
-        if (syst == 1) twgt += 0.000; // 0.001 for eff; 0.000 for SF
-        if (syst == 2) twgt -= 0.000;
+        twgt = 0.99792; // 0.94366 for data eff; 0.99792 for SF
+        if (syst == 1) twgt += 0.000210; // -0.00150/+0.00155 for eff; 0.00021 for SF
+        if (syst == 2) twgt -= 0.00021;
       }
     }
     else if (channel == "mumu"){
@@ -1426,13 +1426,12 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
 	// Double muon only: (preHIP) 0.807+/-0.001 (postHIP) 0.943+/-0.001
 
-        // eff across all runs: 0.982 +/- 0.001; SF across all runs: 0.990 +/- 0.000
-        // eff pre-HIP fix: 0.979 +/- 0.001; eff post-HIP fix: 0.990 +/- 0.001; SF pre-HIP fix 0.987 +/- 0.000 and 0.999 +/- 0.000 for post-HIP fix
-	// Feb rereco- SF pre-HIP: 0.987 +/- 0.000 and SF post-HIP: 0.998 +/- 0.000
+        // eff across all runs: 0.98314 +0.00051/-0.00049; SF across all runs: 0.99113 +/- 0.00008
+        // eff pre-HIP fix: 0.97910 -0.00073/+0.00075; eff post-HIP fix: 0.99038 -0.00058/+0.00062; SF pre-HIP fix 0.98706 +/- 0.00022 and 0.99844 +/- 0.00008 for post-HIP fix
 //        twgt = 1.0;
-        twgt = ( 0.987 * lumiRunsBCDEF_ + 0.999 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-        if (syst == 1) twgt += ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-        if (syst == 2) twgt -= ( 0.000 * lumiRunsBCDEF_ + 0.000 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        twgt = ( 0.98706 * lumiRunsBCDEF_ + 0.99844 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        if (syst == 1) twgt += ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 2) twgt -= ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
         // mumu separate runs SFs
         // RunB: 0.987; RunC: 0.981; RunD: 0.988; RunE: 0.985; RunF: 0.993; RunG: 0.999; RunH: 0.998
@@ -1444,9 +1443,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 0.995; // 0.878 for eff; 0.995 for SF
-        if (syst == 1) twgt += 0.006; // 0.011 for eff; 0.006 for SF
-        if (syst == 2) twgt -= 0.006;
+        twgt = 0.99757; // 0.87990 for eff; 0.99757 for SF
+        if (syst == 1) twgt += 0.00745; // -0.00964/+0.01041 for eff; 0.00745 for SF
+        if (syst == 2) twgt -= 0.00745;
       }
     }
 
