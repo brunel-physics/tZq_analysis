@@ -453,6 +453,27 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexLoose = getLooseEles(event);
   if (event->electronIndexLoose.size() != numLooseEle_) return false;
 
+  // temp solution - reject differences for reduced JSON for single/double EG based on L1 Ele32 path
+  if ( numTightEle_ == 2 ) { 
+    if ( event->eventRun == 279975 && ( event->eventLumiblock > 86 && event->eventLumiblock < 118 ) ) return false;
+    if ( event->eventRun == 281707 && ( event->eventLumiblock > 101 && event->eventLumiblock < 151 ) ) return false;
+    if ( event->eventRun == 281707 && ( event->eventLumiblock > 155 && event->eventLumiblock < 193 ) ) return false;
+    if ( event->eventRun == 281797 && ( event->eventLumiblock < 185 ) ) return false;
+    if ( event->eventRun == 281975 && ( event->eventLumiblock < 27 ) ) return false;
+    if ( event->eventRun == 282092 && ( event->eventLumiblock < 96 ) ) return false;
+    if ( event->eventRun == 282730 && ( event->eventLumiblock > 89 && event->eventLumiblock < 126 ) ) return false;
+    if ( event->eventRun == 282842 && ( event->eventLumiblock > 13 && event->eventLumiblock < 40 ) ) return false;
+    if ( event->eventRun == 283049 && ( event->eventLumiblock < 88 ) ) return false;
+    if ( event->eventRun == 283050 && ( event->eventLumiblock < 38 ) ) return false;
+    if ( event->eventRun == 283270 && ( event->eventLumiblock < 154 ) ) return false;
+    if ( event->eventRun == 283353 && ( event->eventLumiblock < 167 ) ) return false;
+    if ( event->eventRun == 283407 && ( event->eventLumiblock > 87 ) ) return false;
+    if ( event->eventRun == 283408 && ( event->eventLumiblock < 90 ) ) return false;
+    if ( event->eventRun == 283933 && ( event->eventLumiblock > 99 && event->eventLumiblock < 119 ) ) return false;
+    if ( event->eventRun == 283946 && ( event->eventLumiblock < 133 ) ) return false;
+    if ( event->eventRun == 284025 && ( event->eventLumiblock < 155 ) ) return false;
+  }
+
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
@@ -759,6 +780,9 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
 
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 12. ) continue;
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] > 20. ) continue;
+
 //    if ( event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
@@ -826,6 +850,9 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
 
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
+
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 12. ) continue;
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] > 20. ) continue;
 
 //    if ( event->muonPF2PATPt[i] <= looseMuonPt_ ) continue;
 
@@ -1415,9 +1442,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.99792; // 0.94366 for data eff; 0.99792 for SF
-        if (syst == 1) twgt += 0.000210; // -0.00150/+0.00155 for eff; 0.00021 for SF
-        if (syst == 2) twgt -= 0.00021;
+        twgt = 0.98866; // 0.97720 for data eff; 0.98866 for SF
+        if (syst == 1) twgt += 0.00041; // -0.00098/+0.00102 for eff; 0.00041 for SF
+        if (syst == 2) twgt -= 0.00041;
       }
     }
     else if (channel == "mumu"){
@@ -1443,9 +1470,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 0.99757; // 0.87990 for eff; 0.99757 for SF
-        if (syst == 1) twgt += 0.00745; // -0.00964/+0.01041 for eff; 0.00745 for SF
-        if (syst == 2) twgt -= 0.00745;
+        twgt = 1.00963; // 0.87161 for eff; 1.00963 for SF
+        if (syst == 1) twgt += 0.00700; // -0.00929/+0.00995 for eff; 0.00700 for SF
+        if (syst == 2) twgt -= 0.00700;
       }
     }
 
