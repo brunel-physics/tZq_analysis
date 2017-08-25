@@ -287,7 +287,7 @@ public :
    Float_t  genPDFx2;
    Int_t    genPDFf1;
    Int_t    genPDFf2;
-   Float_t  topPtReweight;
+   Double_t  topPtReweight;
    Int_t    processId;
    Float_t  processPtHat;
    Double_t processMCWeight;
