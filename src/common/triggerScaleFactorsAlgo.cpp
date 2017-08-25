@@ -729,7 +729,7 @@ bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool i
   }
 
   bool eeTrig{false};
-/*
+
   if ( !is2016_ ) {
     if ( !isMC ) {
       if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) eeTrig = true;
@@ -754,7 +754,7 @@ bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool i
       if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true; 
    }
   }
-*/
+
   if ( eeTrig == true || eTrig == true ) return true;
   else return false;
 }
