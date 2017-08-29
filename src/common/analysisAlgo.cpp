@@ -1041,6 +1041,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if (systInd) systMask = systMask << 1;
 	    continue;
 	  }
+
+	  //If ttbar, do reweight
+//          std::cout << "eventWeight: " << eventWeight << std::endl;
+          if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
+//	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
+//          std::cout << "eventWeight: " << eventWeight << std::endl;
+
 	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
 	  //Everything else uses LHE event weights
 	  if ( systMask == 1024 || systMask == 2048 ){

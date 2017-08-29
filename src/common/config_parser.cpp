@@ -248,5 +248,6 @@ std::map<std::string,int> Parser::getColourMap(){
   colourMap["kRed1"] = kRed + 5;
   colourMap["kBlack"] = kBlack;
   colourMap["kGray"] = kGray;
+  colourMap["kViolet"] = kViolet;
   return colourMap;
 }
