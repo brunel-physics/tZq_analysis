@@ -96,6 +96,9 @@ ls /scratch/data/tZqSkimsRun2016/tChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 
+ls /scratch/data/tZqSkimsRun2016/ttHTobb/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttHTobbFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttHToNonbb/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+
 ls /scratch/data/tZqSkimsRun2016/ttWlnu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttWlnuFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttW2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttW2qFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
@@ -114,6 +117,11 @@ ls /scratch/data/tZqSkimsRun2016/WZJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/da
 ls /scratch/data/tZqSkimsRun2016/ZZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZ4lFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/WWW/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WWWFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WWZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WWZFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZZFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ZZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZZFiles.txt
 
 # FCNC Datasets
 

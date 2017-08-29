@@ -148,6 +148,46 @@ colour = kRed1
 label = WW
 plotType = f
 
+[WWW]
+fileName = configs/2016/datasets/fileLists/WWWFiles.txt
+totalEvents = 240000
+crossSection = 0.2086
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[WWZ]
+fileName = configs/2016/datasets/fileLists/WWZFiles.txt
+totalEvents = 250000
+crossSection = 0.1651
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[WZZ]
+fileName = configs/2016/datasets/fileLists/WZZFiles.txt
+totalEvents = 246800
+crossSection = 0.05565
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[ZZZ]
+fileName = configs/2016/datasets/fileLists/ZZZFiles.txt
+totalEvents = 249237
+crossSection = 0.01398
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
 [wPlusJets]
 fileName = configs/2016/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
@@ -226,6 +266,26 @@ runType = mc
 histoName = tWZ
 colour = kCyan
 label = tWZ
+plotType = f
+
+[ttHTobb]
+fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
+totalEvents = 3845992
+crossSection = 0.2934
+runType = mc
+histoName = ttH
+colour = kAzure
+label = ttH
+plotType = f
+
+[ttHToNonbb]
+fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+totalEvents = 3981250
+crossSection = 0.2151
+runType = mc
+histoName = ttH
+colour = kAzure
+label = ttH
 plotType = f
 
 [tZq]
