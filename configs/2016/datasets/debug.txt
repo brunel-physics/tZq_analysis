@@ -1,0 +1,22 @@
+[DYJetsToLL_M-50_amcatnlo]
+fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
+totalEvents = 150697759
+crossSection = 5765.4
+runType = mc
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[eeRun2016]
+fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
+luminosity = 35672.846
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
+

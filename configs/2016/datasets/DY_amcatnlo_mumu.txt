@@ -237,6 +237,26 @@ colour = kGreen
 label = ttV
 plotType = f
 
+[ttHTobb]
+fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
+totalEvents = 3845992
+crossSection = 0.2934
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttHToNonbb]
+fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+totalEvents = 3981250
+crossSection = 0.2151
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
 [tWInclusive]
 fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 3516550
@@ -265,26 +285,6 @@ runType = mc
 histoName = SingleTop
 colour = kMagenta
 label = Single Top
-plotType = f
-
-[ttHTobb]
-fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
-totalEvents = 3845992
-crossSection = 0.2934
-runType = mc
-histoName = ttH
-colour = kAzure
-label = ttH
-plotType = f
-
-[ttHToNonbb]
-fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
-totalEvents = 3981250
-crossSection = 0.2151
-runType = mc
-histoName = ttH
-colour = kAzure
-label = ttH
 plotType = f
 
 [tZq]

@@ -1,0 +1,11 @@
+[WWW]
+fileName = configs/2016/datasets/fileLists/WWWFiles.txt
+totalEvents = 240000
+crossSection = 0.2086
+runType = mc
+histoName = vvv
+colour = kPink
+label = vvv
+plotType = f
+
+[]
