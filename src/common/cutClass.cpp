@@ -1158,24 +1158,24 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
    if (isMC_ && makeBTagEffPlots_){
       //Fill eff info here if needed.
       if (std::abs(event->jetPF2PATPID[i]) == 5){ // b-jets
-	bTagEffPlots_[0]->Fill(jetVec.Pt(),jetVec.Eta());
+	bTagEffPlots_[0]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
 	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
-	  bTagEffPlots_[4]->Fill(jetVec.Pt(),jetVec.Eta());
+	  bTagEffPlots_[4]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) == 4){ // charm
-	bTagEffPlots_[1]->Fill(jetVec.Pt(),jetVec.Eta());
+	bTagEffPlots_[1]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
 	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
-	  bTagEffPlots_[5]->Fill(jetVec.Pt(),jetVec.Eta());
+	  bTagEffPlots_[5]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) > 0 && std::abs(event->jetPF2PATPID[i]) < 4){ // light jets
-	bTagEffPlots_[2]->Fill(jetVec.Pt(),jetVec.Eta());
+	bTagEffPlots_[2]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
 	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
-	  bTagEffPlots_[6]->Fill(jetVec.Pt(),jetVec.Eta());
+	  bTagEffPlots_[6]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) == 21){ // gluons
-	bTagEffPlots_[3]->Fill(jetVec.Pt(),jetVec.Eta());
+	bTagEffPlots_[3]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
 	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
-	  bTagEffPlots_[7]->Fill(jetVec.Pt(),jetVec.Eta());
+	  bTagEffPlots_[7]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
     }
 
