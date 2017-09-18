@@ -80,8 +80,8 @@ plotType = f
 
 [tChannel]
 fileName = configs/2015/datasets/fileLists/tChannelFiles.txt
-totalEvents = 3299200
-crossSection = 137.60
+totalEvents = 38932192
+crossSection = 136.02
 runType = mc
 histoName = tChannel
 colour = kMagenta
@@ -90,8 +90,8 @@ plotType = f
 
 [tbarChannel]
 fileName = configs/2015/datasets/fileLists/tbarChannelFiles.txt
-totalEvents = 1630900
-crossSection = 82.6669
+totalEvents = 64957724
+crossSection = 80.95
 runType = mc
 histoName = tChannel
 colour = kMagenta
@@ -116,6 +116,26 @@ runType = mc
 histoName = tW
 colour = kCyan
 label = tW
+plotType = f
+
+[ttHTobb]
+fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
+totalEvents = 3772012
+crossSection = 0.2934
+runType = mc
+histoName = ttH
+colour = kAzure
+label = ttH
+plotType = f
+
+[ttHToNonbb]
+fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+totalEvents = 3945824
+crossSection = 0.2151
+runType = mc
+histoName = ttH
+colour = kAzure
+label = ttH
 plotType = f
 
 [WZ1l1nu2q]
@@ -195,6 +215,46 @@ runType = mc
 histoName = WW
 colour = kRed1
 label = WW
+plotType = f
+
++[WWW]
+fileName = configs/2016/datasets/fileLists/WWWFiles.txt
+totalEvents = 240000
+crossSection = 0.2086
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[WWZ]
+fileName = configs/2016/datasets/fileLists/WWZFiles.txt
+totalEvents = 248400
+crossSection = 0.1651
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[WZZ]
+fileName = configs/2016/datasets/fileLists/WZZFiles.txt
+totalEvents = 249800
+crossSection = 0.05565
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
+plotType = f
+
+[ZZZ]
+fileName = configs/2016/datasets/fileLists/ZZZFiles.txt
+totalEvents = 250000
+crossSection = 0.01398
+runType = mc
+histoName = vvv
+colour = kViolet
+label = vvv
 plotType = f
 
 [wPlusJets]
