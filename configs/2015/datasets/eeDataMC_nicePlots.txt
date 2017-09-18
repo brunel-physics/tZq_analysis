@@ -160,7 +160,7 @@ plotType = f
 
 [WZjets]
 fileName = configs/2015/datasets/fileLists/WZjets.txt
-totalEvents = 12542004
+totalEvents = 1937499
 crossSection = 5.26
 runType = mc
 histoName = wz

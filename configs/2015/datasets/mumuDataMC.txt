@@ -160,7 +160,7 @@ plotType = f
 
 [WZjets]
 fileName = configs/2015/datasets/fileLists/WZjets.txt
-totalEvents = 12542004
+totalEvents = 1937499
 crossSection = 5.26
 runType = mc
 histoName = wz
@@ -264,7 +264,7 @@ totalEvents = 262341358
 crossSection = 61526.7
 histoName = wJets
 colour = kSpring
-label = w+jets
+label = w	+jets
 plotType = f
 
 [DYJetsToLL_M-50]
