@@ -346,6 +346,9 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
     return synchCuts(event, eventWeight);
   }  
 
+  // For smearing temp solution
+  event->jetSmearValue = {1.0};
+
   //If emu and dilepton - doing ttbar background estimation
 
   if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ){
@@ -2682,12 +2685,20 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
     if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
       newSmearValue = 1. + ( jerSF - 1. ) * (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index])/(event->jetPF2PATPtRaw[index])  ;
       if ( newSmearValue < 0. ) newSmearValue = 0.0;
-      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+//    old method to apply smear value
+//      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+//    more elegant way
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
     }
     else { // If not, randomly smear
       newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1.0)*jerSigma);
       if ( newSmearValue < 0. ) newSmearValue = 0.0;
-      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+//    old method to apply smear value
+//      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
+//    more elegant way
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
     }
   }
 
