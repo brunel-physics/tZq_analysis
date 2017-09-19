@@ -789,7 +789,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
     if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
 
     // 2015 cuts
-//    if ( !is2016_ ) {
+    if ( !is2016_ ) {
       //Do a little test of muon id stuff here.
       if (!event->muonPF2PATTrackID[i]) continue;
       if (!event->muonPF2PATGlobalID[i]) continue;
@@ -801,7 +801,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
       if (event->muonPF2PATMuonNHits[i] < 1) continue;
       if (event->muonPF2PATVldPixHits[i] < 1) continue;
       if (event->muonPF2PATMatchedStations[i] < 2) continue;
-//    }
+    }
     // 2016 cuts
     else {
 
@@ -809,7 +809,7 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
       if (!event->muonPF2PATTrackID[i]) continue;
       if (!event->muonPF2PATGlobalID[i]) continue;
 
-      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
+      if (event->muonPF2PATGlbTkNormChi2[i] >= 10.) continue;
       if (event->muonPF2PATMatchedStations[i] < 2) continue;
       if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
       if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
@@ -1451,12 +1451,12 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
       if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
 
 	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
-	// Double muon only: (preHIP) 0.807+/-0.001 (postHIP) 0.943+/-0.001
+	// Double muon only: (preHIP) 0.80757+/-0.00113 (postHIP) 0.94326+/-0.00062 (all runs) 0.80062 +/- 0.00057
 
         // eff across all runs: 0.98314 +0.00051/-0.00049; SF across all runs: 0.99113 +/- 0.00008
         // eff pre-HIP fix: 0.97910 -0.00073/+0.00075; eff post-HIP fix: 0.99038 -0.00058/+0.00062; SF pre-HIP fix 0.98706 +/- 0.00022 and 0.99844 +/- 0.00008 for post-HIP fix
-//        twgt = 1.0;
-        twgt = ( 0.98706 * lumiRunsBCDEF_ + 0.99844 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = 0.80062;
+//        twgt = ( 0.98706 * lumiRunsBCDEF_ + 0.99844 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
