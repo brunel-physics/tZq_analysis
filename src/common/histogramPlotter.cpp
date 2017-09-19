@@ -110,7 +110,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
-  TLegend* legend_{new TLegend{0.82,0.72,0.98,0.90}};
+  TLegend* legend_{new TLegend{0.72,0.62,0.98,0.90}};
 //  legend_->SetFillStyle(1001);
   legend_->SetFillStyle(0);
   legend_->SetBorderSize(0);
