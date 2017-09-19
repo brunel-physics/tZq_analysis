@@ -65,6 +65,10 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
 
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("met",&Plots::fillMetPlot));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("numbJets",&Plots::getNumberOfJets));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totalJetMass",&Plots::fillTotalJetMass));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totalJetPt",&Plots::fillTotalJetPt));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totalJetEta",&Plots::fillTotalJetEta));
+  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("totalJetPhi",&Plots::fillTotalJetPhi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("leadingJetPt",&Plots::fillLeadingJetPt));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("leadingJetEta",&Plots::fillLeadingJetEta));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("leadingJetPhi",&Plots::fillLeadingJetPhi));
@@ -330,6 +334,62 @@ float Plots::fillMetPlot(AnalysisEvent* event){
 
 float Plots::getNumberOfJets(AnalysisEvent* event){
   return event->jetIndex.size();
+}
+
+float Plots::fillTotalJetMass(AnalysisEvent* event){
+  TLorentzVector totalJet;
+  if ( event->jetIndex.size() > 0 ){
+    for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      totalJet += tempJet;
+    }
+    return totalJet.M();
+  }
+  else return -10;
+}
+
+float Plots::fillTotalJetPt(AnalysisEvent* event){
+  TLorentzVector totalJet;
+  if ( event->jetIndex.size() > 0 ){
+    for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      totalJet += tempJet;
+    }
+    return totalJet.Pt();
+  }
+  else return -10;
+}
+
+float Plots::fillTotalJetEta(AnalysisEvent* event){
+  TLorentzVector totalJet;
+  if ( event->jetIndex.size() > 0 ){
+    for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      totalJet += tempJet;
+    }
+    return totalJet.Eta();
+  }
+  else return -10;
+}
+
+float Plots::fillTotalJetPhi(AnalysisEvent* event){
+  TLorentzVector totalJet;
+  if ( event->jetIndex.size() > 0 ){
+    for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      totalJet += tempJet;
+    }
+    return totalJet.Phi();
+  }
+  else return -10;
 }
 
 float Plots::fillLeadingJetPt(AnalysisEvent* event){

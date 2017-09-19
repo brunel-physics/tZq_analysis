@@ -37,6 +37,10 @@ class Plots{
   float fillLepton2MVA(AnalysisEvent*);
   float fillLepton3MVA(AnalysisEvent*);
   float getNumberOfJets(AnalysisEvent*);
+  float fillTotalJetMass(AnalysisEvent*);
+  float fillTotalJetPt(AnalysisEvent*);
+  float fillTotalJetEta(AnalysisEvent*);
+  float fillTotalJetPhi(AnalysisEvent*);
   float fillLeadingJetPt(AnalysisEvent*);
   float fillLeadingJetEta(AnalysisEvent*);
   float fillLeadingJetPhi(AnalysisEvent*);
