@@ -1107,12 +1107,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory.data(), &b_elePF2PATMVAcategory);
    fChain->SetBranchAddress("elePF2PATNonTrigMVA", elePF2PATNonTrigMVA.data(), &b_elePF2PATNonTrigMVA);
    fChain->SetBranchAddress("elePF2PATNonTrigMVAcategory", elePF2PATNonTrigMVAcategory.data(), &b_elePF2PATNonTrigMVAcategory);
-   if( is2016 ) {
-     fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
-     fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
-     fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
-     fChain->SetBranchAddress("elePF2PATCutIdTight", elePF2PATCutIdTight.data(), &b_elePF2PATCutIdTight);
-   }
+   fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
+   fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
+   fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
+   fChain->SetBranchAddress("elePF2PATCutIdTight", elePF2PATCutIdTight.data(), &b_elePF2PATCutIdTight);
    fChain->SetBranchAddress("elePF2PATImpactTransDist", elePF2PATImpactTransDist.data(), &b_elePF2PATImpactTransDist);
    fChain->SetBranchAddress("elePF2PATImpactTransError", elePF2PATImpactTransError.data(), &b_elePF2PATImpactTransError);
    fChain->SetBranchAddress("elePF2PATImpactTransSignificance", elePF2PATImpactTransSignificance.data(), &b_elePF2PATImpactTransSignificance);
@@ -1172,7 +1170,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATHoverE", elePF2PATHoverE.data(), &b_elePF2PATHoverE);
    fChain->SetBranchAddress("elePF2PATDeltaPhiSC", elePF2PATDeltaPhiSC.data(), &b_elePF2PATDeltaPhiSC);
    fChain->SetBranchAddress("elePF2PATDeltaEtaSC", elePF2PATDeltaEtaSC.data(), &b_elePF2PATDeltaEtaSC);
-   if( is2016 ) fChain->SetBranchAddress("elePF2PATDeltaEtaSeedSC", elePF2PATDeltaEtaSeedSC.data(), &b_elePF2PATDeltaEtaSeedSC);
+   fChain->SetBranchAddress("elePF2PATDeltaEtaSeedSC", elePF2PATDeltaEtaSeedSC.data(), &b_elePF2PATDeltaEtaSeedSC);
    fChain->SetBranchAddress("elePF2PATIsBarrel", elePF2PATIsBarrel.data(), &b_elePF2PATIsBarrel);
    fChain->SetBranchAddress("elePF2PATPhotonConversionTag", elePF2PATPhotonConversionTag.data(), &b_elePF2PATPhotonConversionTag);
    fChain->SetBranchAddress("elePF2PATPhotonConversionDist", elePF2PATPhotonConversionDist.data(), &b_elePF2PATPhotonConversionDist);
@@ -1193,13 +1191,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("genElePF2PATTheta", genElePF2PATTheta.data(), &b_genElePF2PATTheta);
      fChain->SetBranchAddress("genElePF2PATEta", genElePF2PATEta.data(), &b_genElePF2PATEta);
      fChain->SetBranchAddress("genElePF2PATCharge", genElePF2PATCharge.data(), &b_genElePF2PATCharge);
-     if( is2016 ) {
-       fChain->SetBranchAddress("genElePF2PATPdgId", genElePF2PATPdgId.data(), &b_genElePF2PATPdgId);
-       fChain->SetBranchAddress("genElePF2PATMotherId", genElePF2PATMotherId.data(), &b_genElePF2PATMotherId);
-       fChain->SetBranchAddress("genElePF2PATPromptDecayed", genElePF2PATPromptDecayed.data(), &b_genElePF2PATPromptDecayed);
-       fChain->SetBranchAddress("genElePF2PATPromptFinalState", genElePF2PATPromptFinalState.data(), &b_genElePF2PATPromptFinalState);
-
-     }
+     fChain->SetBranchAddress("genElePF2PATPdgId", genElePF2PATPdgId.data(), &b_genElePF2PATPdgId);
+     fChain->SetBranchAddress("genElePF2PATMotherId", genElePF2PATMotherId.data(), &b_genElePF2PATMotherId);
+     fChain->SetBranchAddress("genElePF2PATPromptDecayed", genElePF2PATPromptDecayed.data(), &b_genElePF2PATPromptDecayed);
+     fChain->SetBranchAddress("genElePF2PATPromptFinalState", genElePF2PATPromptFinalState.data(), &b_genElePF2PATPromptFinalState);
    }
    fChain->SetBranchAddress("numMuonPF2PAT", &numMuonPF2PAT, &b_numMuonPF2PAT);
    fChain->SetBranchAddress("muonPF2PATE", muonPF2PATE.data(), &b_muonPF2PATE);
@@ -1238,12 +1233,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("muonPF2PATNMatches", muonPF2PATNMatches.data(), &b_muonPF2PATNMatches);
    fChain->SetBranchAddress("muonPF2PATTkLysWithMeasurements", muonPF2PATTkLysWithMeasurements.data(), &b_muonPF2PATTkLysWithMeasurements);
    fChain->SetBranchAddress("muonPF2PATGlbTkNormChi2", muonPF2PATGlbTkNormChi2.data(), &b_muonPF2PATGlbTkNormChi2);
-   if( is2016 ) {
-     fChain->SetBranchAddress("muonPF2PATValidFraction", muonPF2PATValidFraction.data(), &b_muonPF2PATValidFraction);
-     fChain->SetBranchAddress("muonPF2PATChi2LocalPosition", muonPF2PATChi2LocalPosition.data(), &b_muonPF2PATChi2LocalPosition);
-     fChain->SetBranchAddress("muonPF2PATTrkKick", muonPF2PATTrkKick.data(), &b_muonPF2PATTrkKick);
-     fChain->SetBranchAddress("muonPF2PATSegmentCompatibility", muonPF2PATSegmentCompatibility.data(), &b_muonPF2PATSegmentCompatibility);
-   }
+   fChain->SetBranchAddress("muonPF2PATValidFraction", muonPF2PATValidFraction.data(), &b_muonPF2PATValidFraction);
+   fChain->SetBranchAddress("muonPF2PATChi2LocalPosition", muonPF2PATChi2LocalPosition.data(), &b_muonPF2PATChi2LocalPosition);
+   fChain->SetBranchAddress("muonPF2PATTrkKick", muonPF2PATTrkKick.data(), &b_muonPF2PATTrkKick);
+   fChain->SetBranchAddress("muonPF2PATSegmentCompatibility", muonPF2PATSegmentCompatibility.data(), &b_muonPF2PATSegmentCompatibility);
    fChain->SetBranchAddress("muonPF2PATDBPV", muonPF2PATDBPV.data(), &b_muonPF2PATDBPV);
    fChain->SetBranchAddress("muonPF2PATDZPV", muonPF2PATDZPV.data(), &b_muonPF2PATDZPV);
    fChain->SetBranchAddress("muonPF2PATVldPixHits", muonPF2PATVldPixHits.data(), &b_muonPF2PATVldPixHits);
@@ -1258,12 +1251,10 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("genMuonPF2PATTheta", genMuonPF2PATTheta.data(), &b_genMuonPF2PATTheta);
      fChain->SetBranchAddress("genMuonPF2PATEta", genMuonPF2PATEta.data(), &b_genMuonPF2PATEta);
      fChain->SetBranchAddress("genMuonPF2PATCharge", genMuonPF2PATCharge.data(), &b_genMuonPF2PATCharge);
-     if( is2016 ) {
-       fChain->SetBranchAddress("genMuonPF2PATPdgId", genMuonPF2PATPdgId.data(), &b_genMuonPF2PATPdgId);
-       fChain->SetBranchAddress("genMuonPF2PATMotherId", genMuonPF2PATMotherId.data(), &b_genMuonPF2PATMotherId);
-       fChain->SetBranchAddress("genMuonPF2PATPromptDecayed", genMuonPF2PATPromptDecayed.data(), &b_genMuonPF2PATPromptDecayed);
-       fChain->SetBranchAddress("genMuonPF2PATPromptFinalState", genMuonPF2PATPromptFinalState.data(), &b_genMuonPF2PATPromptFinalState);
-     }
+     fChain->SetBranchAddress("genMuonPF2PATPdgId", genMuonPF2PATPdgId.data(), &b_genMuonPF2PATPdgId);
+     fChain->SetBranchAddress("genMuonPF2PATMotherId", genMuonPF2PATMotherId.data(), &b_genMuonPF2PATMotherId);
+     fChain->SetBranchAddress("genMuonPF2PATPromptDecayed", genMuonPF2PATPromptDecayed.data(), &b_genMuonPF2PATPromptDecayed);
+     fChain->SetBranchAddress("genMuonPF2PATPromptFinalState", genMuonPF2PATPromptFinalState.data(), &b_genMuonPF2PATPromptFinalState);
    }
    fChain->SetBranchAddress("numJetPF2PAT", &numJetPF2PAT, &b_numJetPF2PAT);
    fChain->SetBranchAddress("jetPF2PATE", jetPF2PATE.data(), &b_jetPF2PATE);
