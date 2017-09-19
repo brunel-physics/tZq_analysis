@@ -342,7 +342,8 @@ float Plots::fillTotalJetMass(AnalysisEvent* event){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
       float smearValue = event->jetSmearValue[*jetIt];
-      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
       totalJet += tempJet;
     }
     return totalJet.M();
@@ -356,7 +357,8 @@ float Plots::fillTotalJetPt(AnalysisEvent* event){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
       float smearValue = event->jetSmearValue[*jetIt];
-      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
       totalJet += tempJet;
     }
     return totalJet.Pt();
@@ -370,7 +372,8 @@ float Plots::fillTotalJetEta(AnalysisEvent* event){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
       float smearValue = event->jetSmearValue[*jetIt];
-      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
       totalJet += tempJet;
     }
     return totalJet.Eta();
@@ -384,7 +387,8 @@ float Plots::fillTotalJetPhi(AnalysisEvent* event){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
       float smearValue = event->jetSmearValue[*jetIt];
-      tempJet.SetPxPyPzE(smearValue*event->jetPF2PATPx[*jetIt],smearValue*event->jetPF2PATPy[*jetIt],smearValue*event->jetPF2PATPz[*jetIt],smearValue*event->jetPF2PATE[*jetIt]);
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
       totalJet += tempJet;
     }
     return totalJet.Phi();
@@ -393,63 +397,135 @@ float Plots::fillTotalJetPhi(AnalysisEvent* event){
 }
 
 float Plots::fillLeadingJetPt(AnalysisEvent* event){
-  if (event->jetIndex.size() > 0) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[0]] * event->jetPF2PATPx[event->jetIndex[0]] + event->jetPF2PATPy[event->jetIndex[0]] * event->jetPF2PATPy[event->jetIndex[0]]) );
-  return -10;
+  if (event->jetIndex.size() > 0) {
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[0]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]], event->jetPF2PATPy[event->jetIndex[0]], event->jetPF2PATPz[event->jetIndex[0]], event->jetPF2PATE[event->jetIndex[0]]);
+    tempJet *= smearValue;
+    return tempJet.Pt();
+  }
+  else return -10;
 }
 
 float Plots::fillSecondJetPt(AnalysisEvent* event){
-  if (event->jetIndex.size() > 1) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[1]] * event->jetPF2PATPx[event->jetIndex[1]] + event->jetPF2PATPy[event->jetIndex[1]] * event->jetPF2PATPy[event->jetIndex[1]]) );
-  return -10;
+  if (event->jetIndex.size() > 1) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[1]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]], event->jetPF2PATPy[event->jetIndex[1]], event->jetPF2PATPz[event->jetIndex[1]], event->jetPF2PATE[event->jetIndex[1]]);
+    tempJet *= smearValue;
+    return tempJet.Pt();
+  }
+  else return -10;
 }
 
 float Plots::fillThirdJetPt(AnalysisEvent* event){
-  if (event->jetIndex.size() > 2) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[2]] * event->jetPF2PATPx[event->jetIndex[2]] + event->jetPF2PATPy[event->jetIndex[2]] * event->jetPF2PATPy[event->jetIndex[2]]) );
-  return -10;
+  if (event->jetIndex.size() > 2) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[2]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[2]], event->jetPF2PATPy[event->jetIndex[2]], event->jetPF2PATPz[event->jetIndex[2]], event->jetPF2PATE[event->jetIndex[2]]);
+    tempJet *= smearValue;
+    return tempJet.Pt();
+  }
+  else return -10;
 }
 
 float Plots::fillFourthJetPt(AnalysisEvent* event){
-  if (event->jetIndex.size() > 3) return (std::sqrt(event->jetPF2PATPx[event->jetIndex[3]] * event->jetPF2PATPx[event->jetIndex[3]] + event->jetPF2PATPy[event->jetIndex[3]] * event->jetPF2PATPy[event->jetIndex[3]]) );
-  return -10;
+  if (event->jetIndex.size() > 3) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[3]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[3]], event->jetPF2PATPy[event->jetIndex[3]], event->jetPF2PATPz[event->jetIndex[3]], event->jetPF2PATE[event->jetIndex[3]]);
+    tempJet *= smearValue;
+    return tempJet.Pt();
+  }
+  else return -10;
 }
 
 float Plots::fillLeadingJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 0) return std::abs(event->jetPF2PATEta[event->jetIndex[0]]);
-  return -10;
+  if (event->jetIndex.size() > 0) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[0]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]], event->jetPF2PATPy[event->jetIndex[0]], event->jetPF2PATPz[event->jetIndex[0]], event->jetPF2PATE[event->jetIndex[0]]);
+    tempJet *= smearValue;
+    return tempJet.Eta();
+  }
+  else return -10;
 }
 
 float Plots::fillSecondJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 1) return std::abs(event->jetPF2PATEta[event->jetIndex[1]]);
-  return -10;
+  if (event->jetIndex.size() > 1) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[1]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]], event->jetPF2PATPy[event->jetIndex[1]], event->jetPF2PATPz[event->jetIndex[1]], event->jetPF2PATE[event->jetIndex[1]]);
+    tempJet *= smearValue;
+    return tempJet.Eta();
+  }
+  else return -10;
 }
 
 float Plots::fillThirdJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 2) return std::abs(event->jetPF2PATEta[event->jetIndex[2]]);
-  return -10;
+  if (event->jetIndex.size() > 2) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[2]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[2]], event->jetPF2PATPy[event->jetIndex[2]], event->jetPF2PATPz[event->jetIndex[2]], event->jetPF2PATE[event->jetIndex[2]]);
+    tempJet *= smearValue;
+    return tempJet.Eta();
+  }
+  else return -10;
 }
 
 float Plots::fillFourthJetEta(AnalysisEvent* event){
-  if (event->jetIndex.size() > 3) return std::abs(event->jetPF2PATEta[event->jetIndex[3]]);
-  return -10;
+  if (event->jetIndex.size() > 3) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[3]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[3]], event->jetPF2PATPy[event->jetIndex[3]], event->jetPF2PATPz[event->jetIndex[3]], event->jetPF2PATE[event->jetIndex[3]]);
+    tempJet *= smearValue;
+    return tempJet.Eta();
+  }
+  else return -10;
 }
 
 float Plots::fillLeadingJetPhi(AnalysisEvent* event){
-  if (event->jetIndex.size() > 0) return event->jetPF2PATPhi[event->jetIndex[0]];
-  return -10;
+  if (event->jetIndex.size() > 0) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[0]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]], event->jetPF2PATPy[event->jetIndex[0]], event->jetPF2PATPz[event->jetIndex[0]], event->jetPF2PATE[event->jetIndex[0]]);
+    tempJet *= smearValue;
+    return tempJet.Phi();
+  }
+  else return -10;
 }
 
 float Plots::fillSecondJetPhi(AnalysisEvent* event){
-  if (event->jetIndex.size() > 1) return event->jetPF2PATPhi[event->jetIndex[1]];
-  return -10;
+  if (event->jetIndex.size() > 1) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[1]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]], event->jetPF2PATPy[event->jetIndex[1]], event->jetPF2PATPz[event->jetIndex[1]], event->jetPF2PATE[event->jetIndex[1]]);
+    tempJet *= smearValue;
+    return tempJet.Phi();
+  }
+  else return -10;
 }
 
 float Plots::fillThirdJetPhi(AnalysisEvent* event){
-  if (event->jetIndex.size() > 2) return event->jetPF2PATPhi[event->jetIndex[2]];
-  return -10;
+  if (event->jetIndex.size() > 2) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[2]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[2]], event->jetPF2PATPy[event->jetIndex[2]], event->jetPF2PATPz[event->jetIndex[2]], event->jetPF2PATE[event->jetIndex[2]]);
+    tempJet *= smearValue;
+    return tempJet.Phi();
+  }
+  else return -10;
 }
 
 float Plots::fillFourthJetPhi(AnalysisEvent* event){
-  if (event->jetIndex.size() > 3) return event->jetPF2PATPhi[event->jetIndex[3]];
-  return -10;
+  if (event->jetIndex.size() > 3) { 
+    TLorentzVector tempJet;
+    float smearValue = event->jetSmearValue[event->jetIndex[3]];
+    tempJet.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[3]], event->jetPF2PATPy[event->jetIndex[3]], event->jetPF2PATPz[event->jetIndex[3]], event->jetPF2PATE[event->jetIndex[3]]);
+    tempJet *= smearValue;
+    return tempJet.Phi();
+  }
+  else return -10;
 }
 
 float Plots::fillLeadingJetBDisc(AnalysisEvent* event){
@@ -576,13 +652,17 @@ float Plots::fillLeptonMass(AnalysisEvent* event){
 float Plots::fillTopMass(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempMet + tempBjet + event->wLepton ).M();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).M();
   }
   else return -10;
@@ -591,13 +671,17 @@ float Plots::fillTopMass(AnalysisEvent* event){
 float Plots::fillTopPt(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempMet + tempBjet + event->wLepton ).Pt();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Pt();
   }
   else return -10;
@@ -606,13 +690,17 @@ float Plots::fillTopPt(AnalysisEvent* event){
 float Plots::fillTopEta(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return std::abs(( tempMet + tempBjet + event->wLepton ).Eta());
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return std::abs(( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Eta());
   }
   else return -10;
@@ -621,13 +709,17 @@ float Plots::fillTopEta(AnalysisEvent* event){
 float Plots::fillTopPhi(AnalysisEvent* event){
   if ( trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempMet, tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempMet.SetPtEtaPhiE(event->metPF2PATPt,0,event->metPF2PATPhi,event->metPF2PATEt);
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempMet + tempBjet + event->wLepton ).Phi();
   }
   else if ( !trileptonChannel_ && event->bTagIndex.size() > 0 ) {
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->bTagIndex[0]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return ( tempBjet + event->wPairQuarks.first + event->wPairQuarks.second ).Phi();
   }
   else return -10;
@@ -735,7 +827,7 @@ float Plots::fillwTransverseMass(AnalysisEvent* event){
   return std::sqrt(2*event->metPF2PATPt*event->wLepton.Pt()*(1-std::cos(event->metPF2PATPhi - event->wLepton.Phi())));
   }
   else if ( !trileptonChannel_ ) {
-  return std::sqrt(2*event->jetPF2PATPt[event->wPairIndex.first]*event->jetPF2PATPt[event->wPairIndex.second]*(1-std::cos(event->jetPF2PATPhi[event->wPairIndex.first] - event->jetPF2PATPhi[event->wPairIndex.second])));
+  return std::sqrt(2*event->wPairQuarks.first.Pt()*event->wPairQuarks.second.Pt()*(1-std::cos(event->wPairQuarks.first.Phi() - event->wPairQuarks.second.Phi())));
   }
   else
     return -10;
@@ -745,8 +837,12 @@ float Plots::filljjDelR(AnalysisEvent* event){
   TLorentzVector tempJet1;
   TLorentzVector tempJet2;
   if (event->jetIndex.size() < 2) return -1.;
+  float smearValue1 = event->jetSmearValue[event->jetIndex[0]];
+  float smearValue2 = event->jetSmearValue[event->jetIndex[1]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]],event->jetPF2PATPy[event->jetIndex[0]],event->jetPF2PATPz[event->jetIndex[0]],event->jetPF2PATE[event->jetIndex[0]]);
   tempJet2.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]],event->jetPF2PATPy[event->jetIndex[1]],event->jetPF2PATPz[event->jetIndex[1]],event->jetPF2PATE[event->jetIndex[1]]);
+  tempJet1 *= smearValue1;
+  tempJet2 *= smearValue2;
   return tempJet1.DeltaR(tempJet2);
 }
 
@@ -754,8 +850,12 @@ float Plots::filljjDelPhi(AnalysisEvent* event){
   TLorentzVector tempJet1;
   TLorentzVector tempJet2;
   if (event->jetIndex.size() < 2) return -1.;
+  float smearValue1 = event->jetSmearValue[event->jetIndex[0]];
+  float smearValue2 = event->jetSmearValue[event->jetIndex[1]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[0]],event->jetPF2PATPy[event->jetIndex[0]],event->jetPF2PATPz[event->jetIndex[0]],event->jetPF2PATE[event->jetIndex[0]]);
   tempJet2.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[1]],event->jetPF2PATPy[event->jetIndex[1]],event->jetPF2PATPz[event->jetIndex[1]],event->jetPF2PATE[event->jetIndex[1]]);
+  tempJet1 *= smearValue1;
+  tempJet2 *= smearValue2;
   return tempJet1.DeltaPhi(tempJet2);
 }
 
@@ -772,7 +872,9 @@ float Plots::fillwwDelPhi(AnalysisEvent* event){
 float Plots::filllbDelR(AnalysisEvent* event){
   TLorentzVector tempJet1;
   if (event->bTagIndex.size() < 1) return -10.;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return tempJet1.DeltaR(event->wLepton);
 
 }
@@ -780,7 +882,9 @@ float Plots::filllbDelR(AnalysisEvent* event){
 float Plots::filllbDelPhi(AnalysisEvent* event){
   TLorentzVector tempJet1;
   if (event->bTagIndex.size() < 1) return -10.;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return tempJet1.DeltaPhi(event->wLepton);
 }
 
@@ -827,28 +931,36 @@ float Plots::fillZLep2Quark2DelPhi(AnalysisEvent* event){
 float Plots::fillZLep1BjetDelR(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return (event->zPairLeptons.first.DeltaR(tempJet1));
 }
 
 float Plots::fillZLep1BjetDelPhi(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return (event->zPairLeptons.first.DeltaPhi(tempJet1));
 }
 
 float Plots::fillZLep2BjetDelR(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return (event->zPairLeptons.second.DeltaR(tempJet1));
 }
 
 float Plots::fillZLep2BjetDelPhi(AnalysisEvent* event){
   if (event->bTagIndex.size() < 1) return -10.;
   TLorentzVector tempJet1;
+  float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
   tempJet1.SetPxPyPzE(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+  tempJet1 *= smearValue;
   return (event->zPairLeptons.second.DeltaPhi(tempJet1));
 }
 
@@ -866,7 +978,11 @@ float Plots::fillJetHt(AnalysisEvent* event){
   float jetHt (0.0);
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-      jetHt += event->jetPF2PATPt[*jetIt];
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
+      jetHt += tempJet.Pt();
     }
   }
   return jetHt;
@@ -879,7 +995,11 @@ float Plots::fillTotHt(AnalysisEvent* event){
   if ( trileptonChannel_ ) totHt += ( event->wLepton ).Pt();
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-      totHt += event->jetPF2PATPt[*jetIt];
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
+      totHt += tempJet.Pt();
     }
   }
   return totHt;
@@ -892,7 +1012,11 @@ float Plots::fillTotHtOverPt(AnalysisEvent* event){
   if ( trileptonChannel_ ) totHt += ( event->wLepton ).Pt();
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-      totHt += event->jetPF2PATPt[*jetIt];
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
+      totHt += tempJet.Pt();
     }
   }
   float totPx (0.0), totPy (0.0);
@@ -906,8 +1030,12 @@ float Plots::fillTotHtOverPt(AnalysisEvent* event){
   }
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-      totPx += event->jetPF2PATPx[*jetIt];
-      totPy += event->jetPF2PATPy[*jetIt];
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
+      totPx += tempJet.Px();
+      totPy += tempJet.Py();
     }
   }
 
@@ -927,8 +1055,12 @@ float Plots::fillTotPt(AnalysisEvent* event){
   }
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
-      totPx += event->jetPF2PATPx[*jetIt];
-      totPy += event->jetPF2PATPy[*jetIt];
+      TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
+      tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
+      totPx += tempJet.Px();
+      totPy += tempJet.Py();
     }
   }
   return std::sqrt( totPx*totPx + totPy*totPy );
@@ -942,8 +1074,9 @@ float Plots::fillTotEta(AnalysisEvent* event){
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
       tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
-      totVec += tempJet;
+      tempJet *= smearValue;
     }
   }
   return std::abs(totVec.Eta());
@@ -957,7 +1090,9 @@ float Plots::fillTotM(AnalysisEvent* event){
   if ( event->jetIndex.size() > 0 ){
     for ( auto jetIt = event->jetIndex.begin(); jetIt != event->jetIndex.end(); ++jetIt ){
       TLorentzVector tempJet;
+      float smearValue = event->jetSmearValue[*jetIt];
       tempJet.SetPxPyPzE(event->jetPF2PATPx[*jetIt],event->jetPF2PATPy[*jetIt],event->jetPF2PATPz[*jetIt],event->jetPF2PATE[*jetIt]);
+      tempJet *= smearValue;
       totVec += tempJet;
     }
   }
@@ -994,37 +1129,49 @@ float Plots::fillZquark2DelPhi(AnalysisEvent* event){
 
 float Plots::fillZtopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZtopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.first + event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep1TopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.first).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep1TopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.first).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep2TopDelR(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.second).DeltaR(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
 float Plots::fillZLep2TopDelPhi(AnalysisEvent* event){
     TLorentzVector tempBjet;
+    float smearValue = event->jetSmearValue[event->jetIndex[event->bTagIndex[0]]];
     tempBjet.SetPtEtaPhiE(event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+    tempBjet *= smearValue;
     return (event->zPairLeptons.second).DeltaPhi(event->wPairQuarks.first + event->wPairQuarks.second + tempBjet);
 }
 
