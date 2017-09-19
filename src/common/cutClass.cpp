@@ -2675,15 +2675,17 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
   jerSF = jetSFs.first;
   jerSigma = jetSFs.second;
 
-  if ( isMC_ && event->genJetPF2PATPT[index] > -990.){
+  if ( isMC_ && event->genJetPF2PATPT[index] > 1e-2 ){
     if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
       if (syst == 16) jerSF += jerSigma;
       else if (syst == 32) jerSF -= jerSigma;
-      newSmearValue = std::max(0.0, event->jetPF2PATPtRaw[index] + (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) * jerSF)/event->jetPF2PATPtRaw[index];
+      newSmearValue = 1. + ( jerSF - 1. ) * (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index])/(event->jetPF2PATPtRaw[index])  ;
+      if ( newSmearValue < 0. ) newSmearValue = 0.0;
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     }
       else { // If not, randomly smear
-      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1)*jerSigma);
+      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1.0)*jerSigma);
+      if ( newSmearValue < 0. ) newSmearValue = 0.0;
       returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
     }
 
