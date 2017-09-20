@@ -947,8 +947,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
 	  }
 	  mvaTree[systIn]->Branch("jetInd",&jetInd,"jetInd[15]/I");
-	  mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF/F");
-	  mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue/F");
+	  mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF[3]/F");
+	  mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue[15]/F");
 	  mvaTree[systIn]->Branch("bJetInd",&bJetInd,"bJetInd[10]/I");
 
 	  if (systIn > 0) systMask = systMask << 1;
