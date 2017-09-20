@@ -53,7 +53,7 @@ def getJets(tree,syst,jetUnc,met,is2016):
     jetList = []
     jetVecList = []
     for i in range(15):
-        if tree.jetInd[i] > -.5:
+        if tree.jetInd[i] > -0.5:
             jetList.append(tree.jetInd[i])
             jetVecList.append(getJetVec(tree,tree.jetInd[i],met,is2016,syst,True))
         else: continue
@@ -74,12 +74,12 @@ def getBjets(tree,syst,jetUnc,met,jets,is2016):
 def getJetVec(tree, index, metVec, is2016, syst, doMetSmear):
     #Gets a vector for a jet with corrections already applied
 
-
-#    newSmearValue = tree.jetSmearValue[index];
     newSmearValue = 1.0;
+#    newSmearValue = tree.jetSmearValue[index];
     returnJet = TLorentzVector();
 
-    returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[index],newSmearValue*tree.jetPF2PATE[index]);
+    returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+    returnJet *= newSmearValue;	
 
     if syst == 16:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
@@ -525,10 +525,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
                 varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1)
             if jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0]:
                 varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1)
-        varMap["zlb1DelR"][0] = zLep1.DeltaR(jetVecs[bJets[0]])
-        varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(jetVecs[bJets[0]])
-        varMap["zlb2DelR"][0] = zLep2.DeltaR(jetVecs[bJets[0]])
-        varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(jetVecs[bJets[0]])
+        varMap["zlb1DelR"][0] = zLep1.DeltaR(bJetVecs[0])
+        varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(bJetVecs[0])
+        varMap["zlb2DelR"][0] = zLep2.DeltaR(bJetVecs[0])
+        varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(bJetVecs[0])
         ht = 0.
         ht += zLep1.Pt() + zLep2.Pt()
         varMap["lepHt"][0] = ht
