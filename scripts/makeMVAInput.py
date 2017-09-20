@@ -41,7 +41,7 @@ def getJets(tree,syst,jetUnc,met):
     for i in range(15):
         if tree.jetInd[i] > -.5:
             jetList.append(tree.jetInd[i])
-            jetVecList.append(getJetVec(tree,tree.jetInd[i],met,syst,True))
+            jetVecList.append(getJetVec(tree,tree.jetInd[i],tree.jetSmearValue[i],met,syst,True))
         else: continue
     return (jetList,jetVecList)
 
@@ -52,25 +52,24 @@ def getBjets(tree,syst,jetUnc,met,jets):
     for i in range(10):
         if tree.bJetInd[i] > -0.5:
             bJetList.append(tree.bJetInd[i])
-            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],met,systFalse))
+            bJetVecList.append(getJetVec(tree,jets[tree.bJetInd[i]],tree.jetSmearValue[tree.bJetInd[i]],met,systFalse))
         else:continue
 #    print len(bJetList)
     return (bJetList,bJetVecList)
 
-def getJetVec(tree, index, metVec, syst, doMetSmear):
+def getJetVec(tree, index, smearValue, metVec, syst, doMetSmear):
     #Gets a vector for a jet with corrections already applied
 
-    newSmearValue = tree.jetSmearValue[index];
     returnJet = TLorentzVector();
-
-    returnJet.SetPxPyPzE(newSmearValue*tree.jetPF2PATPx[index],newSmearValue*tree.jetPF2PATPy[index],newSmearValue*tree.jetPF2PATPz[in$
+    returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
+    returnJet *= smearValue;
 
     if syst == 16:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
     elif syst == 32:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),2)
 
-    if ( doMetSmear and newSmearValue > 0.01 ) :
+    if ( doMetSmear and smearValue > 0.01 ) :
     #Propogate through the met. But only do it if the smear jet isn't 0.
         metVec.SetPx(metVec.Px()+tree.jetPF2PATPx[index])
         metVec.SetPy(metVec.Py()+tree.jetPF2PATPy[index])
