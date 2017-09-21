@@ -192,6 +192,7 @@ def setupInputVars():
     inputVars["wQuarkHt"] = array('f',[0.])
     inputVars["totPt"] = array('f',[0.])
     inputVars["totEta"] = array('f',[0.])
+    inputVars["totPhi"] = array('f',[0.])
     inputVars["totPtVec"] = array('f',[0.])
     inputVars["totVecM"] = array('f',[0.])
     inputVars["chan"] = array('i',[0])
@@ -219,6 +220,9 @@ def setupInputVars():
     inputVars["totHt"] = array('f',[0.])
     inputVars["jetHt"] = array('f',[0.])
     inputVars["jetMass"] = array('f',[0.])
+    inputVars["jetPt"] = array('f',[0.])
+    inputVars["jetEta"] = array('f',[0.])
+    inputVars["jetPhi"] = array('f',[0.])
     inputVars["jetMass3"] = array('f',[0.])
     inputVars["totHtOverPt"] = array('f',[0.])
     inputVars["chi2"] = array('f',[0.])
@@ -302,6 +306,7 @@ def setupBranches(tree,varMap):
     tree.Branch("wQuarkHt",varMap["wQuarkHt"],"wQuarkHt/F")
     tree.Branch("totPt",varMap["totPt"],"totPt/F")
     tree.Branch("totEta",varMap["totEta"],"totEta/F")
+    tree.Branch("totPhi",varMap["totPhi"],"totPhi/F")
     tree.Branch("totPtVec",varMap["totPtVec"],"totPtVec/F")
     tree.Branch("totVecM",varMap["totVecM"],"totVecM/F")
     tree.Branch("Channel",varMap["chan"],"Channel/I")
@@ -329,6 +334,9 @@ def setupBranches(tree,varMap):
     tree.Branch("totHt",varMap["totHt"],"totHt/F")
     tree.Branch("jetHt",varMap["jetHt"],"jetHt/F")
     tree.Branch("jetMass",varMap["jetMass"],"jetMass/F")
+    tree.Branch("jetPt",varMap["jetPt"],"jetPt/F")
+    tree.Branch("jetEta",varMap["jetEta"],"jetEta/F")
+    tree.Branch("jetPhi",varMap["jetPhi"],"jetPhi/F")
     tree.Branch("jetMass3",varMap["jetMass3"],"jetMass3/F")
     tree.Branch("totHtOverPt",varMap["totHtOverPt"],"totHtOverPt/F")
     tree.Branch("chi2",varMap["chi2"],"chi2/F")
@@ -430,6 +438,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         for i in range(len(jetVecs)):
             totVec += jetVecs[i]
         varMap["totEta"][0] = totVec.Eta()
+        varMap["totEta"][0] = totVec.Phi()
         varMap["totPtVec"][0] = totVec.Pt()
         varMap["totVecM"][0] = totVec.M()
         varMap["mTW"][0] = math.sqrt(2*tree.jetPF2PATPt[tree.wQuark1Index]*tree.jetPF2PATPt[tree.wQuark2Index] * (1-math.cos(tree.jetPF2PATPhi[tree.wQuark1Index] - tree.jetPF2PATPhi[tree.wQuark2Index])))
@@ -531,6 +540,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["lepHt"][0] = ht
         varMap["jetHt"][0] = jetHt
         varMap["jetMass"][0] = jetVector.M()
+        varMap["jetPt"][0] = jetVector.Pt()
+        varMap["jetEta"][0] = jetVector.Eta()
+        varMap["jetPhi"][0] = jetVector.Phi()
         if channel !=  "emu": varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
         else : varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1]).M()
 	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
