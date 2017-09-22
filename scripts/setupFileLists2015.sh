@@ -25,8 +25,13 @@ ls /data0/data/tZqSkimsRun2015/metRun2015C/* -1d >> $TQZ_TOOLS_PATH/configs/2015
 ls /data0/data/tZqSkimsRun2015/metRun2015D/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/metRun2015DFiles.txt
 
 ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-10to50/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets10To50Files.txt
-ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50Files.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-10to50_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets10To50Files.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-10to50_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets10To50Files.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50Files.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50Files.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50_amcatnlo_ext4/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50Files.txt
 ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50MadgraphFiles.txt
+ls /data0/data/tZqSkimsRun2015/DYJetsToLL_M-50_madgraph_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/DYJets50MadgraphFiles.txt
 ls /data0/data/tZqSkimsRun2015/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/sChannelFiles.txt
 ls /data0/data/tZqSkimsRun2015/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarChannelFiles.txt
 ls /data0/data/tZqSkimsRun2015/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tbarWInclusiveFiles.txt
@@ -48,6 +53,7 @@ ls /nfs/data/tZqSkims/tZq4Flavour3Lepton/* -1d >> $TQZ_TOOLS_PATH/configs/2015/d
 ls /data0/data/tZqSkimsRun2015/tZq_ll_4Flavour3Lepton/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tZqFiles.txt
 ls /data0/data/tZqSkimsRun2015/tHq/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/tHqFiles.txt
 ls /data0/data/tZqSkimsRun2015/wPlusJets/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/wPlusJetsFiles.txt
+ls /data0/data/tZqSkimsRun2015/wPlusJets_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/wPlusJetsFiles.txt
 ls /data0/data/tZqSkimsRun2015/WW1l1nu2q/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WW1l1nu2qFiles.txt
 ls /data0/data/tZqSkimsRun2015/WW2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WW2l2nuFiles.txt
 ls /data0/data/tZqSkimsRun2015/WZ1l1nu2q/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WZ1l1nu2q.txt
@@ -56,10 +62,10 @@ ls /data0/data/tZqSkimsRun2015/WZJets/* -1d >> $TQZ_TOOLS_PATH/configs/2015/data
 ls /data0/data/tZqSkimsRun2015/ZZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZ2l2nuFiles.txt
 ls /data0/data/tZqSkimsRun2015/ZZ2l2q/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZ2l2qFiles.txt
 ls /data0/data/tZqSkimsRun2015/ZZ4l/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZ4lFiles.txt
-ls /data0/data/tZqSkimsRun2016/WWW/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WWWFiles.txt
-ls /data0/data/tZqSkimsRun2016/WWZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WWZFiles.txt
-ls /data0/data/tZqSkimsRun2016/WZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WZZFiles.txt
-ls /data0/data/tZqSkimsRun2016/ZZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZZFiles.txt
+ls /data0/data/tZqSkimsRun2015/WWW/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WWWFiles.txt
+ls /data0/data/tZqSkimsRun2015/WWZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WWZFiles.txt
+ls /data0/data/tZqSkimsRun2015/WZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/WZZFiles.txt
+ls /data0/data/tZqSkimsRun2015/ZZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ZZZFiles.txt
 
 
 # Scaling files
