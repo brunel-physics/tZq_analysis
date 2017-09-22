@@ -618,7 +618,7 @@ def main():
 
         outFile = 0
         #update the appropriate root file
-        outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
+        outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","UPDATE")
 
         for syst in systs:
             #We now define the outTreeSig out here, coz it seems like a more sensible option.
@@ -680,7 +680,7 @@ def main():
         if useSidebandRegion:
             outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
             setupBranches(outTreeSdBnd,inputVars)
-        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
+        outFile = TFile(outputDir+"histofile_"+outChan+".root","UPDATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")
             if is2016 :
@@ -712,7 +712,7 @@ def main():
         if useSidebandRegion:
             outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
             setupBranches(outTreeSdBnd,inputVars)
-        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
+        outFile = TFile(outputDir+"histofile_"+outChan+".root","UPDATE")
 
         # Get same sign data
         for chan in outFakeChanToData[outChan]:

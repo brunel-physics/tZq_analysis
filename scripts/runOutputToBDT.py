@@ -15,11 +15,9 @@ metStr = metCut.split(".")[0]
 mtwCut = sys.argv[2]
 mtwStr = mtwCut.split(".")[0]
 
-#Make the skim directory
-subprocess.call("mkdir mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)
-
 #Make the mvaInput directory
 subprocess.call("mkdir mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr,shell=True)
+subprocess.call("rm mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr+"/*",shell=True)
 
 print "python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr+"/"
 subprocess.call("python scripts/makeMVAInput.py [\\\"eee\\\",\\\"eemu\\\",\\\"emumu\\\",\\\"mumumu\\\"] mvaDirs/skims/trilepton/met"+metStr+"mtw"+mtwStr+"/ mvaDirs/inputs/trilepton/met"+metStr+"mtw"+mtwStr+"/",shell=True)

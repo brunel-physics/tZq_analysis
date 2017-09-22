@@ -19,6 +19,7 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
 
 #Make the mvaInput directory
 subprocess.call("mkdir /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
+subprocess.call("rm /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/*",shell=True)
 
 print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2015 "+useSideBandRegion
 subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2015/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2015/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/ --2015 "+useSideBandRegion,shell=True)
