@@ -20,8 +20,10 @@ def main():
   infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_tZq.root")
   infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TT.root")
   infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M50.root")
+  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M50_aMCatNLO.root")
 
   infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M10To50.root")
+  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M10To50_aMCatNLO.root")
   infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartChan.root")
   infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartW.root")
   infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_THQ.root")
@@ -80,6 +82,21 @@ def main():
   DY_wVsChi2Histo    = ROOT.TH2D("DY_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
 
   DY_wVsTopvsChi2Histo = ROOT.TH3D("DY_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
+
+  ## DY aMCatNLO Histos
+
+  DY_amcatnlo_topMassHisto = ROOT.TH1D("DY_amcatnlo_topMassHisto","Top Mass Histo", 300, 0.0, 300.0)
+  DY_amcatnlo_wMassHisto = ROOT.TH1D("DY_amcatnlo_wMassHisto","W Mass Histo", 300, 0.0, 300.0)
+  DY_amcatnlo_chi2Histo = ROOT.TH1D("DY_amcatnlo_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
+
+  DY_amcatnlo_topVsWmassHisto = ROOT.TH2D("DY_amcatnlo_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  DY_amcatnlo_topVsWsignalHisto = ROOT.TH2D("DY_amcatnlo_topVsWsignalHisto", "Top mass vs W Mass for signal region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
+  DY_amcatnlo_topVsWcontrolHisto = ROOT.TH2D("DY_amcatnlo_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
+
+  DY_amcatnlo_topVsChi2Histo  = ROOT.TH2D("DY_amcatnlo_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
+  DY_amcatnlo_wVsChi2Histo    = ROOT.TH2D("DY_amcatnlo_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
+
+  DY_amcatnlo_wVsTopvsChi2Histo = ROOT.TH3D("DY_amcatnlo_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
   ## All MC Histos
 
@@ -165,6 +182,29 @@ def main():
 
     if ( chi2 < sigCut ) : DY_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
+
+  for event in infile_DY.Ttree_DYToLL_M50_aMCatNLO :
+#    if (event.Channel != 0) : continue
+    weight = 1
+    if (weighted) : weight = event.EvtWeight
+
+    if ( massCut and event.topMass < 220 and event.topMass > 110 ) : DY_amcatnlo_topMassHisto.Fill(event.topMass,weight)
+    if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : DY_amcatnlo_wMassHisto.Fill(event.wPairMass,weight)
+    if not ( massCut ) : DY_topMassHisto_amcatnlo.Fill(event.topMass,weight)
+    if not ( massCut ) : DY_wMassHisto_amcatnlo.Fill(event.wPairMass,weight)
+
+    wChi2Term   = (event.wPairMass - 80.3585)/wSigma
+    topChi2Term = (event.topMass - 173.21)/topSigma
+    chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
+
+    DY_amcatnlo_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    DY_amcatnlo_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
+    DY_amcatnlo_topVsChi2Histo.Fill(event.topMass,chi2,weight)
+    DY_amcatnlo_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
+    DY_amcatnlo_chi2Histo.Fill(chi2,weight)
+
+    if ( chi2 < sigCut ) : DY_amcatnlo_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_amcatnlo_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
 
 ### ALL MC ###
