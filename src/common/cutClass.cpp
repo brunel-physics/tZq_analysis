@@ -84,7 +84,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //B-discriminator cut
   numbJets_{1},
   maxbJets_{2},
-  zPlusControl_{0},
   //bDiscCut_{0.9535}, // Tight cut
   bDiscCut_{0.8484}, // Medium level
   //bDiscCut_{0.5426}, // Loose cut
@@ -322,12 +321,11 @@ bool Cuts::parse_config(std::string confName){
     jets.lookupValue("maxbJets",maxbJets_);
     jets.lookupValue("numcJets",numcJets_);
     jets.lookupValue("maxcJets",maxcJets_);
-    jets.lookupValue("zPlusControl",zPlusControl_);
   }
 
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
 
-  if (makeEventDump_) {
+  if (makeEventDump_ && synchCutFlow_) {
     topMassEventDump_.open("topMassEventDump"+postfixName_+".txt");
     step0EventDump_.open("step0EventDump"+postfixName_+".txt");
     step2EventDump_.open("step2EventDump"+postfixName_+".txt");

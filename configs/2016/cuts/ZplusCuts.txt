@@ -35,7 +35,6 @@ cuts =
 		maxJets = 6;
 		numbJets = 0;
 		maxbJets = 0;
-		zPlusControl = 0;
 	}
 }
 trigLabel = "e";
