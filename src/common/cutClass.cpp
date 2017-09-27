@@ -84,7 +84,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //B-discriminator cut
   numbJets_{1},
   maxbJets_{2},
-  looseBjetVeto_{0},
+  zPlusControl_{0},
   //bDiscCut_{0.9535}, // Tight cut
   bDiscCut_{0.8484}, // Medium level
   //bDiscCut_{0.5426}, // Loose cut
@@ -322,7 +322,7 @@ bool Cuts::parse_config(std::string confName){
     jets.lookupValue("maxbJets",maxbJets_);
     jets.lookupValue("numcJets",numcJets_);
     jets.lookupValue("maxcJets",maxcJets_);
-    jets.lookupValue("looseBjetVeto",looseBjetVeto_);
+    jets.lookupValue("zPlusControl",zPlusControl_);
   }
 
   std::cerr << "And so it's looking for " << numTightMu_ << " muons and " << numTightEle_ << " electrons" << std::endl;
@@ -381,10 +381,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
-  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
-  if ( looseBjetVeto_ == 1 && ( event->bTagIndex.size() != event->bTagLooseIndex.size() ) ) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
@@ -1922,10 +1920,8 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
-  if ( looseBjetVeto_ == 1 ) event->bTagLooseIndex = makeLooseBCuts(event,event->jetIndex, systToRun);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
-  if ( looseBjetVeto_ == 1  && (event->bTagIndex.size() != event->bTagLooseIndex.size()) ) return false;
 
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
