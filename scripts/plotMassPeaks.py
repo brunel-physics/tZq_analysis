@@ -17,25 +17,25 @@ def main():
   wSigma = 8.0
   topSigma = 30.0
 
-  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_tZq.root")
-  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TT.root")
-  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M50.root")
-  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M50_aMCatNLO.root")
+  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_tZq.root")
+  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TT.root")
+  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M50.root")
+  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M50_aMCatNLO.root")
 
-  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M10To50.root")
-  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_DYToLL_M10To50_aMCatNLO.root")
-  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartChan.root")
-  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TbartW.root")
-  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_THQ.root")
-  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TsChan.root")
-  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TtChan.root")
-  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TtW.root")
-  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TTW.root")
-  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_TTZ.root")
-  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_Wjets.root")
-  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_WW.root")
-  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_WZ.root")
-  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz20mw50/histofile_ZZ.root")
+  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M10To50.root")
+#  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M10To50_aMCatNLO.root")
+  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TbartChan.root")
+  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TbartW.root")
+  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_THQ.root")
+  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TsChan.root")
+  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TtChan.root")
+  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TtW.root")
+  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TTW.root")
+  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TTZ.root")
+  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_Wjets.root")
+  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_WW.root")
+  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_WZ.root")
+  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_ZZ.root")
 
 
   # tZq Histos
@@ -183,15 +183,15 @@ def main():
     if ( chi2 < sigCut ) : DY_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
-  for event in infile_DY.Ttree_DYToLL_M50_aMCatNLO :
+  for event in infile_DY_amcatnlo.Ttree_DYToLL_M50_aMCatNLO :
 #    if (event.Channel != 0) : continue
     weight = 1
     if (weighted) : weight = event.EvtWeight
 
     if ( massCut and event.topMass < 220 and event.topMass > 110 ) : DY_amcatnlo_topMassHisto.Fill(event.topMass,weight)
     if ( massCut and event.wPairMass < 90.385 and event.wPairMass > 70.385 ) : DY_amcatnlo_wMassHisto.Fill(event.wPairMass,weight)
-    if not ( massCut ) : DY_topMassHisto_amcatnlo.Fill(event.topMass,weight)
-    if not ( massCut ) : DY_wMassHisto_amcatnlo.Fill(event.wPairMass,weight)
+    if not ( massCut ) : DY_amcatnlo_topMassHisto.Fill(event.topMass,weight)
+    if not ( massCut ) : DY_amcatnlo_wMassHisto.Fill(event.wPairMass,weight)
 
     wChi2Term   = (event.wPairMass - 80.3585)/wSigma
     topChi2Term = (event.topMass - 173.21)/topSigma
@@ -566,6 +566,7 @@ def main():
   subprocess.call("mkdir plots/chiSquared/tZq/",shell=True)
   subprocess.call("mkdir plots/chiSquared/TT/",shell=True)
   subprocess.call("mkdir plots/chiSquared/DY/",shell=True)
+  subprocess.call("mkdir plots/chiSquared/DY_amcatnlo/",shell=True)
   subprocess.call("mkdir plots/chiSquared/All/",shell=True)
 
   tZq_topMassHisto.Fit("gaus")
@@ -609,6 +610,16 @@ def main():
   DY_chi2Histo.SaveAs("plots/chiSquared/DY/chi2.root")
   DY_topVsWsignalHisto.SaveAs("plots/chiSquared/DY/signalMassPlot.root")
   DY_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY/controlMassPlot.root")
+
+  DY_amcatnlo_topMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/topMass.root")
+  DY_amcatnlo_wMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/wMass.root")
+  DY_amcatnlo_topVsWmassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/topVsWmass.root")
+  DY_amcatnlo_wVsChi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/wVsChi2.root")
+  DY_amcatnlo_topVsChi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/topVsChi2.root")
+  DY_amcatnlo_wVsTopvsChi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/wVsTopvsChi2.root")
+  DY_amcatnlo_chi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/chi2.root")
+  DY_amcatnlo_topVsWsignalHisto.SaveAs("plots/chiSquared/DY_amcatnlo/signalMassPlot.root")
+  DY_amcatnlo_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY_amcatnlo/controlMassPlot.root")
 
   All_topMassHisto.Fit("gaus")
   All_wMassHisto.Fit("gaus")
