@@ -966,6 +966,7 @@ void AnalysisAlgo::runMainAnalysis(){
       //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
       //    htemp->SaveAs("tempCanvas.png");
       int foundEvents{0};
+      double foundEventsNorm{0.0};
 
       //If event is amc@nlo, need to sum number of positive and negative weights first.
       if ( dataset->isMC() ) {
@@ -1140,6 +1141,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 
 	  foundEvents++;
+	  foundEventsNorm += eventWeight;
 	  if (systInd > 0) systMask = systMask << 1;
 	}// End systematics loop.
       } //end event loop
@@ -1228,6 +1230,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       }
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
+      std::cerr << "\nFound " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
       //Delete generator level plot. Avoid memory leaks, kids.
       delete generatorWeightPlot;
       generatorWeightPlot = nullptr;
