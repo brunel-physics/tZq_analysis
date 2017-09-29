@@ -1039,6 +1039,9 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
 
+	  //If amcatnlo DY, normalise
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" ) eventWeight *= 0.420257;
+
 	  //If ttbar, do reweight
 //          std::cout << "eventWeight: " << eventWeight << std::endl;
           if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
