@@ -1036,18 +1036,20 @@ void AnalysisAlgo::runMainAnalysis(){
 	    cutObj->dumpLooseLepInfo(event);
 	    cutObj->dumpLeptonInfo(event);
 	  }
+
 	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
-	  //std::cout << "channel: " << channel << std::endl;
-	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
-	    if (systInd) systMask = systMask << 1;
-	    continue;
-	  }
 
 	  //If ttbar, do reweight
 //          std::cout << "eventWeight: " << eventWeight << std::endl;
           if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
 //	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
 //          std::cout << "eventWeight: " << eventWeight << std::endl;
+
+	  //std::cout << "channel: " << channel << std::endl;
+	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
+	    if (systInd) systMask = systMask << 1;
+	    continue;
+	  }
 
 	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
 	  //Everything else uses LHE event weights
@@ -1230,7 +1232,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
       }
       std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
-      std::cerr << "\nFound " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
+      std::cerr << "Found " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
       //Delete generator level plot. Avoid memory leaks, kids.
       delete generatorWeightPlot;
       generatorWeightPlot = nullptr;
