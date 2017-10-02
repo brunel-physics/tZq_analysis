@@ -130,7 +130,7 @@ plotType = f
 
 [ttHToNonbb]
 fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
-totalEvents = 3945824
+totalEvents = 3104359
 crossSection = 0.2151
 runType = mc
 histoName = ttH
