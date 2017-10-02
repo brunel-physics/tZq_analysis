@@ -41,8 +41,8 @@ ls /data0/data/tZqSkimsRun2015/ttbarInclusive_powerheg_ext3/* -1d >> $TQZ_TOOLS_
 ls /data0/data/tZqSkimsRun2015/ttbarInclusive_powerheg_ext4/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 ls /data0/data/tZqSkimsRun2015/ttbarInclusive_powerheg_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttbarInclusivePowerhegExt3Files.txt
 
-ls /data0/data/tZqSkimsRun2016/ttHTobb/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttHTobbFiles.txt
-ls /data0/data/tZqSkimsRun2016/ttHToNonbb/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttHToNonbbFiles.txt
+ls /data0/data/tZqSkimsRun2015/ttHTobb/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttHTobbFiles.txt
+ls /data0/data/tZqSkimsRun2015/ttHToNonbb/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttHToNonbbFiles.txt
 
 ls /data0/data/tZqSkimsRun2015/ttWlnu/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttWlnuFiles.txt
 ls /data0/data/tZqSkimsRun2015/ttW2q/* -1d >> $TQZ_TOOLS_PATH/configs/2015/datasets/fileLists/ttW2qFiles.txt

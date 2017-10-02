@@ -119,7 +119,7 @@ label = Single Top
 plotType = f
 
 [ttHTobb]
-fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
+fileName = configs/2015/datasets/fileLists/ttHTobbFiles.txt
 totalEvents = 3772012
 crossSection = 0.2934
 runType = mc
@@ -129,7 +129,7 @@ label = ttH
 plotType = f
 
 [ttHToNonbb]
-fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+fileName = configs/2015/datasets/fileLists/ttHToNonbbFiles.txt
 totalEvents = 3104359
 crossSection = 0.2151
 runType = mc
@@ -218,7 +218,7 @@ label = WW
 plotType = f
 
 [WWW]
-fileName = configs/2016/datasets/fileLists/WWWFiles.txt
+fileName = configs/2015/datasets/fileLists/WWWFiles.txt
 totalEvents = 240000
 crossSection = 0.2086
 runType = mc
@@ -228,7 +228,7 @@ label = vvv
 plotType = f
 
 [WWZ]
-fileName = configs/2016/datasets/fileLists/WWZFiles.txt
+fileName = configs/2015/datasets/fileLists/WWZFiles.txt
 totalEvents = 248400
 crossSection = 0.1651
 runType = mc
@@ -238,7 +238,7 @@ label = vvv
 plotType = f
 
 [WZZ]
-fileName = configs/2016/datasets/fileLists/WZZFiles.txt
+fileName = configs/2015/datasets/fileLists/WZZFiles.txt
 totalEvents = 249800
 crossSection = 0.05565
 runType = mc
@@ -248,7 +248,7 @@ label = vvv
 plotType = f
 
 [ZZZ]
-fileName = configs/2016/datasets/fileLists/ZZZFiles.txt
+fileName = configs/2015/datasets/fileLists/ZZZFiles.txt
 totalEvents = 250000
 crossSection = 0.01398
 runType = mc
