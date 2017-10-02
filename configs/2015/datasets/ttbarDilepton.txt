@@ -1,0 +1,11 @@
+[ttbarDilepton]
+fileName = configs/2015/datasets/fileLists/ttbarDileptonFiles.txt
+totalEvents = 30796419
+crossSection = 87.31 
+runType = mc
+histoName = ttbar
+colour = kRed
+label = ttbar
+plotType = f
+
+[]
