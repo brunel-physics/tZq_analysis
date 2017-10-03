@@ -260,7 +260,7 @@ plotType = f
 [wPlusJets]
 fileName = configs/2015/datasets/fileLists/wPlusJetsFiles.txt
 runType = mc
-totalEvents = 262341358
+totalEvents = 24156124
 crossSection = 61526.7
 histoName = wJets
 colour = kGray
