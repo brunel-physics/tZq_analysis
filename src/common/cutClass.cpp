@@ -2651,6 +2651,8 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
 	return returnJet;
   }
 
+  // data is dealt with above - only MC should be dealt with below
+
   float jerSF{1.};
   float jerSigma{0.};
   std::pair< float, float > jetSFs{};
@@ -2664,25 +2666,38 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
   if (syst == 16) jerSF += jerSigma;
   else if (syst == 32) jerSF -= jerSigma;
 
-  if ( isMC_ && event->genJetPF2PATPT[index] > 1e-2 ){
-    if ( deltaR(event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index]) < 0.4/2.0 && std::abs(event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index]) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
-      newSmearValue = 1. + ( jerSF - 1. ) * (event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index])/(event->jetPF2PATPtRaw[index])  ;
-      if ( newSmearValue < 0. ) newSmearValue = 0.0;
-//    old method to apply smear value
-//      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
-//    more elegant way
+  double dR = deltaR( event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index] );
+  double min_dR = std::numeric_limits<double>::infinity();
+  double dPt = event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index];
+
+  if ( dR > min_dR ) { // If dR is greater than infinity ... just return the unsmeared jet
+    returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+    return returnJet;    
+  }
+
+  if ( isMC_ ){
+    if ( event->genJetPF2PATPT[index] > 1e-2 && dR < 0.4/2.0 && std::abs( dPt ) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
+      newSmearValue = 1. + ( jerSF - 1. ) * dPt / (event->jetPF2PATPtRaw[index]);
       returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
       returnJet *= newSmearValue;
     }
-    else { // If not, randomly smear
-      newSmearValue = 1.0+TRandom(rand()).Gaus(0.0, std::sqrt(jerSF*jerSF-1.0)*jerSigma);
-      if ( newSmearValue < 0. ) newSmearValue = 0.0;
-//    old method to apply smear value
-//      returnJet.SetPxPyPzE(newSmearValue*event->jetPF2PATPx[index],newSmearValue*event->jetPF2PATPy[index],newSmearValue*event->jetPF2PATPz[index],newSmearValue*event->jetPF2PATE[index]);
-//    more elegant way
+
+    else { // If not matched to a gen jet, randomly smear
+      double sigma = jerSigma * std::sqrt( jerSF * jerSF - 1.0 ); 
+      std::normal_distribution<> d(0, sigma);
+      std::mt19937 gen ( rand() );
+      newSmearValue = 1.0 + d(gen); 
       returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
       returnJet *= newSmearValue;
     }
+
+    if ( returnJet.E() < 1e-2 ) { // Negative or too small smearFactor. We would change direction of the jet
+      double newSmearFactor = 1e-2 / event->jetPF2PATE[index];
+      newSmearValue = newSmearFactor;
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
+    } 
+
   }
 
   else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
