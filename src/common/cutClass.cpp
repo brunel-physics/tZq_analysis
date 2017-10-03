@@ -2675,8 +2675,8 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
     return returnJet;    
   }
 
-  if ( isMC_ ){
-    if ( event->genJetPF2PATPT[index] > 1e-2 && dR < 0.4/2.0 && std::abs( dPt ) < 3.0*jerSigma ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
+  if ( isMC_ ) {
+    if ( event->genJetPF2PATPT[index] > 1e-2 && dR < (0.4/2.0) && std::abs( dPt ) < 3.0*jerSigma*event->jetPF2PATPtRaw[index] ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
       newSmearValue = 1. + ( jerSF - 1. ) * dPt / (event->jetPF2PATPtRaw[index]);
       returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
       returnJet *= newSmearValue;
@@ -2697,7 +2697,6 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
       returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
       returnJet *= newSmearValue;
     } 
-
   }
 
   else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
