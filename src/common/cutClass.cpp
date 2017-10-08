@@ -354,8 +354,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   }
 
   if( !skipTrigger_ ) {
-    if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
-    if ( is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger for data and 2016, exclude MC.
+    if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger cuts
   }
 
   if (!metFilters(event)) return false;
