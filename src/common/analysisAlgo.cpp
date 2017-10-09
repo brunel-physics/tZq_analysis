@@ -977,6 +977,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
 	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
 	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
+	  std::cout << "number of postitive weights: " << sumPositiveWeights_ << std::endl;
+	  std::cout << "number of negative weights: " << sumNegativeWeights_ << std::endl;
 	  exit(999);
 	}
       }
