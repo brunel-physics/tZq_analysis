@@ -1,26 +1,30 @@
 cuts = 
 {
 	tightMuons = {
-	      pt   = 20.;
-	      eta  = 2.4;
+              pt        = 12.;
+              ptLeading = 20.;
+	      eta    = 2.4;
 	      relIso = 0.15;
 	      number = 0;
 	      },
 	looseMuons = {
-	      pt   = 20.;
-	      eta  = 2.4;
+	      pt        = 12.;
+              ptLeading = 20.;
+	      eta    = 2.4;
 	      relIso = 0.25;
 	      number = 0;
 	      },
 	tightElectrons = {
-	      pt   = 20.;
-	      eta  = 2.5;
+	      pt        = 15.;
+              ptLeading = 20.;
+	      eta    = 2.5;
 	      relIso = 0.107587;
 	      number = 2.;
 	      },
 	looseElectrons = {
-	      pt   = 20.;
-	      eta  = 2.5;
+	      pt        = 15.;
+              ptLeading = 20.;
+	      eta    = 2.5;
 	      relIso = 0.126;
 	      number = 2.; 
 	      }
@@ -28,7 +32,7 @@ cuts =
 		pt = 30.0;
 		eta = 4.7;
 		numJets = 4;
-		maxJets = 8;
+		maxJets = 6;
 		numbJets = 1;
 		maxbJets = 2;
 		looseBjetVeto = 0;
