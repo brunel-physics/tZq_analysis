@@ -1441,8 +1441,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
         // eff across all runs: 0.98314 +0.00051/-0.00049; SF across all runs: 0.99113 +/- 0.00008
         // eff pre-HIP fix: 0.97910 -0.00073/+0.00075; eff post-HIP fix: 0.99038 -0.00058/+0.00062; SF pre-HIP fix 0.98706 +/- 0.00022 and 0.99844 +/- 0.00008 for post-HIP fix
-//        twgt = 0.80062;
+//        twgt = 1.0;
         twgt = ( 0.98706 * lumiRunsBCDEF_ + 0.99844 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+//        twgt = ( 0.89710 * lumiRunsBCDEF_ + 0.99684 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
         if (syst == 1) twgt += ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
         if (syst == 2) twgt -= ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
