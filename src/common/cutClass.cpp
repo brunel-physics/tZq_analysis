@@ -451,27 +451,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->electronIndexLoose = getLooseEles(event);
   if (event->electronIndexLoose.size() != numLooseEle_) return false;
 
-  // temp solution - reject differences for reduced JSON for single/double EG based on L1 Ele32 path
-  if ( numTightEle_ == 2 ) { 
-    if ( event->eventRun == 279975 && ( event->eventLumiblock > 86 && event->eventLumiblock < 118 ) ) return false;
-    if ( event->eventRun == 281707 && ( event->eventLumiblock > 101 && event->eventLumiblock < 151 ) ) return false;
-    if ( event->eventRun == 281707 && ( event->eventLumiblock > 155 && event->eventLumiblock < 193 ) ) return false;
-    if ( event->eventRun == 281797 && ( event->eventLumiblock < 185 ) ) return false;
-    if ( event->eventRun == 281975 && ( event->eventLumiblock < 27 ) ) return false;
-    if ( event->eventRun == 282092 && ( event->eventLumiblock < 96 ) ) return false;
-    if ( event->eventRun == 282730 && ( event->eventLumiblock > 89 && event->eventLumiblock < 126 ) ) return false;
-    if ( event->eventRun == 282842 && ( event->eventLumiblock > 13 && event->eventLumiblock < 40 ) ) return false;
-    if ( event->eventRun == 283049 && ( event->eventLumiblock < 88 ) ) return false;
-    if ( event->eventRun == 283050 && ( event->eventLumiblock < 38 ) ) return false;
-    if ( event->eventRun == 283270 && ( event->eventLumiblock < 154 ) ) return false;
-    if ( event->eventRun == 283353 && ( event->eventLumiblock < 167 ) ) return false;
-    if ( event->eventRun == 283407 && ( event->eventLumiblock > 87 ) ) return false;
-    if ( event->eventRun == 283408 && ( event->eventLumiblock < 90 ) ) return false;
-    if ( event->eventRun == 283933 && ( event->eventLumiblock > 99 && event->eventLumiblock < 119 ) ) return false;
-    if ( event->eventRun == 283946 && ( event->eventLumiblock < 133 ) ) return false;
-    if ( event->eventRun == 284025 && ( event->eventLumiblock < 155 ) ) return false;
-  }
-
   event->muonIndexTight = getTightMuons(event);
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
@@ -1388,7 +1367,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
       if(syst == 2) twgt = 0.945;
     }
     else if (channel == "mumu"){
-      twgt = 0.927; // tight=0.934; medium=0.931
+      twgt = 0.934; // tight=0.934; medium=0.931
       if (syst == 1) twgt = 0.932;
       if (syst == 2) twgt = 0.922;
     }
@@ -1428,9 +1407,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98866; // 0.97720 for data eff; 0.98866 for SF
-        if (syst == 1) twgt += 0.00041; // -0.00098/+0.00102 for eff; 0.00041 for SF
-        if (syst == 2) twgt -= 0.00041;
+        twgt = 0.98775; // 0.97907 for data eff; 0.98775 for SF
+        if (syst == 1) twgt += 0.00036; // -0.00110/+0.00104 for eff; 0.00036 for SF
+        if (syst == 2) twgt -= 0.00036;
       }
     }
     else if (channel == "mumu"){
@@ -1439,13 +1418,13 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
 	// Double muon only: (preHIP) 0.80757+/-0.00113 (postHIP) 0.94326+/-0.00062 (all runs) 0.80062 +/- 0.00057
 
-        // eff across all runs: 0.98314 +0.00051/-0.00049; SF across all runs: 0.99113 +/- 0.00008
-        // eff pre-HIP fix: 0.97910 -0.00073/+0.00075; eff post-HIP fix: 0.99038 -0.00058/+0.00062; SF pre-HIP fix 0.98706 +/- 0.00022 and 0.99844 +/- 0.00008 for post-HIP fix
+        // eff across all runs: 0.98726 +0.00050/-0.00052; SF across all runs: 0.99100 +/- 0.00019
+        // eff pre-HIP fix: 0.97910 -0.00073/+0.00075; eff post-HIP fix: 0.99308 -0.00056/0.00062; SF pre-HIP fix 0.98710 +/- 0.00021 and 0.99684 +/- 0.00013 for post-HIP fix
 //        twgt = 1.0;
-        twgt = ( 0.98706 * lumiRunsBCDEF_ + 0.99844 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.98710 * lumiRunsBCDEF_ + 0.99684 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
 //        twgt = ( 0.89710 * lumiRunsBCDEF_ + 0.99684 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-        if (syst == 1) twgt += ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-        if (syst == 2) twgt -= ( 0.00022 * lumiRunsBCDEF_ + 0.00008 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 1) twgt += ( 0.00021 * lumiRunsBCDEF_ + 0.00013 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 2) twgt -= ( 0.00021 * lumiRunsBCDEF_ + 0.00013 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
         // mumu separate runs SFs
         // RunB: 0.987; RunC: 0.981; RunD: 0.988; RunE: 0.985; RunF: 0.993; RunG: 0.999; RunH: 0.998
@@ -1457,8 +1436,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 1.00963; // 0.87161 for eff; 1.00963 for SF
-        if (syst == 1) twgt += 0.00700; // -0.00929/+0.00995 for eff; 0.00700 for SF
+        twgt = 0.98277; // 0.87322 for eff; 0.98277 for SF
+        if (syst == 1) twgt += 0.00700; // -0.01083/0.01173 for eff; 0.01269 for SF
         if (syst == 2) twgt -= 0.00700;
       }
     }
@@ -2530,6 +2509,8 @@ float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
 }
 
 float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
+
+  if ( !is2016_ ) return 1.0;
 
   // Single Muon ROOT File SFs
   double twgt {1.0};
