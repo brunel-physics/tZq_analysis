@@ -28,10 +28,9 @@ cuts =
 		pt = 30.0;
 		eta = 4.7;
 		numJets = 4;
-		maxJets = 4;
+		maxJets = 6;
 		numbJets = 0;
 		maxbJets = 0;
-		looseBjetVeto = 1;
 	}
 }
 trigLabel = "e";

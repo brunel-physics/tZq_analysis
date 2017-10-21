@@ -562,8 +562,8 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
 
-    if (tempVec.Pt() <= 20.0 && !is2016_) continue;
-//    if (tempVec.Pt() <= 25.0 && is2016_) continue;
+    if ( electrons.size() < 1 && tempVec.Pt() <= 20. && !is2016_ ) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
 
     if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
@@ -608,11 +608,11 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-    if (event->muonPF2PATPt[i] <= 20.0 && !is2016_) continue;
-//    if (event->muonPF2PATPt[i] <= 25.0 && is2016_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 20. && !is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && !is2016_) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 35. && is2016_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 35. && is2016_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 30. && is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 30. && is2016_) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;

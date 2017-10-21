@@ -1,4 +1,4 @@
-datasets = "configs/2015/datasets/DY_amcanlo_mumu.txt";
+datasets = "configs/2015/datasets/DY_amcatnlo_mumu.txt";
 cuts = "configs/2015/cuts/ZplusCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
 outputFolder = "plots/2015/zPlus_amcatnlo_mumu/";
