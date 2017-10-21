@@ -13,6 +13,7 @@
 #include <sstream>
 #include <sys/stat.h>
 
+#include "TH1.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TEfficiency.h"
@@ -21,6 +22,7 @@ const bool HIP_ERA (false);
 const bool DO_HIPS (false);
 
 TriggerScaleFactors::TriggerScaleFactors():
+  //For efficiencies
   numberPassedElectrons(),
   numberTriggeredDoubleElectrons(),
 
@@ -30,6 +32,23 @@ TriggerScaleFactors::TriggerScaleFactors():
   numberPassedMuonElectrons(),
   numberTriggeredMuonElectrons(),
 
+  // binned efficiencies
+  numberPassedElectrons_MC(),
+  numberTriggeredDoubleElectrons_MC(),
+  numberPassedMuons_MC(),
+  numberTriggeredDoubleMuons_MC(),
+  numberPassedMuonElectrons_MC(),
+  numberTriggeredMuonElectrons_MC(),
+
+  numberPassedElectrons_data(),
+  numberTriggeredDoubleElectrons_data(),
+  numberPassedMuons_data(),
+  numberTriggeredDoubleMuons_data(),
+  numberPassedMuonElectrons_data(),
+  numberTriggeredMuonElectrons_data(),
+
+  // alpha systematics
+
   numberSelectedElectrons(),
   numberSelectedMuons(),
   numberSelectedMuonElectrons(),
@@ -37,7 +56,38 @@ TriggerScaleFactors::TriggerScaleFactors():
   numberSelectedDoubleElectronsTriggered(),
   numberSelectedDoubleMuonsTriggered(),
   numberSelectedMuonElectronsTriggered()
-{}
+{
+  //// Plots for turn on curve studies
+
+
+  Float_t ptBins[]{ 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
+  Int_t numPt_bins{13};
+  Float_t etaBins[]{ -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
+  Int_t numEta_bins{13};
+
+  // MC histos
+
+  h_electrons_pT_MC = new TH1F("electrons_pT_MC","p_{T} turn-on curve for ee channel MC", numPt_bins, ptBins);
+  h_electrons_eta_MC = new TH1F("electrons_eta_MC","#eta turn-on curve for ee channel MC", numEta_bins, etaBins);
+
+  h_muons_pT_MC = new TH1F("muons_pT_MC","p_{T} turn-on curve for #mu#mu channel MC", numPt_bins, ptBins);
+  h_muons_eta_MC = new TH1F("muons_eta_MC","#eta turn-on curve for #mu#mu channel MC", numEta_bins, etaBins);
+
+  h_muonElectron_pT_MC = new TH1F("muonElectron_pT_MC","p_{T} turn-on curve for e#mu channel MC", numPt_bins, ptBins);
+  h_muonElectron_eta_MC = new TH1F("muonElectron_eta_MC","#eta turn-on curve for e#mu channel MC", numEta_bins, etaBins);
+
+  // Data histos
+
+  h_electrons_pT_data = new TH1F("electrons_pT_data","p_{T} turn-on curve for ee channel data", numPt_bins, ptBins);
+  h_electrons_eta_data = new TH1F("electrons_eta_data","#eta turn-on curve for ee channel data", numEta_bins, etaBins);
+
+  h_muons_pT_data = new TH1F("muons_pT_data","p_{T} turn-on curve for #mu#mu channel data", numPt_bins, ptBins);
+  h_muons_eta_data = new TH1F("muons_eta_data","#eta turn-on curve for #mu#mu channel data", numEta_bins, etaBins);
+
+  h_muonElectron_pT_data = new TH1F("muonElectron_pT_data","p_{T} turn-on curve for e#mu channel data", numPt_bins, ptBins);
+  h_muonElectron_eta_data = new TH1F("muonElectron_eta_data","#eta turn-on curve for e#mu channel data", numEta_bins, etaBins);
+
+}
 
 TriggerScaleFactors::~TriggerScaleFactors(){}
 
@@ -326,6 +376,8 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
 void TriggerScaleFactors::runMainAnalysis(){
 
+  //PU reweighting
+
   if ( !is2016_ ) {
     //Make pileupReweighting stuff here
     dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
@@ -342,15 +394,15 @@ void TriggerScaleFactors::runMainAnalysis(){
 
   else {
     //Make pileupReweighting stuff here
-    dataPileupFile = new TFile("pileup/2015/truePileupTest.root","READ");
+    dataPileupFile = new TFile("pileup/2016/truePileupTest.root","READ");
     dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile("pileup/2015/pileupMC.root","READ");
+    mcPileupFile = new TFile("pileup/2016/pileupMC.root","READ");
     mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
     //Get systematic files too.
-    systUpFile = new TFile("pileup/2015/truePileupUp.root","READ");
+    systUpFile = new TFile("pileup/2016/truePileupUp.root","READ");
     pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile("pileup/2015/truePileupDown.root","READ");
+    systDownFile = new TFile("pileup/2016/truePileupDown.root","READ");
     pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
   }
 
@@ -423,6 +475,8 @@ void TriggerScaleFactors::runMainAnalysis(){
       lEventTimer->DrawProgressBar(i);
       event->GetEntry(i);
 
+//      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+
       if ( HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
       if ( !HIP_ERA && event->eventRun < 278820 && !(dataset->isMC()) && DO_HIPS ) continue;
 
@@ -463,6 +517,9 @@ void TriggerScaleFactors::runMainAnalysis(){
       if ( passMuonElectronSelection )  triggerMetMuonElectronSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) { // If is MC
+	//Histos bit
+
+	//SFs bit
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredDoubleElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
 	numberPassedMuons[0] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
@@ -480,7 +537,9 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;
       }
       else { // Else is data
+	//Histos bit
 
+	//SFs bit
 	numberPassedElectrons[1] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredDoubleElectrons[1] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
 	numberPassedMuons[1] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
@@ -507,39 +566,16 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
 //    if (tempVec.Pt() <= 25.0 && is2016_) continue;
 
     if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && is2016_ ) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
 
     if ( std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
 
     // 2015 cuts
     if ( !is2016_ ) {
       if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
-      // Barrel cut-based ID
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
-	if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
-	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
-	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
-	if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
-        if (event->elePF2PATPhotonConversionTag[i]) continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
-        if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
-        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
-        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
-        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        if (event->elePF2PATPhotonConversionTag[i]) continue;
-      }
-      else continue;
+
+      // VID cut
+      if ( event->elePF2PATCutIdTight[i] < 1 ) continue;
     }
 
     // 2016 cuts
@@ -575,8 +611,8 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if (event->muonPF2PATPt[i] <= 20.0 && !is2016_) continue;
 //    if (event->muonPF2PATPt[i] <= 25.0 && is2016_) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 27. && is2016_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 35. && is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 35. && is2016_) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
@@ -714,8 +750,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
 bool TriggerScaleFactors::doubleElectronTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool eTrig{false};
 
-  if ( !is2016_ ) return false; // Single lepton paths not implemented for 2015
-  else {
+  if ( is2016_ )  { // Single lepton paths not implemented for 2015
     if ( !isMC ) {
       if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0 ) eTrig = true;
       if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0 ) eTrig = true;
@@ -820,8 +855,8 @@ bool TriggerScaleFactors::muonElectronTriggerCut( AnalysisEvent* event, bool isM
 
 bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC ) {
   bool muTrig{false};
-  if ( !is2016_ ) return false; // Single lepton paths not implemented for 2015
-  else {
+
+  if ( is2016_ ) { // Single lepton paths not implemented for 2015
     if ( !isMC ) {
 
       if ( event->HLT_IsoMu24_v1 > 0 ) muTrig = true;
@@ -934,6 +969,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true; //post-HIP
     }
   }
+
   if ( mumuTrig == true || muTrig == true ) return true;
   else return false;
 }
@@ -1027,6 +1063,12 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC) {
 
 void TriggerScaleFactors::savePlots()
 {
+  // Histos first
+  TFile *outFile{new TFile{ (outFolder+"triggerPlots.root").c_str(), "RECREATE"}};
+
+  //histElePt->Write();
+  //outFile->Close();
+
   // Calculate MC efficiency
 
   //// LeptonTriggers
