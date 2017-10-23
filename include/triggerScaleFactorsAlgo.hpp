@@ -2,7 +2,6 @@
 #define _triggerScaleFactorsAlgo_hpp_
 
 #include <vector>
-#include "TH1.h"
 #include "TH2.h"
 #include "TCanvas.h"
 #include "TPad.h"
@@ -17,6 +16,8 @@
 class AnalysisEvent;
 class TTree;
 class TFile;
+class TH1F;
+class TProfile;
 
 class TriggerScaleFactors{
 
@@ -82,23 +83,6 @@ class TriggerScaleFactors{
 	double numberPassedMuonElectrons[2];
 	double numberTriggeredMuonElectrons[2];
 
-	//Efficiencies pT/eta binned
-
-	double numberPassedElectrons_MC[13][13];
-	double numberTriggeredDoubleElectrons_MC[13][13];
-	double numberPassedMuons_MC[13][13];
-	double numberTriggeredDoubleMuons_MC[13][13];
-	double numberPassedMuonElectrons_MC[13][13];
-	double numberTriggeredMuonElectrons_MC[13][13];
-
-	double numberPassedElectrons_data[13][13];
-	double numberTriggeredDoubleElectrons_data[13][13];
-	double numberPassedMuons_data[13][13];
-	double numberTriggeredDoubleMuons_data[13][13];
-	double numberPassedMuonElectrons_data[13][13];
-	double numberTriggeredMuonElectrons_data[13][13];
-
-
 	//Systematic variables
 	double numberSelectedElectrons[2];
 	double numberSelectedMuons[2];
@@ -109,18 +93,31 @@ class TriggerScaleFactors{
 	double numberSelectedMuonElectronsTriggered[2]; // Double MuonEG
 
         // Plots for turn on curve studies
-	TH1F* h_electrons_pT_MC;
-	TH1F* h_electrons_eta_MC;
-	TH1F* h_muons_pT_MC;
-	TH1F* h_muons_eta_MC;
-	TH1F* h_muonElectron_pT_MC;
-	TH1F* h_muonElectron_eta_MC;
-	TH1F* h_electrons_pT_data;
-	TH1F* h_electrons_eta_data;
-	TH1F* h_muons_pT_data;
-	TH1F* h_muons_eta_data;
-	TH1F* h_muonElectron_pT_data;
-	TH1F* h_muonElectron_eta_data;
+	TProfile* h_electron1_pT_MC;
+	TProfile* h_electron1_eta_MC;
+	TProfile* h_electron2_pT_MC;
+	TProfile* h_electron2_eta_MC;
+	TProfile* h_muon1_pT_MC;
+	TProfile* h_muon1_eta_MC;
+	TProfile* h_muon2_pT_MC;
+	TProfile* h_muon2_eta_MC;
+	TProfile* h_muonElectron1_pT_MC;
+	TProfile* h_muonElectron1_eta_MC;
+	TProfile* h_muonElectron2_pT_MC;
+	TProfile* h_muonElectron2_eta_MC;
+
+	TProfile* h_electron1_pT_data;
+	TProfile* h_electron1_eta_data;
+	TProfile* h_electron2_pT_data;
+	TProfile* h_electron2_eta_data;
+	TProfile* h_muon1_pT_data;
+	TProfile* h_muon1_eta_data;
+	TProfile* h_muon2_pT_data;
+	TProfile* h_muon2_eta_data;
+	TProfile* h_muonElectron1_pT_data;
+	TProfile* h_muonElectron1_eta_data;
+	TProfile* h_muonElectron2_pT_data;
+	TProfile* h_muonElectron2_eta_data;
 };
 
 #endif

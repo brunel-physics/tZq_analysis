@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 
 #include "TH1.h"
+#include "TProfile.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TEfficiency.h"
@@ -32,21 +33,6 @@ TriggerScaleFactors::TriggerScaleFactors():
   numberPassedMuonElectrons(),
   numberTriggeredMuonElectrons(),
 
-  // binned efficiencies
-  numberPassedElectrons_MC(),
-  numberTriggeredDoubleElectrons_MC(),
-  numberPassedMuons_MC(),
-  numberTriggeredDoubleMuons_MC(),
-  numberPassedMuonElectrons_MC(),
-  numberTriggeredMuonElectrons_MC(),
-
-  numberPassedElectrons_data(),
-  numberTriggeredDoubleElectrons_data(),
-  numberPassedMuons_data(),
-  numberTriggeredDoubleMuons_data(),
-  numberPassedMuonElectrons_data(),
-  numberTriggeredMuonElectrons_data(),
-
   // alpha systematics
 
   numberSelectedElectrons(),
@@ -59,33 +45,49 @@ TriggerScaleFactors::TriggerScaleFactors():
 {
   //// Plots for turn on curve studies
 
-
   Float_t ptBins[]{ 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
   Int_t numPt_bins{13};
   Float_t etaBins[]{ -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
   Int_t numEta_bins{13};
 
+//  Float_t sf_ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
+//  Int_t sf_numPt_bins{6};
+//  Float_t sf_etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
+//  Int_t sf_numEta_bins{4};
+
   // MC histos
 
-  h_electrons_pT_MC = new TH1F("electrons_pT_MC","p_{T} turn-on curve for ee channel MC", numPt_bins, ptBins);
-  h_electrons_eta_MC = new TH1F("electrons_eta_MC","#eta turn-on curve for ee channel MC", numEta_bins, etaBins);
+  h_electron1_pT_MC = new TProfile("electron1_pT_MC","p_{T} turn-on curve for leading electron MC", numPt_bins, ptBins);
+  h_electron1_eta_MC = new TProfile("electron1_eta_MC","#eta turn-on curve for leading MC", numEta_bins, etaBins);
+  h_electron2_pT_MC = new TProfile("electron2_pT_MC","p_{T} turn-on curve for subleading electron MC", numPt_bins, ptBins);
+  h_electron2_eta_MC = new TProfile("electron2_eta_MC","#eta turn-on curve for subleading MC", numEta_bins, etaBins);
 
-  h_muons_pT_MC = new TH1F("muons_pT_MC","p_{T} turn-on curve for #mu#mu channel MC", numPt_bins, ptBins);
-  h_muons_eta_MC = new TH1F("muons_eta_MC","#eta turn-on curve for #mu#mu channel MC", numEta_bins, etaBins);
+  h_muon1_pT_MC = new TProfile("muon1_pT_MC","p_{T} turn-on curve for leading #mu MC", numPt_bins, ptBins);
+  h_muon1_eta_MC = new TProfile("muon1_eta_MC","#eta turn-on curve for leading #mu MC", numEta_bins, etaBins);
+  h_muon2_pT_MC = new TProfile("muon2_pT_MC","p_{T} turn-on curve for subleading #mu MC", numPt_bins, ptBins);
+  h_muon2_eta_MC = new TProfile("muon2_eta_MC","#eta turn-on curve for subleading #mu MC", numEta_bins, etaBins);
 
-  h_muonElectron_pT_MC = new TH1F("muonElectron_pT_MC","p_{T} turn-on curve for e#mu channel MC", numPt_bins, ptBins);
-  h_muonElectron_eta_MC = new TH1F("muonElectron_eta_MC","#eta turn-on curve for e#mu channel MC", numEta_bins, etaBins);
+  h_muonElectron1_pT_MC = new TProfile("muonElectron1_pT_MC","p_{T} turn-on curve for leading lep e#mu MC", numPt_bins, ptBins);
+  h_muonElectron1_eta_MC = new TProfile("muonElectron1_eta_MC","#eta turn-on curve for leading lep e#mu MC", numEta_bins, etaBins);
+  h_muonElectron2_pT_MC = new TProfile("muonElectron2_pT_MC","p_{T} turn-on curve for subleading lep e#mu MC", numPt_bins, ptBins);
+  h_muonElectron2_eta_MC = new TProfile("muonElectron2_eta_MC","#eta turn-on curve for subleading lep e#mu MC", numEta_bins, etaBins);
 
   // Data histos
 
-  h_electrons_pT_data = new TH1F("electrons_pT_data","p_{T} turn-on curve for ee channel data", numPt_bins, ptBins);
-  h_electrons_eta_data = new TH1F("electrons_eta_data","#eta turn-on curve for ee channel data", numEta_bins, etaBins);
+  h_electron1_pT_data = new TProfile("electron1_pT_data","p_{T} turn-on curve for leading electron data", numPt_bins, ptBins);
+  h_electron1_eta_data = new TProfile("electron1_eta_data","#eta turn-on curve for leading electron data", numEta_bins, etaBins);
+  h_electron2_pT_data = new TProfile("electron2_pT_data","p_{T} turn-on curve for subleading electron data", numPt_bins, ptBins);
+  h_electron2_eta_data = new TProfile("electron2_eta_data","#eta turn-on curve for subleading electron data", numEta_bins, etaBins);
 
-  h_muons_pT_data = new TH1F("muons_pT_data","p_{T} turn-on curve for #mu#mu channel data", numPt_bins, ptBins);
-  h_muons_eta_data = new TH1F("muons_eta_data","#eta turn-on curve for #mu#mu channel data", numEta_bins, etaBins);
+  h_muon1_pT_data = new TProfile("muon1_pT_data","p_{T} turn-on curve for leading #mu data", numPt_bins, ptBins);
+  h_muon1_eta_data = new TProfile("muon1_eta_data","#eta turn-on curve for leading #mu data", numEta_bins, etaBins);
+  h_muon2_pT_data = new TProfile("muon2_pT_data","p_{T} turn-on curve for subleading #mu data", numPt_bins, ptBins);
+  h_muon2_eta_data = new TProfile("muon2_eta_data","#eta turn-on curve for subleading #mu data", numEta_bins, etaBins);
 
-  h_muonElectron_pT_data = new TH1F("muonElectron_pT_data","p_{T} turn-on curve for e#mu channel data", numPt_bins, ptBins);
-  h_muonElectron_eta_data = new TH1F("muonElectron_eta_data","#eta turn-on curve for e#mu channel data", numEta_bins, etaBins);
+  h_muonElectron1_pT_data = new TProfile("muonElectron1_pT_data","p_{T} turn-on curve for leading lep e#mu data", numPt_bins, ptBins);
+  h_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","#eta turn-on curve for leading lep e#mu data", numEta_bins, etaBins);
+  h_muonElectron2_pT_data = new TProfile("muonElectron2_pT_data","p_{T} turn-on curve for subleading lep e#mu data", numPt_bins, ptBins);
+  h_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","#eta turn-on curve for subleading lep e#mu data", numEta_bins, etaBins);
 
 }
 
@@ -517,8 +519,6 @@ void TriggerScaleFactors::runMainAnalysis(){
       if ( passMuonElectronSelection )  triggerMetMuonElectronSelection = ( metTriggerCut( event ) );
 
       if ( dataset->isMC() ) { // If is MC
-	//Histos bit
-
 	//SFs bit
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredDoubleElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
@@ -535,10 +535,28 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberSelectedDoubleElectronsTriggered[0] += triggerDoubleEG*eventWeight;;
 	numberSelectedDoubleMuonsTriggered[0] += triggerDoubleMuon*eventWeight;
 	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;
+
+	//Histos bit
+        if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
+	  h_electron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+        }
+        if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
+          h_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+        }
+        if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
+	  h_muonElectron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+        }
       }
       else { // Else is data
-	//Histos bit
-
 	//SFs bit
 	numberPassedElectrons[1] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredDoubleElectrons[1] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
@@ -548,6 +566,26 @@ void TriggerScaleFactors::runMainAnalysis(){
         numberTriggeredMuonElectrons[1] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger
 
 	// NB No systematic stuff required for data
+
+	//Histos bit
+        if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
+	  h_electron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  h_electron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+        }
+        if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
+          h_muon1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          h_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+        }
+        if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
+	  h_muonElectron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  h_muonElectron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+        }
       }
 
     }
@@ -644,21 +682,6 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
       if (event->muonPF2PATVldPixHits[i] < 1) continue;
       if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
 
-      //ICHEP Medium Cut
-/*
-      // If not either track muon and global muon ...
-      if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
-      if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
-      bool goodGlobalMuon (true), tightSegmentCompatible (true);
-      if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
-      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
-      if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
-      if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
-      if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
-      if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
-      // If both good global muon and tight segment compatible are not true ...
-      if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
-*/
     }
 
   muons.emplace_back(i);
@@ -1066,8 +1089,33 @@ void TriggerScaleFactors::savePlots()
   // Histos first
   TFile *outFile{new TFile{ (outFolder+"triggerPlots.root").c_str(), "RECREATE"}};
 
-  //histElePt->Write();
-  //outFile->Close();
+  h_electron1_pT_MC->Write();
+  h_electron1_eta_MC->Write();
+  h_electron2_pT_MC->Write();
+  h_electron2_eta_MC->Write();
+  h_muon1_pT_MC->Write();
+  h_muon1_eta_MC->Write();
+  h_muon2_pT_MC->Write();
+  h_muon2_eta_MC->Write();
+  h_muonElectron1_pT_MC->Write();
+  h_muonElectron1_eta_MC->Write();
+  h_muonElectron2_pT_MC->Write();
+  h_muonElectron2_eta_MC->Write();
+
+  h_electron1_pT_data->Write();
+  h_electron1_eta_data->Write();
+  h_electron2_pT_data->Write();
+  h_electron2_eta_data->Write();
+  h_muon1_pT_data->Write();
+  h_muon1_eta_data->Write();
+  h_muon2_pT_data->Write();
+  h_muon2_eta_data->Write();
+  h_muonElectron1_pT_data->Write();
+  h_muonElectron1_eta_data->Write();
+  h_muonElectron2_pT_data->Write();
+  h_muonElectron2_eta_data->Write();
+
+  outFile->Close();
 
   // Calculate MC efficiency
 
