@@ -15,12 +15,23 @@
 
 #include "TH1.h"
 #include "TProfile.h"
+#include "TProfile2D.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TEfficiency.h"
 
 const bool HIP_ERA (false);
 const bool DO_HIPS (false);
+
+Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
+Int_t numPt_bins = {13};
+Double_t etaBins[] = { -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
+Int_t numEta_bins = {13};
+
+//Float_t sf_ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
+//numPt_bins{6};
+//Float_t sf_etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
+//numEta_bins{4};
 
 TriggerScaleFactors::TriggerScaleFactors():
   //For efficiencies
@@ -45,49 +56,53 @@ TriggerScaleFactors::TriggerScaleFactors():
 {
   //// Plots for turn on curve studies
 
-  Float_t ptBins[]{ 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
-  Int_t numPt_bins{13};
-  Float_t etaBins[]{ -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
-  Int_t numEta_bins{13};
-
-//  Float_t sf_ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
-//  Int_t sf_numPt_bins{6};
-//  Float_t sf_etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
-//  Int_t sf_numEta_bins{4};
-
   // MC histos
 
-  h_electron1_pT_MC = new TProfile("electron1_pT_MC","p_{T} turn-on curve for leading electron MC", numPt_bins, ptBins);
-  h_electron1_eta_MC = new TProfile("electron1_eta_MC","#eta turn-on curve for leading MC", numEta_bins, etaBins);
-  h_electron2_pT_MC = new TProfile("electron2_pT_MC","p_{T} turn-on curve for subleading electron MC", numPt_bins, ptBins);
-  h_electron2_eta_MC = new TProfile("electron2_eta_MC","#eta turn-on curve for subleading MC", numEta_bins, etaBins);
+  p_electron1_pT_MC = new TProfile("electron1_pT_MC","p_{T} turn-on curve for leading electron MC", numPt_bins, ptBins);
+  p_electron1_eta_MC = new TProfile("electron1_eta_MC","#eta turn-on curve for leading MC", numEta_bins, etaBins);
+  p_electron2_pT_MC = new TProfile("electron2_pT_MC","p_{T} turn-on curve for subleading electron MC", numPt_bins, ptBins);
+  p_electron2_eta_MC = new TProfile("electron2_eta_MC","#eta turn-on curve for subleading MC", numEta_bins, etaBins);
 
-  h_muon1_pT_MC = new TProfile("muon1_pT_MC","p_{T} turn-on curve for leading #mu MC", numPt_bins, ptBins);
-  h_muon1_eta_MC = new TProfile("muon1_eta_MC","#eta turn-on curve for leading #mu MC", numEta_bins, etaBins);
-  h_muon2_pT_MC = new TProfile("muon2_pT_MC","p_{T} turn-on curve for subleading #mu MC", numPt_bins, ptBins);
-  h_muon2_eta_MC = new TProfile("muon2_eta_MC","#eta turn-on curve for subleading #mu MC", numEta_bins, etaBins);
+  p_muon1_pT_MC = new TProfile("muon1_pT_MC","p_{T} turn-on curve for leading #mu MC", numPt_bins, ptBins);
+  p_muon1_eta_MC = new TProfile("muon1_eta_MC","#eta turn-on curve for leading #mu MC", numEta_bins, etaBins);
+  p_muon2_pT_MC = new TProfile("muon2_pT_MC","p_{T} turn-on curve for subleading #mu MC", numPt_bins, ptBins);
+  p_muon2_eta_MC = new TProfile("muon2_eta_MC","#eta turn-on curve for subleading #mu MC", numEta_bins, etaBins);
 
-  h_muonElectron1_pT_MC = new TProfile("muonElectron1_pT_MC","p_{T} turn-on curve for leading lep e#mu MC", numPt_bins, ptBins);
-  h_muonElectron1_eta_MC = new TProfile("muonElectron1_eta_MC","#eta turn-on curve for leading lep e#mu MC", numEta_bins, etaBins);
-  h_muonElectron2_pT_MC = new TProfile("muonElectron2_pT_MC","p_{T} turn-on curve for subleading lep e#mu MC", numPt_bins, ptBins);
-  h_muonElectron2_eta_MC = new TProfile("muonElectron2_eta_MC","#eta turn-on curve for subleading lep e#mu MC", numEta_bins, etaBins);
+  p_muonElectron1_pT_MC = new TProfile("muonElectron1_pT_MC","p_{T} turn-on curve for leading lep e#mu MC", numPt_bins, ptBins);
+  p_muonElectron1_eta_MC = new TProfile("muonElectron1_eta_MC","#eta turn-on curve for leading lep e#mu MC", numEta_bins, etaBins);
+  p_muonElectron2_pT_MC = new TProfile("muonElectron2_pT_MC","p_{T} turn-on curve for subleading lep e#mu MC", numPt_bins, ptBins);
+  p_muonElectron2_eta_MC = new TProfile("muonElectron2_eta_MC","#eta turn-on curve for subleading lep e#mu MC", numEta_bins, etaBins);
+
+  p_electrons_pT_MC = new TProfile2D("p_electrons_pT_MC","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_electrons_eta_MC = new TProfile2D("p_electrons_eta_MC","", numEta_bins, etaBins, numEta_bins, etaBins);
+  p_muons_pT_MC = new TProfile2D("p_muons_pT_MC","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_muons_eta_MC = new TProfile2D("p_muons_eta_MC","", numEta_bins, etaBins, numEta_bins, etaBins);
+  p_muonElectrons_pT_MC = new TProfile2D("p_muonElectrons_pT_MC","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_muonElectrons_eta_MC = new TProfile2D("p_muonElectrons_eta_MC","", numEta_bins, etaBins, numEta_bins, etaBins);
 
   // Data histos
 
-  h_electron1_pT_data = new TProfile("electron1_pT_data","p_{T} turn-on curve for leading electron data", numPt_bins, ptBins);
-  h_electron1_eta_data = new TProfile("electron1_eta_data","#eta turn-on curve for leading electron data", numEta_bins, etaBins);
-  h_electron2_pT_data = new TProfile("electron2_pT_data","p_{T} turn-on curve for subleading electron data", numPt_bins, ptBins);
-  h_electron2_eta_data = new TProfile("electron2_eta_data","#eta turn-on curve for subleading electron data", numEta_bins, etaBins);
+  p_electron1_pT_data = new TProfile("electron1_pT_data","p_{T} turn-on curve for leading electron data", numPt_bins, ptBins);
+  p_electron1_eta_data = new TProfile("electron1_eta_data","#eta turn-on curve for leading electron data", numEta_bins, etaBins);
+  p_electron2_pT_data = new TProfile("electron2_pT_data","p_{T} turn-on curve for subleading electron data", numPt_bins, ptBins);
+  p_electron2_eta_data = new TProfile("electron2_eta_data","#eta turn-on curve for subleading electron data", numEta_bins, etaBins);
 
-  h_muon1_pT_data = new TProfile("muon1_pT_data","p_{T} turn-on curve for leading #mu data", numPt_bins, ptBins);
-  h_muon1_eta_data = new TProfile("muon1_eta_data","#eta turn-on curve for leading #mu data", numEta_bins, etaBins);
-  h_muon2_pT_data = new TProfile("muon2_pT_data","p_{T} turn-on curve for subleading #mu data", numPt_bins, ptBins);
-  h_muon2_eta_data = new TProfile("muon2_eta_data","#eta turn-on curve for subleading #mu data", numEta_bins, etaBins);
+  p_muon1_pT_data = new TProfile("muon1_pT_data","p_{T} turn-on curve for leading #mu data", numPt_bins, ptBins);
+  p_muon1_eta_data = new TProfile("muon1_eta_data","#eta turn-on curve for leading #mu data", numEta_bins, etaBins);
+  p_muon2_pT_data = new TProfile("muon2_pT_data","p_{T} turn-on curve for subleading #mu data", numPt_bins, ptBins);
+  p_muon2_eta_data = new TProfile("muon2_eta_data","#eta turn-on curve for subleading #mu data", numEta_bins, etaBins);
 
-  h_muonElectron1_pT_data = new TProfile("muonElectron1_pT_data","p_{T} turn-on curve for leading lep e#mu data", numPt_bins, ptBins);
-  h_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","#eta turn-on curve for leading lep e#mu data", numEta_bins, etaBins);
-  h_muonElectron2_pT_data = new TProfile("muonElectron2_pT_data","p_{T} turn-on curve for subleading lep e#mu data", numPt_bins, ptBins);
-  h_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","#eta turn-on curve for subleading lep e#mu data", numEta_bins, etaBins);
+  p_muonElectron1_pT_data = new TProfile("muonElectron1_pT_data","p_{T} turn-on curve for leading lep e#mu data", numPt_bins, ptBins);
+  p_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","#eta turn-on curve for leading lep e#mu data", numEta_bins, etaBins);
+  p_muonElectron2_pT_data = new TProfile("muonElectron2_pT_data","p_{T} turn-on curve for subleading lep e#mu data", numPt_bins, ptBins);
+  p_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","#eta turn-on curve for subleading lep e#mu data", numEta_bins, etaBins);
+
+  p_electrons_pT_data = new TProfile2D("p_electrons_pT_data","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_electrons_eta_data = new TProfile2D("p_electrons_eta_data","", numEta_bins, etaBins, numEta_bins, etaBins);
+  p_muons_pT_data = new TProfile2D("p_muons_pT_data","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_muons_eta_data = new TProfile2D("p_muons_eta_data","", numEta_bins, etaBins, numEta_bins, etaBins);
+  p_muonElectrons_pT_data = new TProfile2D("p_muonElectrons_pT_data","", numPt_bins, ptBins, numPt_bins, ptBins);
+  p_muonElectrons_eta_data = new TProfile2D("p_muonElectrons_eta_data","", numEta_bins, etaBins, numEta_bins, etaBins);
 
 }
 
@@ -538,22 +553,31 @@ void TriggerScaleFactors::runMainAnalysis(){
 
 	//Histos bit
         if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  h_electron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+
+	  p_electrons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
-          h_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
+          p_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
+          p_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
+          p_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
+
+	  p_muons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
+	  p_muons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
         }
         if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  h_muonElectron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+
+	  p_muonElectrons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
       else { // Else is data
@@ -569,22 +593,31 @@ void TriggerScaleFactors::runMainAnalysis(){
 
 	//Histos bit
         if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  h_electron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  h_electron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+
+	  p_electrons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
-          h_muon1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          h_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+
+	  p_muons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
+	  p_muons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
         }
         if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  h_muonElectron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  h_muonElectron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+
+	  p_muonElectrons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
 
@@ -1086,34 +1119,268 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC) {
 
 void TriggerScaleFactors::savePlots()
 {
+
+  double level = 0.60; //ClopperPearson interval level
+
   // Histos first
   TFile *outFile{new TFile{ (outFolder+"triggerPlots.root").c_str(), "RECREATE"}};
+  
+  // Do pT errors
+  for ( Int_t bin = 0; bin != numPt_bins; bin++ ) {
+    double errUp, errDown, error;
 
-  h_electron1_pT_MC->Write();
-  h_electron1_eta_MC->Write();
-  h_electron2_pT_MC->Write();
-  h_electron2_eta_MC->Write();
-  h_muon1_pT_MC->Write();
-  h_muon1_eta_MC->Write();
-  h_muon2_pT_MC->Write();
-  h_muon2_eta_MC->Write();
-  h_muonElectron1_pT_MC->Write();
-  h_muonElectron1_eta_MC->Write();
-  h_muonElectron2_pT_MC->Write();
-  h_muonElectron2_eta_MC->Write();
+    // electrons MC
+    //ele 1 pT MC
+    errUp = ( p_electron1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_pT_MC->GetBinEntries(bin), p_electron1_pT_MC->GetBinEntries(bin) * p_electron1_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_pT_MC->GetBinEntries(bin), p_electron1_pT_MC->GetBinEntries(bin) * p_electron1_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron1_pT_MC->SetBinError(bin, error);
+    //ele 2 pT MC
+    errUp = ( p_electron2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_pT_MC->GetBinEntries(bin), p_electron2_pT_MC->GetBinEntries(bin) * p_electron2_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_pT_MC->GetBinEntries(bin), p_electron2_pT_MC->GetBinEntries(bin) * p_electron2_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron2_pT_MC->SetBinError(bin, error);
 
-  h_electron1_pT_data->Write();
-  h_electron1_eta_data->Write();
-  h_electron2_pT_data->Write();
-  h_electron2_eta_data->Write();
-  h_muon1_pT_data->Write();
-  h_muon1_eta_data->Write();
-  h_muon2_pT_data->Write();
-  h_muon2_eta_data->Write();
-  h_muonElectron1_pT_data->Write();
-  h_muonElectron1_eta_data->Write();
-  h_muonElectron2_pT_data->Write();
-  h_muonElectron2_eta_data->Write();
+    // muons MC
+    //muon 1 pT MC
+    errUp = ( p_muon1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_pT_MC->GetBinEntries(bin), p_muon1_pT_MC->GetBinEntries(bin) * p_muon1_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_pT_MC->GetBinEntries(bin), p_muon1_pT_MC->GetBinEntries(bin) * p_muon1_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon1_pT_MC->SetBinError(bin, error);
+    //muon 2 pT MC
+    errUp = ( p_muon2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_pT_MC->GetBinEntries(bin), p_muon2_pT_MC->GetBinEntries(bin) * p_muon2_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_pT_MC->GetBinEntries(bin), p_muon2_pT_MC->GetBinEntries(bin) * p_muon2_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon2_pT_MC->SetBinError(bin, error);
+
+    // muonEG MC
+    //muonEG 1 pT MC
+    errUp = ( p_muonElectron1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_pT_MC->GetBinEntries(bin), p_muonElectron1_pT_MC->GetBinEntries(bin) * p_muonElectron1_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron1_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_pT_MC->GetBinEntries(bin), p_muonElectron1_pT_MC->GetBinEntries(bin) * p_muonElectron1_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron1_pT_MC->SetBinError(bin, error);
+    //muonEG 2 pT MC
+    errUp = ( p_muonElectron2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_pT_MC->GetBinEntries(bin), p_muonElectron2_pT_MC->GetBinEntries(bin) * p_muonElectron2_pT_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron2_pT_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_pT_MC->GetBinEntries(bin), p_muonElectron2_pT_MC->GetBinEntries(bin) * p_muonElectron2_pT_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron2_pT_MC->SetBinError(bin, error);
+
+    // electrons data
+    //ele 1 pT data
+    errUp = ( p_electron1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_pT_data->GetBinEntries(bin), p_electron1_pT_data->GetBinEntries(bin) * p_electron1_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_pT_data->GetBinEntries(bin), p_electron1_pT_data->GetBinEntries(bin) * p_electron1_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron1_pT_data->SetBinError(bin, error);
+    //ele 2 pT data
+    errUp = ( p_electron2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_pT_data->GetBinEntries(bin), p_electron2_pT_data->GetBinEntries(bin) * p_electron2_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_pT_data->GetBinEntries(bin), p_electron2_pT_data->GetBinEntries(bin) * p_electron2_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron2_pT_data->SetBinError(bin, error);
+
+    // muons data
+    //muon 1 pT data
+    errUp = ( p_muon1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_pT_data->GetBinEntries(bin), p_muon1_pT_data->GetBinEntries(bin) * p_muon1_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_pT_data->GetBinEntries(bin), p_muon1_pT_data->GetBinEntries(bin) * p_muon1_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon1_pT_data->SetBinError(bin, error);
+    //muon 2 pT data
+    errUp = ( p_muon2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_pT_data->GetBinEntries(bin), p_muon2_pT_data->GetBinEntries(bin) * p_muon2_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_pT_data->GetBinEntries(bin), p_muon2_pT_data->GetBinEntries(bin) * p_muon2_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon2_pT_data->SetBinError(bin, error);
+
+    // muonEG data
+    //muonEG 1 pT data
+    errUp = ( p_muonElectron1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_pT_data->GetBinEntries(bin), p_muonElectron1_pT_data->GetBinEntries(bin) * p_muonElectron1_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron1_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_pT_data->GetBinEntries(bin), p_muonElectron1_pT_data->GetBinEntries(bin) * p_muonElectron1_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron1_pT_data->SetBinError(bin, error);
+    //muonEG 2 pT data
+    errUp = ( p_muonElectron2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_pT_data->GetBinEntries(bin), p_muonElectron2_pT_data->GetBinEntries(bin) * p_muonElectron2_pT_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron2_pT_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_pT_data->GetBinEntries(bin), p_muonElectron2_pT_data->GetBinEntries(bin) * p_muonElectron2_pT_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron2_pT_data->SetBinError(bin, error);
+
+  }
+
+  // Do eta errors
+  for ( Int_t bin = 0; bin != numEta_bins; bin++ ) {
+    double errUp, errDown, error;
+
+    // electrons MC
+    //ele 1 eta MC
+    errUp = ( p_electron1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_eta_MC->GetBinEntries(bin), p_electron1_eta_MC->GetBinEntries(bin) * p_electron1_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_eta_MC->GetBinEntries(bin), p_electron1_eta_MC->GetBinEntries(bin) * p_electron1_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron1_eta_MC->SetBinError(bin, error);
+    //ele 2 eta MC
+    errUp = ( p_electron2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_eta_MC->GetBinEntries(bin), p_electron2_eta_MC->GetBinEntries(bin) * p_electron2_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_eta_MC->GetBinEntries(bin), p_electron2_eta_MC->GetBinEntries(bin) * p_electron2_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron2_eta_MC->SetBinError(bin, error);
+
+    // muons MC
+    //muon 1 eta MC
+    errUp = ( p_muon1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_eta_MC->GetBinEntries(bin), p_muon1_eta_MC->GetBinEntries(bin) * p_muon1_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_eta_MC->GetBinEntries(bin), p_muon1_eta_MC->GetBinEntries(bin) * p_muon1_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon1_eta_MC->SetBinError(bin, error);
+    //muon 2 eta MC
+    errUp = ( p_muon2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_eta_MC->GetBinEntries(bin), p_muon2_eta_MC->GetBinEntries(bin) * p_muon2_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_eta_MC->GetBinEntries(bin), p_muon2_eta_MC->GetBinEntries(bin) * p_muon2_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon2_eta_MC->SetBinError(bin, error);
+
+    // muonEG MC
+    //muonEG 1 eta MC
+    errUp = ( p_muonElectron1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_eta_MC->GetBinEntries(bin), p_muonElectron1_eta_MC->GetBinEntries(bin) * p_muonElectron1_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron1_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_eta_MC->GetBinEntries(bin), p_muonElectron1_eta_MC->GetBinEntries(bin) * p_muonElectron1_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron1_eta_MC->SetBinError(bin, error);
+    //muonEG 2 eta MC
+    errUp = ( p_muonElectron2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_eta_MC->GetBinEntries(bin), p_muonElectron2_eta_MC->GetBinEntries(bin) * p_muonElectron2_eta_MC->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron2_eta_MC->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_eta_MC->GetBinEntries(bin), p_muonElectron2_eta_MC->GetBinEntries(bin) * p_muonElectron2_eta_MC->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron2_eta_MC->SetBinError(bin, error);
+
+    // electrons data
+    //ele 1 eta data
+    errUp = ( p_electron1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_eta_data->GetBinEntries(bin), p_electron1_eta_data->GetBinEntries(bin) * p_electron1_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron1_eta_data->GetBinEntries(bin), p_electron1_eta_data->GetBinEntries(bin) * p_electron1_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron1_eta_data->SetBinError(bin, error);
+    //ele 2 eta data
+    errUp = ( p_electron2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_eta_data->GetBinEntries(bin), p_electron2_eta_data->GetBinEntries(bin) * p_electron2_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_electron2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_electron2_eta_data->GetBinEntries(bin), p_electron2_eta_data->GetBinEntries(bin) * p_electron2_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_electron2_eta_data->SetBinError(bin, error);
+
+    // muons data
+    //muon 1 eta data
+    errUp = ( p_muon1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_eta_data->GetBinEntries(bin), p_muon1_eta_data->GetBinEntries(bin) * p_muon1_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon1_eta_data->GetBinEntries(bin), p_muon1_eta_data->GetBinEntries(bin) * p_muon1_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon1_eta_data->SetBinError(bin, error);
+    //muon 2 eta data
+    errUp = ( p_muon2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_eta_data->GetBinEntries(bin), p_muon2_eta_data->GetBinEntries(bin) * p_muon2_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muon2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muon2_eta_data->GetBinEntries(bin), p_muon2_eta_data->GetBinEntries(bin) * p_muon2_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muon2_eta_data->SetBinError(bin, error);
+
+    // muonEG data
+    //muonEG 1 eta data
+    errUp = ( p_muonElectron1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_eta_data->GetBinEntries(bin), p_muonElectron1_eta_data->GetBinEntries(bin) * p_muonElectron1_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron1_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron1_eta_data->GetBinEntries(bin), p_muonElectron1_eta_data->GetBinEntries(bin) * p_muonElectron1_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron1_eta_data->SetBinError(bin, error);
+    //muonEG 2 eta data
+    errUp = ( p_muonElectron2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_eta_data->GetBinEntries(bin), p_muonElectron2_eta_data->GetBinEntries(bin) * p_muonElectron2_eta_data->GetBinContent( bin ), level, true) );
+    errDown = ( p_muonElectron2_eta_data->GetBinContent( bin ) - TEfficiency::ClopperPearson (p_muonElectron2_eta_data->GetBinEntries(bin), p_muonElectron2_eta_data->GetBinEntries(bin) * p_muonElectron2_eta_data->GetBinContent( bin ), level, false) );
+    error = errUp>errDown?errUp:errDown;
+    p_muonElectron2_eta_data->SetBinError(bin, error);
+  }
+
+  // SF histos
+
+  TH2F* electronPtSF = new TH2F ("electronPtSF","ee p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
+  TH2F* electronEtaSF = new TH2F ("electronEtaSF","ee #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+
+  TH2F* muonPtSF = new TH2F ("muonPtSF","#mu#mu p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
+  TH2F* muonEtaSF = new TH2F ("muonEtaSF","#mu#mu #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+
+  TH2F* muonElectronPtSF = new TH2F ("muonElectronPtSF","e#mu p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
+  TH2F* muonElectronEtaSF = new TH2F ("muonElectronEtaSF","e#mu #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+
+  for ( Int_t bin1 = 0; bin1 != numPt_bins; bin1++ ) {
+    for ( Int_t bin2 = 0; bin2 != numPt_bins; bin2++ ) {
+      double pT, pT_err;
+
+      pT = p_electrons_pT_data->GetBinContent( bin1, bin2 )/(p_electrons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      pT_err = ( p_electrons_pT_data->GetBinContent( bin1, bin2 )+p_electrons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_electrons_pT_MC->GetBinContent( bin1, bin2 ) - p_electrons_pT_MC->GetBinError( bin1, bin2) );
+      electronPtSF->SetBinContent( bin1, bin2, pT);
+      electronPtSF->SetBinError( bin1, bin2, pT_err );
+
+      pT = p_muons_pT_data->GetBinContent( bin1, bin2 )/(p_muons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      pT_err = ( p_muons_pT_data->GetBinContent( bin1, bin2 )+p_muons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_muons_pT_MC->GetBinContent( bin1, bin2 ) - p_muons_pT_MC->GetBinError( bin1, bin2) );
+      muonPtSF->SetBinContent( bin1, bin2, pT);
+      muonPtSF->SetBinError( bin1, bin2, pT_err );
+
+      pT = p_muonElectrons_pT_data->GetBinContent( bin1, bin2 )/(p_muonElectrons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      pT_err = ( p_muonElectrons_pT_data->GetBinContent( bin1, bin2 )+p_muonElectrons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_muonElectrons_pT_MC->GetBinContent( bin1, bin2 ) - p_muonElectrons_pT_MC->GetBinError( bin1, bin2) );
+      muonElectronPtSF->SetBinContent( bin1, bin2, pT);
+      muonElectronPtSF->SetBinError( bin1, bin2, pT_err );
+    }
+  }
+
+  for ( Int_t bin1 = 0; bin1 != numEta_bins; bin1++ ) {
+    for ( Int_t bin2 = 0; bin2 != numEta_bins; bin2++ ) {
+      double eta, eta_err;
+
+      eta = p_electrons_eta_data->GetBinContent( bin1, bin2 )/(p_electrons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      eta_err = ( p_electrons_eta_data->GetBinContent( bin1, bin2 )+p_electrons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_electrons_eta_MC->GetBinContent( bin1, bin2 ) - p_electrons_eta_MC->GetBinError( bin1, bin2) );
+      electronEtaSF->SetBinContent( bin1, bin2, eta);
+      electronEtaSF->SetBinError( bin1, bin2, eta_err );
+
+      eta = p_muons_eta_data->GetBinContent( bin1, bin2 )/(p_muons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      eta_err = ( p_muons_eta_data->GetBinContent( bin1, bin2 )+p_muons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_muons_eta_MC->GetBinContent( bin1, bin2 ) - p_muons_eta_MC->GetBinError( bin1, bin2) );
+      muonEtaSF->SetBinContent( bin1, bin2, eta);
+      muonEtaSF->SetBinError( bin1, bin2, eta_err );
+
+      eta = p_muonElectrons_eta_data->GetBinContent( bin1, bin2 )/(p_muonElectrons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
+      eta_err = ( p_muonElectrons_eta_data->GetBinContent( bin1, bin2 )+p_muonElectrons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_muonElectrons_eta_MC->GetBinContent( bin1, bin2 ) - p_muonElectrons_eta_MC->GetBinError( bin1, bin2) );
+      muonElectronEtaSF->SetBinContent( bin1, bin2, eta);
+      muonElectronEtaSF->SetBinError( bin1, bin2, eta_err );
+    }
+  }
+
+  // Write Histos
+
+  p_electron1_pT_MC->Write();
+  p_electron1_eta_MC->Write();
+  p_electron2_pT_MC->Write();
+  p_electron2_eta_MC->Write();
+  p_muon1_pT_MC->Write();
+  p_muon1_eta_MC->Write();
+  p_muon2_pT_MC->Write();
+  p_muon2_eta_MC->Write();
+  p_muonElectron1_pT_MC->Write();
+  p_muonElectron1_eta_MC->Write();
+  p_muonElectron2_pT_MC->Write();
+  p_muonElectron2_eta_MC->Write();
+
+  p_electron1_pT_data->Write();
+  p_electron1_eta_data->Write();
+  p_electron2_pT_data->Write();
+  p_electron2_eta_data->Write();
+  p_muon1_pT_data->Write();
+  p_muon1_eta_data->Write();
+  p_muon2_pT_data->Write();
+  p_muon2_eta_data->Write();
+  p_muonElectron1_pT_data->Write();
+  p_muonElectron1_eta_data->Write();
+  p_muonElectron2_pT_data->Write();
+  p_muonElectron2_eta_data->Write();
+
+  p_electrons_pT_MC->Write();
+  p_electrons_eta_MC->Write();
+  p_muons_pT_MC->Write();
+  p_muons_eta_MC->Write();
+  p_muonElectrons_pT_MC->Write();
+  p_muonElectrons_eta_MC->Write();
+
+  p_electrons_pT_data->Write();
+  p_electrons_eta_data->Write();
+  p_muons_pT_data->Write();
+  p_muons_eta_data->Write();
+  p_muonElectrons_pT_data->Write();
+  p_muonElectrons_eta_data->Write();
+
+  electronPtSF->Write();
+  electronEtaSF->Write();
+  muonPtSF->Write();
+  muonEtaSF->Write();
+  muonElectronPtSF->Write();
+  muonElectronEtaSF->Write();
 
   outFile->Close();
 
@@ -1144,7 +1411,6 @@ void TriggerScaleFactors::savePlots()
   double alphaMuonElectron 	= ( (numberSelectedMuonElectronsTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonElectrons[0]/numberSelectedMuonElectrons[0]+1.0e-6);
 
   // Calculate uncertainities
-  double level = 0.60;
 
   //// LeptonTriggers
 

@@ -2,7 +2,6 @@
 #define _triggerScaleFactorsAlgo_hpp_
 
 #include <vector>
-#include "TH2.h"
 #include "TCanvas.h"
 #include "TPad.h"
 
@@ -18,6 +17,7 @@ class TTree;
 class TFile;
 class TH1F;
 class TProfile;
+class TProfile2D;
 
 class TriggerScaleFactors{
 
@@ -93,31 +93,46 @@ class TriggerScaleFactors{
 	double numberSelectedMuonElectronsTriggered[2]; // Double MuonEG
 
         // Plots for turn on curve studies
-	TProfile* h_electron1_pT_MC;
-	TProfile* h_electron1_eta_MC;
-	TProfile* h_electron2_pT_MC;
-	TProfile* h_electron2_eta_MC;
-	TProfile* h_muon1_pT_MC;
-	TProfile* h_muon1_eta_MC;
-	TProfile* h_muon2_pT_MC;
-	TProfile* h_muon2_eta_MC;
-	TProfile* h_muonElectron1_pT_MC;
-	TProfile* h_muonElectron1_eta_MC;
-	TProfile* h_muonElectron2_pT_MC;
-	TProfile* h_muonElectron2_eta_MC;
+	TProfile* p_electron1_pT_MC;
+	TProfile* p_electron1_eta_MC;
+	TProfile* p_electron2_pT_MC;
+	TProfile* p_electron2_eta_MC;
+	TProfile* p_muon1_pT_MC;
+	TProfile* p_muon1_eta_MC;
+	TProfile* p_muon2_pT_MC;
+	TProfile* p_muon2_eta_MC;
+	TProfile* p_muonElectron1_pT_MC;
+	TProfile* p_muonElectron1_eta_MC;
+	TProfile* p_muonElectron2_pT_MC;
+	TProfile* p_muonElectron2_eta_MC;
 
-	TProfile* h_electron1_pT_data;
-	TProfile* h_electron1_eta_data;
-	TProfile* h_electron2_pT_data;
-	TProfile* h_electron2_eta_data;
-	TProfile* h_muon1_pT_data;
-	TProfile* h_muon1_eta_data;
-	TProfile* h_muon2_pT_data;
-	TProfile* h_muon2_eta_data;
-	TProfile* h_muonElectron1_pT_data;
-	TProfile* h_muonElectron1_eta_data;
-	TProfile* h_muonElectron2_pT_data;
-	TProfile* h_muonElectron2_eta_data;
+	TProfile* p_electron1_pT_data;
+	TProfile* p_electron1_eta_data;
+	TProfile* p_electron2_pT_data;
+	TProfile* p_electron2_eta_data;
+	TProfile* p_muon1_pT_data;
+	TProfile* p_muon1_eta_data;
+	TProfile* p_muon2_pT_data;
+	TProfile* p_muon2_eta_data;
+	TProfile* p_muonElectron1_pT_data;
+	TProfile* p_muonElectron1_eta_data;
+	TProfile* p_muonElectron2_pT_data;
+	TProfile* p_muonElectron2_eta_data;
+
+	// Plots used to make SFs
+	TProfile2D* p_electrons_pT_MC;
+	TProfile2D* p_electrons_eta_MC;
+	TProfile2D* p_muons_pT_MC;
+	TProfile2D* p_muons_eta_MC;
+	TProfile2D* p_muonElectrons_pT_MC;
+	TProfile2D* p_muonElectrons_eta_MC;
+
+	TProfile2D* p_electrons_pT_data;
+	TProfile2D* p_electrons_eta_data;
+	TProfile2D* p_muons_pT_data;
+	TProfile2D* p_muons_eta_data;
+	TProfile2D* p_muonElectrons_pT_data;
+	TProfile2D* p_muonElectrons_eta_data;
 };
 
 #endif
