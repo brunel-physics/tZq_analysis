@@ -577,7 +577,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 	  p_muonElectron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
 
 	  p_muonElectrons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectrons_eta_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
       else { // Else is data
@@ -617,7 +617,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 	  p_muonElectron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
 
 	  p_muonElectrons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectrons_eta_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
 
@@ -636,8 +636,8 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if ( electrons.size() < 1 && tempVec.Pt() <= 20. && !is2016_ ) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
 
-    if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
+    if ( electrons.size() < 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= 20. && is2016_ ) continue;
 
     if ( std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
 
@@ -1126,7 +1126,7 @@ void TriggerScaleFactors::savePlots()
   TFile *outFile{new TFile{ (outFolder+"triggerPlots.root").c_str(), "RECREATE"}};
   
   // Do pT errors
-  for ( Int_t bin = 0; bin != numPt_bins; bin++ ) {
+  for ( Int_t bin = 1; bin != numPt_bins+1; bin++ ) {
     double errUp, errDown, error;
 
     // electrons MC
@@ -1204,7 +1204,7 @@ void TriggerScaleFactors::savePlots()
   }
 
   // Do eta errors
-  for ( Int_t bin = 0; bin != numEta_bins; bin++ ) {
+  for ( Int_t bin = 1; bin != numEta_bins+1; bin++ ) {
     double errUp, errDown, error;
 
     // electrons MC
@@ -1291,8 +1291,8 @@ void TriggerScaleFactors::savePlots()
   TH2F* muonElectronPtSF = new TH2F ("muonElectronPtSF","e#mu p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
   TH2F* muonElectronEtaSF = new TH2F ("muonElectronEtaSF","e#mu #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
 
-  for ( Int_t bin1 = 0; bin1 != numPt_bins; bin1++ ) {
-    for ( Int_t bin2 = 0; bin2 != numPt_bins; bin2++ ) {
+  for ( Int_t bin1 = 1; bin1 != numPt_bins+1; bin1++ ) {
+    for ( Int_t bin2 = 1; bin2 != numPt_bins+1; bin2++ ) {
       double pT, pT_err;
 
       pT = p_electrons_pT_data->GetBinContent( bin1, bin2 )/(p_electrons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
@@ -1312,8 +1312,8 @@ void TriggerScaleFactors::savePlots()
     }
   }
 
-  for ( Int_t bin1 = 0; bin1 != numEta_bins; bin1++ ) {
-    for ( Int_t bin2 = 0; bin2 != numEta_bins; bin2++ ) {
+  for ( Int_t bin1 = 1; bin1 != numEta_bins+1; bin1++ ) {
+    for ( Int_t bin2 = 1; bin2 != numEta_bins+1; bin2++ ) {
       double eta, eta_err;
 
       eta = p_electrons_eta_data->GetBinContent( bin1, bin2 )/(p_electrons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
