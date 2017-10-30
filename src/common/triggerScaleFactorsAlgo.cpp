@@ -16,22 +16,24 @@
 #include "TH1.h"
 #include "TProfile.h"
 #include "TProfile2D.h"
+#include "TCanvas.h"
+
 #include "TTree.h"
 #include "TFile.h"
 #include "TEfficiency.h"
 
 const bool HIP_ERA (false);
-const bool DO_HIPS (false);
+const bool DO_HIPS (true);
 
-Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
-Int_t numPt_bins = {13};
-Double_t etaBins[] = { -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
-Int_t numEta_bins = {13};
+//Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
+//Int_t numPt_bins = {13};
+//Double_t etaBins[] = { -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
+//Int_t numEta_bins = {13};
 
-//Float_t sf_ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
-//numPt_bins{6};
-//Float_t sf_etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
-//numEta_bins{4};
+Double_t ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
+Int_t numPt_bins{6};
+Double_t etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
+Int_t numEta_bins{4};
 
 TriggerScaleFactors::TriggerScaleFactors():
   //For efficiencies
@@ -58,20 +60,20 @@ TriggerScaleFactors::TriggerScaleFactors():
 
   // MC histos
 
-  p_electron1_pT_MC = new TProfile("electron1_pT_MC","p_{T} turn-on curve for leading electron MC", numPt_bins, ptBins);
-  p_electron1_eta_MC = new TProfile("electron1_eta_MC","#eta turn-on curve for leading MC", numEta_bins, etaBins);
-  p_electron2_pT_MC = new TProfile("electron2_pT_MC","p_{T} turn-on curve for subleading electron MC", numPt_bins, ptBins);
-  p_electron2_eta_MC = new TProfile("electron2_eta_MC","#eta turn-on curve for subleading MC", numEta_bins, etaBins);
+  p_electron1_pT_MC = new TProfile("electron1_pT_MC","p_{T} turn-on curve for leading electron", numPt_bins, ptBins);
+  p_electron1_eta_MC = new TProfile("electron1_eta_MC","#eta turn-on curve for leading", numEta_bins, etaBins);
+  p_electron2_pT_MC = new TProfile("electron2_pT_MC","p_{T} turn-on curve for subleading electron", numPt_bins, ptBins);
+  p_electron2_eta_MC = new TProfile("electron2_eta_MC","#eta turn-on curve for subleading", numEta_bins, etaBins);
 
-  p_muon1_pT_MC = new TProfile("muon1_pT_MC","p_{T} turn-on curve for leading #mu MC", numPt_bins, ptBins);
-  p_muon1_eta_MC = new TProfile("muon1_eta_MC","#eta turn-on curve for leading #mu MC", numEta_bins, etaBins);
-  p_muon2_pT_MC = new TProfile("muon2_pT_MC","p_{T} turn-on curve for subleading #mu MC", numPt_bins, ptBins);
-  p_muon2_eta_MC = new TProfile("muon2_eta_MC","#eta turn-on curve for subleading #mu MC", numEta_bins, etaBins);
+  p_muon1_pT_MC = new TProfile("muon1_pT_MC","p_{T} turn-on curve for leading #mu", numPt_bins, ptBins);
+  p_muon1_eta_MC = new TProfile("muon1_eta_MC","#eta turn-on curve for leading #mu", numEta_bins, etaBins);
+  p_muon2_pT_MC = new TProfile("muon2_pT_MC","p_{T} turn-on curve for subleading #mu", numPt_bins, ptBins);
+  p_muon2_eta_MC = new TProfile("muon2_eta_MC","#eta turn-on curve for subleading #mu", numEta_bins, etaBins);
 
-  p_muonElectron1_pT_MC = new TProfile("muonElectron1_pT_MC","p_{T} turn-on curve for leading lep e#mu MC", numPt_bins, ptBins);
-  p_muonElectron1_eta_MC = new TProfile("muonElectron1_eta_MC","#eta turn-on curve for leading lep e#mu MC", numEta_bins, etaBins);
-  p_muonElectron2_pT_MC = new TProfile("muonElectron2_pT_MC","p_{T} turn-on curve for subleading lep e#mu MC", numPt_bins, ptBins);
-  p_muonElectron2_eta_MC = new TProfile("muonElectron2_eta_MC","#eta turn-on curve for subleading lep e#mu MC", numEta_bins, etaBins);
+  p_muonElectron1_pT_MC = new TProfile("muonElectron1_pT_MC","p_{T} turn-on curve for leading lep e#mu", numPt_bins, ptBins);
+  p_muonElectron1_eta_MC = new TProfile("muonElectron1_eta_MC","#eta turn-on curve for leading lep e#mu", numEta_bins, etaBins);
+  p_muonElectron2_pT_MC = new TProfile("muonElectron2_pT_MC","p_{T} turn-on curve for subleading lep e#mu", numPt_bins, ptBins);
+  p_muonElectron2_eta_MC = new TProfile("muonElectron2_eta_MC","#eta turn-on curve for subleading lep e#mu", numEta_bins, etaBins);
 
   p_electrons_pT_MC = new TProfile2D("p_electrons_pT_MC","", numPt_bins, ptBins, numPt_bins, ptBins);
   p_electrons_eta_MC = new TProfile2D("p_electrons_eta_MC","", numEta_bins, etaBins, numEta_bins, etaBins);
@@ -82,20 +84,20 @@ TriggerScaleFactors::TriggerScaleFactors():
 
   // Data histos
 
-  p_electron1_pT_data = new TProfile("electron1_pT_data","p_{T} turn-on curve for leading electron data", numPt_bins, ptBins);
-  p_electron1_eta_data = new TProfile("electron1_eta_data","#eta turn-on curve for leading electron data", numEta_bins, etaBins);
-  p_electron2_pT_data = new TProfile("electron2_pT_data","p_{T} turn-on curve for subleading electron data", numPt_bins, ptBins);
-  p_electron2_eta_data = new TProfile("electron2_eta_data","#eta turn-on curve for subleading electron data", numEta_bins, etaBins);
+  p_electron1_pT_data = new TProfile("electron1_pT_data","p_{T} turn-on curve for leading electron", numPt_bins, ptBins);
+  p_electron1_eta_data = new TProfile("electron1_eta_data","#eta turn-on curve for leading electron", numEta_bins, etaBins);
+  p_electron2_pT_data = new TProfile("electron2_pT_data","p_{T} turn-on curve for subleading electron", numPt_bins, ptBins);
+  p_electron2_eta_data = new TProfile("electron2_eta_data","#eta turn-on curve for subleading electron", numEta_bins, etaBins);
 
-  p_muon1_pT_data = new TProfile("muon1_pT_data","p_{T} turn-on curve for leading #mu data", numPt_bins, ptBins);
-  p_muon1_eta_data = new TProfile("muon1_eta_data","#eta turn-on curve for leading #mu data", numEta_bins, etaBins);
-  p_muon2_pT_data = new TProfile("muon2_pT_data","p_{T} turn-on curve for subleading #mu data", numPt_bins, ptBins);
-  p_muon2_eta_data = new TProfile("muon2_eta_data","#eta turn-on curve for subleading #mu data", numEta_bins, etaBins);
+  p_muon1_pT_data = new TProfile("muon1_pT_data","p_{T} turn-on curve for leading #mu", numPt_bins, ptBins);
+  p_muon1_eta_data = new TProfile("muon1_eta_data","#eta turn-on curve for leading #mu", numEta_bins, etaBins);
+  p_muon2_pT_data = new TProfile("muon2_pT_data","p_{T} turn-on curve for subleading #mu", numPt_bins, ptBins);
+  p_muon2_eta_data = new TProfile("muon2_eta_data","#eta turn-on curve for subleading #mu", numEta_bins, etaBins);
 
-  p_muonElectron1_pT_data = new TProfile("muonElectron1_pT_data","p_{T} turn-on curve for leading lep e#mu data", numPt_bins, ptBins);
-  p_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","#eta turn-on curve for leading lep e#mu data", numEta_bins, etaBins);
-  p_muonElectron2_pT_data = new TProfile("muonElectron2_pT_data","p_{T} turn-on curve for subleading lep e#mu data", numPt_bins, ptBins);
-  p_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","#eta turn-on curve for subleading lep e#mu data", numEta_bins, etaBins);
+  p_muonElectron1_pT_data = new TProfile("muonElectron1_pT_data","p_{T} turn-on curve for leading lep e#mu", numPt_bins, ptBins);
+  p_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","#eta turn-on curve for leading lep e#mu", numEta_bins, etaBins);
+  p_muonElectron2_pT_data = new TProfile("muonElectron2_pT_data","p_{T} turn-on curve for subleading lep e#mu", numPt_bins, ptBins);
+  p_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","#eta turn-on curve for subleading lep e#mu", numEta_bins, etaBins);
 
   p_electrons_pT_data = new TProfile2D("p_electrons_pT_data","", numPt_bins, ptBins, numPt_bins, ptBins);
   p_electrons_eta_data = new TProfile2D("p_electrons_eta_data","", numEta_bins, etaBins, numEta_bins, etaBins);
@@ -682,8 +684,8 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 20. && !is2016_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && !is2016_) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 30. && is2016_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 30. && is2016_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 0. && is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 0. && is2016_) continue;
 
     if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
@@ -1373,7 +1375,7 @@ void TriggerScaleFactors::savePlots()
   p_muons_pT_data->Write();
   p_muons_eta_data->Write();
   p_muonElectrons_pT_data->Write();
-  p_muonElectrons_eta_data->Write();
+  p_muonElectrons_eta_data->Write();  
 
   electronPtSF->Write();
   electronEtaSF->Write();
@@ -1381,6 +1383,88 @@ void TriggerScaleFactors::savePlots()
   muonEtaSF->Write();
   muonElectronPtSF->Write();
   muonElectronEtaSF->Write();
+
+
+
+  TCanvas* lCanvasEle1PtEff = new TCanvas ("lCanvasEle1PtEff","lCanvasEle1PtEff");
+  lCanvasEle1PtEff->cd(1);
+  p_electron1_pT_data->SetStats(false);
+  p_electron1_pT_data->Draw();
+  p_electron1_pT_data->SetLineColor(kBlue);
+  p_electron1_pT_MC->SetStats(false);
+  p_electron1_pT_MC->Draw("same");
+  p_electron1_pT_MC->SetLineColor(kRed);
+  lCanvasEle1PtEff->Write();
+
+  TCanvas* lCanvasEle2PtEff = new TCanvas ("lCanvasEle2PtEff","lCanvasEle2PtEff");
+  lCanvasEle2PtEff->cd(1);
+  p_electron2_pT_data->SetStats(false);
+  p_electron2_pT_data->Draw();
+  p_electron2_pT_data->SetLineColor(kBlue);
+  p_electron2_pT_MC->SetStats(false);
+  p_electron2_pT_MC->Draw("same");
+  p_electron2_pT_MC->SetLineColor(kRed);
+  lCanvasEle2PtEff->Write();
+
+  TCanvas* lCanvasEle1EtaEff = new TCanvas ("lCanvasEle1EtaEff","lCanvasEle1EtaEff");
+  lCanvasEle1EtaEff->cd(1);
+  p_electron1_eta_data->SetStats(false);
+  p_electron1_eta_data->Draw();
+  p_electron1_eta_data->SetLineColor(kBlue);
+  p_electron1_eta_MC->SetStats(false);
+  p_electron1_eta_MC->Draw("same");
+  p_electron1_eta_MC->SetLineColor(kRed);
+  lCanvasEle1EtaEff->Write();
+
+  TCanvas* lCanvasEle2EtaEff = new TCanvas ("lCanvasEle2EtaEff","lCanvasEle2EtaEff");
+  lCanvasEle2EtaEff->cd(1);
+  p_electron2_eta_data->SetStats(false);
+  p_electron2_eta_data->Draw();
+  p_electron2_eta_data->SetLineColor(kBlue);
+  p_electron2_eta_MC->SetStats(false);
+  p_electron2_eta_MC->Draw("same");
+  p_electron2_eta_MC->SetLineColor(kRed);
+  lCanvasEle2EtaEff->Write();
+
+  TCanvas* lCanvasMuon1PtEff = new TCanvas ("lCanvasMuon1PtEff","lCanvasMuon1PtEff");
+  lCanvasMuon1PtEff->cd(1);
+  p_muon1_pT_data->SetStats(false);
+  p_muon1_pT_data->Draw();
+  p_muon1_pT_data->SetLineColor(kBlue);
+  p_muon1_pT_MC->SetStats(false);
+  p_muon1_pT_MC->Draw("same");
+  p_muon1_pT_MC->SetLineColor(kRed);
+  lCanvasMuon1PtEff->Write();
+
+  TCanvas* lCanvasMuon2PtEff = new TCanvas ("lCanvasMuon2PtEff","lCanvasMuon2PtEff");
+  lCanvasMuon2PtEff->cd(1);
+  p_muon2_pT_data->SetStats(false);
+  p_muon2_pT_data->Draw();
+  p_muon2_pT_data->SetLineColor(kBlue);
+  p_muon2_pT_MC->SetStats(false);
+  p_muon2_pT_MC->Draw("same");
+  p_muon2_pT_MC->SetLineColor(kRed);
+  lCanvasMuon2PtEff->Write();
+
+  TCanvas* lCanvasMuon1EtaEff = new TCanvas ("lCanvasMuon1EtaEff","lCanvasMuon1EtaEff");
+  lCanvasMuon1EtaEff->cd(1);
+  p_muon1_eta_data->SetStats(false);
+  p_muon1_eta_data->Draw();
+  p_muon1_eta_data->SetLineColor(kBlue);
+  p_muon1_eta_MC->SetStats(false);
+  p_muon1_eta_MC->Draw("same");
+  p_muon1_eta_MC->SetLineColor(kRed);
+  lCanvasMuon1EtaEff->Write();
+
+  TCanvas* lCanvasMuon2EtaEff = new TCanvas ("lCanvasMuon2EtaEff","lCanvasMuon2EtaEff");
+  lCanvasMuon2EtaEff->cd(1);
+  p_muon2_eta_data->SetStats(false);
+  p_muon2_eta_data->Draw();
+  p_muon2_eta_data->SetLineColor(kBlue);
+  p_muon1_eta_MC->SetStats(false);
+  p_muon2_eta_MC->Draw("same");
+  p_muon2_eta_MC->SetLineColor(kRed);
+  lCanvasMuon2EtaEff->Write();
 
   outFile->Close();
 
