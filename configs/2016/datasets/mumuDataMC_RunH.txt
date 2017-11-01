@@ -20,7 +20,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 77229341
+totalEvents = 72489326
 crossSection = 831.76
 runType = mc
 histoName = ttbar
@@ -240,7 +240,7 @@ plotType = f
 
 [ttHTobb]
 fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
-totalEvents = 3845992
+totalEvents = 3687741
 crossSection = 0.2934
 runType = mc
 histoName = ttV
@@ -250,7 +250,7 @@ plotType = f
 
 [ttHToNonbb]
 fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
-totalEvents = 3981250
+totalEvents = 3814118
 crossSection = 0.2151
 runType = mc
 histoName = ttV
