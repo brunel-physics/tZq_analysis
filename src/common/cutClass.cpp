@@ -1364,12 +1364,12 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   if ( !is2016_ && isMC_ ) { // Apply SFs to MC if 2015; no single lepton logic is present due to inclusion of single lepton triggers from 2016 onwards only
     //Dilepton channels
    if ( channel == "ee" ){
-      twgt = 0.92516; // tight=0.954; medium=0.958
+      twgt = 0.95113; // tight=0.954; medium=0.958
       if (syst == 1) twgt += 0.00926;
       if (syst == 2) twgt -= 0.00926;
     }
     else if (channel == "mumu"){
-      twgt = 0.89100; // tight=0.934; medium=0.931
+      twgt = 0.92886; // tight=0.934; medium=0.931
       if (syst == 1) twgt += 0.00630;
       if (syst == 2) twgt -= 0.00630;
     }
