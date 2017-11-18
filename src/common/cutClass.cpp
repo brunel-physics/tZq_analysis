@@ -1409,9 +1409,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98843; // 0.97491 for data eff; 0.98843 for SF
-        if (syst == 1) twgt += 0.00024; // -0.00105/+0.00110 for eff; 0.00024 for SF
-        if (syst == 2) twgt -= 0.00024;
+        twgt = 0.98845; // 0.97491 for data eff; 0.98845 for SF
+        if (syst == 1) twgt += 0.00028; // -0.00105/+0.00110 for eff; 0.00028 for SF
+        if (syst == 2) twgt -= 0.00028;
       }
     }
     else if (channel == "mumu"){
@@ -1420,16 +1420,16 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
 	// Double muon only: (preHIP) 0.80757+/-0.00113 (postHIP) 0.94326+/-0.00062 (all runs) 0.80062 +/- 0.00057
 
-        // eff across all runs: 0.98726 +0.00050/-0.00052; SF across all runs: 0.99100 +/- 0.00019
-        // eff pre-HIP fix: 0.97105 -0.00089/+0.00093; eff post-HIP fix: 0.95878 -0.00069/0.00070; SF pre-HIP fix 1.00172 +/- 0.00016 and 0.98905 +/-0.00036  for post-HIP fix
+        // eff across all runs: 0.96167 +0.00068/-0.00067; SF across all runs: 0.99201 +/- 0.00042
+        // eff pre-HIP fix: 0.95855 -0.00091/0.00093; eff post-HIP fix: 0.97105 -0.00089/0.00093; SF pre-HIP fix 0.98879 +/- 0.00017 and 1.00168 +/-0.00020  for post-HIP fix
 
 
-        twgt = ( 1.00172 * lumiRunsBCDEF_ + 0.98905 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.98879 * lumiRunsBCDEF_ + 1.00168 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
 
 //        twgt = 1.0;
 
-//        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ + 0.00036 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//        if (syst == 2) twgt -= ( 0.00016 * lumiRunsBCDEF_ + 0.00036 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 1) twgt += ( 0.00017 * lumiRunsBCDEF_ + 0.00020 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+        if (syst == 2) twgt -= ( 0.00017 * lumiRunsBCDEF_ + 0.00036 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 
         // mumu separate runs SFs
         // RunB: 0.987; RunC: 0.981; RunD: 0.988; RunE: 0.985; RunF: 0.993; RunG: 0.999; RunH: 0.998
