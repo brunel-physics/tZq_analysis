@@ -33,9 +33,9 @@ fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3495799
 crossSection = 0.07096
 runType = mc
-histoName = tHq
-colour = kCyan
-label = tHq
+histoName = SingleTop
+colour = kMagenta
+label = SingleTop
 plotType = f
 
 [sChannel]
@@ -43,9 +43,9 @@ fileName = configs/2016/datasets/fileLists/sChannelFiles.txt
 totalEvents = 1000000
 crossSection = 10.32
 runType = mc
-histoName = sChannel
-colour = kTeal
-label = s-channel
+histoName = SingleTop
+colour = kMagenta
+label = SingleTop
 plotType = f
 
 [tChannel]
@@ -53,9 +53,9 @@ fileName = configs/2016/datasets/fileLists/tChannelFiles.txt
 totalEvents = 67240808
 crossSection = 136.02
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = SingleTop
 plotType = f
 
 [tbarChannel]
@@ -63,9 +63,9 @@ fileName = configs/2016/datasets/fileLists/tbarChannelFiles.txt
 totalEvents = 38811017
 crossSection = 80.95
 runType = mc
-histoName = tChannel
+histoName = SingleTop
 colour = kMagenta
-label = t-channel
+label = SingleTop
 plotType = f
 
 [WZ1l1nu2q]
@@ -110,7 +110,6 @@ plotType = f
 
 [ZZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
-runType = mc
 totalEvents = 8842475
 crossSection = 0.564
 histoName = zz
@@ -134,7 +133,7 @@ totalEvents = 8997800
 crossSection = 49.997
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -144,7 +143,7 @@ totalEvents = 1999000
 crossSection = 12.178
 runType = mc
 histoName = WW
-colour = kRed1
+colour = kCyan
 label = WW
 plotType = f
 
@@ -194,7 +193,7 @@ runType = mc
 totalEvents = 24028465
 crossSection = 61526.7
 histoName = wJets
-colour = kSpring
+colour = kGray
 label = w+jets
 plotType = f
 
@@ -203,9 +202,9 @@ fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 5280565
 crossSection = 0.2043
 runType = mc
-histoName = ttW
-colour = kGreen - 4
-label = ttW
+histoName = ttV
+colour = kGreen
+label = ttV
 plotType = f
 
 [ttW2q]
@@ -213,9 +212,9 @@ fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
 totalEvents = 833298
 crossSection = 0.4062
 runType = mc
-histoName = ttW
+histoName = ttV
 colour = kGreen
-label = ttW
+label = ttV
 plotType = f
 
 [ttZ2l2nu]
@@ -223,9 +222,9 @@ fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
 totalEvents = 7974473
 crossSection = 0.2529
 runType = mc
-histoName = ttZ
+histoName = ttV
 colour = kGreen
-label = ttZ
+label = ttV
 plotType = f
 
 [ttZ2q]
@@ -233,9 +232,29 @@ fileName = configs/2016/datasets/fileLists/ttZ2qFiles.txt
 totalEvents = 749400
 crossSection = 0.5297
 runType = mc
-histoName = ttZ
+histoName = ttV
 colour = kGreen
-label = ttZ
+label = ttV
+plotType = f
+
+[ttHTobb]
+fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
+totalEvents = 3845992
+crossSection = 0.2934
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
+plotType = f
+
+[ttHToNonbb]
+fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+totalEvents = 3981250
+crossSection = 0.2151
+runType = mc
+histoName = ttV
+colour = kGreen
+label = ttV
 plotType = f
 
 [tWInclusive]
@@ -243,9 +262,9 @@ fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 totalEvents = 3516550
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = SingleTop
 plotType = f
 
 [tbarWInclusive]
@@ -253,9 +272,9 @@ fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
 totalEvents = 5205966
 crossSection = 35.85
 runType = mc
-histoName = tW
-colour = kCyan
-label = tW
+histoName = SingleTop
+colour = kMagenta
+label = SingleTop
 plotType = f
 
 [tWZ]
@@ -263,29 +282,9 @@ fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 totalEvents = 50000
 crossSection = 0.01123
 runType = mc
-histoName = tWZ
-colour = kCyan
-label = tWZ
-plotType = f
-
-[ttHTobb]
-fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
-totalEvents = 3687741
-crossSection = 0.2934
-runType = mc
-histoName = ttH
-colour = kAzure
-label = ttH
-plotType = f
-
-[ttHToNonbb]
-fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
-totalEvents = 3814118
-crossSection = 0.2151
-runType = mc
-histoName = ttH
-colour = kAzure
-label = ttH
+histoName = SingleTop
+colour = kMagenta
+label = SingleTop
 plotType = f
 
 [tZq]
@@ -299,3 +298,4 @@ label = tZq
 plotType = f
 
 []
+
