@@ -1315,80 +1315,62 @@ void TriggerScaleFactors::savePlots()
   }
 
   // Turn on curves ratio histos
-  TProfile* p_electron1_pT_data_MC = dynamic_cast<TProfile*>( p_electron1_pT_data->Clone() );
-  p_electron1_pT_data_MC->Sumw2();
+  TProfile* p_electron1_pT_data_MC = dynamic_cast<TProfile*>( p_electron1_pT_data->Clone("p_electron1_pT_data_MC") );
   p_electron1_pT_data_MC->Divide(p_electron1_pT_MC);
 
-  TProfile* p_electron1_eta_data_MC = dynamic_cast<TProfile*>( p_electron1_eta_data->Clone() );
-  p_electron1_eta_data_MC->Sumw2();
+  TProfile* p_electron1_eta_data_MC = dynamic_cast<TProfile*>( p_electron1_eta_data->Clone("p_electron1_eta_data_MC") );
   p_electron1_eta_data_MC->Divide(p_electron1_eta_MC);
 
-  TProfile* p_electron2_pT_data_MC = dynamic_cast<TProfile*>( p_electron2_pT_data->Clone() );
-  p_electron2_pT_data_MC->Sumw2();
+  TProfile* p_electron2_pT_data_MC = dynamic_cast<TProfile*>( p_electron2_pT_data->Clone("p_electron2_pT_data_MC") );
   p_electron2_pT_data_MC->Divide(p_electron2_pT_MC);
 
-  TProfile* p_electron2_eta_data_MC = dynamic_cast<TProfile*>( p_electron2_eta_data->Clone() );
-  p_electron2_eta_data_MC->Sumw2();
+  TProfile* p_electron2_eta_data_MC = dynamic_cast<TProfile*>( p_electron2_eta_data->Clone("p_electron2_eta_data_MC") );
   p_electron2_eta_data_MC->Divide(p_electron2_eta_MC);
 
-  TProfile* p_muon1_pT_data_MC = dynamic_cast<TProfile*>( p_muon1_pT_data->Clone() );
-  p_muon1_pT_data_MC->Sumw2();
+  TProfile* p_muon1_pT_data_MC = dynamic_cast<TProfile*>( p_muon1_pT_data->Clone("p_muon1_pT_data_MC") );
   p_muon1_pT_data_MC->Divide(p_muon1_pT_MC);
 
-  TProfile* p_muon1_eta_data_MC = dynamic_cast<TProfile*>( p_muon1_eta_data->Clone() );
-  p_muon1_eta_data_MC->Sumw2();
+  TProfile* p_muon1_eta_data_MC = dynamic_cast<TProfile*>( p_muon1_eta_data->Clone("p_muon1_eta_data_MC") );
   p_muon1_eta_data_MC->Divide(p_muon1_eta_MC);
 
-  TProfile* p_muon2_pT_data_MC = dynamic_cast<TProfile*>( p_muon2_pT_data->Clone() );
-  p_muon2_pT_data_MC->Sumw2();
+  TProfile* p_muon2_pT_data_MC = dynamic_cast<TProfile*>( p_muon2_pT_data->Clone("p_muon2_pT_data_MC") );
   p_muon2_pT_data_MC->Divide(p_muon2_pT_MC);
 
-  TProfile* p_muon2_eta_data_MC = dynamic_cast<TProfile*>( p_muon2_eta_data->Clone() );
-  p_muon2_eta_data_MC->Sumw2();
+  TProfile* p_muon2_eta_data_MC = dynamic_cast<TProfile*>( p_muon2_eta_data->Clone("p_muon2_eta_data_MC") );
   p_muon2_eta_data_MC->Divide(p_muon2_eta_MC);
 
-  TProfile* p_muonElectron1_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_pT_data->Clone() );
-  p_muonElectron1_pT_data_MC->Sumw2();
+  TProfile* p_muonElectron1_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_pT_data->Clone("p_muonElectron1_pT_data_MC") );
   p_muonElectron1_pT_data_MC->Divide(p_muonElectron1_pT_MC);
 
-  TProfile* p_muonElectron1_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_eta_data->Clone() );
-  p_muonElectron1_eta_data_MC->Sumw2();
+  TProfile* p_muonElectron1_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_eta_data->Clone("p_muonElectron1_eta_data_MC") );
   p_muonElectron1_eta_data_MC->Divide(p_muonElectron1_eta_MC);
 
-  TProfile* p_muonElectron2_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_pT_data->Clone() );
-  p_muonElectron2_pT_data_MC->Sumw2();
+  TProfile* p_muonElectron2_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_pT_data->Clone("p_muonElectron1_eta_data_MC") );
   p_muonElectron2_pT_data_MC->Divide(p_muonElectron2_pT_MC);
 
-  TProfile* p_muonElectron2_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_eta_data->Clone() );
-  p_muonElectron2_eta_data_MC->Sumw2();
+  TProfile* p_muonElectron2_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_eta_data->Clone("p_muonElectron1_eta_data_MC") );
   p_muonElectron2_eta_data_MC->Divide(p_muonElectron2_eta_MC);
 
   // SF histos
-
-  TH2F* electronPtSF = dynamic_cast<TH2F*>( p_electrons_pT_data->Clone() );
-  electronPtSF->Sumw2();
+/*
+  TH2F* electronPtSF = dynamic_cast<TH2F*>( p_electrons_pT_data->Clone("electronPtSF") );
   electronPtSF->Divide(p_electrons_pT_MC);
   
-  TH2F* electronEtaSF = dynamic_cast<TH2F*>( p_electrons_eta_data->Clone() );
-  electronEtaSF->Sumw2();
+  TH2F* electronEtaSF = dynamic_cast<TH2F*>( p_electrons_eta_data->Clone("electronEtaSF") );
   electronEtaSF->Divide(p_electrons_eta_MC);
 
-  TH2F* muonPtSF = dynamic_cast<TH2F*>( p_muons_pT_data->Clone() );
-  muonPtSF->Sumw2();
+  TH2F* muonPtSF = dynamic_cast<TH2F*>( p_muons_pT_data->Clone("muonPtSF") );
   muonPtSF->Divide(p_muons_pT_MC);
 
-  TH2F* muonEtaSF = dynamic_cast<TH2F*>( p_muons_eta_data->Clone() );
-  muonEtaSF->Sumw2();
+  TH2F* muonEtaSF = dynamic_cast<TH2F*>( p_muons_eta_data->Clone("muonEtaSF") );
   muonEtaSF->Divide(p_muons_eta_MC);
 
-  TH2F* muonElectronPtSF = dynamic_cast<TH2F*>( p_muonElectrons_pT_data->Clone() );
-  muonElectronPtSF->Sumw2();
+  TH2F* muonElectronPtSF = dynamic_cast<TH2F*>( p_muonElectrons_pT_data->Clone("muonElectronPtSF") );
   muonElectronPtSF->Divide(p_muonElectrons_pT_MC);
 
-  TH2F* muonElectronEtaSF = dynamic_cast<TH2F*>( p_muonElectrons_eta_data->Clone() );
-  muonElectronEtaSF->Sumw2();
+  TH2F* muonElectronEtaSF = dynamic_cast<TH2F*>( p_muonElectrons_eta_data->Clone("muonElectronEtaSF") );
   muonElectronEtaSF->Divide(p_muonElectrons_eta_MC);
-
+*/
   // Write Histos
 
   p_electron1_pT_MC->Write();
@@ -1446,14 +1428,14 @@ void TriggerScaleFactors::savePlots()
   p_muonElectron2_pT_data_MC->Write();
   p_muonElectron2_eta_data_MC->Write();
 
-
+/*
   electronPtSF->Write();
   electronEtaSF->Write();
   muonPtSF->Write();
   muonEtaSF->Write();
   muonElectronPtSF->Write();
   muonElectronEtaSF->Write();
-
+*/
 
 
   TCanvas* lCanvasEle1PtEff = new TCanvas ("lCanvasEle1PtEff","lCanvasEle1PtEff");
