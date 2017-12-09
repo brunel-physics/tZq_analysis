@@ -1345,10 +1345,10 @@ void TriggerScaleFactors::savePlots()
   TProfile* p_muonElectron1_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_eta_data->Clone("p_muonElectron1_eta_data_MC") );
   p_muonElectron1_eta_data_MC->Divide(p_muonElectron1_eta_MC);
 
-  TProfile* p_muonElectron2_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_pT_data->Clone("p_muonElectron1_eta_data_MC") );
+  TProfile* p_muonElectron2_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_pT_data->Clone("p_muonElectron2_pt_data_MC") );
   p_muonElectron2_pT_data_MC->Divide(p_muonElectron2_pT_MC);
 
-  TProfile* p_muonElectron2_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_eta_data->Clone("p_muonElectron1_eta_data_MC") );
+  TProfile* p_muonElectron2_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_eta_data->Clone("p_muonElectron2_eta_data_MC") );
   p_muonElectron2_eta_data_MC->Divide(p_muonElectron2_eta_MC);
 
   // SF histos
