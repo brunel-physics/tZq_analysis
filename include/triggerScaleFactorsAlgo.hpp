@@ -16,6 +16,7 @@ class AnalysisEvent;
 class TTree;
 class TFile;
 class TH1F;
+class TH2F;
 class TProfile;
 class TProfile2D;
 
@@ -47,6 +48,7 @@ class TriggerScaleFactors{
 	double* lumiPtr;
 
 	bool is2016_;
+	bool applyHltSf_;
 
 	// PU reweighting
 	TFile * dataPileupFile;
@@ -133,6 +135,11 @@ class TriggerScaleFactors{
 	TProfile2D* p_muons_eta_data;
 	TProfile2D* p_muonElectrons_pT_data;
 	TProfile2D* p_muonElectrons_eta_data;
+
+        TFile* muonHltFile1;
+        TFile* muonHltFile2;
+        TH2F* h_muonHlt1;
+        TH2F* h_muonHlt2;
 };
 
 #endif

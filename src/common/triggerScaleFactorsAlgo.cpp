@@ -22,8 +22,9 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (false);
+const bool HIP_ERA (true);
 const bool DO_HIPS (true);
+const bool applyHltSf_(false);
 
 //Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
 //Int_t numPt_bins = {13};
@@ -106,6 +107,12 @@ TriggerScaleFactors::TriggerScaleFactors():
   p_muonElectrons_pT_data = new TProfile2D("p_muonElectrons_pT_data","", numPt_bins, ptBins, numPt_bins, ptBins);
   p_muonElectrons_eta_data = new TProfile2D("p_muonElectrons_eta_data","", numEta_bins, etaBins, numEta_bins, etaBins);
 
+  muonHltFile1 = new TFile{"scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"}; //RunsB-F - pre-HIP fix
+  muonHltFile2 = new TFile{"scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunGtoH.root"}; //RunsB-F - post-HIP fix
+  muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
+  muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
+  h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon HLT SF
+  h_muonHlt2 = dynamic_cast<TH2F*>(muonHltFile2->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon HLT SF
 }
 
 TriggerScaleFactors::~TriggerScaleFactors(){}
@@ -537,10 +544,34 @@ void TriggerScaleFactors::runMainAnalysis(){
 
       if ( dataset->isMC() ) { // If is MC
 	//SFs bit
+
+        double SF = 1.0;
+        if ( applyHltSf_ ) {
+          double maxSfPt = h_muonHlt1->GetYaxis()->GetXmax()-0.1;
+          double minSfPt = h_muonHlt1->GetYaxis()->GetXmin()+0.1;
+          unsigned binSf1 {0}, binSf2 {0};
+
+          double pt  = event->zPairLeptons.first.Pt();
+          double eta = event->zPairLeptons.first.Eta();
+
+          if ( pt > maxSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),maxSfPt);
+          else if ( pt < minSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),minSfPt);
+          else binSf1 = h_muonHlt1->FindBin(std::abs(eta),pt);
+
+          if ( pt > maxSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),maxSfPt);
+          else if ( pt < minSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),minSfPt);
+          else binSf2 = h_muonHlt2->FindBin(std::abs(eta),pt);
+
+          if ( !DO_HIPS ) SF = ( h_muonHlt1->GetBinContent(binSf1) * 19648.534 + h_muonHlt2->GetBinContent(binSf2) * 16144.444 ) / ( 19648.534 + 16144.444 + 1.0e-06 );
+          if ( DO_HIPS && HIP_ERA ) SF =  h_muonHlt1->GetBinContent(binSf1);
+	  if ( DO_HIPS && !HIP_ERA ) SF =  h_muonHlt2->GetBinContent(binSf2);
+
+        }
+
 	numberPassedElectrons[0] += triggerMetElectronSelection*eventWeight; //Number of electrons passing the cross trigger and electron selection
 	numberTriggeredDoubleElectrons[0] += triggerMetDoubleEG*eventWeight; //Number of electrons passing both cross trigger+electron selection AND double EG trigger
 	numberPassedMuons[0] += triggerMetMuonSelection*eventWeight; //Number of muons passing the cross trigger and muon selection
-	numberTriggeredDoubleMuons[0] += triggerMetDoubleMuon*eventWeight; //Number of muons passing both cross trigger+muon selection AND double muon trigger
+	numberTriggeredDoubleMuons[0] += triggerMetDoubleMuon*eventWeight*SF; //Number of muons passing both cross trigger+muon selection AND double muon trigger
         numberPassedMuonElectrons[0] += triggerMetMuonElectronSelection*eventWeight; //Number of muonEGs passing cross trigger and muonEG selection
         numberTriggeredMuonElectrons[0] += triggerMetMuonElectron*eventWeight; //Number muonEGs passing both cross trigger+muonEG selection AND muonEG trigger
 
@@ -550,7 +581,7 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberSelectedMuonElectrons[0] += passMuonElectronSelection*eventWeight;
 
 	numberSelectedDoubleElectronsTriggered[0] += triggerDoubleEG*eventWeight;;
-	numberSelectedDoubleMuonsTriggered[0] += triggerDoubleMuon*eventWeight;
+	numberSelectedDoubleMuonsTriggered[0] += triggerDoubleMuon*eventWeight*SF;
 	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;
 
 	//Histos bit
@@ -564,13 +595,13 @@ void TriggerScaleFactors::runMainAnalysis(){
 	  p_electrons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
-          p_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
-          p_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
-          p_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
-          p_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
+          p_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          if ( event->zPairLeptons.first.Pt() > 30. ) p_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          p_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          if ( event->zPairLeptons.second.Pt() > 30. ) p_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
 
-	  p_muons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
-	  p_muons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
+	  p_muons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+	  p_muons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
         }
         if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
 	  p_muonElectron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
@@ -605,9 +636,9 @@ void TriggerScaleFactors::runMainAnalysis(){
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
           p_muon1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          p_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          if ( event->zPairLeptons.first.Pt() > 30. ) p_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
           p_muon2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          p_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          if ( event->zPairLeptons.second.Pt() > 30. ) p_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
 
 	  p_muons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
 	  p_muons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
@@ -1029,6 +1060,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
   }
 
   if ( mumuTrig == true || muTrig == true ) return true;
+//  if ( muTrig == true ) return true;
   else return false;
 }
 
@@ -1282,58 +1314,80 @@ void TriggerScaleFactors::savePlots()
     p_muonElectron2_eta_data->SetBinError(bin, error);
   }
 
+  // Turn on curves ratio histos
+  TProfile* p_electron1_pT_data_MC = dynamic_cast<TProfile*>( p_electron1_pT_data->Clone() );
+  p_electron1_pT_data_MC->Sumw2();
+  p_electron1_pT_data_MC->Divide(p_electron1_pT_MC);
+
+  TProfile* p_electron1_eta_data_MC = dynamic_cast<TProfile*>( p_electron1_eta_data->Clone() );
+  p_electron1_eta_data_MC->Sumw2();
+  p_electron1_eta_data_MC->Divide(p_electron1_eta_MC);
+
+  TProfile* p_electron2_pT_data_MC = dynamic_cast<TProfile*>( p_electron2_pT_data->Clone() );
+  p_electron2_pT_data_MC->Sumw2();
+  p_electron2_pT_data_MC->Divide(p_electron2_pT_MC);
+
+  TProfile* p_electron2_eta_data_MC = dynamic_cast<TProfile*>( p_electron2_eta_data->Clone() );
+  p_electron2_eta_data_MC->Sumw2();
+  p_electron2_eta_data_MC->Divide(p_electron2_eta_MC);
+
+  TProfile* p_muon1_pT_data_MC = dynamic_cast<TProfile*>( p_muon1_pT_data->Clone() );
+  p_muon1_pT_data_MC->Sumw2();
+  p_muon1_pT_data_MC->Divide(p_muon1_pT_MC);
+
+  TProfile* p_muon1_eta_data_MC = dynamic_cast<TProfile*>( p_muon1_eta_data->Clone() );
+  p_muon1_eta_data_MC->Sumw2();
+  p_muon1_eta_data_MC->Divide(p_muon1_eta_MC);
+
+  TProfile* p_muon2_pT_data_MC = dynamic_cast<TProfile*>( p_muon2_pT_data->Clone() );
+  p_muon2_pT_data_MC->Sumw2();
+  p_muon2_pT_data_MC->Divide(p_muon2_pT_MC);
+
+  TProfile* p_muon2_eta_data_MC = dynamic_cast<TProfile*>( p_muon2_eta_data->Clone() );
+  p_muon2_eta_data_MC->Sumw2();
+  p_muon2_eta_data_MC->Divide(p_muon2_eta_MC);
+
+  TProfile* p_muonElectron1_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_pT_data->Clone() );
+  p_muonElectron1_pT_data_MC->Sumw2();
+  p_muonElectron1_pT_data_MC->Divide(p_muonElectron1_pT_MC);
+
+  TProfile* p_muonElectron1_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron1_eta_data->Clone() );
+  p_muonElectron1_eta_data_MC->Sumw2();
+  p_muonElectron1_eta_data_MC->Divide(p_muonElectron1_eta_MC);
+
+  TProfile* p_muonElectron2_pT_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_pT_data->Clone() );
+  p_muonElectron2_pT_data_MC->Sumw2();
+  p_muonElectron2_pT_data_MC->Divide(p_muonElectron2_pT_MC);
+
+  TProfile* p_muonElectron2_eta_data_MC = dynamic_cast<TProfile*>( p_muonElectron2_eta_data->Clone() );
+  p_muonElectron2_eta_data_MC->Sumw2();
+  p_muonElectron2_eta_data_MC->Divide(p_muonElectron2_eta_MC);
+
   // SF histos
 
-  TH2F* electronPtSF = new TH2F ("electronPtSF","ee p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
-  TH2F* electronEtaSF = new TH2F ("electronEtaSF","ee #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+  TH2F* electronPtSF = dynamic_cast<TH2F*>( p_electrons_pT_data->Clone() );
+  electronPtSF->Sumw2();
+  electronPtSF->Divide(p_electrons_pT_MC);
+  
+  TH2F* electronEtaSF = dynamic_cast<TH2F*>( p_electrons_eta_data->Clone() );
+  electronEtaSF->Sumw2();
+  electronEtaSF->Divide(p_electrons_eta_MC);
 
-  TH2F* muonPtSF = new TH2F ("muonPtSF","#mu#mu p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
-  TH2F* muonEtaSF = new TH2F ("muonEtaSF","#mu#mu #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+  TH2F* muonPtSF = dynamic_cast<TH2F*>( p_muons_pT_data->Clone() );
+  muonPtSF->Sumw2();
+  muonPtSF->Divide(p_muons_pT_MC);
 
-  TH2F* muonElectronPtSF = new TH2F ("muonElectronPtSF","e#mu p_{T} trigger SFs", numPt_bins, ptBins, numPt_bins, ptBins);
-  TH2F* muonElectronEtaSF = new TH2F ("muonElectronEtaSF","e#mu #eta trigger SFs", numEta_bins, etaBins, numEta_bins, etaBins);
+  TH2F* muonEtaSF = dynamic_cast<TH2F*>( p_muons_eta_data->Clone() );
+  muonEtaSF->Sumw2();
+  muonEtaSF->Divide(p_muons_eta_MC);
 
-  for ( Int_t bin1 = 1; bin1 != numPt_bins+1; bin1++ ) {
-    for ( Int_t bin2 = 1; bin2 != numPt_bins+1; bin2++ ) {
-      double pT, pT_err;
+  TH2F* muonElectronPtSF = dynamic_cast<TH2F*>( p_muonElectrons_pT_data->Clone() );
+  muonElectronPtSF->Sumw2();
+  muonElectronPtSF->Divide(p_muonElectrons_pT_MC);
 
-      pT = p_electrons_pT_data->GetBinContent( bin1, bin2 )/(p_electrons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      pT_err = ( p_electrons_pT_data->GetBinContent( bin1, bin2 )+p_electrons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_electrons_pT_MC->GetBinContent( bin1, bin2 ) - p_electrons_pT_MC->GetBinError( bin1, bin2) );
-      electronPtSF->SetBinContent( bin1, bin2, pT);
-      electronPtSF->SetBinError( bin1, bin2, pT_err );
-
-      pT = p_muons_pT_data->GetBinContent( bin1, bin2 )/(p_muons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      pT_err = ( p_muons_pT_data->GetBinContent( bin1, bin2 )+p_muons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_muons_pT_MC->GetBinContent( bin1, bin2 ) - p_muons_pT_MC->GetBinError( bin1, bin2) );
-      muonPtSF->SetBinContent( bin1, bin2, pT);
-      muonPtSF->SetBinError( bin1, bin2, pT_err );
-
-      pT = p_muonElectrons_pT_data->GetBinContent( bin1, bin2 )/(p_muonElectrons_pT_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      pT_err = ( p_muonElectrons_pT_data->GetBinContent( bin1, bin2 )+p_muonElectrons_pT_data->GetBinError( bin1, bin2 ) ) / ( p_muonElectrons_pT_MC->GetBinContent( bin1, bin2 ) - p_muonElectrons_pT_MC->GetBinError( bin1, bin2) );
-      muonElectronPtSF->SetBinContent( bin1, bin2, pT);
-      muonElectronPtSF->SetBinError( bin1, bin2, pT_err );
-    }
-  }
-
-  for ( Int_t bin1 = 1; bin1 != numEta_bins+1; bin1++ ) {
-    for ( Int_t bin2 = 1; bin2 != numEta_bins+1; bin2++ ) {
-      double eta, eta_err;
-
-      eta = p_electrons_eta_data->GetBinContent( bin1, bin2 )/(p_electrons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      eta_err = ( p_electrons_eta_data->GetBinContent( bin1, bin2 )+p_electrons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_electrons_eta_MC->GetBinContent( bin1, bin2 ) - p_electrons_eta_MC->GetBinError( bin1, bin2) );
-      electronEtaSF->SetBinContent( bin1, bin2, eta);
-      electronEtaSF->SetBinError( bin1, bin2, eta_err );
-
-      eta = p_muons_eta_data->GetBinContent( bin1, bin2 )/(p_muons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      eta_err = ( p_muons_eta_data->GetBinContent( bin1, bin2 )+p_muons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_muons_eta_MC->GetBinContent( bin1, bin2 ) - p_muons_eta_MC->GetBinError( bin1, bin2) );
-      muonEtaSF->SetBinContent( bin1, bin2, eta);
-      muonEtaSF->SetBinError( bin1, bin2, eta_err );
-
-      eta = p_muonElectrons_eta_data->GetBinContent( bin1, bin2 )/(p_muonElectrons_eta_MC->GetBinContent( bin1, bin2 )+1.0e-6);
-      eta_err = ( p_muonElectrons_eta_data->GetBinContent( bin1, bin2 )+p_muonElectrons_eta_data->GetBinError( bin1, bin2 ) ) / ( p_muonElectrons_eta_MC->GetBinContent( bin1, bin2 ) - p_muonElectrons_eta_MC->GetBinError( bin1, bin2) );
-      muonElectronEtaSF->SetBinContent( bin1, bin2, eta);
-      muonElectronEtaSF->SetBinError( bin1, bin2, eta_err );
-    }
-  }
+  TH2F* muonElectronEtaSF = dynamic_cast<TH2F*>( p_muonElectrons_eta_data->Clone() );
+  muonElectronEtaSF->Sumw2();
+  muonElectronEtaSF->Divide(p_muonElectrons_eta_MC);
 
   // Write Histos
 
@@ -1376,6 +1430,22 @@ void TriggerScaleFactors::savePlots()
   p_muons_eta_data->Write();
   p_muonElectrons_pT_data->Write();
   p_muonElectrons_eta_data->Write();  
+
+  p_electron1_pT_data_MC->Write();
+  p_electron1_eta_data_MC ->Write();
+  p_electron2_pT_data_MC->Write();
+  p_electron2_eta_data_MC->Write();
+
+  p_muon1_pT_data_MC->Write();
+  p_muon1_eta_data_MC->Write();
+  p_muon2_pT_data_MC->Write();
+  p_muon2_eta_data_MC->Write();
+
+  p_muonElectron1_pT_data_MC->Write();
+  p_muonElectron1_eta_data_MC->Write();
+  p_muonElectron2_pT_data_MC->Write();
+  p_muonElectron2_eta_data_MC->Write();
+
 
   electronPtSF->Write();
   electronEtaSF->Write();
