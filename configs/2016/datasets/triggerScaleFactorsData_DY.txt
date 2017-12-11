@@ -1,0 +1,21 @@
+[DYJetsToLL_M-50]
+fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+totalEvents = 145803217
+crossSection = 5765.4
+runType = mc
+histoName = zPlusJets
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[metRun2016]
+fileName = configs/2016/datasets/fileLists/metRun2016Files.txt
+luminosity = 35792.978
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
