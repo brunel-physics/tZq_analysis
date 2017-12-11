@@ -159,5 +159,8 @@ ls /scratch/data/tZqSkimsRun2016/synch/tZq/* -1d >> $TQZ_TOOLS_PATH/configs/2016
 ls /scratch/data/tZqSkimsRun2016/synch/data1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/data1SynchFiles.txt
 ls /scratch/data/tZqSkimsRun2016/synch/data2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/data2SynchFiles.txt
 
+ls /scratch/data/tZqSkimsRun2016/synch/tW/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/twSynchFiles.txt
+ls /scratch/data/tZqSkimsRun2016/synch/ttbar/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarSynchFiles.txt
+
 echo Done!
 echo Filelists have been updated.
