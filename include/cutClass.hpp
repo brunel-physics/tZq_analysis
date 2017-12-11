@@ -40,6 +40,9 @@ class Cuts{
   float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>, int syst = 0);
   float getTTbarCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
+
+  std::vector< std::pair<int,int> > getSynchDileptonCandidates(AnalysisEvent*, std::vector<int>, std::vector<int>);
+
   float getTopMass(AnalysisEvent*);
   bool triggerCuts(AnalysisEvent*, float *, int syst = 0);
   bool metFilters(AnalysisEvent*);
@@ -51,6 +54,9 @@ class Cuts{
   int getLooseLepsNum(AnalysisEvent * event); //Mimic preselection skims
   int getLooseElecs(AnalysisEvent* event);
   int getLooseMus(AnalysisEvent* event);
+  //Methods for running tW synch
+  std::vector<int> getSynchEles(AnalysisEvent* event);
+  std::vector<int> getSynchMus(AnalysisEvent* event);
 
   //Method to do ttbar cuts for the dilepton background estimation
   bool ttbarCuts(AnalysisEvent* event, float*, std::map<std::string,Plots*>, TH1F*, int);

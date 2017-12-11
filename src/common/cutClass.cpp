@@ -477,7 +477,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     }
     SFs.emplace_back(tempSF);
   }
- 
+
   event->muonMomentumSF = SFs;
 
 
@@ -1030,6 +1030,125 @@ float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::
   return closestMass;
 }
 
+// tW synch - code to get dilepton pairs correct for the tW topology
+std::vector< std::pair<int,int> > Cuts::getSynchDileptonCandidates(AnalysisEvent* event, std::vector<int> eles, std::vector<int> mus){
+
+  std::vector< std::pair<int,int> > dileptonPairs;
+  std::vector<int> avaliableElectrons = eles;
+  std::vector<int> avaliableMuons = mus;
+  bool exhaustedOppSignOptions{false};
+
+  if ( numTightEle_ == 2 ) {
+    while ( avaliableElectrons.size() > 1 && !exhaustedOppSignOptions ) {
+      double leadingPt {-1.};
+      bool noneFound = true;
+      int lepIndex_1, lepIndex_2;
+      for ( unsigned i{0}; i < avaliableElectrons.size(); i++ ) {
+        for ( unsigned j{i+1}; j < avaliableElectrons.size(); j++ ) {
+          if ( event->elePF2PATCharge[avaliableElectrons[i]] * event->elePF2PATCharge[avaliableElectrons[j]] < 0 ) noneFound = false;
+          if ( event->elePF2PATCharge[avaliableElectrons[i]] * event->elePF2PATCharge[avaliableElectrons[j]] >= 0 )  { // Check electron pair have opposite charge
+            if ( j == avaliableElectrons.size() -1 && i == avaliableElectrons.size() -2 && noneFound ) exhaustedOppSignOptions = true; // Set flag if reached end of avaliable leptons and no opposite sign options are left.
+            continue; 
+          }
+
+          TLorentzVector lepton1{event->elePF2PATGsfPx[avaliableElectrons[i]],event->elePF2PATGsfPy[avaliableElectrons[i]],event->elePF2PATGsfPz[avaliableElectrons[i]],event->elePF2PATGsfE[avaliableElectrons[i]]};
+          TLorentzVector lepton2{event->elePF2PATGsfPx[avaliableElectrons[j]],event->elePF2PATGsfPy[avaliableElectrons[j]],event->elePF2PATGsfPz[avaliableElectrons[j]],event->elePF2PATGsfE[avaliableElectrons[j]]};
+
+          double invPt{ (lepton1+lepton2).Pt() };
+          if (invPt > leadingPt) {
+            lepIndex_1 = lepton1.Pt() > lepton2.Pt() ? avaliableElectrons[i]:avaliableElectrons[j];
+            lepIndex_2 = lepton1.Pt() > lepton2.Pt() ? avaliableElectrons[j]:avaliableElectrons[i];
+            leadingPt = invPt;
+          }
+        }
+      }
+      if ( !exhaustedOppSignOptions ) {
+        dileptonPairs.emplace_back( std::make_pair(lepIndex_1,lepIndex_2) );
+        avaliableElectrons.erase( std::remove(avaliableElectrons.begin(), avaliableElectrons.end(), lepIndex_1), avaliableElectrons.end() );
+        avaliableElectrons.erase( std::remove(avaliableElectrons.begin(), avaliableElectrons.end(), lepIndex_2), avaliableElectrons.end() );
+      }
+    }
+  }
+
+  else if ( numTightMu_ == 2 ) {
+    while ( avaliableMuons.size() > 1 && !exhaustedOppSignOptions ) {
+      double leadingPt {-1.};
+      bool noneFound = true;
+      int lepIndex_1, lepIndex_2;
+      for ( unsigned i{0}; i < avaliableMuons.size(); i++ ) {
+        for ( unsigned j{i+1}; j < avaliableMuons.size(); j++ ) {
+
+          if ( event->muonPF2PATCharge[avaliableMuons[i]] * event->muonPF2PATCharge[avaliableMuons[j]] < 0 ) noneFound = false;
+          if ( event->muonPF2PATCharge[avaliableMuons[i]] * event->muonPF2PATCharge[avaliableMuons[j]] >= 0 )  { // Chec muon pair have opposite charge
+            if ( j == avaliableMuons.size() -1 && i == avaliableMuons.size() -2 && noneFound ) exhaustedOppSignOptions = true; // Set flag if reached end of avaliable leptons and no opposite sign options are left.
+            continue; 
+          }
+
+          TLorentzVector lepton1{event->muonPF2PATPX[avaliableMuons[i]],event->muonPF2PATPY[avaliableMuons[i]],event->muonPF2PATPZ[avaliableMuons[i]],event->muonPF2PATE[avaliableMuons[i]]};
+          TLorentzVector lepton2{event->muonPF2PATPX[avaliableMuons[j]],event->muonPF2PATPY[avaliableMuons[j]],event->muonPF2PATPZ[avaliableMuons[j]],event->muonPF2PATE[avaliableMuons[j]]};
+
+          double invPt{ (lepton1+lepton2).Pt() };
+
+          if (invPt > leadingPt) {
+            lepIndex_1 = lepton1.Pt() > lepton2.Pt() ? avaliableMuons[i]:avaliableMuons[j];
+            lepIndex_2 = lepton1.Pt() > lepton2.Pt() ? avaliableMuons[j]:avaliableMuons[i];
+            leadingPt = invPt;
+          }
+        }
+      }
+      if ( !exhaustedOppSignOptions ) {
+        dileptonPairs.emplace_back( std::make_pair(lepIndex_1,lepIndex_2) );
+        avaliableMuons.erase( std::remove(avaliableMuons.begin(), avaliableMuons.end(), lepIndex_1), avaliableMuons.end() );
+        avaliableMuons.erase( std::remove(avaliableMuons.begin(), avaliableMuons.end(), lepIndex_2), avaliableMuons.end() );
+      }
+    }
+  }
+
+  else if ( numTightEle_ == 1 && numTightMu_ == 1 ) {
+    while ( avaliableElectrons.size() > 0 && avaliableMuons.size() > 0 && !exhaustedOppSignOptions ) {
+      double leadingPt {-1.};
+      bool noneFound = true;
+      int lepIndex_1, lepIndex_2;
+      for ( unsigned i{0}; i < avaliableElectrons.size(); i++ ) {
+        for ( unsigned j{0}; j < avaliableMuons.size(); j++ ) {
+
+//          std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+//          std::cout << "charge i*j = " << event->elePF2PATCharge[avaliableElectrons[i]] << " * " << event->muonPF2PATCharge[avaliableMuons[j]] << " = " << event->elePF2PATCharge[avaliableElectrons[i]] * event->muonPF2PATCharge[avaliableMuons[j]] << std::endl;
+          if ( event->elePF2PATCharge[avaliableElectrons[i]] * event->muonPF2PATCharge[avaliableMuons[j]] < 0 ) noneFound = false;
+          if ( event->elePF2PATCharge[avaliableElectrons[i]] * event->muonPF2PATCharge[avaliableMuons[j]] >= 0 )  { // Chec muon pair have opposite charge
+            if ( i == avaliableElectrons.size() -1 && j == avaliableMuons.size() -1 && noneFound ) exhaustedOppSignOptions = true; // Set flag if reached end of avaliable leptons and no opposite sign options are left.
+            continue; 
+          }
+
+//          std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+
+          TLorentzVector lepton1{event->elePF2PATGsfPx[avaliableElectrons[i]],event->elePF2PATGsfPy[avaliableElectrons[i]],event->elePF2PATGsfPz[avaliableElectrons[i]],event->elePF2PATGsfE[avaliableElectrons[i]]};
+  	  TLorentzVector lepton2{event->muonPF2PATPX[avaliableMuons[j]], event->muonPF2PATPY[avaliableMuons[j]],event->muonPF2PATPZ[avaliableMuons[j]],event->muonPF2PATE[avaliableMuons[j]]};
+
+          double invPt{ (lepton1+lepton2).Pt() };
+
+          if (invPt > leadingPt) {
+            lepIndex_1 = avaliableElectrons[i];
+            lepIndex_2 = avaliableMuons[j];
+            leadingPt = invPt;
+          }
+        }
+      }
+      if ( !exhaustedOppSignOptions ) {
+        dileptonPairs.emplace_back( std::make_pair(lepIndex_1,lepIndex_2) );
+//        std::cout << __LINE__ << " : " << __FILE__ << std::endl;
+//        std::cout << "lepIndex_1/lepIndex_2: " << lepIndex_1 << "/" << lepIndex_2 << std::endl;
+        avaliableElectrons.erase( std::remove(avaliableElectrons.begin(), avaliableElectrons.end(), lepIndex_1), avaliableElectrons.end() );
+        avaliableMuons.erase( std::remove(avaliableMuons.begin(), avaliableMuons.end(), lepIndex_2), avaliableMuons.end() );
+      }
+    }
+  }
+
+  else std::cout << "HOW ON EARTH DID YOU MANAGE THIS?" << std::endl;
+
+  return dileptonPairs;
+}
+
 float Cuts::getTopMass(AnalysisEvent *event){
   TLorentzVector metVec{event->metPF2PATPx,event->metPF2PATPy,0,event->metPF2PATEt};
   TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
@@ -1423,7 +1542,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         // eff across all runs: 0.96167 +0.00068/-0.00067; SF across all runs: 0.99201 +/- 0.00042
         // eff pre-HIP fix: 0.95855 -0.00091/0.00093; eff post-HIP fix: 0.97105 -0.00089/0.00093; SF pre-HIP fix 0.98879 +/- 0.00017 and 1.00168 +/-0.00020  for post-HIP fix
 
-
         twgt = ( 0.98879 * lumiRunsBCDEF_ + 1.00168 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
 
 //        twgt = 1.0;
@@ -1545,9 +1663,14 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   if (makeEventDump_) dumpToFile(event,9);
 
   if ( !trileptonChannel_ ){
+
+  // 2016 tZq dilepton synch
+
     synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
 //    std::cout << std::setprecision(6) << std::fixed;
 
+
+    
     if (!triggerCuts(event, eventWeight, 0)) return false;
     if (!metFilters(event)) return false;
 
@@ -1592,110 +1715,222 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
     TLorentzVector bVec(event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
 
-//    double topMass = (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
+    double topMass = (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
 //    double topMass = getTopMass(event);
 //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
 
-/*    if ( topMass > 130 ){
+    if ( topMass > 130 ){
        if ( std::abs(event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]]) == 5)
        std::cout << "jet PID/b mass/w Mass/leading b pT: " << event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]] << " / " << bVec.M() << " / " << (event->wPairQuarks.first + event->wPairQuarks.second).M() << " / " << event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]] << "\t " << std::endl;
-    }*/
+    }
 
     return true;
+
+    
+    /*
+      // tW synch 
+      // Total events
+      synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+
+      if (!metFilters(event)) return false;
+
+      // >= 1 pair of opposite charge leptons with mll>20 (leading lepton pT > 25 GeV)
+      std::vector<int> electrons = getSynchEles(event);
+      std::vector<int>  muons = getSynchMus(event);
+
+      // Dilepton mass calculation
+
+      unsigned passedPairs {0};
+      std::vector< std::pair<int, int> > dileptonCands = getSynchDileptonCandidates(event, electrons, muons);
+
+      for ( auto it = dileptonCands.begin(); it != dileptonCands.end(); it++ ) {
+
+        if ( numTightEle_ == 2 ) { // If dielectron channel
+          // dilepton mass must be greater than 20 GeV
+          TLorentzVector lepton1{event->elePF2PATGsfPx[it->first],event->elePF2PATGsfPy[it->first],event->elePF2PATGsfPz[it->first],event->elePF2PATGsfE[it->first]};
+          TLorentzVector lepton2{event->elePF2PATGsfPx[it->second],event->elePF2PATGsfPy[it->second],event->elePF2PATGsfPz[it->second],event->elePF2PATGsfE[it->second]};
+          if ( (lepton1+lepton2).M() < 20. ) continue;
+          //leading lepton pT must be greater than 25 GeV
+          if ( lepton1.Pt() < 25. ) continue;
+          passedPairs++;
+        }
+
+        if ( numTightMu_ == 2 ) { // If dimuon channel
+          // dilepton mass must be greater than 20 GeV
+          TLorentzVector lepton1{event->muonPF2PATPX[it->first],event->muonPF2PATPY[it->first],event->muonPF2PATPZ[it->first],event->muonPF2PATE[it->first]};
+          TLorentzVector lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
+          if ( (lepton1+lepton2).M() < 20. ) continue;
+          //leading lepton pT must be greater than 25 GeV
+          if ( lepton1.Pt() < 25. ) continue;
+          passedPairs++;
+       }
+
+       if ( numTightEle_ == 1 && numTightMu_ == 2 ) { // If emu channel
+          // dilepton mass must be greater than 20 GeV
+          TLorentzVector lepton1{event->elePF2PATGsfPx[it->first],event->elePF2PATGsfPy[it->first],event->elePF2PATGsfPz[it->first],event->elePF2PATGsfE[it->first]};
+          TLorentzVector lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
+          if ( (lepton1+lepton2).M() < 20. ) continue;
+          //leading lepton pT must be greater than 25 GeV
+          double leadingPt = lepton1.Pt() > lepton2.Pt() ? lepton1.Pt():lepton2.Pt();
+          if ( leadingPt < 25. ) continue;
+          passedPairs++;
+       }
+
+     }
+
+      if ( passedPairs < 1 ) return false;
+      synchCutFlowHist_->Fill(1.5, *eventWeight);
+      // Dilepton mass not in 76-106 GeV range (only for ee and mumu channels) - id est no Z bosons!
+      bool notZ {false};
+      if ( numTightEle_ == 2 ) {
+        for ( auto it = dileptonCands.begin(); it != dileptonCands.end(); it++ ) {
+          TLorentzVector lepton1{event->elePF2PATGsfPx[it->first],event->elePF2PATGsfPy[it->first],event->elePF2PATGsfPz[it->first],event->elePF2PATGsfE[it->first]};
+          TLorentzVector lepton2{event->elePF2PATGsfPx[it->second],event->elePF2PATGsfPy[it->second],event->elePF2PATGsfPz[it->second],event->elePF2PATGsfE[it->second]};
+          double invMass = (lepton1+lepton2).M();
+          if ( invMass > 106. || invMass < 76. ) { notZ=true; // Found at least one pair which is not Z
+            event->zPairLeptons.first = lepton1;
+            event->zPairLeptons.second = lepton2;
+          }
+        }  
+      }
+      if ( numTightMu_ == 2 ) {
+        for ( auto it = dileptonCands.begin(); it != dileptonCands.end(); it++ ) {
+          TLorentzVector lepton1{event->muonPF2PATPX[it->first],event->muonPF2PATPY[it->first],event->muonPF2PATPZ[it->first],event->muonPF2PATE[it->first]};
+          TLorentzVector lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
+          double invMass = (lepton1+lepton2).M();
+          if ( invMass > 106. || invMass < 76. ) { notZ=true; // Found at least one pair which is not Z
+            event->zPairLeptons.first = lepton1;
+            event->zPairLeptons.second = lepton2;
+          }
+        }
+      }
+
+      if ( !notZ ) return false;
+      synchCutFlowHist_->Fill(2.5, *eventWeight);
+
+      // MET > 40 (only for ee and mumu channels)
+      if (event->metPF2PATPt < 40 && (numTightEle_ == 2 || numTightMu_ == 2)) return false; // Continue if MET is > 40 and ee or mumu channel
+      synchCutFlowHist_->Fill(3.5, *eventWeight);
+
+      //Setup selected lepton pair used for jet-lepton cleaning
+      // nJets >= 2
+      std::pair< std::vector<int>, std::vector<float> > jetInfo;
+      jetInfo = makeJetCuts(event, 0, eventWeight);
+      event->jetIndex = jetInfo.first;
+      event->jetSmearValue = jetInfo.second;
+
+      event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
+
+      if (event->jetIndex.size() >= 2) synchCutFlowHist_->Fill(4.5, *eventWeight);
+
+      // nBjets >= 1
+      if (event->jetIndex.size() >= 2 && event->bTagIndex.size() >= 1) synchCutFlowHist_->Fill(5.5, *eventWeight);
+
+      // nJets == 1
+      if (event->jetIndex.size() == 1) synchCutFlowHist_->Fill(6.5, *eventWeight);
+
+      // nBjets == 1
+      if (event->jetIndex.size() == 1 && event->bTagIndex.size() == 1) synchCutFlowHist_->Fill(7.5, *eventWeight);
+  */
   }
 
-  synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-//  std::cout << std::setprecision(6) << std::fixed;
+  
+  // 2016 tZq trilepton synch
+  else {
+    synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+    //  std::cout << std::setprecision(6) << std::fixed;
 
-  if (makeEventDump_) dumpToFile(event,0);
+    if (makeEventDump_) dumpToFile(event,0);
 
-  if (!triggerCuts(event, eventWeight, 0)) return false;
+    if (!triggerCuts(event, eventWeight, 0)) return false;
 
-  synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
+    synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
 
-  // Check number of leptons is correct
-  if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
+    // Check number of leptons is correct
+    if (singleEventInfoDump_) std::cout << "Correct number of leptons and loose: " << getLooseEles(event).size() << " " << getLooseMuons(event).size() << std::endl;
 
-  event->electronIndexTight = getTightEles(event);
-  event->muonIndexTight = getTightMuons(event);
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
 
-  // Check at exactly three tight leptons
-  synchNumEles_->Fill(event->electronIndexTight.size());
-  synchNumMus_->Fill(event->muonIndexTight.size());
-  if (event->electronIndexTight.size() != numTightEle_) return false;
-  if (event->muonIndexTight.size() != numTightMu_) return false;
-  if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
-  synchCutFlowHist_->Fill(2.5, *eventWeight); // 3 Tight Leptons - step 1
+    // Check at exactly three tight leptons
+    synchNumEles_->Fill(event->electronIndexTight.size());
+    synchNumMus_->Fill(event->muonIndexTight.size());
+    if (event->electronIndexTight.size() != numTightEle_) return false;
+    if (event->muonIndexTight.size() != numTightMu_) return false;
+    if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) != 3 ) return false;
+    synchCutFlowHist_->Fill(2.5, *eventWeight); // 3 Tight Leptons - step 1
 
-//  for ( int i = 0; i != event->numMuonPF2PAT; i++ ) {
-//    topMassEventDump_ << "EvtNb="<< event->eventNum << "mu_pt=" << event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] << " mu_phi=" << event->muonPF2PATPhi[i] << " mu_iso=" << event->muonPF2PATComRelIsodBeta[i] << std::endl;
-//  }
+    //  for ( int i = 0; i != event->numMuonPF2PAT; i++ ) {
+    //    topMassEventDump_ << "EvtNb="<< event->eventNum << "mu_pt=" << event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] << " mu_phi=" << event->muonPF2PATPhi[i] << " mu_iso=" << event->muonPF2PATComRelIsodBeta[i] << std::endl;
+    //  }
 
-  //loose lepton veto
-  //  int looseLeps = getLooseLepsNum(event);
-  //  if (isMC_ && looseLeps < 2) return false;
-  //  if (!isMC_ && looseLeps < 3) return false;
+    //loose lepton veto
+    //  int looseLeps = getLooseLepsNum(event);
+    //  if (isMC_ && looseLeps < 2) return false;
+    //  if (!isMC_ && looseLeps < 3) return false;
 
-  if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
-  if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
-  if ( makeEventDump_ ) dumpToFile(event,2);
-  synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
+    if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
+    if (singleEventInfoDump_) std::cout << " and passes veto too." << std::endl;
+    if ( makeEventDump_ ) dumpToFile(event,2);
+    synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
 
-  // Z selection
-  if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
-  if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
-  synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
+    // Z selection
+    if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
+    if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
+    synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
 
-//  *eventWeight *= getLeptonWeight(event,0);
+    //  *eventWeight *= getLeptonWeight(event,0);
 
-  //Add in extra steps here.
+    //Add in extra steps here.
 
-  // Jet selection
-  std::pair< std::vector<int>, std::vector<float> > jetInfo;
-  jetInfo = makeJetCuts(event, 0, eventWeight);
-  event->jetIndex = jetInfo.first;
-  event->jetSmearValue = jetInfo.second;
-  if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
-  if (event->jetIndex.size() < 1) return false;
-  if (makeEventDump_) dumpToFile(event,4);
-  //  std::cout << event->jetIndex.size() << std::endl;
-  synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+    // Jet selection
+    std::pair< std::vector<int>, std::vector<float> > jetInfo;
+    jetInfo = makeJetCuts(event, 0, eventWeight);
+    event->jetIndex = jetInfo.first;
+    event->jetSmearValue = jetInfo.second;
+    if (singleEventInfoDump_) std::cout << "Number of jets: " << event->jetIndex.size() << std::endl;
+    if (event->jetIndex.size() < 1) return false;
+    if (makeEventDump_) dumpToFile(event,4);
+    //  std::cout << event->jetIndex.size() << std::endl;
+    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
 
-  // bTag selection
-  event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
-//  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
-  if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
-  if (event->bTagIndex.size() != 1) return false;
-  synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
+    // bTag selection
+    event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
+    //  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass distribution for all top candidates - all sanity checks done, Z mass exists, got b jets too.
+    if (singleEventInfoDump_) std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
+    if (event->bTagIndex.size() != 1) return false;
+    synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
 
-  // MET cut
-  if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
-  //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not currently applied
-  synchCutFlowHist_->Fill(7.5, *eventWeight);
+    // MET cut
+    if (singleEventInfoDump_) std::cout << "MET: " << event->metPF2PATPt << std::endl;
+    //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not currently applied
+    synchCutFlowHist_->Fill(7.5, *eventWeight);
 
-  // mTW cut
-  if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-  double mtW{std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) )};
-  if ( mtW < mTWCutSynch_ ) return false;
-  synchCutFlowHist_->Fill(8.5, *eventWeight); // mWT cut - step 6
+    // mTW cut
+    if (singleEventInfoDump_) std::cout << "mTW: " << event->metPF2PATPt << std::endl;
+    double mtW{std::sqrt( 2*event->metPF2PATPt*event->wLepton.Pt()*(1-cos(event->metPF2PATPhi - event->wLepton.Phi())) )};
+    if ( mtW < mTWCutSynch_ ) return false;
+    synchCutFlowHist_->Fill(8.5, *eventWeight); // mWT cut - step 6
 
-  // Top Mass cut
-  if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
-  double topMass (getTopMass(event));
+    // Top Mass cut
+    if (singleEventInfoDump_) std::cout << "top mass cut: " << getTopMass(event)  << std::endl;
+    double topMass (getTopMass(event));
 
-  if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
-  synchCutFlowHist_->Fill(9.5, *eventWeight); // top mass cut - step 7
+    if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_) return false;
+    synchCutFlowHist_->Fill(9.5, *eventWeight); // top mass cut - step 7
 
-  if (!metFilters(event)) return false;
-  synchCutFlowHist_->Fill(10.5, *eventWeight);
+    if (!metFilters(event)) return false;
+    synchCutFlowHist_->Fill(10.5, *eventWeight);
 
-  if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
-  if (makeEventDump_) dumpToFile(event,6);
-//  if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
-  return true;
+    if (singleEventInfoDump_) std::cout << "Passes all cuts! Yay!" << std::endl;
+    if (makeEventDump_) dumpToFile(event,6);
+    //  if (singleEventInfoDump_) std::cout << std::setprecision(1) << std::fixed;
+    return true;
+  }
 }
 
 TH1F* Cuts::getSynchCutFlow(){
+  
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
   char const *names[] {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass", "metFilters"};
   for (unsigned i{1}; i < 12; ++i){
@@ -1712,6 +1947,18 @@ TH1F* Cuts::getSynchCutFlow(){
   }
 
   return synchCutFlowHist_;
+/*
+  std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
+  char const *names[] {"Total Events","min 1 opp sign lep pair","non-Z pairs", "MET", "nJets >= 2","nBjets >= 1","nJets == 1","nBjets == 1"};
+  for (unsigned i{1}; i < 9; ++i){
+    std::cout << names[i-1] << ": " << synchCutFlowHist_->GetBinContent(i) << std::endl;
+  }
+  std::cout << "Leps\tEle\tMuon" << std::endl;
+  for (unsigned i{0}; i < 9; i++){
+    std::cout << i << "\t" << synchNumEles_->GetBinContent(i) << "\t" << synchNumMus_->GetBinContent(i) << std::endl;
+  }
+  return synchCutFlowHist_;
+*/
 }
 
 //Method used for the synchronisation. Mimics the IPHC preselection skims.
@@ -1742,6 +1989,44 @@ int Cuts::getLooseMus(AnalysisEvent* event){
   return looseLeps;
 }
 
+std::vector<int> Cuts::getSynchEles(AnalysisEvent* event){
+  std::vector<int> electrons;
+  for (int i{0}; i < event->numElePF2PAT; i++){
+    if (!event->elePF2PATIsGsf[i]) continue;
+    TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
+    if ( tempVec.Pt() <= 20. ) continue;
+    if ( std::abs(tempVec.Eta()) >= 2.4 ) continue;
+    if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) ) continue;
+    if ( event->elePF2PATCutIdTight[i] < 1 ) continue;
+    electrons.emplace_back(i);
+  }
+  return electrons;
+}
+
+std::vector<int> Cuts::getSynchMus(AnalysisEvent* event){
+  std::vector<int> muons;
+  for (int i{0}; i < event->numMuonPF2PAT; i++){
+    if (!event->muonPF2PATIsPFMuon[i]) continue;
+    if ( event->muonPF2PATPt[i] <= 20. ) continue;
+    if (std::abs(event->muonPF2PATEta[i]) >= 2.4 ) continue;
+
+    if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
+
+    //Tight ID Cut
+    if (!event->muonPF2PATTrackID[i]) continue;
+    if (!event->muonPF2PATGlobalID[i]) continue;
+    if (event->muonPF2PATGlbTkNormChi2[i] >= 10.) continue;
+    if (event->muonPF2PATMatchedStations[i] < 2) continue; //
+    if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
+    if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
+    if (event->muonPF2PATMuonNHits[i] < 1) continue;
+    if (event->muonPF2PATVldPixHits[i] < 1) continue;
+    if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
+
+    muons.emplace_back(i);
+  }
+  return muons;
+}
 
 //First tentative attempt at doing the background isolation.
 bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow){
@@ -2350,7 +2635,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 /*
@@ -2462,6 +2747,8 @@ float Cuts::muonSF(double pt, double eta, int syst){
     muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
 //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
+//    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
+//    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
   }
 
 
@@ -2477,9 +2764,11 @@ float Cuts::muonSF(double pt, double eta, int syst){
 
     if ( is2016_ ) {
       muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
-      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01;
+      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.005;
 //      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
+//      muonIdSF += ( h_muonIDs2->GetBinError(binId2) );
+//      muonPFisoSF += ( h_muonPFiso2->GetBinError(binIso2) );
     }
     if ( is2016_ ) muonRecoSF += muonRecoSF*0.01;
   }
@@ -2493,11 +2782,14 @@ float Cuts::muonSF(double pt, double eta, int syst){
       muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
 //      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
+//      muonIdSF -= ( h_muonIDs2->GetBinError(binId2) );
+//      muonPFisoSF -= ( h_muonPFiso2->GetBinError(binIso2) );
     }
     if ( is2016_ ) muonRecoSF -= muonRecoSF*0.01;
   }
 
   return muonIdSF*muonPFisoSF*muonRecoSF;
+
 }
 
 float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
@@ -2939,6 +3231,10 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
   float sf = 1.0;
   float x = pt;
 
+  //--------------------------------------------------------------------------------------------------------------------------
+  // START SFs for B-H
+  //--------------------------------------------------------------------------------------------------------------------------
+
   if (!is2016_){
 
     if (flavour == 0) { // B flavour
@@ -2976,7 +3272,7 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
 	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.059617787599563599;
 	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.053006380796432495;
 	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.08452838659286499;
-     }
+      }
 
       if ( type == -1 ) {
 	if ( pt < 50.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.039607588201761246;
@@ -2986,7 +3282,7 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
 	if ( pt < 200.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
 	if ( pt < 300.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.059617787599563599;
 	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.08452838659286499;
-       }
+      }
     }
     if (flavour == 2) { // UDSG flavour
       if (type == 0)  sf = 0.992339;
@@ -3046,7 +3342,7 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
         if ( pt < 300.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.099112451076507568;
         if ( pt < 600.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.11530528217554092;
         else sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.19122670590877533;
-     }
+      }
     }
     if (flavour == 2) { // UDSG flavour
       if (type == 0)  sf = 0.971945+163.215/(x*x)+0.000517836*x;
@@ -3054,126 +3350,275 @@ float Cuts::getBweight_backup(int flavour, int type, float pt){
       if (type == -1) sf = (0.971945+163.215/(x*x)+0.000517836*x)*(1-(0.291298+-0.000222983*x+1.69699e-07*x*x));
     }
   }
-*/
+  */
 
-    // MEDIUM
-    if (flavour == 0) { // B flavour
-      if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
-        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
-        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
-        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
-        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
-        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
-        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
-        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
-        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
-        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
-        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
-        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
-        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
-        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
-        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
-        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
-        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
-      }
+  // MEDIUM
+  if (flavour == 0) { // B flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
     }
-    if (flavour == 1) { // C flavour
-      if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
-        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
-        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
-        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
-        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
-        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
-        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
-        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
-        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
-        if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
-        if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
-        if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
-        if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
-        if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
-        if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
-        if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
-        else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
-     }
-    }
-    if (flavour == 2) { // UDSG flavour
-      if (type == 0)  sf = 1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x;
-      if (type == 1)  sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1+(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
-      if (type == -1) sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1-(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
     }
   }
+  if (flavour == 1) { // C flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
+    }
+  }
+  if (flavour == 2) { // UDSG flavour
+    if (type == 0)  sf = 1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x;
+    if (type == 1)  sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1+(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
+    if (type == -1) sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1-(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
+  }
+  
+  /*
+  // LOOSE
+  if (flavour == 0) { // B flavour
+    if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.025442773476243019;
+      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013995612040162086;
+      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01321903895586729;
+      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013857406564056873;
+      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013207088224589825;
+      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.011531321331858635;
+      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01834111288189888;
+      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.018383314833045006;
+      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.022504881024360657;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.025442773476243019;
+      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013995612040162086;
+      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01321903895586729;
+      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013857406564056873;
+      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013207088224589825;
+      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.011531321331858635;
+      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01834111288189888;
+      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.018383314833045006;
+      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.022504881024360657;
+    }
+  }
+  if (flavour == 1) { // C flavour
+    if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.063606932759284973;
+      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034989029169082642;
+      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033047597855329514;
+      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034643515944480896;
+      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033017721027135849;
+      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.028828304260969162;
+      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045852780342102051;
+      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045958288013935089;
+      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.056262202560901642;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.063606932759284973;
+      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034989029169082642;
+      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033047597855329514;
+      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034643515944480896;
+      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033017721027135849;
+      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.028828304260969162;
+      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045852780342102051;
+      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045958288013935089;
+      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.056262202560901642;
+    }
+  }
+  if (flavour == 2) { // UDSG flavour
+    if (type == 0)  sf = 1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x;
+    if (type == 1)  sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1+(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
+    if (type == -1) sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1-(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
+  }
+  */
+
+  //--------------------------------------------------------------------------------------------------------------------------
+  // END SFs for B-H
+  //--------------------------------------------------------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------------------------------------------------------
+  // START SFs for B-F
+  //--------------------------------------------------------------------------------------------------------------------------
 
 /*
-    // LOOSE
-    if (flavour == 0) { // B flavour
-      if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.025442773476243019;
-        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013995612040162086;
-        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01321903895586729;
-        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013857406564056873;
-        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013207088224589825;
-        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.011531321331858635;
-        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01834111288189888;
-        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.018383314833045006;
-        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.022504881024360657;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.025442773476243019;
-        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013995612040162086;
-        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01321903895586729;
-        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013857406564056873;
-        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013207088224589825;
-        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.011531321331858635;
-        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01834111288189888;
-        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.018383314833045006;
-        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.022504881024360657;
-      }
+    // TIGHT - NOT DONE
+*/
+  /*
+  // MEDIUM
+  if (flavour == 0) { // B flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
     }
-    if (flavour == 1) { // C flavour
-      if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.063606932759284973;
-        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034989029169082642;
-        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033047597855329514;
-        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034643515944480896;
-        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033017721027135849;
-        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.028828304260969162;
-        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045852780342102051;
-        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045958288013935089;
-        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.056262202560901642;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.063606932759284973;
-        if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034989029169082642;
-        if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033047597855329514;
-        if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034643515944480896;
-        if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033017721027135849;
-        if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.028828304260969162;
-        if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045852780342102051;
-        if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045958288013935089;
-        else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.056262202560901642;
-     }
-    }
-    if (flavour == 2) { // UDSG flavour
-      if (type == 0)  sf = 1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x;
-      if (type == 1)  sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1+(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
-      if (type == -1) sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1-(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
     }
   }
-*/
+  if (flavour == 1) { // C flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
+    }
+  }
+  if (flavour == 2) { // UDSG flavour
+    if (type == 0)  sf = 1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x;
+    if (type == 1)  sf = (1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x)*(1+(0.100961+3.78426e-05*x+-4.74595e-08*x*x));
+    if (type == -1) sf = (1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x)*(1-(0.100961+3.78426e-05*x+-4.74595e-08*x*x));
+  }
+  */  
+  /*
+    // LOOSE - not done
+  */
 
+  //--------------------------------------------------------------------------------------------------------------------------
+  // END SFs for B-F
+  //--------------------------------------------------------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------------------------------------------------------
+  // START SFs for G-H
+  //--------------------------------------------------------------------------------------------------------------------------
+
+
+/*
+    // TIGHT - NOT DONE
+*/
+/*
+
+  // MEDIUM
+  if (flavour == 0) { // B flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
+    }
+  }
+  if (flavour == 1) { // C flavour
+    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
+    if ( type == 1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
+    }
+    if ( type == -1 ) {
+      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
+      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
+      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
+      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
+      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
+      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
+      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
+      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
+      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
+    }
+  }
+  if (flavour == 2) { // UDSG flavour
+    if (type == 0)  sf = 1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x;
+    if (type == 1)  sf = (1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x)*(1-(0.100263+3.89914e-05*x+-4.7095e-08*x*x));
+    if (type == -1) sf = (1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x)*(1+(0.100263+3.89914e-05*x+-4.7095e-08*x*x));
+  }
+*/
+  /*
+    // LOOSE - not done
+  */
+
+  //--------------------------------------------------------------------------------------------------------------------------
+  // END SFs for G-H
+  //--------------------------------------------------------------------------------------------------------------------------
+  }
   return sf;
 }
-
