@@ -1,0 +1,11 @@
+[ttbarDilepton_aMCatNLO]
+fileName = configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
+totalEvents = 30682233
+crossSection = 87.31 
+runType = mc
+histoName = ttbar
+colour = kRed
+label = ttbar
+plotType = f
+
+[]
