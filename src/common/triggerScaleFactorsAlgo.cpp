@@ -715,10 +715,16 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 20. && !is2016_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && !is2016_) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 0. && is2016_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 0. && is2016_) continue;
+//    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 25. && is2016_ ) continue;  
+//    if ( muons.size() < 1 && event->muonPF2PATPt[i] > 30. && is2016_ ) continue;  
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
+//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] > 25. && is2016_) continue;
 
-    if (std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
+    if (muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
+
+//    if (muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) < 1.20) continue;
+//    if (muons.size() >= 1 && std::abs(event->muonPF2PATEta[i]) > 1.20) continue;
+
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
 
 //    if ( !is2016_ ) {
