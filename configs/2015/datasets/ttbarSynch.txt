@@ -1,6 +1,6 @@
-[WZ_synch]
+[ttbar_synch]
 fileName = configs/2015/datasets/fileLists/ttbarSynchFiles.txt
-totalEvents = 403174
+totalEvents = 404614
 crossSection = 87.31
 runType = mc
 histoName = tZq
