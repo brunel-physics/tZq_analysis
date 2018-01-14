@@ -2632,78 +2632,8 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
-//Single
-// Runs B-H
-/*
-        if ( event->zPairLeptons.first.Pt() <= 30.0 ) {
-          if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= (0.96143 * lumiRunsBCDEF_ + 1.00130 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= (1.00556 * lumiRunsBCDEF_ + 0.99174 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-        }
-        else {
-          if ( event->zPairLeptons.second.Pt() > 30.0 ) leptonWeight *= (0.98856 * lumiRunsBCDEF_ + 0.99767 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-          else if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= (0.99103 * lumiRunsBCDEF_ + 0.99986 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= (0.95746 * lumiRunsBCDEF_ + 0.98302 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-        }
-*/
-// Runs B-F
-/*
-        if ( event->zPairLeptons.first.Pt() <= 30.0 ) {
-          if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= 0.96143;
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= 1.00556;
-        }
-        else {
-          if ( event->zPairLeptons.second.Pt() > 30.0 ) leptonWeight *= 0.98856;
-          else if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= 0.99103;
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= 0.95746;
-        }
-*/
-// Runs G-H
-/*
-        if ( event->zPairLeptons.first.Pt() <= 30.0 ) {
-          if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= 1.00130;
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= 0.99174;
-        }
-        else {
-          if ( event->zPairLeptons.second.Pt() > 30.0 ) leptonWeight *= 0.99767;
-          else if ( event->zPairLeptons.second.Pt() <= 30.0 && event->zPairLeptons.second.Pt() > 25.0 ) leptonWeight *= 0.99986;
-          else if ( event->zPairLeptons.second.Pt() <= 25.0 ) leptonWeight *= 0.98302;
-        }
-*/
-//Double
-// Runs B-H
-/*
-        if ( std::abs(event->zPairLeptons.first.Eta()) < 1.2 ) {
-          if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= (0.83475 * lumiRunsBCDEF_ + 0.93068 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-          else leptonWeight *= (0.86510 * lumiRunsBCDEF_ + 0.95836 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+//      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
 
-        }
-        else {
-          if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= (0.88011 * lumiRunsBCDEF_ + 0.95232 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-          else leptonWeight *= (0.65074 * lumiRunsBCDEF_ + 0.96354 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-        }
-*/
-// Runs B-F
-/*
-        if ( std::abs(event->zPairLeptons.first.Eta()) < 1.2 ) {
-	  if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= 0.83475;
-          else leptonWeight *= 0.86510;
-        }
-        else {
-	  if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= 0.88011;
-          else leptonWeight *= 0.65074;
-        }
-*/
-// Runs G-H
-/*
-        if ( std::abs(event->zPairLeptons.first.Eta()) < 1.2 ) {
-	  if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= 0.93068;
-          else leptonWeight *= 0.95836;
-        }
-        else {
-	  if ( std::abs(event->zPairLeptons.second.Eta()) < 1.2 ) leptonWeight *= 0.95232;
-          else leptonWeight *= 0.96354;
-        }
-*/
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
       leptonWeight *= eleSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
@@ -2899,6 +2829,412 @@ float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
     if ( syst == 1 ) twgt += ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
     if ( syst == 2 ) twgt -= ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
   }
+  return twgt;
+}
+
+float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int syst){
+  if ( !is2016_ ) return 1.0;
+
+  double twgt {1.0};
+
+  // Single muon triggers ONLY - no systematics applied
+  // Runs B-H
+  /*
+  if ( pt1 <= 30.0 ) {
+    if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = (0.96143 * lumiRunsBCDEF_ + 1.00130 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+    else if ( pt2 <= 25.0 ) twgt = (1.00556 * lumiRunsBCDEF_ + 0.99174 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+  }
+  else {
+    if ( pt2 > 30.0 ) twgt = (0.98856 * lumiRunsBCDEF_ + 0.99767 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+    else if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = (0.99103 * lumiRunsBCDEF_ + 0.99986 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+    else if ( pt2 <= 25.0 ) twgt = (0.95746 * lumiRunsBCDEF_ + 0.98302 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+  }
+  */
+  // Runs B-F
+  /*
+  if ( pt1 <= 30.0 ) {
+    if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = 0.96143;
+    else if ( pt2 <= 25.0 ) twgt = 1.00556;
+  }
+  else {
+    if ( pt2 > 30.0 ) twgt = 0.98856;
+    else if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = 0.99103;
+    else if ( pt2 <= 25.0 ) twgt = 0.95746;
+  }
+  */
+  // Runs G-H
+  /*
+  if ( pt1 <= 30.0 ) {
+    if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = 1.00130;
+    else if ( pt2 <= 25.0 ) twgt = 0.99174;
+  }
+  else {
+    if ( pt2 > 30.0 ) twgt = 0.99767;
+    else if ( pt2 <= 30.0 && pt2 > 25.0 ) twgt = 0.99986;
+    else if ( pt2 <= 25.0 ) twgt = 0.98302;
+  }
+  */
+
+  // Double muon triggers ONLY - no systematics applied
+  // Runs B-H
+  /*
+  if ( std::abs(eta1) < 1.2 ) {
+    if ( std::abs(eta2) < 1.2 ) twgt = (0.83475 * lumiRunsBCDEF_ + 0.93068 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+    else twgt = (0.86510 * lumiRunsBCDEF_ + 0.95836 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+  }
+  else {
+    if ( std::abs(eta2) < 1.2 ) twgt = (0.88011 * lumiRunsBCDEF_ + 0.95232 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+    else twgt = (0.65074 * lumiRunsBCDEF_ + 0.96354 * lumiRunsGH_)/(lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+  }
+  */
+  // Runs B-F
+  /*
+  if ( std::abs(eta1) < 1.2 ) {
+    if ( std::abs(eta2) < 1.2 ) twgt = 0.83475;
+    else twgt = 0.86510;
+  }
+  else {
+    if ( std::abs(eta2) < 1.2 ) twgt = 0.88011;
+    else twgt = 0.65074;
+  }
+  */
+  // Runs G-H
+  /*
+  if ( std::abs(eta1) < 1.2 ) {
+    if ( std::abs(eta2) < 1.2 ) twgt = 0.93068;
+    else twgt = 0.95836;
+  }
+  else {
+    if ( std::abs(eta2) < 1.2 ) twgt = 0.95232;
+    else twgt = 0.96354;
+  }
+  */
+
+  //Single and double muon triggers
+  double twgt_part1 {1.0}, twgt_part2 {1.0}; // weights for Runs B-F and G-H
+
+  // for both muons abs(eta) < 1.20
+  if ( std::abs(eta1) < 1.20 && std::abs(eta2) < 1.20 ) {
+    if ( pt1 <= 25.0 && pt2 <= 25.0 ) {
+      twgt_part1 = 0.89011;
+      twgt_part2 = 0.90502;
+      if ( syst == 1 ) { 
+        twgt_part1 += 0.08629;
+        twgt_part2 += 0.10344;
+      }
+      if ( syst == 2 ) {
+        twgt_part1 -= 0.08629;
+        twgt_part2 -= 0.10344;
+      }
+    }
+    if ( pt1 <= 30.0 && pt1 > 25.0 ) {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.92574;
+        twgt_part2 = 0.98656;
+        if ( syst == 1 ) { 
+          twgt_part1 += 0.04524;
+          twgt_part2 += 0.03891;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.04524;
+          twgt_part2 -= 0.03891;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 1.00833;
+        twgt_part2 = 1.00833;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.06294;
+          twgt_part2 += 0.06765;
+        }
+        if ( syst == 2 ) { 
+          twgt_part1 -= 0.06294;
+          twgt_part2 -= 0.06765;
+        }
+      }
+    }
+    if ( pt1 > 30.0 {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.95883;
+        twgt_part2 = 0.98501;
+        if ( syst == 1 ) 
+          twgt_part1 += 0.00255;
+          twgt_part2 += 0.00269;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00255;
+          twgt_part2 -= 0.00269;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 0.98758;
+        twgt_part2 = 1.00005;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00260;
+          twgt_part2 += 0.00190;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00260;
+          twgt_part2 -= 0.00190;
+        }
+      }
+      else if ( pt2 > 30.0 ) {
+        twgt_part1 = 0.99417;
+        twgt_part2 = 0.99619;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00015;
+          twgt_part2 += 0.00018;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00015;
+          twgt_part2 -= 0.00018;
+        }
+      }
+    }
+  }  
+
+  // for both muons abs(eta) >= 1.20 && < 2.40
+  if ( std::abs(eta1) < 2.40 && std::abs(eta2) < 2.40 && std::abs(eta1) >= 1.20 && std::abs(eta2) >= 1.20) {
+    if ( pt1 <= 25.0 && pt2 <= 25.0 ) {
+      twgt_part1 = 1.09302;
+      twgt_part2 = 0.54651;
+      if ( syst == 1 ) {
+        twgt_part1 += 0.24757;
+        twgt_part2 += 0.39377;
+      }
+      if ( syst == 2 ) {
+        twgt_part1 -= 0.24757;
+        twgt_part2 -= 0.39377;
+      }
+    }
+    if ( pt1 <= 30.0 && pt1 > 25.0 ) {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 1.03896;
+        twgt_part2 = 1.03896;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.07186;
+          twgt_part2 += 0.07186;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.07186;
+          twgt_part2 -= 0.07186;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 0.83333;
+        twgt_part2 = 1.0;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.25578;
+          twgt_part2 += 0.13611;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.25578;
+          twgt_part2 -= 0.13611;
+        }
+      }
+    }
+    if ( pt1 > 30.0 {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.93418;
+        twgt_part2 = 1.00115;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00655;
+          twgt_part2 += 0.00784;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00655;
+          twgt_part2 -= 0.00784;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 0.99088;
+        twgt_part2 = 1.00793;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00897;
+          twgt_part2 += 0.01161;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00897;
+          twgt_part2 -= 0.01161;
+        }
+      }
+      else if ( pt2 > 30.0 ) {
+        twgt_part1 = 0.96580;
+        twgt_part2 = 0.99882;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00045;
+          twgt_part2 += 0.00175;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00045;
+          twgt_part2 -= 0.00175;
+        }
+      }
+    }
+  }  
+
+  // for muon 1 abs(eta) >= 1.20 && < 2.40 AND muon 2 < 1.20
+  if ( std::abs(eta1) >= 1.20 && std::abs(eta1) < 2.40 && std::abs(eta2) < 1.20 ) {
+    if ( pt1 <= 25.0 && pt2 <= 25.0 ) {
+      twgt_part1 = 1.02041;
+      twgt_part2 = 0.97402;
+      if ( syst == 1 ) {
+        twgt_part1 += 0.05885;
+        twgt_part2 += 0.12647;
+      }
+      if ( syst == 2 ) {
+        twgt_part1 -= 0.05885;
+        twgt_part2 -= 0.12647;
+      }
+    }
+    if ( pt1 <= 30.0 && pt1 > 25.0 ) {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.99821;
+        twgt_part2 = 0.96693;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.02849;
+          twgt_part2 += 0.08311;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.02849;
+          twgt_part2 -= 0.08311;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 1.01724;
+        twgt_part2 = 1.01724;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.13142;
+          twgt_part2 += 0.13142;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.13142;
+          twgt_part2 -= 0.13142;
+        }
+      }
+    }
+    if ( pt1 > 30.0 {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.96287;
+        twgt_part2 = 0.98940;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00543;
+          twgt_part2 += 0.00665;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00543;
+          twgt_part2 -= 0.00665;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 0.99485;
+        twgt_part2 = 0.99715;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00408;
+          twgt_part2 += 0.00601;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00408;
+          twgt_part2 -= 0.00601;
+        }
+      }
+      else if ( pt2 > 30.0 ) {
+        twgt_part1 = 0.99468;
+        twgt_part2 = 0.99920;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00065;
+          twgt_part2 += 0.00073;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00065;
+          twgt_part2 -= 0.00073;
+        }
+      }
+    }
+  }  
+
+  // for muon 1 abs(eta) < 1.20 AND muon 2 >= 1.20 && < 2.40
+  if ( std::abs(eta1) < 1.2 && std::abs(eta2) >= 1.20 && std::abs(eta2) < 2.40 ) {
+    if ( pt1 <= 25.0 && pt2 <= 25.0 ) {
+      twgt_part1 = 0.98497;
+      twgt_part2 = 1.05063;
+      if ( syst == 1 ) {
+        twgt_part1 += 0.09565;
+        twgt_part2 += 0.13059;
+      }
+      if ( syst == 2 ) {
+        twgt_part1 -= 0.09565;
+        twgt_part2 -= 0.13059;
+      }
+    }
+    if ( pt1 <= 30.0 && pt1 > 25.0 ) {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.99312;
+        twgt_part2 = 1.01734;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.03245;
+          twgt_part2 += 0.03692;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.03245;
+          twgt_part2 -= 0.03692;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 1.0;
+        twgt_part2 = 1.0;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.10860;
+          twgt_part2 += 0.00855;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.10860;
+          twgt_part2 -= 0.00855;
+        }
+      }
+    }
+    if ( pt1 > 30.0 {
+      if ( pt2 <= 25.0 ) {
+        twgt_part1 = 0.97722;
+        twgt_part2 = 0.97227;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00348;
+          twgt_part2 += 0.00608;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00348;
+          twgt_part2 -= 0.00608;
+        }
+      }
+      else if ( pt2 <=30. && pt2 > 25.0 ) {
+        twgt_part1 = 0.98681;
+        twgt_part2 = 1.00168;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00520;
+          twgt_part2 += 0.00362;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00520;
+          twgt_part2 -= 0.00362;
+        }
+      }
+      else if ( pt2 > 30.0 ) {
+        twgt_part1 = 0.99299;
+        twgt_part2 = 0.99894;
+        if ( syst == 1 ) {
+          twgt_part1 += 0.00052;
+          twgt_part2 += 0.00034;
+        }
+        if ( syst == 2 ) {
+          twgt_part1 -= 0.00052;
+          twgt_part2 -= 0.00034;
+        }
+      }
+    }
+  }  
+
+  twgt = ( twgt_part1 * lumiRunsBCDEF_ + twgt_part2 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+
   return twgt;
 }
 
