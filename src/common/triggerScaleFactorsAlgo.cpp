@@ -22,9 +22,6 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-const bool HIP_ERA (true);
-const bool DO_HIPS (true);
-const bool applyHltSf_(false);
 
 //Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
 //Int_t numPt_bins = {13};
@@ -37,6 +34,14 @@ Double_t etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
 Int_t numEta_bins{4};
 
 TriggerScaleFactors::TriggerScaleFactors():
+
+  is2016_{false},
+  applyHltSf_{false},
+  isPart1_{false},
+  isPart2_{false},
+  customElectronCuts_{false},
+  customMuonCuts_{false},
+
   //For efficiencies
   numberPassedElectrons(),
   numberTriggeredDoubleElectrons(),
@@ -356,6 +361,16 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     ("help,h", "Print this message.")
     ("config,c", po::value<std::string>(&config)->required(),
      "The configuration file to be used.")
+    ("part1", po::bool_switch(&isPart1_),
+    "Only look at data and triggers from Runs B-F")
+    ("part2", po::bool_switch(&isPart2_),
+    "Only look at data and triggers from Runs B-F")
+    ("hlt", po::bool_switch(&applyHltSf_),
+    "Apply centraly provided HLT SFs onto certian plots")
+    ("electronCuts", po::value<std::vector<double>>(&electronCutsVars),
+     "Set custom electron pT and eta cuts in the format MINELE1PT MAXELE1PT MINELE2PT MAXLELE2PT MINELE1ETA MAXLELE1ETA MINELE2ETA MAXLELE2ETA. If a negative value is used for max pT, the cut is skipped. ")
+    ("muonCuts", po::value<std::vector<double>>(&muonCutsVars),
+     "Set custom muon pT and eta cuts in the format MINMU1PT MAXMU1PT MINMU2PT MAXLMU2PT MINMU1ETA MAXLMU1ETA MINMU2ETA MAXLMU2ETA. If a negative value is used for max pT, the cut is skipped. ")
     (",n", po::value<long>(&nEvents)->default_value(0),
      "The number of events to be run over. All if set to 0.")
     ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/scaleFactors/"),
@@ -390,6 +405,37 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
   //Set up environment a little.
   std::cout << std::setprecision(5) << std::fixed;
+
+  if ( isPart1_ || isPart2_ ) DO_HIPS = true;
+  if ( isPart1_ ) HIP_ERA = true;
+  if ( isPart2_ ) HIP_ERA = false;
+
+  if (vm.count("electronCuts")) {
+    if (electronCutsVars.size() != 8) throw std::logic_error("--electronCuts takes exactly eight arguements.");
+    customElectronCuts_ = true;
+    std::cout << "CAUTION! Using custom electron pT and eta cuts of " << std::endl;
+    std::cout << "min leading electron pT: " << electronCutsVars[0] << std::endl;
+    std::cout << "max leading electron pT: " << electronCutsVars[1] << std::endl;
+    std::cout << "min subleading electron pT: " << electronCutsVars[2] << std::endl;
+    std::cout << "max subleading electron pT: " << electronCutsVars[3] << std::endl;
+    std::cout << "min leading electron eta: " << electronCutsVars[4] << std::endl;
+    std::cout << "max leading electron eta: " << electronCutsVars[5] << std::endl;
+    std::cout << "min subleading electron eta: " << electronCutsVars[6] << std::endl;
+    std::cout << "max subleading electron eta: " << electronCutsVars[7] << std::endl;
+  }
+  if (vm.count("muonCuts")) {
+    if (muonCutsVars.size() != 8) throw std::logic_error("--muonCuts takes exactly eight arguements.");
+    customMuonCuts_ = true;
+    std::cout << "CAUTION! Using custom electron pT and eta cuts of: " << std::endl;
+    std::cout << "min leading muon pT: " << muonCutsVars[0] << std::endl;
+    std::cout << "max leading muon pT: " << muonCutsVars[1] << std::endl;
+    std::cout << "min subleading muon pT: " << muonCutsVars[2] << std::endl;
+    std::cout << "max subleading muon pT: " << muonCutsVars[3] << std::endl;
+    std::cout << "min leading muon eta: " << muonCutsVars[4] << std::endl;
+    std::cout << "max leading muon eta: " << muonCutsVars[5] << std::endl;
+    std::cout << "min subleading muon eta: " << muonCutsVars[6] << std::endl;
+    std::cout << "max subleading muon eta: " << muonCutsVars[7] << std::endl;
+  }
 
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
@@ -668,11 +714,27 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
 
     if ( electrons.size() < 1 && tempVec.Pt() <= 20. && !is2016_ ) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
+    
+    if ( !customElectronCuts_ ) { // Nominal cuts
+      if ( electrons.size() < 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
+      else if ( electrons.size() >= 1 && tempVec.Pt() <= 20. && is2016_ ) continue;
+    }
 
-    if ( electrons.size() < 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= 20. && is2016_ ) continue;
+    else { // Custom cuts of form minElectron1Pt maxElectron1Pt, minElectron2Pt, maxElectron2Pt, minElectron1Eta maxElectron1Eta, minElectron2Eta, maxElectron2Eta
+      if ( electrons.size() < 1 && tempVec.Pt() <= electronCutsVars[0] && is2016_ ) continue;
+      if ( electrons.size() < 1 && tempVec.Pt() > electronCutsVars[1] && electronCutsVars[1] > 0 && is2016_ ) continue;
 
-    if ( std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
+      if ( electrons.size() >= 1 && tempVec.Pt() <= electronCutsVars[2] && is2016_ ) continue;
+      if ( electrons.size() >= 1 && tempVec.Pt() > electronCutsVars[3] && electronCutsVars[3] > 0 && is2016_ ) continue;
+
+      if ( electrons.size() < 1 && std::abs(event->elePF2PATSCEta[i]) <= electronCutsVars[4] && is2016_ ) continue;
+      if ( electrons.size() < 1 && std::abs(event->elePF2PATSCEta[i]) > electronCutsVars[5] && is2016_ ) continue;
+
+      if ( electrons.size() >= 1 && std::abs(event->elePF2PATSCEta[i]) <= electronCutsVars[6] && is2016_ ) continue;
+      if ( electrons.size() >= 1 && std::abs(event->elePF2PATSCEta[i]) > electronCutsVars[7] && is2016_ ) continue;
+    }
+
+    if ( std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue; // Ultimate max eta range
 
     // 2015 cuts
     if ( !is2016_ ) {
@@ -715,15 +777,26 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
     if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 20. && !is2016_ ) continue;
     else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && !is2016_) continue;
 
-//    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 25. && is2016_ ) continue;  
-//    if ( muons.size() < 1 && event->muonPF2PATPt[i] > 30. && is2016_ ) continue;  
-//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
-//    if ( muons.size() >= 1 && event->muonPF2PATPt[i] > 25. && is2016_) continue;
+    if (!customMuonCuts_) {
+      if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 26. && is2016_ ) continue;
+      else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
+    }
 
-    if (muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) >= 2.40) continue;
+    else { // Custom cuts of form minMuon1Pt maxMuon1Pt, minMuon2Pt, maxMuon2Pt, minMuon1Eta maxMuon1Eta, minMuon2Eta, maxMuon2Eta
+      if ( muons.size() < 1 && event->muonPF2PATPt[i] <= muonCutsVars[0] && is2016_ ) continue;
+      if ( muons.size() < 1 && event->muonPF2PATPt[i] > muonCutsVars[1] && muonCutsVars[1] > 0 && is2016_ ) continue;
 
-//    if (muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) < 1.20) continue;
-//    if (muons.size() >= 1 && std::abs(event->muonPF2PATEta[i]) > 1.20) continue;
+      if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= muonCutsVars[2] && is2016_ ) continue;
+      if ( muons.size() >= 1 && event->muonPF2PATPt[i] > muonCutsVars[3] && muonCutsVars[3] > 0 && is2016_ ) continue;
+
+      if ( muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) <= muonCutsVars[4] && is2016_ ) continue;
+      if ( muons.size() < 1 && std::abs(event->muonPF2PATEta[i]) > muonCutsVars[5] && is2016_ ) continue;
+
+      if ( muons.size() >= 1 && std::abs(event->muonPF2PATEta[i]) <= muonCutsVars[6] && is2016_ ) continue;
+      if ( muons.size() >= 1 && std::abs(event->muonPF2PATEta[i]) > muonCutsVars[7] && is2016_ ) continue;
+    }
+
+    if (std::abs(event->muonPF2PATEta[i]) > 2.40) continue; // Ultimate max eta range
 
     if (event->muonPF2PATComRelIsodBeta[i] >= 0.15) continue;
 

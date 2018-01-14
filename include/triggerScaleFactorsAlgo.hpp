@@ -50,6 +50,17 @@ class TriggerScaleFactors{
 	bool is2016_;
 	bool applyHltSf_;
 
+	// Command line arguement related variables, replacing hard coded logic
+        bool HIP_ERA;	// legacy hard coded variable, name kept for consistency/ease
+        bool DO_HIPS;	// legacy hard coded variable, name kept for consistency/ease
+	bool isPart1_;  // New command line related variable which helps set HIP_ERA + DO_HIPS
+	bool isPart2_;	// New command line related variable which helps set HIP_ERA + DO_HIPS
+
+        bool customElectronCuts_;
+        bool customMuonCuts_;
+     	std::vector<double> electronCutsVars;
+     	std::vector<double> muonCutsVars;
+
 	// PU reweighting
 	TFile * dataPileupFile;
 	TH1F* dataPU;
