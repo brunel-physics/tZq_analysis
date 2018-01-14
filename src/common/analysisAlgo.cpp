@@ -24,6 +24,9 @@
 
 AnalysisAlgo::AnalysisAlgo():
   channel{},
+  is2016_{false},
+  isFCNC_{false},
+  isCtag_{false},
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
   readEventList{false},
