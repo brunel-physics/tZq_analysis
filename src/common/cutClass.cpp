@@ -2953,11 +2953,11 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
         }
       }
     }
-    if ( pt1 > 30.0 {
+    if ( pt1 > 30.0 ) {
       if ( pt2 <= 25.0 ) {
         twgt_part1 = 0.95883;
         twgt_part2 = 0.98501;
-        if ( syst == 1 ) 
+        if ( syst == 1 ) { 
           twgt_part1 += 0.00255;
           twgt_part2 += 0.00269;
         }
@@ -3033,7 +3033,7 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
         }
       }
     }
-    if ( pt1 > 30.0 {
+    if ( pt1 > 30.0 ) {
       if ( pt2 <= 25.0 ) {
         twgt_part1 = 0.93418;
         twgt_part2 = 1.00115;
@@ -3113,7 +3113,7 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
         }
       }
     }
-    if ( pt1 > 30.0 {
+    if ( pt1 > 30.0 ) {
       if ( pt2 <= 25.0 ) {
         twgt_part1 = 0.96287;
         twgt_part2 = 0.98940;
@@ -3193,7 +3193,7 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
         }
       }
     }
-    if ( pt1 > 30.0 {
+    if ( pt1 > 30.0 ) {
       if ( pt2 <= 25.0 ) {
         twgt_part1 = 0.97722;
         twgt_part2 = 0.97227;
