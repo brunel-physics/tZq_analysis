@@ -2627,7 +2627,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 //      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);

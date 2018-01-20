@@ -716,8 +716,8 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
     
     if ( !customElectronCuts_ ) { // Nominal cuts
-      if ( electrons.size() < 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
-      else if ( electrons.size() >= 1 && tempVec.Pt() <= 20. && is2016_ ) continue;
+      if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
+      else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && is2016_ ) continue;
     }
 
     else { // Custom cuts of form minElectron1Pt maxElectron1Pt, minElectron2Pt, maxElectron2Pt, minElectron1Eta maxElectron1Eta, minElectron2Eta, maxElectron2Eta

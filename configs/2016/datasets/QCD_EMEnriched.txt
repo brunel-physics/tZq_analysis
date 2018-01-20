@@ -1,0 +1,71 @@
+[QCD_EMEnriched_Pt-20to30] 
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-20to30Files.txt
+totalEvents = 9218954
+crossSection = 557600000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-30to50] 
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
+totalEvents = 4730195
+crossSection = 136000000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-50to80] 
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
+totalEvents = 22337070
+crossSection = 19800000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-80to120]
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
+totalEvents = 35841783
+crossSection = 2800000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-120to170]
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
+totalEvents = 35817281
+crossSection = 477000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-170to300] 
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-170to300Files.txt
+totalEvents = 11540163
+crossSection = 114000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[QCD_EMEnriched_Pt-300toInf] 
+fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-300toInfFiles.txt
+totalEvents = 7373633
+crossSection = 9000
+runType = mc
+histoName = QCD
+colour = kPurple
+label = QCD
+plotType = f
+
+[]
