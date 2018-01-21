@@ -125,13 +125,13 @@ ls /scratch/data/tZqSkimsRun2016/ZZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datas
 
 # QCD samples
 
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-20to30/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-20to30Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-30to50/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-50to80/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-80to120/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-120to170/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-170to300/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-170to300Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnrichedPt5/Pt-300toInf/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-300toInfFiles.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-20to30/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-20to30Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-30to50/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-50to80/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-80to120/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-120to170/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-170to300/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-170to300Files.txt
+ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-300toInf/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-300toInfFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-15to20/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-15to20Files.txt
 ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-20to30/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-20to30Files.txt
