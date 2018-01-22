@@ -10,7 +10,7 @@ plotType = f
 
 [QCD_EMEnriched_Pt-30to50] 
 fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
-totalEvents = 4730195
+totalEvents = 11498579
 crossSection = 136000000
 runType = mc
 histoName = 30to50
