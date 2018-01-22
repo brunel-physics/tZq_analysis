@@ -130,7 +130,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-80to120]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-80to120Files.txt
-totalEvents = 13669116
+totalEvents = 23466360
 crossSection = 2758420.
 runType = mc
 histoName = QCD

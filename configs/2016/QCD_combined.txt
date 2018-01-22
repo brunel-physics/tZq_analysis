@@ -1,0 +1,6 @@
+datasets = "configs/2016/datasets/QCD_combined.txt";
+cuts = "configs/2016/cuts/eeCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2016/QCD_combined/";
+outputPostfix = "ee";
+channelName = "ee";
