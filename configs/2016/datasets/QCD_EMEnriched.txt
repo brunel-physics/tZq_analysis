@@ -3,9 +3,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-20to30Files.txt
 totalEvents = 9218954
 crossSection = 557600000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 20to30
+colour = kRed
+label = 20to30
 plotType = f
 
 [QCD_EMEnriched_Pt-30to50] 
@@ -13,9 +13,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
 totalEvents = 4730195
 crossSection = 136000000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 30to50
+colour = kBlue
+label = 30to50
 plotType = f
 
 [QCD_EMEnriched_Pt-50to80] 
@@ -23,9 +23,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
 totalEvents = 22337070
 crossSection = 19800000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 50to80
+colour = kGreen
+label = 50to80
 plotType = f
 
 [QCD_EMEnriched_Pt-80to120]
@@ -33,9 +33,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
 totalEvents = 35841783
 crossSection = 2800000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 80to120
+colour = kYellow
+label = 80to120
 plotType = f
 
 [QCD_EMEnriched_Pt-120to170]
@@ -43,9 +43,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
 totalEvents = 35817281
 crossSection = 477000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 120to170
+colour = kTeal
+label = 120to170
 plotType = f
 
 [QCD_EMEnriched_Pt-170to300] 
@@ -53,9 +53,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-170to300Files.txt
 totalEvents = 11540163
 crossSection = 114000
 runType = mc
-histoName = QCD
-colour = kPurple
-label = QCD
+histoName = 170to300
+colour = kOrange
+label = 170to300
 plotType = f
 
 [QCD_EMEnriched_Pt-300toInf] 
@@ -63,9 +63,9 @@ fileName = configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-300toInfFiles.txt
 totalEvents = 7373633
 crossSection = 9000
 runType = mc
-histoName = QCD
+histoName = 300toInf
 colour = kPurple
-label = QCD
+label = 300toInf
 plotType = f
 
 []
