@@ -60,7 +60,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-170to300]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-170to300Files.txt
-totalEvents = 7947159
+totalEvents = 17350231
 crossSection = 117989.
 runType = mc
 histoName = 170to300
@@ -70,7 +70,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-300to470]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-300to470Files.txt
-totalEvents = 7937590
+totalEvents = 48995686
 crossSection = 7820.25
 runType = mc
 histoName = 300to470
@@ -80,7 +80,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-470to600]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-470to600Files.txt
-totalEvents = 3851524
+totalEvents = 19362943
 crossSection = 645.528
 runType = mc
 histoName = 470to600
@@ -90,7 +90,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-600to800]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-600to800Files.txt
-totalEvents = 4010136
+totalEvents = 9981311
 crossSection = 187.109
 runType = mc
 histoName = 600to800
@@ -100,7 +100,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-800to1000]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-800to1000Files.txt
-totalEvents = 3962749
+totalEvents = 19767439
 crossSection = 32.3486
 runType = mc
 histoName = 800to1000
@@ -110,7 +110,7 @@ plotType = f
 
 [QCD_MuEnriched_Pt-1000toInf]
 fileName = configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-1000toInfFiles.txt
-totalEvents = 3934495
+totalEvents = 13544316
 crossSection = 10.4305
 runType = mc
 histoName = 1000toInf
