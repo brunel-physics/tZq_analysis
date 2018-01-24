@@ -359,6 +359,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
             #Make a config that'll do this for me? I've done these before so should be easy. Fill expressions could be a pain?
         tree.GetEntry(event)
 
+	## If same sign and non-prompt, continue
+        if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState == 0 ) : continue
+        if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState == 0 ) : continue
+
         ##Save event number for debugging
         varMap["eventNumber"][0] = tree.eventNum
 
