@@ -110,8 +110,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   triggerFlag_{},
   //Make cloned lepton sel tree false for now
   postLepSelTree_{nullptr},
-  postLepSelTree2_{nullptr},
-  postLepSelTree3_{nullptr},
   //Skips running trigger stuff
   skipTrigger_{false},
   //Are we making b-tag efficiency plots?
@@ -459,14 +457,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //This is to make some skims for faster running. Do lepSel and save some files.
-  if(postLepSelTree_ && !synchCutFlow_) {
-    if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
-    else {
-      if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
-      else postLepSelTree3_->Fill();
-
-    }
-  }
+  if(postLepSelTree_ && !synchCutFlow_) postLepSelTree_->Fill();
 
   // DO ROCHESTER CORRECTIONS HERE
   std::vector<float> SFs = {1.0};
@@ -1514,7 +1505,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98845; // 0.97491 for data eff; 0.98845 for SF
+        twgt = 0.98709; // 0.97491 for data eff; 0.98845 for SF
         if (syst == 1) twgt += 0.00028; // -0.00105/+0.00110 for eff; 0.00028 for SF
         if (syst == 2) twgt -= 0.00028;
       }
@@ -1634,14 +1625,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   //Trigger stuff would go first, but in MC at least (what I'm starting with) I don't have that saved. Idiot.
 
   //This is to make some skims for faster running. Do lepSel and save some files.
-  if(postLepSelTree_ && synchCutFlow_) {
-    if (postLepSelTree_->GetEntriesFast() < 40000) postLepSelTree_->Fill();
-    else {
-      if (postLepSelTree2_->GetEntriesFast() < 40000) postLepSelTree2_->Fill();
-      else postLepSelTree3_->Fill();
-
-    }
-  }
+  if(postLepSelTree_ && synchCutFlow_) postLepSelTree_->Fill();
 
   if (singleEventInfoDump_){
 //    std::cout << std::setprecision(6) << std::fixed;
@@ -2627,7 +2611,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 //      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);

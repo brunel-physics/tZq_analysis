@@ -822,12 +822,6 @@ void AnalysisAlgo::runMainAnalysis(){
       TFile * outFile1{nullptr};
       TTree * cloneTree{nullptr};
 
-      TFile * outFile2{nullptr};
-      TTree * cloneTree2{nullptr};
-
-      TFile * outFile3{nullptr};
-      TTree * cloneTree3{nullptr};
-
       // If we're making the post lepton selection trees, set them up here.
       if (makePostLepTree){
         std::string invPostFix;
@@ -837,15 +831,9 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 
 	outFile1 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
-	outFile2 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim1.root").c_str(),"RECREATE"};
-	outFile3 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim2.root").c_str(),"RECREATE"};
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree->SetDirectory(outFile1);
-	cloneTree2 = datasetChain->CloneTree(0);
-	cloneTree2->SetDirectory(outFile2);
-	cloneTree3 = datasetChain->CloneTree(0);
-	cloneTree3->SetDirectory(outFile3);
-	cutObj->setCloneTree(cloneTree,cloneTree2,cloneTree3);
+	cutObj->setCloneTree(cloneTree);
       }
       //If we're making the MVA tree, set it up here.
       TFile * mvaOutFile{nullptr};
@@ -1123,25 +1111,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	outFile1->Write();
 	outFile1->Close();
 
-	//If we have any events in the second tree:
-	if (cloneTree2->GetEntries() > 0){
-	  std::cout << "There are " << cloneTree2->GetEntries() << " entries in the second tree!" << std::endl;
-	  outFile2->cd();
-	  cloneTree2->Write();
-	  outFile2->Write();
-	}
-	if (cloneTree3->GetEntries() > 0){
-	  std::cout << "There are " << cloneTree3->GetEntries() << " entries in the third tree! What a lot of trees we've made." << std::endl;
-	  outFile3->cd();
-	  cloneTree3->Write();
-	  outFile3->Write();
-	}
-	delete cloneTree2;
-	delete cloneTree3;
-	cloneTree2 = nullptr;
-	cloneTree3 = nullptr;
-	outFile2->Close();
-	outFile3->Close();
       }
 
       //Save mva outputs
