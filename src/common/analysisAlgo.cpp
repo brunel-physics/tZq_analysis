@@ -1114,11 +1114,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	cloneTree->Write();
 	//Write out mc generator level info
 	if ( dataset->isMC() ) generatorWeightPlot->Write();
-	//If we're doing b-tag efficiencies, let's save them here.
-	if (makePostLepTree){
-	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
+        for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
-	  }
 	}
 
 	delete cloneTree;
