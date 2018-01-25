@@ -30,7 +30,8 @@ AnalysisAlgo::AnalysisAlgo():
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
   readEventList{false},
-  customJetRegion{false}
+  customJetRegion{false},
+  doFakes_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -374,6 +375,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "requires -u.")
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
+    ("fakes", po::bool_switch(&doFakes_), "Make or use fake shapes")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.")
     ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
@@ -651,6 +653,7 @@ void AnalysisAlgo::runMainAnalysis(){
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
 							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
 
+
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
@@ -658,83 +661,13 @@ void AnalysisAlgo::runMainAnalysis(){
 
     if ( !trileptonChannel_ ){ channelIndMax = 32; }
     for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1){
-      std::string chanName{};
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelsToRun && trileptonChannel_){
-	if (channelInd & 17){ // eee channels
-	  cutObj->setNumLeps(0,0,3,3);
-	  cutObj->setCutConfTrigLabel("e");
-	  channel = "eee";
-	  postfix = "eee";
-	  chanName += "eee";
-	}
-	if (channelInd & 34){ //eemu channels
-	  cutObj->setNumLeps(1,1,2,2);
-	  cutObj->setCutConfTrigLabel("d1");
-	  channel = "eemu";
-	  postfix = "eemu";
-	  chanName += "eemu";
-	}
-	if (channelInd & 68){ // emumu channels
-	  cutObj->setNumLeps(2,2,1,1);
-	  cutObj->setCutConfTrigLabel("d2");
-	  channel = "emumu";
-	  postfix = "emumu";
-	  chanName += "emumu";
-	}
-	if (channelInd & 136){ // mumumu channels
-	  cutObj->setNumLeps(3,3,0,0);
-	  cutObj->setCutConfTrigLabel("m");
-	  channel = "mumumu";
-	  postfix = "mumumu";
-	  chanName += "mumumu";
-	}
-	if (channelInd & 15){ //nominal samples
-	  cutObj->setInvLepCut(false);
-	  invertLepCut = false;
-	  chanName += "nom";
-	}
-	if (channelInd & 240){ //inv iso samples
-	  cutObj->setInvLepCut(true);
-	  invertLepCut = true;
-	  chanName += "inv";
-	}
-      }
-      if (channelsToRun && !trileptonChannel_){
-	if (channelInd & 5){ // ee channels
-	  cutObj->setNumLeps(0,0,2,2);
-	  cutObj->setCutConfTrigLabel("e");
-	  channel = "ee";
-	  postfix = "ee";
-	  chanName += "ee";
-	}
-	if (channelInd & 10){ // mumu channels
-	  cutObj->setNumLeps(2,2,0,0);
-	  cutObj->setCutConfTrigLabel("m");
-	  channel = "mumu";
-	  postfix = "mumu";
-	  chanName += "mumu";
-	}
-	if (channelInd & 3){ //nominal samples
-	  cutObj->setInvLepCut(false);
-	  invertLepCut = false;
-	  chanName += "nom";
-	}
-	if (channelInd & 12){ //same sign samples
-	  cutObj->setInvLepCut(true);
-	  invertLepCut = true;
-	  chanName += "inv";
-	}
-	if (channelInd & 16){ //emu channel for ttbar background estimation
-	  cutObj->setNumLeps(1,1,1,1);
-	  cutObj->setCutConfTrigLabel("d");
-	  channel = "emu";
-	  postfix = "emu";
-	  chanName += "emu";
-	}
-      }
+
+      std::string chanName = channelSetup ( channelInd );
+
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
+
       if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
 
 	// Gather all variables for plotting to make it easier to follow
@@ -1332,4 +1265,84 @@ void AnalysisAlgo::savePlots()
   delete plotConfName;
 
   std::cerr  << "But not past it" << std::endl;
+}
+
+std::string AnalysisAlgo::channelSetup (unsigned channelInd) {
+
+  std::string chanName {};
+
+  if (channelsToRun && trileptonChannel_){
+    if (channelInd & 17){ // eee channels
+      cutObj->setNumLeps(0,0,3,3);
+      cutObj->setCutConfTrigLabel("e");
+      channel = "eee";
+      postfix = "eee";
+      chanName += "eee";
+    }
+    if (channelInd & 34){ //eemu channels
+      cutObj->setNumLeps(1,1,2,2);
+      cutObj->setCutConfTrigLabel("d1");
+      channel = "eemu";
+      postfix = "eemu";
+      chanName += "eemu";
+    }
+    if (channelInd & 68){ // emumu channels
+      cutObj->setNumLeps(2,2,1,1);
+      cutObj->setCutConfTrigLabel("d2");
+      channel = "emumu";
+      postfix = "emumu";
+      chanName += "emumu";
+    }
+    if (channelInd & 136){ // mumumu channels
+      cutObj->setNumLeps(3,3,0,0);
+      cutObj->setCutConfTrigLabel("m");
+      channel = "mumumu";
+      postfix = "mumumu";
+      chanName += "mumumu";
+    }
+    if (channelInd & 15){ //nominal samples
+      cutObj->setInvLepCut(false);
+      invertLepCut = false;
+      chanName += "nom";
+    }
+    if (channelInd & 240){ //inv iso samples
+      cutObj->setInvLepCut(true);
+      invertLepCut = true;
+      chanName += "inv";
+    }
+  }
+  if (channelsToRun && !trileptonChannel_){
+    if (channelInd & 5){ // ee channels
+      cutObj->setNumLeps(0,0,2,2);
+      cutObj->setCutConfTrigLabel("e");
+      channel = "ee";
+      postfix = "ee";
+      chanName += "ee";
+    }
+    if (channelInd & 10){ // mumu channels
+      cutObj->setNumLeps(2,2,0,0);
+      cutObj->setCutConfTrigLabel("m");
+      channel = "mumu";
+      postfix = "mumu";
+      chanName += "mumu";
+    }
+    if (channelInd & 3){ //nominal samples
+      cutObj->setInvLepCut(false);
+      invertLepCut = false;
+      chanName += "nom";
+    }
+    if (channelInd & 12){ //same sign samples
+      cutObj->setInvLepCut(true);
+      invertLepCut = true;
+      chanName += "inv";
+    }
+    if (channelInd & 16){ //emu channel for ttbar background estimation
+      cutObj->setNumLeps(1,1,1,1);
+      cutObj->setCutConfTrigLabel("d");
+      channel = "emu";
+      postfix = "emu";
+      chanName += "emu";
+    }
+  }
+  return chanName;
 }

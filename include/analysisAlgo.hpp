@@ -30,7 +30,10 @@ class AnalysisAlgo{
 	void savePlots();
 
 	private:
+        // functions
+        std::string channelSetup ( unsigned );
 
+        // variables?
 	std::string config;
  	bool plots;
 	double usePreLumi;
@@ -65,6 +68,7 @@ class AnalysisAlgo{
 	bool isFCNC_;
 	bool isCtag_;
 	bool is2016_;
+	bool doFakes_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;
