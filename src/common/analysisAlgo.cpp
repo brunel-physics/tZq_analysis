@@ -736,31 +736,44 @@ void AnalysisAlgo::runMainAnalysis(){
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
       if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
+
+	// Gather all variables for plotting to make it easier to follow
+        std::string histoName {dataset->getFillHisto()}, plotLabel {dataset->getPlotLabel()}, plotType {dataset->getPlotType()};
+        int plotColour {dataset->getColour()};
+
+//        // If we are making plots and want to plot fakes ...
+//        if ( invertLepCut ) {
+//          histoName = "Fakes";
+//          plotLabel = "Fakes";
+//          plotType = "fake";
+//          plotColour = 9;
+ //       }
+
 	int systMask{1};
 	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
 	  if (systInd > 0 && !(systToRun & systMask)){
 	    systMask = systMask << 1;
 	    continue;
 	  }
-	  if (cutFlowMap.find(dataset->getFillHisto()+systNames[systInd]) == cutFlowMap.end()){
+	  if (cutFlowMap.find( histoName + systNames[systInd] ) == cutFlowMap.end()){
 	    const size_t numCutFlowBins{stageNames.size()};
-	    cutFlowMap[dataset->getFillHisto()] = new TH1F{(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),(dataset->getFillHisto()+systNames[systInd]+"cutFlow").c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
-	    if (systInd == 0 && datasetInfos.find(dataset->getFillHisto()) == datasetInfos.end()){
-	      legOrder.emplace_back(dataset->getFillHisto());
-	      plotOrder.emplace_back(dataset->getFillHisto());
-	      datasetInfos[dataset->getFillHisto()] = datasetInfo();
-	      datasetInfos[dataset->getFillHisto()].colour = dataset->getColour();
-	      datasetInfos[dataset->getFillHisto()].legLabel = dataset->getPlotLabel();
-	      datasetInfos[dataset->getFillHisto()].legType = dataset->getPlotType();
+	    cutFlowMap[ histoName ] = new TH1F{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
+	    if (systInd == 0 && datasetInfos.find( histoName ) == datasetInfos.end()){
+	      legOrder.emplace_back( histoName );
+	      plotOrder.emplace_back( histoName );
+	      datasetInfos[ histoName ] = datasetInfo();
+	      datasetInfos[ histoName ].colour = plotColour;
+	      datasetInfos[ histoName ].legLabel = plotLabel;
+	      datasetInfos[ histoName ].legType = plotType;
 	    }
 	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << dataset->getFillHisto() << " : " << systNames[systInd]+channel << std::endl;
+	      std::cout << "Made plots under " << histoName << " : " << systNames[systInd]+channel << std::endl;
 	      if (plotsMap.find(channel) == plotsMap.end()){
 		plotsVec.emplace_back(systNames[systInd]+channel);
 	      }
-	      plotsMap[systNames[systInd]+channel][(dataset->getFillHisto())] = std::map<std::string,Plots*>();
+	      plotsMap[systNames[systInd]+channel][( histoName )] = std::map<std::string,Plots*>();
 	      for (unsigned j{0}; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][dataset->getFillHisto()][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, dataset->getFillHisto()+"_"+stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
+		plotsMap[systNames[systInd]+channel][ histoName ][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, histoName + "_" + stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
 	      }
 	    }
 	  }//end cutFlow find loop
@@ -884,8 +897,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
       // If we're making the post lepton selection trees, set them up here.
       if (makePostLepTree){
-
-	std::string invPostFix {};
+        std::string invPostFix;
 	if (invertLepCut) {
 	  if ( trileptonChannel_ ) invPostFix = "invIso";
 	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
@@ -1053,8 +1065,13 @@ void AnalysisAlgo::runMainAnalysis(){
 //	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
 //          std::cout << "eventWeight: " << eventWeight << std::endl;
 
-	  //std::cout << "channel: " << channel << std::endl;
-	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][dataset->getFillHisto()],cutFlowMap[dataset->getFillHisto()+systNames[systInd]],systInd?systMask:systInd)) {
+//	  std::cout << "channel: " << channel << std::endl;
+          std::string histoName { dataset->getFillHisto() };
+//          if ( invertLepCut ) {
+//            histoName = "Fakes";
+//          }
+
+	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {
 	    if (systInd) systMask = systMask << 1;
 	    continue;
 	  }
@@ -1292,9 +1309,10 @@ void AnalysisAlgo::savePlots()
 
   std::cerr << "Gets to the delete bit" << std::endl;
 /*  if (plots || infoDump){
+    std::string histoName { dataset->getFillHisto() };
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
-      if (cutFlowMap.find(dataset->getFillHisto()) == cutFlowMap.end()) continue;
-      delete cutFlowMap[dataset->getFillHisto()];
+      if (cutFlowMap.find( histoName ) == cutFlowMap.end()) continue;
+      delete cutFlowMap[ histoName ];
       if (!plots) continue;
       for (unsigned j = 0; j < stageNames.size(); j++){
 	int systMask = 1;
@@ -1303,7 +1321,7 @@ void AnalysisAlgo::savePlots()
 	    systMask = systMask << 1;
 	    continue;
 	  }
-	  delete plotsMap[systNames[systInd]][dataset->getFillHisto()][stageNames[j].first];
+	  delete plotsMap[systNames[systInd]][ histoName ][stageNames[j].first];
 	  if (systInd > 0) systMask = systMask << 1;
 	}
       }
