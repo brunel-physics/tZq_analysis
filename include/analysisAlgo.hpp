@@ -10,6 +10,7 @@
 #include <map>
 
 class TH1F;
+class TFile;
 
 class AnalysisAlgo{
 
@@ -34,6 +35,7 @@ class AnalysisAlgo{
         std::string channelSetup ( unsigned );
 
         // variables?
+	TFile* outFile1;
 	std::string config;
  	bool plots;
 	double usePreLumi;

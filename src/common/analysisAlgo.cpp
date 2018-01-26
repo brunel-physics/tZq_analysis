@@ -652,6 +652,7 @@ void AnalysisAlgo::runMainAnalysis(){
   const std::string postLepSelSkimDir{
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
 							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
+  
 
   // Begin to loop over all datasets
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
@@ -815,7 +816,8 @@ void AnalysisAlgo::runMainAnalysis(){
       AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
 
       //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TFile * outFile1{nullptr};
+      //      TFile * outFile1{nullptr};
+      outFile1 = nullptr;
       TTree * cloneTree{nullptr};
 
       // If we're making the post lepton selection trees, set them up here.
@@ -1106,6 +1108,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	cloneTree = nullptr;
 	outFile1->Write();
 	outFile1->Close();
+	outFile1 = nullptr;
 
       }
 
