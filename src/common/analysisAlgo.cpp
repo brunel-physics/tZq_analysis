@@ -653,7 +653,7 @@ void AnalysisAlgo::runMainAnalysis(){
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
 							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
 
-
+  // Begin to loop over all datasets
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
     datasetFilled = false;
     TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
@@ -734,10 +734,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
-	std::ifstream secondTree{postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim1.root"};
-	if (secondTree.good()) datasetChain->Add((postLepSelSkimDir + dataset->name()+inputPostfix + "SmallSkim1.root").c_str());
-	std::ifstream thirdTree{postLepSelSkimDir + dataset->name()+inputPostfix + "SmallSkim2.root"};
-	if (thirdTree.good()) datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim2.root").c_str());
       }
       cutObj->setMC(dataset->isMC());
       cutObj->setEventInfoFlag(readEventList);
