@@ -11,6 +11,8 @@
 
 class TH1F;
 class TFile;
+class TChain;
+class TTree;
 
 class AnalysisAlgo{
 
@@ -32,10 +34,13 @@ class AnalysisAlgo{
 
 	private:
         // functions
+        void makeNonPromptSkims( TChain* datasetChain, std::string chanName, bool isMC );
         std::string channelSetup ( unsigned );
 
         // variables?
 	TFile* outFile1;
+	TTree* cloneTree;
+        TTree* cloneTree2;
 	std::string config;
  	bool plots;
 	double usePreLumi;

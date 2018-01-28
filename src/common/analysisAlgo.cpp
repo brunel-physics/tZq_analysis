@@ -653,6 +653,13 @@ void AnalysisAlgo::runMainAnalysis(){
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
 							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
   
+/*
+  if ( doFakes_ && usePostLepTree ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
+    Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake"
+    // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
+    datasets.emplace_back( fakeDataset );
+  }
+*/
 
   // Begin to loop over all datasets
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
@@ -674,14 +681,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	// Gather all variables for plotting to make it easier to follow
         std::string histoName {dataset->getFillHisto()}, plotLabel {dataset->getPlotLabel()}, plotType {dataset->getPlotType()};
         int plotColour {dataset->getColour()};
-
-//        // If we are making plots and want to plot fakes ...
-//        if ( invertLepCut ) {
-//          histoName = "Fakes";
-//          plotLabel = "Fakes";
-//          plotType = "fake";
-//          plotColour = 9;
- //       }
 
 	int systMask{1};
 	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
@@ -1311,3 +1310,8 @@ std::string AnalysisAlgo::channelSetup (unsigned channelInd) {
   }
   return chanName;
 }
+
+void AnalysisAlgo::makeNonPromptSkims( TChain* datasetChain, std::string chanName, bool isMC ) {
+
+}
+
