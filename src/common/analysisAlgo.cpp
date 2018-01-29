@@ -687,10 +687,15 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  datasetFilled = true;
 	}
-     
+
 	cloneTree = datasetChain->CloneTree(0);
 	cloneTree->SetDirectory(outFile1);
+
+	float fakeDatasetWeight{1.0};
+	cloneTree->Branch("fakeDatasetWeight",&fakeDatasetWeight,"fakeDatasetWeight/F");
+
 	cutObj->setCloneTree(cloneTree);
+        if ( dataset->isMC() ) cutObj->setFakeFlag(true);
 
 	cutObj->setMC(dataset->isMC());
 	cutObj->setEventInfoFlag(readEventList);
@@ -730,6 +735,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  continue;
 	}
 
+
 	AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
 	// no need to do mva tree
 	long long numberOfEvents{datasetChain->GetEntries()};
@@ -748,6 +754,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    exit(999);
 	  }
 	}
+
+
 	// Setup timer
 	TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
 	lEventTimer->DrawProgressBar(0, "");
@@ -764,6 +772,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	float eventWeight = 1.;
 	//apply negative weighting for SameSign MC lepton samples so that further downstream
 	if ( dataset->isMC() && !trileptonChannel_ ) eventWeight *= -1.0;
+
 	//apply generator weights here.
 	double generatorWeight{1.0};
 	if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
@@ -776,6 +785,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	//If ttbar, do reweight
 	if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
 
+	fakeDatasetWeight = eventWeight;
+
 	std::string histoName {"Fakes"};
 	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],0)) continue;
 
@@ -784,11 +795,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	foundEvents++;
 	foundEventsNorm += eventWeight;
 	} // Run through next event
-	
+	std::cout << "\nPrinting some info for " << dataset->name() << " ... We found " << cloneTree->GetEntries() << std::endl;	
+
       } // end dataset loop - gone through all events
       // Run through all datasets ... now save output file for fakes
       outFile1->cd();
-      std::cout << "\nPrinting some info on the tree ... We found " << cloneTree->GetEntries() << std::endl;
       cloneTree->Write();
       // Need to fix below ... this will vary on each MC sample ... ?
       //      generatorWeightPlot->Write();
@@ -1000,6 +1011,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	int bJetInd[10]; // Index of selected b-jets;
 	float muonMomentumSF[3] {};
 	float jetSmearValue[15] {};
+	int isMC{dataset->isMC()}; // isMC flag for debug purposes
 	//Now add in the branches:
 
 	if (makeMVATree){
@@ -1037,7 +1049,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF[3]/F");
 	    mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue[15]/F");
 	    mvaTree[systIn]->Branch("bJetInd",&bJetInd,"bJetInd[10]/I");
-
+	    mvaTree[systIn]->Branch("isMC",&isMC,"isMC/I");
 	    if (systIn > 0) systMask = systMask << 1;
 	  }
 	  std::cout <<std::endl;
@@ -1142,6 +1154,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    //          if ( invertLepCut ) {
 	    //            histoName = "Fakes";
 	    //          }
+
 
 	    if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {
 	      if (systInd) systMask = systMask << 1;

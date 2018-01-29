@@ -188,6 +188,8 @@ class Cuts{
   bool isMC_;
   std::string triggerFlag_;
   std::string postfixName_;
+  //Set the flag used to reject non-prompt leptons when making the fake shapes for plotting purposes
+  bool isFake_;
 
   //For producing post-lepsel skims
   TTree* postLepSelTree_;
@@ -273,7 +275,7 @@ class Cuts{
   TH1F* getSynchCutFlow();
   int numFound(){return synchCutFlowHist_->GetBinContent(4);}
   void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;}
-
+  void setFakeFlag(bool isFake){isFake_ = isFake;}
 };
 
 #endif

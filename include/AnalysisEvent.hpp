@@ -1004,6 +1004,8 @@ public :
    int wLepIndex;
    float wLeptonRelIso;
 
+   float fakeDatasetWeight;
+
    Int_t numVert;
    TBranch * b_numVert;
 

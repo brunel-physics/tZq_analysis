@@ -106,6 +106,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
+  isFake_{false},
   //Same for trigger flag.
   triggerFlag_{},
   //Make cloned lepton sel tree false for now
@@ -455,6 +456,17 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexTight.size() != numTightMu_) return false;
   event->muonIndexLoose = getLooseMuons(event);
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
+
+  //If making fake shape postLepSkim, MC leptons must BOTH be prompt
+  if ( isFake_ && numTightEle_ ) { // if ee channel
+    //    std::cout << "Is ele 1/2 prompt? : " << event->genElePF2PATPromptFinalState[event->zPairIndex.first] << "/" << event->genElePF2PATPromptFinalState[event->zPairIndex.second] << std::endl;
+    if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.first] ) return false; 
+    if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.second] ) return false;
+  }
+  if ( isFake_ && numTightMu_ ) { // if mumu channel
+    if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.first] ) return false;
+    if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
+  }
 
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_ && !synchCutFlow_) postLepSelTree_->Fill();
