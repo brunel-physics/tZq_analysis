@@ -365,8 +365,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         tree.GetEntry(event)
 
         ## If same sign and non-prompt, continue
-        if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState == 0 ) : continue
-        if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState == 0 ) : continue
+##        if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState == 0 ) : continue
+##        if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState == 0 ) : continue
 
 	##Save event number for debugging
 	varMap["eventNumber"][0] = tree.eventNum
