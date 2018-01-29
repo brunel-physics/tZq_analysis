@@ -24,25 +24,25 @@
 
 AnalysisAlgo::AnalysisAlgo():
   channel{},
-  is2016_{false},
-  isFCNC_{false},
-  isCtag_{false},
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
   readEventList{false},
   customJetRegion{false},
+  is2016_{false},
+  isFCNC_{false},
+  isCtag_{false},
   doFakes_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
 
-double AnalysisAlgo::zptSF(std::string channel, float zpt){
+double AnalysisAlgo::zptSF(std::string chan, float zpt){
 
   double param1{0};
   double param2{0};
   double param3{0};
 
-  if(channel == "mumumu"){
+  if(chan == "mumumu"){
     //mumumu
     //1  p0           1.64891e+00   9.46744e-02   8.94955e-05 5.38436e-04
     //2  p1          -3.18363e-02   1.83020e-03   1.43202e-06 2.28732e-02
@@ -59,7 +59,7 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
 
   }
 
-  if(channel == "emumu"){
+  if(chan == "emumu"){
     //mumue
     //1  p0           1.08009e+00   2.20412e-01   1.81954e-04 -2.77029e-04
     //2  p1          -1.83319e-02   2.98128e-03   1.46500e-06 -2.16667e-02
@@ -92,7 +92,7 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
   }
 
 
-  if(channel == "eee"){
+  if(chan == "eee"){
     //eee
     //1  p0           1.66655e+00   2.04856e-01   1.22417e-04 -8.87600e-06
     // 2  p1          -2.90064e-02   3.37196e-03   1.67677e-06 1.94266e-05
@@ -107,12 +107,12 @@ double AnalysisAlgo::zptSF(std::string channel, float zpt){
   }
 
   // placeholder dilepton values
-  if (channel == "mumu"){
+  if (chan == "mumu"){
     param1 = 9.12190e-01;
     param2 =-2.12648e-02;
     param3 = 2.32868e-01;
   }
-  if (channel == "ee"){
+  if (chan == "ee"){
     param1 = 8.23251e-01;
     param2 = -1.74036e-02;
     param3 = 1.64031e-01;
@@ -156,6 +156,21 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
   chain->SetBranchStatus("elePF2PATD0PV",1);
   chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
   chain->SetBranchStatus("elePF2PATSCEta",1);
+  if (isMC){
+    chain->SetBranchStatus("genElePF2PATPT",1);
+    chain->SetBranchStatus("genElePF2PATET",1);
+    chain->SetBranchStatus("genElePF2PATPX",1);
+    chain->SetBranchStatus("genElePF2PATPY",1);
+    chain->SetBranchStatus("genElePF2PATPZ",1);
+    chain->SetBranchStatus("genElePF2PATPhi",1);
+    chain->SetBranchStatus("genElePF2PATTheta",1);
+    chain->SetBranchStatus("genElePF2PATEta",1);
+    chain->SetBranchStatus("genElePF2PATCharge",1);
+    chain->SetBranchStatus("genElePF2PATPdgId",1);
+    chain->SetBranchStatus("genElePF2PATMotherId",1);
+    chain->SetBranchStatus("genElePF2PATPromptDecayed",1);
+    chain->SetBranchStatus("genElePF2PATPromptFinalState",1);
+  }
   //get muon branches
   chain->SetBranchStatus("muonPF2PATIsPFMuon",1);
   chain->SetBranchStatus("muonPF2PATGlobalID",1);
@@ -190,6 +205,21 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
   chain->SetBranchStatus("muonPF2PATDZPV",1);
   chain->SetBranchStatus("muonPF2PATVldPixHits",1);
   chain->SetBranchStatus("muonPF2PATMatchedStations",1);
+  if (isMC){
+    chain->SetBranchStatus("genMuonPF2PATPT",1);
+    chain->SetBranchStatus("genMuonPF2PATET",1);
+    chain->SetBranchStatus("genMuonPF2PATPX",1);
+    chain->SetBranchStatus("genMuonPF2PATPY",1);
+    chain->SetBranchStatus("genMuonPF2PATPZ",1);
+    chain->SetBranchStatus("genMuonPF2PATPhi",1);
+    chain->SetBranchStatus("genMuonPF2PATTheta",1);
+    chain->SetBranchStatus("genMuonPF2PATEta",1);
+    chain->SetBranchStatus("genMuonPF2PATCharge",1);
+    chain->SetBranchStatus("genMuonPF2PATPdgId",1);
+    chain->SetBranchStatus("genMuonPF2PATMotherId",1);
+    chain->SetBranchStatus("genMuonPF2PATPromptDecayed",1);
+    chain->SetBranchStatus("genMuonPF2PATPromptFinalState",1);
+  }
     //Jet variables
   chain->SetBranchStatus("numJetPF2PAT",1);
   chain->SetBranchStatus("jetPF2PATPx",1);
@@ -818,14 +848,14 @@ void AnalysisAlgo::runMainAnalysis(){
 
   // normal operations
   else {
-/*    
+
     if ( doFakes_ && usePostLepTree && plots ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
-    // Only do for plot making currently - haven't tested how fake mva shapes would work ...
-    Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake");
-    // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
-    datasets.emplace_back( fakeDataset );
+      // Only do for plot making currently - haven't tested how fake mva shapes would work ...
+      Dataset fakeDataset ("Fakes", 0, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake", "eCt");
+      // Use 0 lumi as placeholder so we don't add to total lumi, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
+      datasets.emplace_back( fakeDataset );
     }
-*/    
+
     // Begin to loop over all datasets
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
       datasetFilled = false;
@@ -969,8 +999,9 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	}
 
-	//extract the dataset weight.
+	//extract the dataset weight. MC = (lumi*crossSection)/(totalEvents), data = 1.0
 	float datasetWeight{dataset->getDatasetWeight(totalLumi)};
+	// If fake shape (for plotting purposes) update on an event by event basis in the event loop
 
 	if (infoDump) datasetWeight = 1;
 	std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
@@ -1102,6 +1133,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	      continue;
 	    }
 	    eventWeight = 1;
+
 	    //apply negative weighting for SameSign MC lepton samples so that further downstream
 	    if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
 	    //apply generator weights here.
@@ -1140,6 +1172,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }
 
 	    if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
+	    // If fake shape (for plotting purposes) update on an event by event basis in the event loop, as datasetWeight will be 1.0
+	    if ( doFakes_ && dataset->name() == "Fakes" ) eventWeight *= event->fakeDatasetWeight;
 
 	    //If amcatnlo DY, normalise
 	    if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
@@ -1152,9 +1186,6 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	    //	  std::cout << "channel: " << channel << std::endl;
 	    std::string histoName { dataset->getFillHisto() };
-	    //          if ( invertLepCut ) {
-	    //            histoName = "Fakes";
-	    //          }
 
 
 	    if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {

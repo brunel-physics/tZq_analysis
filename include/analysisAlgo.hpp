@@ -68,9 +68,9 @@ class AnalysisAlgo{
 	float mzCut;
 	float mwCut;
 	bool trileptonChannel_;
+	bool is2016_;
 	bool isFCNC_;
 	bool isCtag_;
-	bool is2016_;
 	bool doFakes_;
 
 	std::vector<Dataset> datasets;
