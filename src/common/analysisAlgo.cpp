@@ -666,13 +666,6 @@ void AnalysisAlgo::runMainAnalysis(){
 
       outFile1 = new TFile{(postLepSelSkimDir + "Fakes" + postfix + "SmallSkim.root").c_str(),"RECREATE"};
 
-      TChain* tempChain{new TChain{datasets.begin()->treeName().c_str()}};
-      if ( !datasets.begin()->fillChain(tempChain,1) ) std::cerr << "ERROR: Cannot construct chain required to setup initial chain structure." << std::endl; 
-     
-      cloneTree = tempChain->CloneTree(0);
-      cloneTree->SetDirectory(outFile1);
-      cutObj->setCloneTree(cloneTree);
-
       // dataset loop
       for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
 	datasetFilled = false;
@@ -694,6 +687,11 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  datasetFilled = true;
 	}
+     
+	cloneTree = datasetChain->CloneTree(0);
+	cloneTree->SetDirectory(outFile1);
+	cutObj->setCloneTree(cloneTree);
+
 	cutObj->setMC(dataset->isMC());
 	cutObj->setEventInfoFlag(readEventList);
 	cutObj->setTriggerFlag(dataset->getTriggerFlag());
@@ -753,6 +751,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	// Setup timer
 	TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
 	lEventTimer->DrawProgressBar(0, "");
+
+	// Event loop
 	for (int i{0}; i < numberOfEvents; i++) {
 	std::stringstream lSStrFoundLeptons;
 	std::stringstream lSStrFoundEvents;
@@ -784,6 +784,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	foundEvents++;
 	foundEventsNorm += eventWeight;
 	} // Run through next event
+	
       } // end dataset loop - gone through all events
       // Run through all datasets ... now save output file for fakes
       outFile1->cd();
