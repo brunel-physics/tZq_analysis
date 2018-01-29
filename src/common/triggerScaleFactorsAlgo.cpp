@@ -156,6 +156,21 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
   chain->SetBranchStatus("elePF2PATD0PV",1);
   chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
   chain->SetBranchStatus("elePF2PATSCEta",1);
+  if (isMC){
+    chain->SetBranchStatus("genElePF2PATPT",1);
+    chain->SetBranchStatus("genElePF2PATET",1);
+    chain->SetBranchStatus("genElePF2PATPX",1);
+    chain->SetBranchStatus("genElePF2PATPY",1);
+    chain->SetBranchStatus("genElePF2PATPZ",1);
+    chain->SetBranchStatus("genElePF2PATPhi",1);
+    chain->SetBranchStatus("genElePF2PATTheta",1);
+    chain->SetBranchStatus("genElePF2PATEta",1);
+    chain->SetBranchStatus("genElePF2PATCharge",1);
+    chain->SetBranchStatus("genElePF2PATPdgId",1);
+    chain->SetBranchStatus("genElePF2PATMotherId",1);
+    chain->SetBranchStatus("genElePF2PATPromptDecayed",1);
+    chain->SetBranchStatus("genElePF2PATPromptFinalState",1);
+  }
   //get muon branches
   chain->SetBranchStatus("muonPF2PATIsPFMuon",1);
   chain->SetBranchStatus("muonPF2PATGlobalID",1);
@@ -197,6 +212,21 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("muonPF2PATChi2LocalPosition",1);
     chain->SetBranchStatus("muonPF2PATTrkKick",1);
     chain->SetBranchStatus("muonPF2PATSegmentCompatibility",1);
+  }
+  if (isMC){
+    chain->SetBranchStatus("genMuonPF2PATPT",1);
+    chain->SetBranchStatus("genMuonPF2PATET",1);
+    chain->SetBranchStatus("genMuonPF2PATPX",1);
+    chain->SetBranchStatus("genMuonPF2PATPY",1);
+    chain->SetBranchStatus("genMuonPF2PATPZ",1);
+    chain->SetBranchStatus("genMuonPF2PATPhi",1);
+    chain->SetBranchStatus("genMuonPF2PATTheta",1);
+    chain->SetBranchStatus("genMuonPF2PATEta",1);
+    chain->SetBranchStatus("genMuonPF2PATCharge",1);
+    chain->SetBranchStatus("genMuonPF2PATPdgId",1);
+    chain->SetBranchStatus("genMuonPF2PATMotherId",1);
+    chain->SetBranchStatus("genMuonPF2PATPromptDecayed",1);
+    chain->SetBranchStatus("genMuonPF2PATPromptFinalState",1);
   }
   //MET variables - for plotting (no cuts on these)
   chain->SetBranchStatus("metPF2PATEt",1);

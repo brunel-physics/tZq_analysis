@@ -106,9 +106,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
-  isFake_{false},
   //Same for trigger flag.
   triggerFlag_{},
+  isFake_{false},
   //Make cloned lepton sel tree false for now
   postLepSelTree_{nullptr},
   //Skips running trigger stuff
