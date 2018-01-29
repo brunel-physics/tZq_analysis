@@ -34,7 +34,6 @@ class AnalysisAlgo{
 
 	private:
         // functions
-        void makeNonPromptSkims( TChain* datasetChain, std::string chanName, bool isMC );
         std::string channelSetup ( unsigned );
 
         // variables?

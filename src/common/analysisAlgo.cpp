@@ -661,13 +661,13 @@ void AnalysisAlgo::runMainAnalysis(){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
       std::string chanName = channelSetup ( channelInd );
 
-      TChain* tempChain{new TChain{datasets.begin()->treeName().c_str()}};
-      if ( !datasets.begin()->fillChain(tempChain,1) ) std::cerr << "ERROR: Cannot construct chain required to setup initial chain structure." << std::endl; 
-
       TFile* outFile1 {nullptr};
       TTree* cloneTree{nullptr};
 
       outFile1 = new TFile{(postLepSelSkimDir + "Fakes" + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+
+      TChain* tempChain{new TChain{datasets.begin()->treeName().c_str()}};
+      if ( !datasets.begin()->fillChain(tempChain,1) ) std::cerr << "ERROR: Cannot construct chain required to setup initial chain structure." << std::endl; 
      
       cloneTree = tempChain->CloneTree(0);
       cloneTree->SetDirectory(outFile1);
@@ -777,7 +777,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
 
 	std::string histoName {"Fakes"};
-	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],1)) continue;
+	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],0)) continue;
 
 	// No need to do PDF reweighting
 	// No need to do zPt reweighting
@@ -1464,8 +1464,3 @@ std::string AnalysisAlgo::channelSetup (unsigned channelInd) {
   }
   return chanName;
 }
-
-void AnalysisAlgo::makeNonPromptSkims( TChain* datasetChain, std::string chanName, bool isMC ) {
-
-}
-
