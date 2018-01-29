@@ -757,7 +757,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	}
-	//extract the dataset weight.
+	//extract the dataset weight. MC = (lumi*crossSection)/(totalEvents), data = 1.0
 	float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 	std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
 	if (datasetChain->GetEntries() == 0) {
@@ -803,6 +803,9 @@ void AnalysisAlgo::runMainAnalysis(){
 	//apply negative weighting for SameSign MC lepton samples so that further downstream
 	if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
 
+	//apply he dataset weight. MC = (lumi*crossSection)/(totalEvents), data = 1.0
+	eventWeight*=datasetWeight;
+
 	//apply generator weights here.
 	double generatorWeight{1.0};
 	if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
@@ -815,7 +818,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	//If ttbar, do reweight
 	if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
 
-	fakeDatasetWeight = eventWeight;
+	float nonPromptRatio = 1.0;
+	if ( channel == "ee" ) nonPromptRatio = 1.53056;
+	if ( channel == "mumu" ) nonPromptRatio = 0.35746;
+	fakeDatasetWeight = eventWeight * nonPromptRatio;
 
 	std::string histoName {"Fakes"};
 	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],0)) continue;
