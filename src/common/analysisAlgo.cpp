@@ -652,523 +652,677 @@ void AnalysisAlgo::runMainAnalysis(){
   const std::string postLepSelSkimDir{
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
 							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
-  
-/*
-  if ( doFakes_ && usePostLepTree ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
-    Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake"
-    // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
-    datasets.emplace_back( fakeDataset );
-  }
-*/
-
-  // Begin to loop over all datasets
-  for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
-    datasetFilled = false;
-    TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
-    unsigned channelIndMax{256};
-
-    if ( !trileptonChannel_ ){ channelIndMax = 32; }
+  // Run separate loop to make only the fake trees - not elegant, but a method which works ...
+  if ( doFakes_ && makePostLepTree ) {
+    // Channel loop
+    unsigned channelIndMax{32};
+    if ( trileptonChannel_ ){ std::cerr << "ERROR: Not setup for trilepton channel - that uses a different approach." << std::endl; std::exit(1); }
     for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1){
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
-
       std::string chanName = channelSetup ( channelInd );
 
-      if (dataset->isMC() && skipMC) continue;
-      if (!dataset->isMC() && skipData) continue;
+      TChain* tempChain{new TChain{datasets.begin()->treeName().c_str()}};
+      if ( !datasets.begin()->fillChain(tempChain,1) ) std::cerr << "ERROR: Cannot construct chain required to setup initial chain structure." << std::endl; 
 
-      if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
+      TFile* outFile1 {nullptr};
+      TTree* cloneTree{nullptr};
 
-	// Gather all variables for plotting to make it easier to follow
-        std::string histoName {dataset->getFillHisto()}, plotLabel {dataset->getPlotLabel()}, plotType {dataset->getPlotType()};
-        int plotColour {dataset->getColour()};
+      outFile1 = new TFile{(postLepSelSkimDir + "Fakes" + postfix + "SmallSkim.root").c_str(),"RECREATE"};
+     
+      cloneTree = tempChain->CloneTree(0);
+      cloneTree->SetDirectory(outFile1);
+      cutObj->setCloneTree(cloneTree);
 
-	int systMask{1};
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (systInd > 0 && !(systToRun & systMask)){
-	    systMask = systMask << 1;
-	    continue;
-	  }
-	  if (cutFlowMap.find( histoName + systNames[systInd] ) == cutFlowMap.end()){
-	    const size_t numCutFlowBins{stageNames.size()};
-	    cutFlowMap[ histoName ] = new TH1F{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
-	    if (systInd == 0 && datasetInfos.find( histoName ) == datasetInfos.end()){
-	      legOrder.emplace_back( histoName );
-	      plotOrder.emplace_back( histoName );
-	      datasetInfos[ histoName ] = datasetInfo();
-	      datasetInfos[ histoName ].colour = plotColour;
-	      datasetInfos[ histoName ].legLabel = plotLabel;
-	      datasetInfos[ histoName ].legType = plotType;
-	    }
-	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << histoName << " : " << systNames[systInd]+channel << std::endl;
-	      if (plotsMap.find(channel) == plotsMap.end()){
-		plotsVec.emplace_back(systNames[systInd]+channel);
-	      }
-	      plotsMap[systNames[systInd]+channel][( histoName )] = std::map<std::string,Plots*>();
-	      for (unsigned j{0}; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][ histoName ][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, histoName + "_" + stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
-	      }
-	    }
-	  }//end cutFlow find loop
-	  if (systInd > 0) systMask = systMask << 1;
-	}//end systematic loop
-
-      } //end plots if
-	//If making either plots or doing the event dump, make cut flow object.
-      std::cerr << "Processing dataset " << dataset->name() << std::endl;
-      if (!usePostLepTree){
-	if (!datasetFilled){
-	  if (!dataset->fillChain(datasetChain,numFiles)){
+      // dataset loop
+      for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
+	datasetFilled = false;
+	TChain * datasetChain{new TChain{dataset->treeName().c_str()}};
+	if (dataset->isMC() && skipMC) {
+	  std::cout << "Skipping MC ... not sure why you'd do this when making the non-prompt lepton data driven estimate ..." << std::endl;
+	  continue;
+	}
+	if (!dataset->isMC() && skipData) {
+	  std::cout << "Skipping data ... not sure why you'd do this when making the non-prompt lepton data driven estimate ..." << std::endl;
+	  continue;
+	}
+	// Okay - no need to do systematics for the fake shape - that's taken into account with a flat uncertainity
+	std::cerr << "Processing dataset " << dataset->name() << std::endl;
+	if (!datasetFilled) {
+	  if (!dataset->fillChain(datasetChain,numFiles)) {
 	    std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
 	    continue;
 	  }
 	  datasetFilled = true;
 	}
-      }
-      else{
-	std::string inputPostfix{};
-	inputPostfix += postfix;
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) inputPostfix += "invIso";
-	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	}
-	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
-	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
-      }
-      cutObj->setMC(dataset->isMC());
-      cutObj->setEventInfoFlag(readEventList);
-      cutObj->setTriggerFlag(dataset->getTriggerFlag());
-      std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
-
-      //Here we will initialise the b-tag eff plots if we are doing b-tag efficiencies
-      std::vector<TH2D*> bTagEffPlots;
-      std::vector<std::string> denomNum {"Denom","Num"};
-      std::vector<std::string> typesOfEff {"b","c","uds","g"};
-      if (makePostLepTree && dataset->isMC()){
-	int ptBins{4};
-	int etaBins{4};
-	float ptMin{0};
-	float ptMax{200};
-	float etaMin{0};
-	float etaMax{2.4};
-	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
-	  for (unsigned type{0}; type < typesOfEff.size(); type++){
-	    bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
+	cutObj->setMC(dataset->isMC());
+	cutObj->setEventInfoFlag(readEventList);
+	cutObj->setTriggerFlag(dataset->getTriggerFlag());
+	std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
+	
+	//Here we will initialise the b-tag eff plots if we are doing b-tag efficiencies
+	std::vector<TH2D*> bTagEffPlots;
+	std::vector<std::string> denomNum {"Denom","Num"};
+	std::vector<std::string> typesOfEff {"b","c","uds","g"};
+	if (makePostLepTree && dataset->isMC()){
+	  int ptBins{4};
+	  int etaBins{4};
+	  float ptMin{0};
+	  float ptMax{200};
+	  float etaMin{0};
+	  float etaMax{2.4};
+	  for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+	    for (unsigned type{0}; type < typesOfEff.size(); type++){
+	      bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
+	    }
 	  }
-	}
-	cutObj->setBTagPlots(bTagEffPlots,true);
-      }//end btag eff plots.
-      if (usePostLepTree && usebTagWeight && dataset->isMC()){
-	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
-	std::string inputPostfix{};
-	inputPostfix += postfix;
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) inputPostfix += "invIso";
-	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	}
-	TFile * datasetFileForHists;
-	datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
-	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
-	  }
-	}
-	for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
-	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
-	}
-	cutObj->setBTagPlots(bTagEffPlots,false);
-	datasetFileForHists->Close();
-      }
-
-      //Here we will initialise the generator level weight histograms
-      TH1I* generatorWeightPlot {nullptr};
-      if ( dataset->isMC() ) {
-	if ( usePostLepTree ) {
-	  std::string inputPostfix{};
-	  inputPostfix += postfix;
-	  if (invertLepCut) {
-	    if ( trileptonChannel_ ) inputPostfix += "invIso";
-	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	  }
-	  TFile * datasetFileForHists;
-	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
-	  generatorWeightPlot->SetDirectory(nullptr);
-	  datasetFileForHists->Close();
-	}
-	else {
+	  cutObj->setBTagPlots(bTagEffPlots,true);
+	}//end b-tag eff plots.
+	// no need to read in the b-tag plots ...
+	//Here we will initialise the generator level weight histograms - required to correctly normalise negatively weighted events
+	TH1I* generatorWeightPlot {nullptr};
+	if ( dataset->isMC() ) {
 	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
 	  generatorWeightPlot->SetDirectory(nullptr);
 	}
-      }
-
-      //extract the dataset weight.
-      float datasetWeight{dataset->getDatasetWeight(totalLumi)};
-
-      if (infoDump) datasetWeight = 1;
-      std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
-      if (datasetChain->GetEntries() == 0)
-	{
+	//extract the dataset weight.
+	float datasetWeight{dataset->getDatasetWeight(totalLumi)};
+	std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
+	if (datasetChain->GetEntries() == 0) {
 	  std::cout << "No entries in tree, skipping..." << std::endl;
 	  continue;
 	}
-      AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
 
-      //Adding in some stuff here to make a skim file out of post lep sel stuff
-      //      TFile * outFile1{nullptr};
-      outFile1 = nullptr;
-      TTree * cloneTree{nullptr};
+	AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
+	// no need to do mva tree
+	long long numberOfEvents{datasetChain->GetEntries()};
+	if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
+	int foundEvents{0};
+	double foundEventsNorm{0.0};
 
-      // If we're making the post lepton selection trees, set them up here.
-      if (makePostLepTree){
-        std::string invPostFix;
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
-
-	outFile1 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
-	cloneTree = datasetChain->CloneTree(0);
-	cloneTree->SetDirectory(outFile1);
-	cutObj->setCloneTree(cloneTree);
-      }
-      //If we're making the MVA tree, set it up here.
-      TFile * mvaOutFile{nullptr};
-      std::vector<TTree *> mvaTree;
-      //Add a few variables into the MVA tree for easy access of stuff like lepton index etc
-      float eventWeight{0.};
-      int zLep1Index{-1}; // Addresses in elePF2PATWhatever of the z lepton
-      int zLep2Index{-1};
-      int wLepIndex{-1};
-      int wQuark1Index{-1};
-      int wQuark2Index{-1};
-      int jetInd[15];  // The index of the selected jets;
-      int bJetInd[10]; // Index of selected b-jets;
-      float muonMomentumSF[3] {};
-      float jetSmearValue[15] {};
-      //Now add in the branches:
-
-      if (makeMVATree){
-	boost::filesystem::create_directory(mvaDir);
-	std::string invPostFix {};
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
-	mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root").c_str(),"RECREATE"};
-	if (!mvaOutFile->IsOpen()) {
-	  throw std::runtime_error("MVA Tree TFile could not be opened!");
-	}
-	int systMask{1};
-	//std::cout << "Making systematic trees for " << dataset->name() << ": ";
-	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
-	  //std::cout << systNames[systIn] << " ";
-	  //  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
-	  /*  	if (systIn > 0 && !(systMask & systToRun)){
-		if (systIn > 0) systMask = systMask << 1;
-		continue;
-		}*/
-	  mvaTree.emplace_back(datasetChain->CloneTree(0));
-	  mvaTree[systIn]->SetDirectory(mvaOutFile);
-	  mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
-	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
-	  mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
-	  mvaTree[systIn]->Branch("zLep2Index",&zLep2Index,"zLep2Index/I");
-	  if (trileptonChannel_) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
-	  else if (!trileptonChannel_) {
-	    mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
-	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
+	//If event is amc@nlo, need to sum number of positive and negative weights first.
+	if ( dataset->isMC() ) {
+	  sumPositiveWeights_ = dataset->getTotalEvents();
+	  sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
+	  if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
+	    std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
+	    std::cout << "number of postitive weights: " << sumPositiveWeights_ << std::endl;
+	    std::cout << "number of negative weights: " << sumNegativeWeights_ << std::endl;
+	    exit(999);
 	  }
-	  mvaTree[systIn]->Branch("jetInd",&jetInd,"jetInd[15]/I");
-	  mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF[3]/F");
-	  mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue[15]/F");
-	  mvaTree[systIn]->Branch("bJetInd",&bJetInd,"bJetInd[10]/I");
-
-	  if (systIn > 0) systMask = systMask << 1;
 	}
-	std::cout <<std::endl;
-      }
-      /*    else{
-	    event->fChain->SetBranchStatus("*",0); //Should disable most branches.
-	    setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
-	    }*/
-
-      long long numberOfEvents{datasetChain->GetEntries()};
-      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
-      //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
-      //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
-      //    htemp->SaveAs("tempCanvas.png");
-      int foundEvents{0};
-      double foundEventsNorm{0.0};
-
-      //If event is amc@nlo, need to sum number of positive and negative weights first.
-      if ( dataset->isMC() ) {
-	// Load in plots
-	sumPositiveWeights_ = dataset->getTotalEvents();
-	sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
-	sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(7);	// Systematic Scale up
-	sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
-	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
-	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
-	  std::cout << "number of postitive weights: " << sumPositiveWeights_ << std::endl;
-	  std::cout << "number of negative weights: " << sumNegativeWeights_ << std::endl;
-	  exit(999);
-	}
-      }
-
-      TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
-      lEventTimer->DrawProgressBar(0, "");
-      for (int i{0}; i < numberOfEvents; i++) {
+	// Setup timer
+	TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
+	lEventTimer->DrawProgressBar(0, "");
+	for (int i{0}; i < numberOfEvents; i++) {
 	std::stringstream lSStrFoundLeptons;
 	std::stringstream lSStrFoundEvents;
 	lSStrFoundLeptons <<  event->numElePF2PAT;
 	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
 	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
 	event->GetEntry(i);
-	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
-	int systMask{1};
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (!dataset->isMC() && systInd > 0) break;
-	  //	std::cout << systInd << " " << systMask << std::endl;
-	  if (systInd > 0 && !(systMask & systToRun)) {
+	// no need to do systematics here ... see above
+	float eventWeight = 1.;
+	//apply negative weighting for SameSign MC lepton samples so that further downstream
+	if ( dataset->isMC() && !trileptonChannel_ ) eventWeight *= -1.0;
+	//apply generator weights here.
+	double generatorWeight{1.0};
+	if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
+	eventWeight *= generatorWeight;
+	// No need to do pileup weight when prepping the fakes
+
+	// Now do dataset scaling for aMC@NLO and ttbar
+	//If amcatnlo DY, normalise
+	if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
+	//If ttbar, do reweight
+	if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
+
+	std::string histoName {"Fakes"};
+	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],1)) continue;
+
+	// No need to do PDF reweighting
+	// No need to do zPt reweighting
+	foundEvents++;
+	foundEventsNorm += eventWeight;
+	} // Run through next event
+      } // end dataset loop - gone through all events
+      // Run through all datasets ... now save output file for fakes
+      outFile1->cd();
+      std::cout << "\nPrinting some info on the tree ... We found " << cloneTree->GetEntries() << std::endl;
+      cloneTree->Write();
+      // Need to fix below ... this will vary on each MC sample ... ?
+      //      generatorWeightPlot->Write();
+      //      for (unsigned i{0}; i < bTagEffPlots.size(); i++){
+      //	bTagEffPlots[i]->Write();
+      //      }
+      delete cloneTree;
+      cloneTree = nullptr;
+      outFile1->Write();
+      outFile1->Close();
+      outFile1 = nullptr;
+
+    } // end channel loop
+    //Finished going through all channels now!
+  }
+
+  // normal operations
+  else {
+    /*
+      if ( doFakes_ && usePostLepTree ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
+      Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake"
+      // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
+      datasets.emplace_back( fakeDataset );
+      }
+    */
+    // Begin to loop over all datasets
+    for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
+      datasetFilled = false;
+      TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
+      unsigned channelIndMax{256};
+
+      if ( !trileptonChannel_ ){ channelIndMax = 32; }
+      for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1) {
+	if (!(channelInd & channelsToRun) && channelsToRun) continue;
+
+	std::string chanName = channelSetup ( channelInd );
+
+	if (dataset->isMC() && skipMC) continue;
+	if (!dataset->isMC() && skipData) continue;
+
+	if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
+
+	  // Gather all variables for plotting to make it easier to follow
+	  std::string histoName {dataset->getFillHisto()}, plotLabel {dataset->getPlotLabel()}, plotType {dataset->getPlotType()};
+	  int plotColour {dataset->getColour()};
+
+	  int systMask{1};
+	  for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
+	    if (systInd > 0 && !(systToRun & systMask)){
+	      systMask = systMask << 1;
+	      continue;
+	    }
+	    if (cutFlowMap.find( histoName + systNames[systInd] ) == cutFlowMap.end()){
+	      const size_t numCutFlowBins{stageNames.size()};
+	      cutFlowMap[ histoName ] = new TH1F{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
+	      if (systInd == 0 && datasetInfos.find( histoName ) == datasetInfos.end()){
+		legOrder.emplace_back( histoName );
+		plotOrder.emplace_back( histoName );
+		datasetInfos[ histoName ] = datasetInfo();
+		datasetInfos[ histoName ].colour = plotColour;
+		datasetInfos[ histoName ].legLabel = plotLabel;
+		datasetInfos[ histoName ].legType = plotType;
+	      }
+	      if (plots){ // Only make all the plots if it's entirely necessary.
+		std::cout << "Made plots under " << histoName << " : " << systNames[systInd]+channel << std::endl;
+		if (plotsMap.find(channel) == plotsMap.end()){
+		  plotsVec.emplace_back(systNames[systInd]+channel);
+		}
+		plotsMap[systNames[systInd]+channel][( histoName )] = std::map<std::string,Plots*>();
+		for (unsigned j{0}; j < stageNames.size(); j++){
+		  plotsMap[systNames[systInd]+channel][ histoName ][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, histoName + "_" + stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
+		}
+	      }
+	    }//end cutFlow find loop
 	    if (systInd > 0) systMask = systMask << 1;
-	    continue;
-	  }
-	  eventWeight = 1;
-	  //apply negative weighting for SameSign MC lepton samples so that further downstream
-	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
-	  //apply generator weights here.
-	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
-	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
-	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
-	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
-	    //	      std::cout << std::setprecision(5) << std::fixed;
-	    //            std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
-	    //            std::cout << "generator level SF = " << generatorWeight << std::endl;
-	    //            std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
-	  }
-	  eventWeight *= generatorWeight;
-	  //apply pileup weights here.
-	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
-	    double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
-	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
-	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
-	    eventWeight *= pileupWeight;
-	    //std::cout << "pileupWeight: " <<  pileupWeight << std::endl;
-	  }
-	  if (infoDump) eventWeight = 1;
-	  if (readEventList) {
-	    bool tempBool{false};
-	    for (unsigned j{0}; j < eventNumbers.size(); j++){
-	      if (eventNumbers[j] == event->eventNum) {
-		tempBool = true;
-		break;
-	      }
+	  }//end systematic loop
+
+	} //end plots if statement
+
+	//If making either plots or doing the event dump, make cut flow object.
+	std::cerr << "Processing dataset " << dataset->name() << std::endl;
+	if (!usePostLepTree){
+	  if (!datasetFilled){
+	    if (!dataset->fillChain(datasetChain,numFiles)){
+	      std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
+	      continue;
 	    }
-	    if (!tempBool) continue;
-	    std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << datasetChain->GetFile()->GetName() << std::endl;
-	    cutObj->dumpLooseLepInfo(event);
-	    cutObj->dumpLeptonInfo(event);
+	    datasetFilled = true;
 	  }
+	}
+	else{
+	  std::string inputPostfix{};
+	  inputPostfix += postfix;
+	  if (invertLepCut) {
+	    if ( trileptonChannel_ ) inputPostfix += "invIso";
+	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
+	  }
+	  std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
+	  datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
+	}
 
-	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
+	cutObj->setMC(dataset->isMC());
+	cutObj->setEventInfoFlag(readEventList);
+	cutObj->setTriggerFlag(dataset->getTriggerFlag());
+	std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
-	  //If amcatnlo DY, normalise
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
+	//Here we will initialise the b-tag eff plots if we are doing b-tag efficiencies
+	std::vector<TH2D*> bTagEffPlots;
+	std::vector<std::string> denomNum {"Denom","Num"};
+	std::vector<std::string> typesOfEff {"b","c","uds","g"};
+	if (makePostLepTree && dataset->isMC()){
+	  int ptBins{4};
+	  int etaBins{4};
+	  float ptMin{0};
+	  float ptMax{200};
+	  float etaMin{0};
+	  float etaMax{2.4};
+	  for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+	    for (unsigned type{0}; type < typesOfEff.size(); type++){
+	      bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
+	    }
+	  }
+	  cutObj->setBTagPlots(bTagEffPlots,true);
+	}//end btag eff plots.
+	if (usePostLepTree && usebTagWeight && dataset->isMC()) {
+	  //Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
+	  std::string inputPostfix{};
+	  inputPostfix += postfix;
+	  if (invertLepCut) {
+	    if ( trileptonChannel_ ) inputPostfix += "invIso";
+	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
+	  }
+	  TFile* datasetFileForHists;
+	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+	  for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+	    for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
+	      bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	    }
+	  }
+	  for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
+	    bTagEffPlots[plotIt]->SetDirectory(nullptr);
+	  }
+	  cutObj->setBTagPlots(bTagEffPlots,false);
+	  datasetFileForHists->Close();
+	}
 
-	  //If ttbar, do reweight
-//          std::cout << "eventWeight: " << eventWeight << std::endl;
-          if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
-//	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
-//          std::cout << "eventWeight: " << eventWeight << std::endl;
+	//Here we will initialise the generator level weight histograms
+	TH1I* generatorWeightPlot {nullptr};
+	if ( dataset->isMC() ) {
+	  if ( usePostLepTree ) {
+	    std::string inputPostfix{};
+	    inputPostfix += postfix;
+	    if (invertLepCut) {
+	      if ( trileptonChannel_ ) inputPostfix += "invIso";
+	      else if ( !trileptonChannel_ ) inputPostfix += "invLep";
+	    }
+	    TFile * datasetFileForHists;
+	    datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+	    generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
+	    generatorWeightPlot->SetDirectory(nullptr);
+	    datasetFileForHists->Close();
+	  }
+	  else {
+	    generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
+	    generatorWeightPlot->SetDirectory(nullptr);
+	  }
+	}
 
-//	  std::cout << "channel: " << channel << std::endl;
-          std::string histoName { dataset->getFillHisto() };
-//          if ( invertLepCut ) {
-//            histoName = "Fakes";
-//          }
+	//extract the dataset weight.
+	float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 
-	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {
-	    if (systInd) systMask = systMask << 1;
+	if (infoDump) datasetWeight = 1;
+	std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
+	if (datasetChain->GetEntries() == 0)
+	  {
+	    std::cout << "No entries in tree, skipping..." << std::endl;
 	    continue;
 	  }
+	AnalysisEvent* event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
 
-	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
-	  //Everything else uses LHE event weights
-	  if ( systMask == 1024 || systMask == 2048 ){
-	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" ) {
-	      //std::cout << std::setprecision(15) << eventWeight << " ";
-	      LHAPDF::usePDFMember(1,0);
-	      float q{event->genPDFScale};
-	      float x1{event->genPDFx1};
-	      float x2{event->genPDFx2};
-	      int id1{event->genPDFf1};
-	      int id2{event->genPDFf2};
-	      if (id2 == 21) id2 = 0;
-	      if (id1 == 21) id1 = 0;
-	      double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
-	      double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
-	      std::vector<float> pdf_weights;
-	      //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
-	      //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
-	      float min{1};
-	      float max{1};
-	      float pdfWeightUp{0};
-	      float pdfWeightDown{0};
-	      for (int j{1}; j <= 100; j++){
-		LHAPDF::usePDFMember(1,j);
-		double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
-		double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
-		//std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
-		double weight{1};
-		if( (xpdf1 * xpdf2) > 0.00001)
-		  weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
-		pdf_weights.emplace_back(weight);
-		if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
-		if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
-		if (weight > max) max = weight;
-		if (weight < min) min = weight;
-		//	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
+	//Adding in some stuff here to make a skim file out of post lep sel stuff
+	TFile* outFile1 {nullptr};
+	TTree* cloneTree{nullptr};
+
+	// If we're making the post lepton selection trees, set them up here.
+	if (makePostLepTree){
+	  std::string invPostFix;
+	  if (invertLepCut) {
+	    if ( trileptonChannel_ ) invPostFix = "invIso";
+	    else if ( !trileptonChannel_ ) invPostFix = "invLep";
+	  }
+
+	  outFile1 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
+	  cloneTree = datasetChain->CloneTree(0);
+	  cloneTree->SetDirectory(outFile1);
+	  cutObj->setCloneTree(cloneTree);
+	}
+	//If we're making the MVA tree, set it up here.
+	TFile * mvaOutFile{nullptr};
+	std::vector<TTree *> mvaTree;
+	//Add a few variables into the MVA tree for easy access of stuff like lepton index etc
+	float eventWeight{0.};
+	int zLep1Index{-1}; // Addresses in elePF2PATWhatever of the z lepton
+	int zLep2Index{-1};
+	int wLepIndex{-1};
+	int wQuark1Index{-1};
+	int wQuark2Index{-1};
+	int jetInd[15];  // The index of the selected jets;
+	int bJetInd[10]; // Index of selected b-jets;
+	float muonMomentumSF[3] {};
+	float jetSmearValue[15] {};
+	//Now add in the branches:
+
+	if (makeMVATree){
+	  boost::filesystem::create_directory(mvaDir);
+	  std::string invPostFix {};
+	  if (invertLepCut) {
+	    if ( trileptonChannel_ ) invPostFix = "invIso";
+	    else if ( !trileptonChannel_ ) invPostFix = "invLep";
+	  }
+	  mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root").c_str(),"RECREATE"};
+	  if (!mvaOutFile->IsOpen()) {
+	    throw std::runtime_error("MVA Tree TFile could not be opened!");
+	  }
+	  int systMask{1};
+	  //std::cout << "Making systematic trees for " << dataset->name() << ": ";
+	  for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
+	    //std::cout << systNames[systIn] << " ";
+	    //  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
+	    /*  	if (systIn > 0 && !(systMask & systToRun)){
+			if (systIn > 0) systMask = systMask << 1;
+			continue;
+			}*/
+	    mvaTree.emplace_back(datasetChain->CloneTree(0));
+	    mvaTree[systIn]->SetDirectory(mvaOutFile);
+	    mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
+	    mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
+	    mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
+	    mvaTree[systIn]->Branch("zLep2Index",&zLep2Index,"zLep2Index/I");
+	    if (trileptonChannel_) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
+	    else if (!trileptonChannel_) {
+	      mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
+	      mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
+	    }
+	    mvaTree[systIn]->Branch("jetInd",&jetInd,"jetInd[15]/I");
+	    mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF[3]/F");
+	    mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue[15]/F");
+	    mvaTree[systIn]->Branch("bJetInd",&bJetInd,"bJetInd[10]/I");
+
+	    if (systIn > 0) systMask = systMask << 1;
+	  }
+	  std::cout <<std::endl;
+	}
+	/*    else{
+	      event->fChain->SetBranchStatus("*",0); //Should disable most branches.
+	      setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
+	      }*/
+
+	long long numberOfEvents{datasetChain->GetEntries()};
+	if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
+	//    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
+	//    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
+	//    htemp->SaveAs("tempCanvas.png");
+	int foundEvents{0};
+	double foundEventsNorm{0.0};
+
+	//If event is amc@nlo, need to sum number of positive and negative weights first.
+	if ( dataset->isMC() ) {
+	  // Load in plots
+	  sumPositiveWeights_ = dataset->getTotalEvents();
+	  sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
+	  sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(7);	// Systematic Scale up
+	  sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
+	  if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
+	    std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
+	    std::cout << "number of postitive weights: " << sumPositiveWeights_ << std::endl;
+	    std::cout << "number of negative weights: " << sumNegativeWeights_ << std::endl;
+	    exit(999);
+	  }
+	}
+
+	TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
+	lEventTimer->DrawProgressBar(0, "");
+	for (int i{0}; i < numberOfEvents; i++) {
+	  std::stringstream lSStrFoundLeptons;
+	  std::stringstream lSStrFoundEvents;
+	  lSStrFoundLeptons <<  event->numElePF2PAT;
+	  lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
+	  lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
+	  event->GetEntry(i);
+	  //Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
+	  int systMask{1};
+	  for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
+	    if (!dataset->isMC() && systInd > 0) break;
+	    //	std::cout << systInd << " " << systMask << std::endl;
+	    if (systInd > 0 && !(systMask & systToRun)) {
+	      if (systInd > 0) systMask = systMask << 1;
+	      continue;
+	    }
+	    eventWeight = 1;
+	    //apply negative weighting for SameSign MC lepton samples so that further downstream
+	    if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
+	    //apply generator weights here.
+	    double generatorWeight{1.0};
+	    if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
+	      if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
+	      else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
+	      else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
+	      //	      std::cout << std::setprecision(5) << std::fixed;
+	      //            std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
+	      //            std::cout << "generator level SF = " << generatorWeight << std::endl;
+	      //            std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
+	    }
+	    eventWeight *= generatorWeight;
+	    //apply pileup weights here.
+	    if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
+	      double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
+	      if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
+	      if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
+	      eventWeight *= pileupWeight;
+	      //std::cout << "pileupWeight: " <<  pileupWeight << std::endl;
+	    }
+	    if (infoDump) eventWeight = 1;
+	    if (readEventList) {
+	      bool tempBool{false};
+	      for (unsigned j{0}; j < eventNumbers.size(); j++){
+		if (eventNumbers[j] == event->eventNum) {
+		  tempBool = true;
+		  break;
+		}
+	      }
+	      if (!tempBool) continue;
+	      std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << datasetChain->GetFile()->GetName() << std::endl;
+	      cutObj->dumpLooseLepInfo(event);
+	      cutObj->dumpLeptonInfo(event);
+	    }
+
+	    if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
+
+	    //If amcatnlo DY, normalise
+	    if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
+
+	    //If ttbar, do reweight
+	    //          std::cout << "eventWeight: " << eventWeight << std::endl;
+	    if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
+	    //	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
+	    //          std::cout << "eventWeight: " << eventWeight << std::endl;
+
+	    //	  std::cout << "channel: " << channel << std::endl;
+	    std::string histoName { dataset->getFillHisto() };
+	    //          if ( invertLepCut ) {
+	    //            histoName = "Fakes";
+	    //          }
+
+	    if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {
+	      if (systInd) systMask = systMask << 1;
+	      continue;
+	    }
+
+	    //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
+	    //Everything else uses LHE event weights
+	    if ( systMask == 1024 || systMask == 2048 ){
+	      if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" ) {
+		//std::cout << std::setprecision(15) << eventWeight << " ";
+		LHAPDF::usePDFMember(1,0);
+		float q{event->genPDFScale};
+		float x1{event->genPDFx1};
+		float x2{event->genPDFx2};
+		int id1{event->genPDFf1};
+		int id2{event->genPDFf2};
+		if (id2 == 21) id2 = 0;
+		if (id1 == 21) id1 = 0;
+		double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
+		double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
+		std::vector<float> pdf_weights;
+		//std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
+		//std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
+		float min{1};
+		float max{1};
+		float pdfWeightUp{0};
+		float pdfWeightDown{0};
+		for (int j{1}; j <= 100; j++){
+		  LHAPDF::usePDFMember(1,j);
+		  double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
+		  double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
+		  //std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
+		  double weight{1};
+		  if( (xpdf1 * xpdf2) > 0.00001)
+		    weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
+		  pdf_weights.emplace_back(weight);
+		  if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
+		  if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
+		  if (weight > max) max = weight;
+		  if (weight < min) min = weight;
+		  //	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
 	      
+		}
+		if (systMask == 1024) eventWeight *= max;
+		if (systMask == 2048) eventWeight *= min;
+		//std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
+		//std::cout << std::setprecision(9) << " " << min << " " << max << " " << eventWeight << std::endl;
 	      }
-	      if (systMask == 1024) eventWeight *= max;
-	      if (systMask == 2048) eventWeight *= min;
-	      //std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
-	      //std::cout << std::setprecision(9) << " " << min << " " << max << " " << eventWeight << std::endl;
-	    }
-	    //LHE event weights for everything else
-	    else {
-	      if (systMask == 1024) eventWeight *= event->weight_pdfMax; //Max
-	      if (systMask == 2048) eventWeight *= event->weight_pdfMin; //Min
-	    }
-	  }
-	  if ( systMask == 16384 || systMask == 32768 ){
-	    if (systMask == 16384) eventWeight *= event->weight_alphaMin; // Max, but incorrectly named branch
-	    if (systMask == 32768) eventWeight *= event->weight_alphaMax; // Min, but incorrectly named branch
-	  }
-	  //      if (synchCutFlow){
-	  //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
-	  //}
-	  //Do the Zpt reweighting here
-	  if (invertLepCut){
-	    double zPT{(event->zPairLeptons.first + event->zPairLeptons.second).Pt()};
-	    eventWeight *= zptSF(channel,zPT);
-	  }
-	  if (makeMVATree){
-	    zLep1Index = event->zPairIndex.first;
-	    zLep2Index = event->zPairIndex.second;
-            muonMomentumSF[0] = event->muonMomentumSF[0];
-            muonMomentumSF[1] = event->muonMomentumSF[1];
-	    if (trileptonChannel_) {
-              wLepIndex = event->wLepIndex;
-	      muonMomentumSF[2] = event->muonMomentumSF[2];
-            }
-	    else if (!trileptonChannel_){
-	      wQuark1Index = event->wPairIndex.first;
-	      wQuark2Index = event->wPairIndex.second;
-	    }
-	    for (unsigned jetIndexIt{0}; jetIndexIt < 15; jetIndexIt++){
-	      if (jetIndexIt < event->jetIndex.size()){
-		jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
-		jetSmearValue[jetIndexIt] = event->jetSmearValue[jetIndexIt];
-	      }
+	      //LHE event weights for everything else
 	      else {
-		jetInd[jetIndexIt] = -1;
-		jetSmearValue[jetIndexIt] = 0.0;
+		if (systMask == 1024) eventWeight *= event->weight_pdfMax; //Max
+		if (systMask == 2048) eventWeight *= event->weight_pdfMin; //Min
 	      }
 	    }
-	    for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++){
-	      if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
-	      else bJetInd[bJetIt] = -1;
+	    if ( systMask == 16384 || systMask == 32768 ){
+	      if (systMask == 16384) eventWeight *= event->weight_alphaMin; // Max, but incorrectly named branch
+	      if (systMask == 32768) eventWeight *= event->weight_alphaMax; // Min, but incorrectly named branch
 	    }
-	    mvaTree[systInd]->Fill();
-	  }
+	    //      if (synchCutFlow){
+	    //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
+	    //}
+	    //Do the Zpt reweighting here
+	    if ( invertLepCut && trileptonChannel_ ){
+	      double zPT{(event->zPairLeptons.first + event->zPairLeptons.second).Pt()};
+	      eventWeight *= zptSF(channel,zPT);
+	    }
+	    if (makeMVATree){
+	      zLep1Index = event->zPairIndex.first;
+	      zLep2Index = event->zPairIndex.second;
+	      muonMomentumSF[0] = event->muonMomentumSF[0];
+	      muonMomentumSF[1] = event->muonMomentumSF[1];
+	      if (trileptonChannel_) {
+		wLepIndex = event->wLepIndex;
+		muonMomentumSF[2] = event->muonMomentumSF[2];
+	      }
+	      else if (!trileptonChannel_){
+		wQuark1Index = event->wPairIndex.first;
+		wQuark2Index = event->wPairIndex.second;
+	      }
+	      for (unsigned jetIndexIt{0}; jetIndexIt < 15; jetIndexIt++){
+		if (jetIndexIt < event->jetIndex.size()){
+		  jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
+		  jetSmearValue[jetIndexIt] = event->jetSmearValue[jetIndexIt];
+		}
+		else {
+		  jetInd[jetIndexIt] = -1;
+		  jetSmearValue[jetIndexIt] = 0.0;
+		}
+	      }
+	      for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++){
+		if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
+		else bJetInd[bJetIt] = -1;
+	      }
+	      mvaTree[systInd]->Fill();
+	    }
 
-	  foundEvents++;
-	  foundEventsNorm += eventWeight;
-	  if (systInd > 0) systMask = systMask << 1;
-	}// End systematics loop.
-      } //end event loop
+	    foundEvents++;
+	    foundEventsNorm += eventWeight;
+	    if (systInd > 0) systMask = systMask << 1;
+	  }// End systematics loop.
+	} //end event loop
 
 	//If we're making post lepSel skims save the tree here
-      if (makePostLepTree){
-	outFile1->cd();
-	std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
-	std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
-	cloneTree->Write();
-	//Write out mc generator level info
-	if ( dataset->isMC() ) generatorWeightPlot->Write();
-        for (unsigned i{0}; i < bTagEffPlots.size(); i++){
-	    bTagEffPlots[i]->Write();
-	}
-
-	delete cloneTree;
-	cloneTree = nullptr;
-	outFile1->Write();
-	outFile1->Close();
-	outFile1 = nullptr;
-
-      }
-
-      //Save mva outputs
-      if (makeMVATree) {
-	std::string invPostFix {};
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
-
-	std::cout << (mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root") << std::endl;
-	mvaOutFile->cd();
-	std::cout << std::endl;
-	int systMask{1};
-	std::cout << "Saving Systematics: ";
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (systInd > 0 && !(systToRun & systMask)){
-	    systMask = systMask << 1;
-	    continue;
-	  }
-	  std::cout << systNames[systInd] << ": " << mvaTree[systInd]->GetEntriesFast() << " " << std::flush;
-	  mvaTree[systInd]->Write();
-	  if (systInd > 0) systMask = systMask << 1;
-	  if (!dataset->isMC()) break;
-	}
-	std::cout << std::endl;
-	//Save the efficiency plots for b-tagging here if we're doing that.
 	if (makePostLepTree){
+	  outFile1->cd();
+	  std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
+	  std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
+	  cloneTree->Write();
+	  //Write out mc generator level info
+	  if ( dataset->isMC() ) generatorWeightPlot->Write();
 	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
 	    bTagEffPlots[i]->Write();
 	  }
-	}
-	mvaOutFile->Write();
-	for (unsigned i{0}; i < mvaTree.size(); i++){
-	  delete mvaTree[i];
-	}
-	mvaOutFile->Close();
-      }
-      if (infoDump){
-	std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
-	for (int i{0}; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
-	  std::cout << stageNames[i].first << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
-	}
-      }
-      std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
-      std::cerr << "Found " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
-      //Delete generator level plot. Avoid memory leaks, kids.
-      delete generatorWeightPlot;
-      generatorWeightPlot = nullptr;
-      //Delete plots from out btag vector. Avoid memory leaks, kids.
-      if (makePostLepTree){
-	for (unsigned i{0}; i < bTagEffPlots.size(); i++){
-	  delete bTagEffPlots[i];
-	}
-      }
 
-      //datasetChain->MakeClass("AnalysisEvent");
-    } // end channel loop.
-    delete datasetChain;
-  } //end dataset loop
+	  delete cloneTree;
+	  cloneTree = nullptr;
+	  outFile1->Write();
+	  outFile1->Close();
+	  outFile1 = nullptr;
+
+	}
+
+	//Save mva outputs
+	if (makeMVATree) {
+	  std::string invPostFix {};
+	  if (invertLepCut) {
+	    if ( trileptonChannel_ ) invPostFix = "invIso";
+	    else if ( !trileptonChannel_ ) invPostFix = "invLep";
+	  }
+
+	  std::cout << (mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root") << std::endl;
+	  mvaOutFile->cd();
+	  std::cout << std::endl;
+	  int systMask{1};
+	  std::cout << "Saving Systematics: ";
+	  for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
+	    if (systInd > 0 && !(systToRun & systMask)){
+	      systMask = systMask << 1;
+	      continue;
+	    }
+	    std::cout << systNames[systInd] << ": " << mvaTree[systInd]->GetEntriesFast() << " " << std::flush;
+	    mvaTree[systInd]->Write();
+	    if (systInd > 0) systMask = systMask << 1;
+	    if (!dataset->isMC()) break;
+	  }
+	  std::cout << std::endl;
+	  //Save the efficiency plots for b-tagging here if we're doing that.
+	  if (makePostLepTree){
+	    for (unsigned i{0}; i < bTagEffPlots.size(); i++){
+	      bTagEffPlots[i]->Write();
+	    }
+	  }
+	  mvaOutFile->Write();
+	  for (unsigned i{0}; i < mvaTree.size(); i++){
+	    delete mvaTree[i];
+	  }
+	  mvaOutFile->Close();
+	}
+	if (infoDump){
+	  std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
+	  for (int i{0}; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
+	    std::cout << stageNames[i].first << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
+	  }
+	}
+	std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
+	std::cerr << "Found " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
+	//Delete generator level plot. Avoid memory leaks, kids.
+	delete generatorWeightPlot;
+	generatorWeightPlot = nullptr;
+	//Delete plots from out btag vector. Avoid memory leaks, kids.
+	if (makePostLepTree){
+	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
+	    delete bTagEffPlots[i];
+	  }
+	}
+
+	//datasetChain->MakeClass("AnalysisEvent");
+      } // end channel loop.
+      delete datasetChain;
+    } //end dataset loop
+  }
 }
 
 void AnalysisAlgo::savePlots()

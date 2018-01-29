@@ -38,9 +38,6 @@ class AnalysisAlgo{
         std::string channelSetup ( unsigned );
 
         // variables?
-	TFile* outFile1;
-	TTree* cloneTree;
-        TTree* cloneTree2;
 	std::string config;
  	bool plots;
 	double usePreLumi;
