@@ -771,7 +771,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	// no need to do systematics here ... see above
 	float eventWeight = 1.;
 	//apply negative weighting for SameSign MC lepton samples so that further downstream
-	if ( dataset->isMC() && !trileptonChannel_ ) eventWeight *= -1.0;
+	if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0;
 
 	//apply generator weights here.
 	double generatorWeight{1.0};
@@ -818,13 +818,14 @@ void AnalysisAlgo::runMainAnalysis(){
 
   // normal operations
   else {
-    /*
-      if ( doFakes_ && usePostLepTree ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
-      Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake"
-      // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
-      datasets.emplace_back( fakeDataset );
-      }
-    */
+/*    
+    if ( doFakes_ && usePostLepTree && plots ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
+    // Only do for plot making currently - haven't tested how fake mva shapes would work ...
+    Dataset fakeDataset ("Fakes", totalLumi, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake");
+    // Use total lumi as placeholder, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
+    datasets.emplace_back( fakeDataset );
+    }
+*/    
     // Begin to loop over all datasets
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
       datasetFilled = false;
