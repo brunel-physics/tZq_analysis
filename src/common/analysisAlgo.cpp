@@ -513,6 +513,15 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
   //Some vectors that will be filled in the parsing.
   totalLumi = 0;
   lumiPtr = &totalLumi;
+
+  if ( doFakes_ && usePostLepTree && plots ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
+    // Only do for plot making currently - haven't tested how fake mva shapes would work ...
+    Dataset fakeDataset ("Fakes", 0, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake", "eCt");
+    // Use 0 lumi as placeholder so we don't add to total lumi, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
+    datasets.emplace_back( fakeDataset );
+  }
+
+
   if (!Parser::parse_config(config,&datasets,lumiPtr,&plotTitles,&plotNames,&xMin,&xMax,&nBins,&fillExp,&xAxisLabels,&cutStage,cutConfName,plotConfName,&outFolder,&postfix,&channel)){
     std::cerr << "There was an error parsing the config file.\n";
     exit(0);
@@ -709,13 +718,25 @@ void AnalysisAlgo::runMainAnalysis(){
 	  continue;
 	}
 	// Okay - no need to do systematics for the fake shape - that's taken into account with a flat uncertainity
+	// If usePostLepTrees is not set, process from skimmed nTuples on /scratch and /data
 	std::cerr << "Processing dataset " << dataset->name() << std::endl;
-	if (!datasetFilled) {
-	  if (!dataset->fillChain(datasetChain,numFiles)) {
-	    std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
-	    continue;
+	if (!usePostLepTree){
+	  if (!datasetFilled) {
+	    if (!dataset->fillChain(datasetChain,numFiles)) {
+	      std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
+	      continue;
+	    }
+	    datasetFilled = true;
 	  }
-	  datasetFilled = true;
+	}
+	// If usePostLepTrees is set, then make the Fake post lep skim from the post lep skims
+	// Id est, all cuts are applied except for the non-prompt check, and the addition of the datasetWeight branch - saves LOTS of time!
+	else {
+	  std::string inputPostfix{};
+	  inputPostfix += postfix;
+	  if (invertLepCut) inputPostfix += "invLep";
+	  std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
+	  datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
 	}
 
 	cloneTree = datasetChain->CloneTree(0);
@@ -736,7 +757,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	std::vector<TH2D*> bTagEffPlots;
 	std::vector<std::string> denomNum {"Denom","Num"};
 	std::vector<std::string> typesOfEff {"b","c","uds","g"};
-	if (makePostLepTree && dataset->isMC()){
+	// If making fake skim from nTuple skims instead of postLepSelection Skims
+	if ( !usePostLepTree && dataset->isMC() ){
 	  int ptBins{4};
 	  int etaBins{4};
 	  float ptMin{0};
@@ -749,14 +771,47 @@ void AnalysisAlgo::runMainAnalysis(){
 	    }
 	  }
 	  cutObj->setBTagPlots(bTagEffPlots,true);
-	}//end b-tag eff plots.
+	} //end b-tag eff plots.
+	// If making 
+	if (usePostLepTree && dataset->isMC()) {
+	  //Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
+	  std::string inputPostfix{};
+	  inputPostfix += postfix;
+	  if (invertLepCut) inputPostfix += "invLep";
+	  TFile* datasetFileForHists;
+	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+	  for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
+	    for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
+	      bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
+	    }
+	  }
+	  for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
+	    bTagEffPlots[plotIt]->SetDirectory(nullptr);
+	  }
+	  cutObj->setBTagPlots(bTagEffPlots,false);
+	  datasetFileForHists->Close();
+	}
+
 	// no need to read in the b-tag plots ...
 	//Here we will initialise the generator level weight histograms - required to correctly normalise negatively weighted events
 	TH1I* generatorWeightPlot {nullptr};
 	if ( dataset->isMC() ) {
-	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
-	  generatorWeightPlot->SetDirectory(nullptr);
+	  if ( usePostLepTree ) {
+	    std::string inputPostfix{};
+	    inputPostfix += postfix;
+	    if (invertLepCut) inputPostfix += "invLep";
+	    TFile * datasetFileForHists;
+	    datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
+	    generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
+	    generatorWeightPlot->SetDirectory(nullptr);
+	    datasetFileForHists->Close();
+	  }
+	  else {
+	    generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
+	    generatorWeightPlot->SetDirectory(nullptr);
+	  }
 	}
+
 	//extract the dataset weight. MC = (lumi*crossSection)/(totalEvents), data = 1.0
 	float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 	std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
@@ -764,7 +819,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	  std::cout << "No entries in tree, skipping..." << std::endl;
 	  continue;
 	}
-
 
 	AnalysisEvent * event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
 	// no need to do mva tree
@@ -818,10 +872,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	//If ttbar, do reweight
 	if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
 
-	float nonPromptRatio = 1.0;
-	if ( channel == "ee" ) nonPromptRatio = 1.53056;
-	if ( channel == "mumu" ) nonPromptRatio = 0.35746;
-	fakeDatasetWeight = eventWeight * nonPromptRatio;
+	fakeDatasetWeight = eventWeight;
 
 	std::string histoName {"Fakes"};
 	if (!cutObj->makeCuts(event,&eventWeight,plotsMap[channel][ histoName ],cutFlowMap[ histoName ],0)) continue;
@@ -838,7 +889,6 @@ void AnalysisAlgo::runMainAnalysis(){
       outFile1->cd();
       cloneTree->Write();
       // Need to fix below ... this will vary on each MC sample ... ?
-      //      generatorWeightPlot->Write();
       //      for (unsigned i{0}; i < bTagEffPlots.size(); i++){
       //	bTagEffPlots[i]->Write();
       //      }
@@ -854,14 +904,14 @@ void AnalysisAlgo::runMainAnalysis(){
 
   // normal operations
   else {
-
+/*
     if ( doFakes_ && usePostLepTree && plots ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
       // Only do for plot making currently - haven't tested how fake mva shapes would work ...
       Dataset fakeDataset ("Fakes", 0, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake", "eCt");
       // Use 0 lumi as placeholder so we don't add to total lumi, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
       datasets.emplace_back( fakeDataset );
     }
-
+*/
     // Begin to loop over all datasets
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
       datasetFilled = false;
@@ -1179,7 +1229,11 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	    if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
 	    // If fake shape (for plotting purposes) update on an event by event basis in the event loop, as datasetWeight will be 1.0
-	    if ( doFakes_ && dataset->name() == "Fakes" ) eventWeight *= event->fakeDatasetWeight;
+	    if ( doFakes_ && dataset->name() == "Fakes" ) {
+              eventWeight *= event->fakeDatasetWeight;
+              if ( channel == "ee" ) eventWeight *= 1.53056;
+              if ( channel == "mumu" ) eventWeight *= 0.35746;
+	    }
 
 	    //If amcatnlo DY, normalise
 	    if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
