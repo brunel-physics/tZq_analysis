@@ -458,12 +458,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if (event->muonIndexLoose.size() != numLooseMu_) return false;
 
   //If making fake shape postLepSkim, MC leptons must BOTH be prompt
-  if ( isFake_ && numTightEle_ ) { // if ee channel
+  if ( isFake_ && numTightEle_ == 2 ) { // if ee channel
     //    std::cout << "Is ele 1/2 prompt? : " << event->genElePF2PATPromptFinalState[event->zPairIndex.first] << "/" << event->genElePF2PATPromptFinalState[event->zPairIndex.second] << std::endl;
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.first] ) return false; 
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
-  if ( isFake_ && numTightMu_ ) { // if mumu channel
+  if ( isFake_ && numTightMu_ == 2 ) { // if mumu channel
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.first] ) return false;
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
