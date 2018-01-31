@@ -187,5 +187,194 @@ plotType = p
 colour = kBlack
 triggerFlag = mCt
 
+[DYJetsToLL_M-50]
+fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
+totalEvents = 145803217
+crossSection = 5765.4
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[DYJetsToLL_M-10To50]
+fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
+totalEvents = 35291566
+crossSection = 18610.0
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ttbarDilepton_aMCatNLO]
+fileName = configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
+totalEvents = 30682233
+crossSection = 87.31 
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[tHq]
+fileName = configs/2016/datasets/fileLists/tHqFiles.txt
+totalEvents = 3495799
+crossSection = 0.07096
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WZ2l2q]
+fileName = configs/2016/datasets/fileLists/WZ2l2q.txt
+totalEvents = 26517272
+crossSection = 5.595
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WZjets]
+fileName = configs/2016/datasets/fileLists/WZjets.txt
+totalEvents = 1927043
+crossSection = 5.26
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ZZ4l]
+fileName = configs/2016/datasets/fileLists/ZZ4lFiles.txt
+totalEvents = 10709784
+crossSection = 1.212
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ZZ2l2nu]
+fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
+totalEvents = 8842475
+crossSection = 0.564
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ZZ2l2q]
+fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
+runType = mc
+crossSection = 3.22
+totalEvents = 14534622
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WW2l2nu]
+fileName = configs/2016/datasets/fileLists/WW2l2nuFiles.txt
+totalEvents = 1999000
+crossSection = 12.178
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WWW]
+fileName = configs/2016/datasets/fileLists/WWWFiles.txt
+totalEvents = 240000
+crossSection = 0.2086
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WWZ]
+fileName = configs/2016/datasets/fileLists/WWZFiles.txt
+totalEvents = 250000
+crossSection = 0.1651
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[WZZ]
+fileName = configs/2016/datasets/fileLists/WZZFiles.txt
+totalEvents = 246800
+crossSection = 0.05565
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ZZZ]
+fileName = configs/2016/datasets/fileLists/ZZZFiles.txt
+totalEvents = 249237
+crossSection = 0.01398
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ttZ2l2nu]
+fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
+totalEvents = 7974473
+crossSection = 0.2529
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[ttHToNonbb]
+fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
+totalEvents = 3981250
+crossSection = 0.2151
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[tWZ]
+fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
+totalEvents = 50000
+crossSection = 0.01123
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[tZq]
+fileName = configs/2016/datasets/fileLists/tZqFiles.txt
+totalEvents = 14509520
+crossSection = 0.0758
+runType = mc
+histoName = Fakes
+colour = kPurple
+label = Fakes
+plotType = f
+
+[mumuRun2016]
+fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
+luminosity = 35792.978
+runType = data
+histoName = Fakes
+label = Fakes
+plotType = p
+colour = kPurple
+triggerFlag = mCt
+
 []
 
