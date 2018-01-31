@@ -1004,7 +1004,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
 
 	  //apply negative weighting for SameSign MC lepton samples so that further downstream
-	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
+	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
 	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
 	  if ( plots && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
