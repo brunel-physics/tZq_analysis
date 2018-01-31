@@ -177,8 +177,8 @@ colour = kPurple
 label = Fakes
 plotType = f
 
-[mumuRun2016]
-fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
+[mumuRun2016_part2]
+fileName = configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
 luminosity = 0.0
 runType = data
 histoName = Fakes
@@ -366,9 +366,9 @@ colour = kYellow
 label = tZq
 plotType = f
 
-[mumuRun2016]
-fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
-luminosity = 35792.978
+[mumuRun2016_part2]
+fileName = configs/2016/datasets/fileLists/mumuRun2016FilesPart2.txt
+luminosity = 16144.444
 runType = data
 histoName = data
 label = Data
