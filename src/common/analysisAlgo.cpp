@@ -904,14 +904,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
   // normal operations
   else {
-/*
-    if ( doFakes_ && usePostLepTree && plots ) { // If doing fakes and using post-lep selection tree, add fake dataset to the list of datasets
-      // Only do for plot making currently - haven't tested how fake mva shapes would work ...
-      Dataset fakeDataset ("Fakes", 0, false, 0., "configs/2016/datasets/fileists/Fakes.txt", "Fakes", "tree", 1, 619, "Fakes", "fake", "eCt");
-      // Use 0 lumi as placeholder so we don't add to total lumi, set MC to false as it's a data driven estimate, 0 cross section as datasetWeight will be precalculated
-      datasets.emplace_back( fakeDataset );
-    }
-*/
+
     // Begin to loop over all datasets
     for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
       datasetFilled = false;
