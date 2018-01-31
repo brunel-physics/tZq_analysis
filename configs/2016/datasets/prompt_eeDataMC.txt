@@ -368,7 +368,7 @@ plotType = f
 
 [eeRun2016]
 fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
-luminosity = 35599.008
+luminosity = 0.0
 runType = data
 histoName = Fakes
 label = Fakes

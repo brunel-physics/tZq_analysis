@@ -368,7 +368,7 @@ plotType = f
 
 [mumuRun2016]
 fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
-luminosity = 35792.978
+luminosity = 0.0
 runType = data
 histoName = Fakes
 label = Fakes
