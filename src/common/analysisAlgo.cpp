@@ -30,7 +30,8 @@ AnalysisAlgo::AnalysisAlgo():
   customJetRegion{false},
   is2016_{false},
   isFCNC_{false},
-  isCtag_{false}
+  isCtag_{false},
+  doFakes_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -404,6 +405,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "requires -u.")
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
+    ("fakes", po::bool_switch(&doFakes_), "Make or use fake shapes")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.")
     ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
