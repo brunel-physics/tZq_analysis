@@ -754,12 +754,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	}
-	if ( plots && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
+	if ( plots && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
+	  inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
+	  // If making plots which include non-prompt fakes, then when running over "non-prompt" samples (as determined by their label), set the cutClass object fake flag to true and invert charge seletion criteria, i.e. choose same sign leptons
+	  cutObj->setFakeFlag(true);
+	  cutObj->setInvLepCut(true);
+	}
 	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
-	// If making plots which include non-prompt fakes, then when running over "non-prompt" samples (as determined by their label), set the cutClass object fake flag to true and invert charge seletion criteria, i.e. choose same sign leptons
-        cutObj->setFakeFlag(true);
-        cutObj->setInvLepCut(true);
       }
 
       cutObj->setMC(dataset->isMC());
