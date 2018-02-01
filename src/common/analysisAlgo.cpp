@@ -1015,7 +1015,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
 	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
-	  if ( doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
+	  if ( plots && doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
 	    if ( channel == "ee" ) eventWeight *= 1.53056;
 	    if ( channel == "mumu" ) eventWeight *= 0.35746;
 	    if ( dataset->isMC() ) eventWeight *= -1.0; 
