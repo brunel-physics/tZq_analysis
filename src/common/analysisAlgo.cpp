@@ -763,8 +763,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  cutObj->setInvLepCut(true);
 	}
 	else if ( doFakes_ && dataset->getPlotLabel() != "Fakes" && !trileptonChannel_ ) {
-	  cutObj->setFakeFlag(true);
-          cutObj->setInvLepCut(true);
+	  cutObj->setFakeFlag(false);
+          cutObj->setInvLepCut(false);
         }
 	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
