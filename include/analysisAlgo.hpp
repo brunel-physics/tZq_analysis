@@ -71,6 +71,7 @@ class AnalysisAlgo{
 	bool is2016_;
 	bool isFCNC_;
 	bool isCtag_;
+        bool doFakes_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;
