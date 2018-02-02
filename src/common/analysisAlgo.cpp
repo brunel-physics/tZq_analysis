@@ -756,13 +756,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	}
-	if ( doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
+	if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
 	  inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
 	  // If making plots which include non-prompt fakes, then when running over "non-prompt" samples (as determined by their label), set the cutClass object fake flag to true and invert charge seletion criteria, i.e. choose same sign leptons
 	  cutObj->setFakeFlag(true);
 	  cutObj->setInvLepCut(true);
 	}
-	else if ( doFakes_ && dataset->getPlotLabel() != "Fakes" && !trileptonChannel_ ) {
+	else if ( doFakes_ && dataset->getPlotLabel() != "NPL" && !trileptonChannel_ ) {
 	  cutObj->setFakeFlag(false);
           cutObj->setInvLepCut(false);
         }
@@ -797,7 +797,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
 	std::string inputPostfix{};
 	inputPostfix += postfix;
-        if ( doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
+        if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
 	if (invertLepCut) {
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
@@ -826,7 +826,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if ( trileptonChannel_ ) inputPostfix += "invIso";
 	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	  }
-          if ( doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
+          if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
 	  TFile * datasetFileForHists;
 	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
@@ -1015,7 +1015,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
 	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
-	  if ( plots && doFakes_ && dataset->getPlotLabel() == "Fakes" && !trileptonChannel_ ) {
+	  if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
 	    if ( channel == "ee" ) eventWeight *= 1.53056;
 	    if ( channel == "mumu" ) eventWeight *= 0.35746;
 	    if ( dataset->isMC() ) eventWeight *= -1.0; 
