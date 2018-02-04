@@ -1016,8 +1016,8 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
 	  if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
-	    if ( channel == "ee" ) eventWeight *= 1.53056;
-	    if ( channel == "mumu" ) eventWeight *= 0.35746;
+	    if ( channel == "ee" ) eventWeight *= 1.24806;
+	    if ( channel == "mumu" ) eventWeight *= 1.03226;
 	    if ( dataset->isMC() ) eventWeight *= -1.0; 
 	  }
 	  //If amcatnlo DY, normalise
