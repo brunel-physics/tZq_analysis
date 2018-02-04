@@ -359,13 +359,13 @@ RoccoR::init(std::string dirname){
 	    std::string inputfile=Form("%s/%d.%d.txt", dirname.c_str(), si, m);
 	    if(gSystem->AccessPathName(inputfile.c_str())) {
 		std::cout << Form("Missing %8d %3d, using default instead...", si, m) << std::endl;  
-		v.push_back(RocOne(Form("%s/%d.%d.txt", dirname.c_str(),0,0),0,0,0));
+		v.emplace_back(RocOne(Form("%s/%d.%d.txt", dirname.c_str(),0,0),0,0,0));
 	    }
 	    else{
-		v.push_back(RocOne(inputfile, 0, si, m));
+		v.emplace_back(RocOne(inputfile, 0, si, m));
 	    }
 	}
-	RC.push_back(v);
+	RC.emplace_back(v);
     }
 
     in.close();
