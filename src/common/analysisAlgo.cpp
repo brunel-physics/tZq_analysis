@@ -696,6 +696,10 @@ void AnalysisAlgo::runMainAnalysis(){
 
       std::string chanName = channelSetup ( channelInd );
 
+      if ( plots && doFakes_ && invertLepCut && !trileptonChannel_ ) { // If plotting fake shapes
+	cutObj->setFakeFlag(true);
+      }
+
       if (dataset->isMC() && skipMC) continue;
       if (!dataset->isMC() && skipData) continue;
 
@@ -756,16 +760,18 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	}
-	if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
-	  inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
+
+	if ( doFakes_ && !trileptonChannel_ && invertLepCut ) {
 	  // If making plots which include non-prompt fakes, then when running over "non-prompt" samples (as determined by their label), set the cutClass object fake flag to true and invert charge seletion criteria, i.e. choose same sign leptons
 	  cutObj->setFakeFlag(true);
-	  cutObj->setInvLepCut(true);
+    dataset->setPlotLabel("NPL");
+    dataset->setFillHisto("NPL");
+    dataset->setPlotColour(619);
 	}
-	else if ( doFakes_ && dataset->getPlotLabel() != "NPL" && !trileptonChannel_ ) {
+	else if ( doFakes_ && !invertLepCut && !trileptonChannel_ ) {
 	  cutObj->setFakeFlag(false);
-          cutObj->setInvLepCut(false);
-        }
+  }
+
 	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
 	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
       }
@@ -1014,12 +1020,13 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //apply negative weighting for SameSign MC lepton samples so that further downstream
 	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
-	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
-	  if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
+	  //If fake shape (for plotting purposes) apply OS/SS ratio SF
+	  if ( plots && invertLepCut && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ && doFakes_) {
 	    if ( channel == "ee" ) eventWeight *= 1.53056;
 	    if ( channel == "mumu" ) eventWeight *= 0.35746;
 	    if ( dataset->isMC() ) eventWeight *= -1.0; 
 	  }
+
 	  //If amcatnlo DY, normalise
 	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
 
