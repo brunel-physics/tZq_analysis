@@ -1014,12 +1014,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //apply negative weighting for SameSign MC lepton samples so that further downstream
 	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
-	  // If fake shape (for plotting purposes) apply OS/SS ratio SF
-	  if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
-	    if ( channel == "ee" ) eventWeight *= 1.24806;
-	    if ( channel == "mumu" ) eventWeight *= 1.03226;
-	    if ( dataset->isMC() ) eventWeight *= -1.0; 
-	  }
+	  // Apply in cutClass, as the RATIO weight of OS/SS non-prompts cannot be applied before charge cuts (Z cand cuts) are applied
+	  // If fake shape (for plotting purposes) apply OS/SS ratio SF 
+	  //if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
+	    //if ( channel == "ee" ) eventWeight *= 1.24806;
+	    //if ( channel == "mumu" ) eventWeight *= 1.03226;
+	    //if ( dataset->isMC() ) eventWeight *= -1.0; 
+	  //}
+
 	  //If amcatnlo DY, normalise
 	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
 

@@ -460,10 +460,13 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   //If making fake shape postLepSkim, MC leptons must BOTH be prompt
   if ( isFake_ && numTightEle_ == 2 && isMC_ ) { // if ee channel
     //    std::cout << "Is ele 1/2 prompt? : " << event->genElePF2PATPromptFinalState[event->zPairIndex.first] << "/" << event->genElePF2PATPromptFinalState[event->zPairIndex.second] << std::endl;
+    *eventWeight *= -1.0;
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.first] ) return false; 
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
+
   if ( isFake_ && numTightMu_ == 2 && isMC_ ) { // if mumu channel
+    *eventWeight *= -1.0;
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.first] ) return false;
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
@@ -511,6 +514,11 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
+
+  if ( isFake_ && numTightEle_ == 2 ) { // if ee channel
+    if ( numTightEle_ == 2 ) *eventWeight *= 1.24806;
+    if ( numTightMu_ == 2 ) *eventWeight *= 1.03226;
+  }
 
   if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
 //  if (std::abs(invZmass) <= invZMassCut_ && !isControl) return false;
