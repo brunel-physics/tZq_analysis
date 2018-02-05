@@ -1,6 +1,6 @@
 datasets = "configs/2016/datasets/prompt_mumuDataMC_promptMConly.txt";
 cuts = "configs/2016/cuts/eeCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2016/prompt_mumu/";
+outputFolder = "plots/2016/prompt_mumu_promptMConly/";
 outputPostfix = "mumu";
 channelName = "mumu";
