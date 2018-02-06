@@ -459,7 +459,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   //If making fake shape postLepSkim, MC leptons must BOTH be prompt
   if ( isFake_ && numTightEle_ == 2 && isMC_ ) { // if ee channel
-    //    std::cout << "Is ele 1/2 prompt? : " << event->genElePF2PATPromptFinalState[event->zPairIndex.first] << "/" << event->genElePF2PATPromptFinalState[event->zPairIndex.second] << std::endl;
+//        std::cout << "Is ele 1/2 prompt? : " << event->genElePF2PATPromptFinalState[event->zPairIndex.first] << "/" << event->genElePF2PATPromptFinalState[event->zPairIndex.second] << std::endl;
     *eventWeight *= -1.0;
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.first] ) return false; 
     if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.second] ) return false;
@@ -515,7 +515,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
-  if ( isFake_ && numTightEle_ == 2 ) { // if ee channel
+  if ( isFake_ ) { // if ee channel
     if ( numTightEle_ == 2 ) *eventWeight *= 1.24806;
     if ( numTightMu_ == 2 ) *eventWeight *= 1.03226;
   }
@@ -2730,12 +2730,12 @@ float Cuts::muonSF(double pt, double eta, int syst){
   if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
 
   if ( is2016_ ) {
-    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
-//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
-//    muonRecoSF = h_muonRecoGraph1->Eval(eta);
+//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
+    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
+    muonRecoSF = h_muonRecoGraph1->Eval(eta);
 //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
 //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
 //    muonRecoSF = h_muonRecoGraph2->Eval(eta);
@@ -2824,8 +2824,8 @@ float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
     else if ( pt < minSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),minSfPt);
     else binSf2 = h_muonHlt2->FindBin(std::abs(eta),pt);
 
-    twgt = ( h_muonHlt1->GetBinContent(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinContent(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    twgt = h_muonHlt1->GetBinContent(binSf1);
+//    twgt = ( h_muonHlt1->GetBinContent(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinContent(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    twgt = h_muonHlt1->GetBinContent(binSf1);
 //    twgt = h_muonHlt2->GetBinContent(binSf2);
 
     if ( syst == 1 ) twgt += ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
