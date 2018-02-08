@@ -959,7 +959,9 @@ void AnalysisAlgo::runMainAnalysis(){
       for (int i{0}; i < numberOfEvents; i++) {
 	std::stringstream lSStrFoundLeptons;
 	std::stringstream lSStrFoundEvents;
-	lSStrFoundLeptons <<  event->numElePF2PAT;
+	if ( channel == "ee" ) lSStrFoundLeptons <<  event->numElePF2PAT;
+	else if ( channel == "mumu" ) lSStrFoundLeptons <<  event->numMuonPF2PAT;
+	else lSStrFoundLeptons <<  event->numElePF2PAT;
 	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
 	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
 	event->GetEntry(i);
