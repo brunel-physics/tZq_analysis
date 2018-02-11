@@ -28,6 +28,7 @@ AnalysisAlgo::AnalysisAlgo():
   plotConfName{new std::string{}},
   readEventList{false},
   customJetRegion{false},
+  trileptonChannel_{true},
   is2016_{false},
   isFCNC_{false},
   isCtag_{false},
@@ -439,7 +440,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Apply an MET cut. Trilepton only.")
     ("mtwCut", po::value<float>(&mtwCut)->default_value(0),
      "Apply an mTW cut. Trilepton only.")
-    ("mzCut", po::value<float>(&mzCut)->default_value(10.),
+    ("mzCut", po::value<float>(&mzCut)->default_value(20.),
      "Apply an mZ cut. Dilepton only.")
     ("mwCut", po::value<float>(&mwCut)->default_value(20.),
      "Apply an mW cut. Dilepton only.");
