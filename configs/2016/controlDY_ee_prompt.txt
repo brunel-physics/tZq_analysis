@@ -1,0 +1,6 @@
+datasets = "configs/2016/datasets/prompt_eeDataMC_allMC.txt";
+cuts = "configs/2016/cuts/ZplusCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2016/zPlus_ee_prompt/";
+outputPostfix = "ee";
+channelName = "ee";

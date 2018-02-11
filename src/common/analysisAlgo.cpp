@@ -28,10 +28,11 @@ AnalysisAlgo::AnalysisAlgo():
   plotConfName{new std::string{}},
   readEventList{false},
   customJetRegion{false},
+  trileptonChannel_{true},
   is2016_{false},
   isFCNC_{false},
   isCtag_{false},
-  doFakes_{false}
+  doNPLs_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -405,7 +406,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "requires -u.")
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
-    ("fakes", po::bool_switch(&doFakes_), "Make or use fake shapes")
+    ("NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.")
     ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
@@ -439,7 +440,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Apply an MET cut. Trilepton only.")
     ("mtwCut", po::value<float>(&mtwCut)->default_value(0),
      "Apply an mTW cut. Trilepton only.")
-    ("mzCut", po::value<float>(&mzCut)->default_value(10.),
+    ("mzCut", po::value<float>(&mzCut)->default_value(20.),
      "Apply an mZ cut. Dilepton only.")
     ("mwCut", po::value<float>(&mwCut)->default_value(20.),
      "Apply an mW cut. Dilepton only.");
@@ -756,14 +757,14 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	}
-	if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
+	if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
 	  inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
-	  // If making plots which include non-prompt fakes, then when running over "non-prompt" samples (as determined by their label), set the cutClass object fake flag to true and invert charge seletion criteria, i.e. choose same sign leptons
-	  cutObj->setFakeFlag(true);
+	  // If making plots which include non-prompt leptons, then when running over "non-prompt" samples (as determined by their label), set the cutClass object NPL flag to true and invert charge seletion criteria, i.e. choose same sign leptons
+	  cutObj->setNplFlag(true);
 	  cutObj->setInvLepCut(true);
 	}
-	else if ( doFakes_ && dataset->getPlotLabel() != "NPL" && !trileptonChannel_ ) {
-	  cutObj->setFakeFlag(false);
+	else if ( doNPLs_ && dataset->getPlotLabel() != "NPL" && !trileptonChannel_ ) {
+	  cutObj->setNplFlag(false);
           cutObj->setInvLepCut(false);
         }
 	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
@@ -797,7 +798,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
 	std::string inputPostfix{};
 	inputPostfix += postfix;
-        if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
+        if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
 	if (invertLepCut) {
 	  if ( trileptonChannel_ ) inputPostfix += "invIso";
 	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
@@ -826,7 +827,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if ( trileptonChannel_ ) inputPostfix += "invIso";
 	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
 	  }
-          if ( doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
+          if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
 	  TFile * datasetFileForHists;
 	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
 	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
@@ -1015,8 +1016,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
 
 	  // Apply in cutClass, as the RATIO weight of OS/SS non-prompts cannot be applied before charge cuts (Z cand cuts) are applied
-	  // If fake shape (for plotting purposes) apply OS/SS ratio SF 
-	  //if ( plots && doFakes_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
+	  // If NPLs shape (for plotting purposes) apply OS/SS ratio SF 
+	  //if ( plots && doNpls_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
 	    //if ( channel == "ee" ) eventWeight *= 1.24806;
 	    //if ( channel == "mumu" ) eventWeight *= 1.03226;
 	    //if ( dataset->isMC() ) eventWeight *= -1.0; 
