@@ -36,10 +36,9 @@ class Cuts{
   std::vector<int> getTightMuons(AnalysisEvent* event);
   std::vector<int> getInvIsoMuons(AnalysisEvent* event);
   std::vector<int> getLooseMuons(AnalysisEvent* event);
-  float getZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
-  float getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
+  float getTrileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
+  bool getDileptonZCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
   float getWbosonQuarksCand(AnalysisEvent*, std::vector<int>, int syst = 0);
-  float getTTbarCand(AnalysisEvent*, std::vector<int>, std::vector<int>);
 
   std::vector< std::pair<int,int> > getSynchDileptonCandidates(AnalysisEvent*, std::vector<int>, std::vector<int>);
 

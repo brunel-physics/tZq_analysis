@@ -72,7 +72,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   looseMuonEta_{2.4},
   looseMuonRelIso_{0.25},
   //zMass cuts
-  invZMassCut_{10.},
+  invZMassCut_{20.},
   invWMassCut_{20.},
   //Jet initialisation
   numJets_{2},
@@ -491,23 +491,17 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   // FINISH ROCHESTER CORRECTIONS BIT
 
+//  std::cout << __LINE__ << " : " << __FILE__ << " pre cand" << std::endl;
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass{9999.};
-
   if (trileptonChannel_ == true){
-    invZmass = getZCand(event, event->electronIndexTight, event->muonIndexTight);
+    invZmass = getTrileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
   }
-  else if (trileptonChannel_ == false && !isControl){ //Control doesn't need Z plots
-    invZmass = getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight);
+  else if (trileptonChannel_ == false){ //Control doesn't need Z plots
+    if ( !getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight) ) return false;
   }
-  else if ( isControl ){
-    invZmass = getTTbarCand(event, event->electronIndexTight, event->muonIndexTight);
-  }
-  else if (!isControl){
-    std::cout << "You've somehow managed to set the trilepton/dilepton bool flag to a value other than these two!" << std::endl;
-    std::cout << "HOW?! Well done for breaking this ..." << std::endl;
-    exit(0);
-  }
+
+//  std::cout << __LINE__ << " : " << __FILE__ << " MADE cand" << std::endl;
 
   * eventWeight *= getLeptonWeight(event,syst);
 
@@ -520,9 +514,22 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( numTightMu_ == 2 ) *eventWeight *= 1.03226;
   }
 
-  if (std::abs(invZmass) > invZMassCut_ && !isControl) return false;
-//  if (std::abs(invZmass) <= invZMassCut_ && !isControl) return false;
+//  std::cout << "Pre Z mass cut of ... " << std::abs(invZmass) << "<=" << invZMassCut_ << std::endl;
+//  std::cout << "event: " << event->eventNum << std::endl;
+//  std::cout << "invZMassCut_: " << invZMassCut_ << std::endl;
+//  std::cout << "invZmass: " << std::abs(invZmass) << std::endl;
+//  std::cout << "zPairMass: " << (event->zPairLeptons.first + event->zPairLeptons.second).M() << std::endl;
+//  std::cout << "lep1/lep2: " << event->zPairIndex.first << "/" << event->zPairIndex.second << std::endl;
+
+  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
+//  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl) return false;
   if (std::abs(invZmass) < 106 && isControl) return false;
+  
+//  std::cout << "Post Z mass cut of ... " << std::abs(invZmass) << "<=" << invZMassCut_ << std::endl;
+//  std::cout << "invZmass: " << std::abs(invZmass) << std::endl;
+//  std::cout << "zPairMass: " << (event->zPairLeptons.first + event->zPairLeptons.second).M() << std::endl;
+//  std::cout << "lep1/lep2: " << event->zPairIndex.first << "/" << event->zPairIndex.second << "\n" <<std::endl;
+
 
   event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
@@ -829,7 +836,7 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
   return muons;
 }
 
-float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
+float Cuts::getTrileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
   float closestMass{9999.};
   //Use electrons if there are at least 2. Otherwise use muons.
   if (electrons.size() > 1){ // electrons.size() == number of electrons for selected channel
@@ -903,73 +910,64 @@ float Cuts::getZCand(AnalysisEvent *event, std::vector<int> electrons, std::vect
   return closestMass;
 }
 
-float Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
-
-  float closestMass {9999.};
+bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
 
   //Check if there are at least two electrons first. Otherwise use muons.
 
-  if (electrons.size() > 1){
-    for ( unsigned i{0}; i < electrons.size(); i++ ){
-      for ( unsigned j{i + 1}; j < electrons.size(); j++ ){
-        if ( !invertLepCut_) {
-          if ( event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0 )  continue; // check electron pair have correct charge.
-        }
-        else {
-          if ( !(event->elePF2PATCharge[electrons[i]] * event->elePF2PATCharge[electrons[j]] >= 0) ) continue; // check electron pair have correct charge for same sign control region.
-     }
-
-//        TLorentzVector lepton1{event->elePF2PATPX[electrons[i]],event->elePF2PATPY[electrons[i]],event->elePF2PATPZ[electrons[i]],event->elePF2PATE[electrons[i]]};
-//        TLorentzVector lepton2{event->elePF2PATPX[electrons[j]],event->elePF2PATPY[electrons[j]],event->elePF2PATPZ[electrons[j]],event->elePF2PATE[electrons[j]]};
-
-        TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-        TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[j]],event->elePF2PATGsfPy[electrons[j]],event->elePF2PATGsfPz[electrons[j]],event->elePF2PATGsfE[electrons[j]]};
-
-        double invMass{(lepton1 + lepton2).M() -91.1};
-	if (std::abs(invMass) < std::abs(closestMass)){
-	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:electrons[j];
-	  event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[i]]:event->elePF2PATComRelIsoRho[electrons[j]];
-	  event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[j]]:event->elePF2PATComRelIsoRho[electrons[i]];
-	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[j]:electrons[i];
-	  closestMass = invMass;
-	}
-      }
+  if (electrons.size() == 2 ) {
+    if ( !invertLepCut_) {
+      if ( event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] >= 0 ) return false; // check electron pair have correct charge.      
     }
+    else {
+      if ( !(event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] >= 0) ) return false; // check electron pair have correct charge for same sign control region.
+    }
+
+//  TLorentzVector lepton1{event->elePF2PATPX[electrons[0]],event->elePF2PATPY[electrons[0]],event->elePF2PATPZ[electrons[0]],event->elePF2PATE[electrons[0]]};
+//  TLorentzVector lepton2{event->elePF2PATPX[electrons[1]],event->elePF2PATPY[electrons[1]],event->elePF2PATPZ[electrons[1]],event->elePF2PATE[electrons[1]]};
+
+    TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]};
+    TLorentzVector lepton2{event->elePF2PATGsfPx[electrons[1]],event->elePF2PATGsfPy[electrons[1]],event->elePF2PATGsfPz[electrons[1]],event->elePF2PATGsfE[electrons[1]]};
+    event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+    event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[0]:electrons[1];
+    event->zPairRelIso.first = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[0]]:event->elePF2PATComRelIsoRho[electrons[1]];
+    event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+    event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[1]]:event->elePF2PATComRelIsoRho[electrons[0]];
+    event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[1]:electrons[0];
+    return true;
+  } // end electron if 
+
+  else if (muons.size() == 2){
+    if ( !invertLepCut_) {
+      if ( event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] >= 0 ) return false;
+    }
+    else {
+      if ( !(event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] >= 0) ) return false;
+    }
+
+//  TLorentzVector lepton1{event->muonPF2PATPX[muons[i]], event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
+//  TLorentzVector lepton2{event->muonPF2PATPX[muons[j]], event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
+
+    TLorentzVector lepton1{event->muonPF2PATPX[muons[0]] * event->muonMomentumSF[0], event->muonPF2PATPY[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
+    TLorentzVector lepton2{event->muonPF2PATPX[muons[1]] * event->muonMomentumSF[1], event->muonPF2PATPY[muons[1]] * event->muonMomentumSF[1],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]};
+
+    event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
+    event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[0]:muons[1];
+    event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[0]];
+    event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
+    event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[1]];
+    event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[1]:muons[0];
+    return true;
   }
 
-  else if (muons.size() > 1){
-    for ( unsigned i {0}; i < muons.size(); i++ ){
-      for ( unsigned j{i + 1}; j < muons.size(); j++ ){
-        if ( !invertLepCut_) {
-  	  if ( event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0 ) continue;
-        }
-        else {
-  	  if ( !(event->muonPF2PATCharge[muons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue;
-        }
-
-//	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]], event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
-//	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]], event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-
-	TLorentzVector lepton1{event->muonPF2PATPX[muons[i]] * event->muonMomentumSF[0], event->muonPF2PATPY[muons[i]] * event->muonMomentumSF[0],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
-	TLorentzVector lepton2{event->muonPF2PATPX[muons[j]] * event->muonMomentumSF[1], event->muonPF2PATPY[muons[j]] * event->muonMomentumSF[1],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-	
-	double invMass{(lepton1 + lepton2).M() -91.1};
-	if (std::abs(invMass) < std::abs(closestMass)){
-	  event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-	  event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[i]:muons[j];
-	  event->zPairRelIso.first = event->muonPF2PATComRelIsodBeta[muons[i]];
-	  event->zPairRelIso.second = event->muonPF2PATComRelIsodBeta[muons[j]];
-	  event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-	  event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[j]:muons[i];
-	  closestMass = invMass;
-	}
-      }
-    }
+  else if ( electrons.size() == 1 && muons.size() == 1 ) {
+    if (event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return false;
+    TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]};
+    TLorentzVector lepton2{event->muonPF2PATPX[muons[1]],event->muonPF2PATPY[muons[1]],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]};
+    event->zPairLeptons.first = lepton1;
+    event->zPairLeptons.second = lepton2;
+    return true;
   }
-
-  return closestMass;
+  else return false; // Not dilepton candidate if this is the case ...
 }
 
 float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int syst){
@@ -1005,26 +1003,6 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
       }
     }
   return closestWmass;
-}
-
-float Cuts::getTTbarCand(AnalysisEvent *event, std::vector<int> electrons, std::vector<int> muons){
-
-  float closestMass {-1.0};
-
-  for (unsigned i{0}; i < electrons.size(); i++){
-    for (unsigned j{0}; j < muons.size(); j++){
-      if (event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] > 0) continue;
-      TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]};
-      TLorentzVector lepton2{event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
-      float invMass{ float( (lepton1+lepton2).M() ) };
-      if( std::abs(invMass) > std::abs(closestMass) ){
-        event->zPairLeptons.first = lepton1;
-        event->zPairLeptons.second = lepton2;
-        closestMass = invMass;
-      }
-    }
-  }
-  return closestMass;
 }
 
 // tW synch - code to get dilepton pairs correct for the tW topology
@@ -1556,9 +1534,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 0.98277; // 0.87322 for eff; 0.98277 for SF
-        if (syst == 1) twgt += 0.00700; // -0.01083/0.01173 for eff; 0.01269 for SF
-        if (syst == 2) twgt -= 0.00700;
+        twgt = 1.00378; // 0.86655 for eff; 1.00378 for SF
+        if (syst == 1) twgt += 0.00909; // +/- -0.01207/0.01313 for eff; 0.00909 for SF
+        if (syst == 2) twgt -= 0.00909;
       }
     }
 
@@ -1612,8 +1590,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   // Is mumu or mumumu?
   if ( channel == "mumu" || channel == "mumumu" ) { 
 //    if ( mumuTrig && !(eeTrig || muEGTrig) ) // Original trigger logic, for double triggers only
-//    if ( (mumuTrig || muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Trigger logic for double + single triggers
-    if ( (muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Single trigger only whilst in debug mode
+    if ( (mumuTrig || muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Trigger logic for double + single triggers
+//    if ( (muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Single trigger only whilst in debug mode
     {
       if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
       return true;
@@ -1677,7 +1655,9 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     if ( (event->electronIndexTight.size() != getLooseEles(event).size()) || (event->muonIndexTight.size() != getLooseMuons(event).size()) ) return false;
     synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
 
-    if (std::abs(getDileptonZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
+    if (!getDileptonZCand(event,event->electronIndexTight,event->muonIndexTight)) return false;
+
+    if ( ( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_) return false;
     synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
 
     *eventWeight *= getLeptonWeight(event,0);
@@ -1864,8 +1844,8 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
     synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
 
     // Z selection
-    if (singleEventInfoDump_) std::cout << "Z mass: " << getZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
-    if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
+    if (singleEventInfoDump_) std::cout << "Z mass: " << getTrileptonZCand(event,event->electronIndexTight,event->muonIndexTight) << std::endl;
+    if (std::abs(getTrileptonZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) return false;
     synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
 
     //  *eventWeight *= getLeptonWeight(event,0);
@@ -2557,7 +2537,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     if ( (event->electronIndexTight.size() == getLooseEles(event).size()) && (event->muonIndexTight.size() == getLooseMuons(event).size()) ) step0EventDump_ << "1"; // no additional loose leptons - step 2
     else step0EventDump_ << "0";
     if ( (event->electronIndexTight.size() + event->muonIndexTight.size()) < 3 ) step0EventDump_ << "0"; // Check to ensure there are at least three leptons - otherwise memory leak occurs.
-    else if (std::abs(getZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
+    else if (std::abs(getTrileptonZCand(event,event->electronIndexTight,event->muonIndexTight)) > invZMassCut_) step0EventDump_ << "1"; // Z selection - step 3
     else step0EventDump_ << "0";
     jetInfo = makeJetCuts(event, 0, &tempWeight);
     event->jetIndex = jetInfo.first;
@@ -2631,10 +2611,10 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
       leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+//      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
-//      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
+      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
 
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
@@ -2730,12 +2710,12 @@ float Cuts::muonSF(double pt, double eta, int syst){
   if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
 
   if ( is2016_ ) {
-//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
-    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
-    muonRecoSF = h_muonRecoGraph1->Eval(eta);
+    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
+//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
+//    muonRecoSF = h_muonRecoGraph1->Eval(eta);
 //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
 //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
 //    muonRecoSF = h_muonRecoGraph2->Eval(eta);
@@ -2824,8 +2804,8 @@ float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
     else if ( pt < minSfPt ) binSf2 = h_muonHlt2->FindBin(std::abs(eta),minSfPt);
     else binSf2 = h_muonHlt2->FindBin(std::abs(eta),pt);
 
-//    twgt = ( h_muonHlt1->GetBinContent(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinContent(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    twgt = h_muonHlt1->GetBinContent(binSf1);
+    twgt = ( h_muonHlt1->GetBinContent(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinContent(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//    twgt = h_muonHlt1->GetBinContent(binSf1);
 //    twgt = h_muonHlt2->GetBinContent(binSf2);
 
     if ( syst == 1 ) twgt += ( h_muonHlt1->GetBinError(binSf1) * lumiRunsBCDEF_ + h_muonHlt2->GetBinError(binSf2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
@@ -3236,7 +3216,8 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
   }  
 
   twgt = ( twgt_part1 * lumiRunsBCDEF_ + twgt_part2 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-
+//  twgt = twgt_part1;
+//  twgt = twgt_part2;
   return twgt;
 }
 
