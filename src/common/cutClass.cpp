@@ -491,7 +491,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   // FINISH ROCHESTER CORRECTIONS BIT
 
-//  std::cout << __LINE__ << " : " << __FILE__ << " pre cand" << std::endl;
   //Should I make it return which leptons are the zMass candidate? Probably.
   float invZmass{9999.};
   if (trileptonChannel_ == true){
@@ -500,8 +499,6 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   else if (trileptonChannel_ == false){ //Control doesn't need Z plots
     if ( !getDileptonZCand(event, event->electronIndexTight, event->muonIndexTight) ) return false;
   }
-
-//  std::cout << __LINE__ << " : " << __FILE__ << " MADE cand" << std::endl;
 
   * eventWeight *= getLeptonWeight(event,syst);
 
@@ -514,22 +511,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( numTightMu_ == 2 ) *eventWeight *= 1.03226;
   }
 
-//  std::cout << "Pre Z mass cut of ... " << std::abs(invZmass) << "<=" << invZMassCut_ << std::endl;
-//  std::cout << "event: " << event->eventNum << std::endl;
-//  std::cout << "invZMassCut_: " << invZMassCut_ << std::endl;
-//  std::cout << "invZmass: " << std::abs(invZmass) << std::endl;
-//  std::cout << "zPairMass: " << (event->zPairLeptons.first + event->zPairLeptons.second).M() << std::endl;
-//  std::cout << "lep1/lep2: " << event->zPairIndex.first << "/" << event->zPairIndex.second << std::endl;
-
   if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
 //  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl) return false;
-  if (std::abs(invZmass) < 106 && isControl) return false;
-  
-//  std::cout << "Post Z mass cut of ... " << std::abs(invZmass) << "<=" << invZMassCut_ << std::endl;
-//  std::cout << "invZmass: " << std::abs(invZmass) << std::endl;
-//  std::cout << "zPairMass: " << (event->zPairLeptons.first + event->zPairLeptons.second).M() << std::endl;
-//  std::cout << "lep1/lep2: " << event->zPairIndex.first << "/" << event->zPairIndex.second << "\n" <<std::endl;
-
+  if (std::abs(invZmass) < 106 && isControl) return false;  
 
   event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
@@ -916,7 +900,7 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
 
   if (electrons.size() == 2 ) {
     if ( !invertLepCut_) {
-      if ( event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] >= 0 ) return false; // check electron pair have correct charge.      
+      if ( event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] >= 0 ) return false; // check electron pair have correct charge.
     }
     else {
       if ( !(event->elePF2PATCharge[electrons[0]] * event->elePF2PATCharge[electrons[1]] >= 0) ) return false; // check electron pair have correct charge for same sign control region.
@@ -962,7 +946,7 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
   else if ( electrons.size() == 1 && muons.size() == 1 ) {
     if (event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return false;
     TLorentzVector lepton1{event->elePF2PATGsfPx[electrons[0]],event->elePF2PATGsfPy[electrons[0]],event->elePF2PATGsfPz[electrons[0]],event->elePF2PATGsfE[electrons[0]]};
-    TLorentzVector lepton2{event->muonPF2PATPX[muons[1]],event->muonPF2PATPY[muons[1]],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]};
+    TLorentzVector lepton2{event->muonPF2PATPX[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPY[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
     event->zPairLeptons.first = lepton1;
     event->zPairLeptons.second = lepton2;
     return true;
