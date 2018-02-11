@@ -1,0 +1,6 @@
+datasets = "configs/2016/datasets/prompt_mumuDataMC_amcatnloMC.txt";
+cuts = "configs/2016/cuts/ZplusCuts.txt";
+plots = "configs/plots/plotDileptonConf.cfg";
+outputFolder = "plots/2016/zPlus_amcatnlo_mumu_prompt/";
+outputPostfix = "mumu";
+channelName = "mumu";
