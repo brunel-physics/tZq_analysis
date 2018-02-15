@@ -92,6 +92,32 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
   }
 }
 
+void HistogramPlotter::saveHistos(std::map<std::string, std::map<std::string, Plots*> > plotMap){
+  auto firstIt = plotMap.begin();
+  std::vector<std::string> stageNameVec;
+  for (auto stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
+    stageNameVec.emplace_back(stageNameIt->first);
+  }
+  //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
+  unsigned long plotNumb{firstIt->second.begin()->second->getPlotPoint().size()};
+  for (unsigned i{0}; i < plotNumb; i++){
+    for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
+      std::map<std::string, TH1F*> tempPlotMap;
+      for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
+	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
+      }
+      for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+        TFile* outFile = new TFile{ (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "Histo.root").c_str(), "RECREATE"};
+	outFile->cd();
+        tempPlotMap[*plot_iter]->Write(); // Write histo to file
+        outFile->Write();
+        outFile->Close();
+        delete outFile;
+      }
+    }
+  }
+}
+
 void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::string plotTitle, std::string plotName){
   std::vector<std::string> blankLabels;
   makePlot(plotMap,plotTitle,plotName,"",blankLabels);
@@ -313,9 +339,13 @@ void HistogramPlotter::setLabelTextSize(float size){
   labelThree_->SetTextSize(size);
 }
 
+void HistogramPlotter::setHistogramFolder(std::string histoDir){
+  histogramDirectory_ = histoDir;
+  boost::filesystem::create_directory(histogramDirectory_.c_str());
+}
+
 void HistogramPlotter::setOutputFolder(std::string output){
   outputFolder_ = output;
-
   boost::filesystem::create_directory(outputFolder_.c_str());
 
 }

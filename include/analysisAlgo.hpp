@@ -39,9 +39,12 @@ class AnalysisAlgo{
         // variables?
 	std::string config;
  	bool plots;
+        bool makeHistos;
+        bool useHistos;
 	double usePreLumi;
 	long nEvents;
 	std::string outFolder;
+	std::string histoDir;
 	std::string postfix;
 	std::string channel;
 	bool infoDump;

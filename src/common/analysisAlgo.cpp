@@ -23,6 +23,9 @@
 #include <sstream>
 
 AnalysisAlgo::AnalysisAlgo():
+  plots{false},
+  makeHistos{false},
+  useHistos{false},
   channel{},
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
@@ -380,6 +383,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     (",n", po::value<long>(&nEvents)->default_value(0),
      "The number of events to be run over. All if set to 0.")
     ("allPlots,p", po::bool_switch(&plots), "Make all plots")
+    ("makeHistos", po::bool_switch(&makeHistos), "Make histos to be used in future plots")
+    ("useHistos", po::bool_switch(&useHistos), "Use saved histos to make plots")
+    ("histoDir", po::value<std::string>(&histoDir)->default_value("histos/mz20mw50/"),
+     "The output directory for the histos used to make the plots.")
     ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/"),
      "The output directory for the plots. Overrides the config file.")
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
@@ -442,7 +449,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Apply an mTW cut. Trilepton only.")
     ("mzCut", po::value<float>(&mzCut)->default_value(20.),
      "Apply an mZ cut. Dilepton only.")
-    ("mwCut", po::value<float>(&mwCut)->default_value(20.),
+    ("mwCut", po::value<float>(&mwCut)->default_value(50.),
      "Apply an mW cut. Dilepton only.");
   po::variables_map vm;
 
@@ -1221,11 +1228,25 @@ void AnalysisAlgo::runMainAnalysis(){
 void AnalysisAlgo::savePlots()
 {
   //Save all plot objects. For testing purposes.
-
+  
   //Now test out the histogram plotter class I just wrote.
   //Make the plotting object.
   if (plots||infoDump){
     HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos,is2016_);
+
+    // LEGACY - Write everything to a canvas and save - we want to save histos, and read them in when we need them! 
+    if ( (makeHistos || useHistos) && plots ) plotObj.setHistogramFolder(histoDir);
+    //If making histos ...
+    if ( makeHistos && plots ) {
+      for (unsigned i{0};  i < plotsVec.size(); i++){
+        plotObj.saveHistos(plotsMap[plotsVec[i]]);
+      }
+    }
+
+    // If using histos
+    if ( useHistos ) {
+    }
+
     plotObj.setLabelOne("CMS Preliminary");
     plotObj.setLabelTwo("Some amount of lumi");
     plotObj.setPostfix("");
