@@ -59,6 +59,7 @@ class HistogramPlotter{
   //Actual plotting commands
   void plotHistos(std::map<std::string, std::map<std::string, Plots*> >);
   void loadHistos() {loadHistos_ = true;}
+  void saveHistos(std::map<std::string, TH1F*>, std::string, std::string);
   void saveHistos(std::map<std::string, std::map<std::string, Plots*> >);
   void plotCutFlows(std::map<std::string, TH1F*>);
   void makePlot(std::map<std::string, TH1F*>,std::string,std::string);

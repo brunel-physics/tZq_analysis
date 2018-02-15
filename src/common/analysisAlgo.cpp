@@ -1246,17 +1246,11 @@ void AnalysisAlgo::savePlots()
       for (unsigned i{0};  i < plotsVec.size(); i++){
         plotObj.saveHistos(plotsMap[plotsVec[i]]);
       }
+      plotObj.saveHistos( cutFlowMap, "cutFlow", channel ); // Don't forget to save the cutflow too!      
     }
 
-    // If using histos, read them in ...
-//    if ( useHistos ) {
-//      for (unsigned i{0};  i < plotsVec.size(); i++){
-//        plotsMap[ plotsVec[i] ] = plotObj.loadHistos(plotsMap[plotsVec[i]]);
-//      }
-//    }
-
     if (!makeHistos) {
-      if ( useHistos ) plotObj.loadHistos();
+      if ( useHistos ) plotObj.loadHistos(); // If using saved histos, read them in ...
       plotObj.setLabelOne("CMS Preliminary");
       plotObj.setLabelTwo("Some amount of lumi");
       plotObj.setPostfix("");
