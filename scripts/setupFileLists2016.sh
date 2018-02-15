@@ -88,6 +88,36 @@ ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_amcatnlo_ext2/* -1d >> $TQZ_TOO
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-0To50/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt0To50Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-50To100/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt50To100Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-50To100_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt50To100Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext5/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-250To400/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-250To400_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-250To400_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-250To400_ext5/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-400To650/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt400To650Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-400To650_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt400To650Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-400To650_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt400To650Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-100to200_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets100To200Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-100to200_amcatnlo_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets100To200Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-200to400_amcatnlo_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets200To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-200to400_amcatnlo_ext3/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets200To400Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-400to500_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets400To500Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-500to700_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets500To700Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-700to800_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets700To800Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-800to1000_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets800To1000Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-1000to1500_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets1000To1500Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-1500to2000_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets1500To2000Files.txt
+ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-2000to3000_amcatnlo_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets2000To3000Files.txt
+
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt

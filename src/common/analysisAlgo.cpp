@@ -23,6 +23,9 @@
 #include <sstream>
 
 AnalysisAlgo::AnalysisAlgo():
+  plots{false},
+  makeHistos{false},
+  useHistos{false},
   channel{},
   cutConfName{new std::string{}},
   plotConfName{new std::string{}},
@@ -380,6 +383,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     (",n", po::value<long>(&nEvents)->default_value(0),
      "The number of events to be run over. All if set to 0.")
     ("allPlots,p", po::bool_switch(&plots), "Make all plots")
+    ("makeHistos", po::bool_switch(&makeHistos), "Make histos to be used in future plots")
+    ("useHistos", po::bool_switch(&useHistos), "Use saved histos to make plots")
+    ("histoDir", po::value<std::string>(&histoDir)->default_value("histos/mz20mw50/"),
+     "The output directory for the histos used to make the plots.")
     ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/"),
      "The output directory for the plots. Overrides the config file.")
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
@@ -442,7 +449,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Apply an mTW cut. Trilepton only.")
     ("mzCut", po::value<float>(&mzCut)->default_value(20.),
      "Apply an mZ cut. Dilepton only.")
-    ("mwCut", po::value<float>(&mwCut)->default_value(20.),
+    ("mwCut", po::value<float>(&mwCut)->default_value(50.),
      "Apply an mW cut. Dilepton only.");
   po::variables_map vm;
 
@@ -739,7 +746,10 @@ void AnalysisAlgo::runMainAnalysis(){
 
       } //end plots if statement
 
-	//If making either plots or doing the event dump, make cut flow object.
+      // If making plots and using saved histos, skip running over the datasets ...
+      if ( plots && useHistos ) continue;
+
+      //If making either plots or doing the event dump, make cut flow object.
       std::cerr << "Processing dataset " << dataset->name() << std::endl;
       if (!usePostLepTree) {
 	if (!datasetFilled) {
@@ -1221,29 +1231,45 @@ void AnalysisAlgo::runMainAnalysis(){
 void AnalysisAlgo::savePlots()
 {
   //Save all plot objects. For testing purposes.
-
+  
   //Now test out the histogram plotter class I just wrote.
   //Make the plotting object.
   if (plots||infoDump){
     HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos,is2016_);
-    plotObj.setLabelOne("CMS Preliminary");
-    plotObj.setLabelTwo("Some amount of lumi");
-    plotObj.setPostfix("");
-    plotObj.setOutputFolder(outFolder);
 
-    for (unsigned i{0};  i < plotsVec.size(); i++){
-      std::cout << plotsVec[i] << std::endl;
-      if (plots)
-	plotObj.plotHistos(plotsMap[plotsVec[i]]);
+    // If either making or reading in histos, then set the correct read in directory 
+    if ( (makeHistos || useHistos) && plots ) plotObj.setHistogramFolder(histoDir);
+
+    //If making histos, save the output!
+    if ( makeHistos && plots ) {
+      std::cout << "Saving histograms for later use ..." << std::endl;
+      for (unsigned i{0};  i < plotsVec.size(); i++){
+        plotObj.saveHistos(plotsMap[plotsVec[i]]);
+      }
+      plotObj.saveHistos( cutFlowMap, "cutFlow", channel ); // Don't forget to save the cutflow too!      
     }
 
-    // cut flow x axis labels
-    std::vector<std::string> cutFlowLabels;
-    for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-    	cutFlowLabels.emplace_back( (*lIt).second );
-    }
+    if (!makeHistos) {
+      if ( useHistos ) plotObj.loadHistos(); // If using saved histos, read them in ...
+      plotObj.setLabelOne("CMS Preliminary");
+      plotObj.setLabelTwo("Some amount of lumi");
+      plotObj.setPostfix("");
+      plotObj.setOutputFolder(outFolder);
 
-    plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
+      for (unsigned i{0};  i < plotsVec.size(); i++){
+        std::cout << plotsVec[i] << std::endl;
+        if (plots)
+  	  plotObj.plotHistos(plotsMap[plotsVec[i]]);
+      }
+
+      // cut flow x axis labels
+      std::vector<std::string> cutFlowLabels;
+      for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
+      	cutFlowLabels.emplace_back( (*lIt).second );
+      }
+      if (useHistos) cutFlowMap = plotObj.loadCutFlowMap("cutFlow",channel);
+      plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
+    }
   }
   if (synchCutFlow){
     cutObj->getSynchCutFlow();

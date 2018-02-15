@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( false );
+const bool BLIND_PLOTS( true );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
@@ -27,6 +27,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   outputFolder_{},
   postfix_{"defaultPostfix"},
   is2016_{is2016},
+  loadHistos_{false},
 
   //Some things that actually need to be set. plot order, legend order and dataset information map.
   plotOrder_{plotOrder},
@@ -84,10 +85,64 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
     for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
       std::map<std::string, TH1F*> tempPlotMap;
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
-	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
+        if ( loadHistos_ ) {
+          TFile* inputFile = new TFile{ (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "_Histo.root").c_str(), "READ"};	
+	  tempPlotMap[mapIt->first] = dynamic_cast<TH1F*>(inputFile->Get( (firstIt->second[*stageIt]->getPlotPoint()[i].name).c_str() )->Clone() );// Load histo here?
+        }
+	if ( !loadHistos_ ) tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
       std::vector<std::string> xAxisLabel = {firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel};
       makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].title,firstIt->second[*stageIt]->getPlotPoint()[i].name,xAxisLabel);
+    }
+  }
+}
+
+void HistogramPlotter::saveHistos(std::map<std::string, TH1F*> cutFlowMap, std::string plotName, std::string channel){
+  for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+    TFile* outFile = new TFile{ (histogramDirectory_ + *plot_iter + "_" + channel + "_" + plotName + "_Histo.root").c_str(), "RECREATE"};
+    outFile->cd();
+    cutFlowMap[*plot_iter]->Write(); // Write histo to file
+    outFile->Write();
+    outFile->Close();
+    delete outFile;
+  }
+}
+
+std::map<std::string, TH1F*> HistogramPlotter::loadCutFlowMap( std::string plotName, std::string channel ){
+  std::map<std::string, TH1F*> cutFlowMap;
+
+  for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+    TFile* inputFile = new TFile{ (histogramDirectory_ + *plot_iter + "_" + channel + "_" + plotName + "_Histo.root").c_str(), "READ"};
+    cutFlowMap.emplace( *plot_iter, dynamic_cast<TH1F*>(inputFile->Get( (*plot_iter+"cutFlow").c_str() )->Clone() ) );
+  }
+  return cutFlowMap;
+}
+
+void HistogramPlotter::saveHistos(std::map<std::string, std::map<std::string, Plots*> > plotMap){
+
+  //Get a list of keys from the map.
+  auto firstIt = plotMap.begin();
+  std::vector<std::string> stageNameVec;
+  for (auto stageNameIt = firstIt->second.begin(); stageNameIt != firstIt->second.end(); stageNameIt++){
+    stageNameVec.emplace_back(stageNameIt->first);
+  }
+
+  //Loop over all the plots, for each stage name. Then create a map for each with all datasets in it.
+  unsigned long plotNumb{firstIt->second.begin()->second->getPlotPoint().size()};
+  for (unsigned i{0}; i < plotNumb; i++){
+    for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end(); stageIt++){
+      std::map<std::string, TH1F*> tempPlotMap;
+      for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
+	tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
+      }
+      for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+        TFile* outFile = new TFile{ (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "_Histo.root").c_str(), "RECREATE"};
+	outFile->cd();
+        tempPlotMap[*plot_iter]->Write(); // Write histo to file
+        outFile->Write();
+        outFile->Close();
+        delete outFile;
+      }
     }
   }
 }
@@ -313,9 +368,13 @@ void HistogramPlotter::setLabelTextSize(float size){
   labelThree_->SetTextSize(size);
 }
 
+void HistogramPlotter::setHistogramFolder(std::string histoDir){
+  histogramDirectory_ = histoDir;
+  boost::filesystem::create_directory(histogramDirectory_.c_str());
+}
+
 void HistogramPlotter::setOutputFolder(std::string output){
   outputFolder_ = output;
-
   boost::filesystem::create_directory(outputFolder_.c_str());
 
 }

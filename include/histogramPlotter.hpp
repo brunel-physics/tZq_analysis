@@ -19,8 +19,10 @@ class HistogramPlotter{
   //A few things that govern the appearance of the plots.
   std::string lumiStr_;
   std::string outputFolder_; //Where the plots will be saved. Make sure to inclue the final /...
+  std::string histogramDirectory_; //Where the histos will be saved. Make sure to inclue the final /...
   std::string postfix_; //Will be appended to name of saved files. Defaults to aPostfix. Set with setter.
   const bool is2016_; //Era
+  bool loadHistos_;
 
   //Orders of various things and information regarding plotting.
   std::vector<std::string> plotOrder_;
@@ -52,9 +54,14 @@ class HistogramPlotter{
   void setLumiStr(std::string lumiStr){lumiStr_ = lumiStr;}
   void setPostfix(std::string postfix){postfix_ = postfix;}
   void setOutputFolder(std::string output);
+  void setHistogramFolder(std::string histoDir);
   void changeExtensions(std::vector<std::string> extentions){extensions_ = extentions;}
   //Actual plotting commands
   void plotHistos(std::map<std::string, std::map<std::string, Plots*> >);
+  void loadHistos() {loadHistos_ = true;}
+  std::map<std::string, TH1F*> loadCutFlowMap( std::string, std::string );
+  void saveHistos(std::map<std::string, TH1F*>, std::string, std::string);
+  void saveHistos(std::map<std::string, std::map<std::string, Plots*> >);
   void plotCutFlows(std::map<std::string, TH1F*>);
   void makePlot(std::map<std::string, TH1F*>,std::string,std::string);
   void makePlot(std::map<std::string, TH1F*>,std::string,std::string,std::string); //Adds a subLabel to the plot.
