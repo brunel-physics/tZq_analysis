@@ -1267,7 +1267,7 @@ void AnalysisAlgo::savePlots()
       for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
       	cutFlowLabels.emplace_back( (*lIt).second );
       }
-
+      if (useHistos) cutFlowMap = plotObj.loadCutFlowMap("cutFlow",channel);
       plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
     }
   }
