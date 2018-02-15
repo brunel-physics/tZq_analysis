@@ -746,7 +746,10 @@ void AnalysisAlgo::runMainAnalysis(){
 
       } //end plots if statement
 
-	//If making either plots or doing the event dump, make cut flow object.
+      // If making plots and using saved histos, skip running over the datasets ...
+      if ( plots && useHistos ) continue;
+
+      //If making either plots or doing the event dump, make cut flow object.
       std::cerr << "Processing dataset " << dataset->name() << std::endl;
       if (!usePostLepTree) {
 	if (!datasetFilled) {
@@ -1234,37 +1237,45 @@ void AnalysisAlgo::savePlots()
   if (plots||infoDump){
     HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos,is2016_);
 
-    // LEGACY - Write everything to a canvas and save - we want to save histos, and read them in when we need them! 
+    // If either making or reading in histos, then set the correct read in directory 
     if ( (makeHistos || useHistos) && plots ) plotObj.setHistogramFolder(histoDir);
-    //If making histos ...
+
+    //If making histos, save the output!
     if ( makeHistos && plots ) {
+      std::cout << "Saving histograms for later use ..." << std::endl;
       for (unsigned i{0};  i < plotsVec.size(); i++){
         plotObj.saveHistos(plotsMap[plotsVec[i]]);
       }
     }
 
-    // If using histos
-    if ( useHistos ) {
+    // If using histos, read them in ...
+//    if ( useHistos ) {
+//      for (unsigned i{0};  i < plotsVec.size(); i++){
+//        plotsMap[ plotsVec[i] ] = plotObj.loadHistos(plotsMap[plotsVec[i]]);
+//      }
+//    }
+
+    if (!makeHistos) {
+      if ( useHistos ) plotObj.loadHistos();
+      plotObj.setLabelOne("CMS Preliminary");
+      plotObj.setLabelTwo("Some amount of lumi");
+      plotObj.setPostfix("");
+      plotObj.setOutputFolder(outFolder);
+
+      for (unsigned i{0};  i < plotsVec.size(); i++){
+        std::cout << plotsVec[i] << std::endl;
+        if (plots)
+  	  plotObj.plotHistos(plotsMap[plotsVec[i]]);
+      }
+
+      // cut flow x axis labels
+      std::vector<std::string> cutFlowLabels;
+      for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
+      	cutFlowLabels.emplace_back( (*lIt).second );
+      }
+
+      plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
     }
-
-    plotObj.setLabelOne("CMS Preliminary");
-    plotObj.setLabelTwo("Some amount of lumi");
-    plotObj.setPostfix("");
-    plotObj.setOutputFolder(outFolder);
-
-    for (unsigned i{0};  i < plotsVec.size(); i++){
-      std::cout << plotsVec[i] << std::endl;
-      if (plots)
-	plotObj.plotHistos(plotsMap[plotsVec[i]]);
-    }
-
-    // cut flow x axis labels
-    std::vector<std::string> cutFlowLabels;
-    for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-    	cutFlowLabels.emplace_back( (*lIt).second );
-    }
-
-    plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
   }
   if (synchCutFlow){
     cutObj->getSynchCutFlow();
