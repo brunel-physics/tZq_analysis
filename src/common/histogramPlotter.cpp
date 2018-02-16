@@ -97,6 +97,16 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
   }
 }
 
+std::map<std::string, TH1F*> HistogramPlotter::loadCutFlowMap( std::string plotName, std::string channel ){
+  std::map<std::string, TH1F*> cutFlowMap;
+
+  for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
+    TFile* inputFile = new TFile{ (histogramDirectory_ + *plot_iter + "_" + channel + "_" + plotName + "_Histo.root").c_str(), "READ"};
+    cutFlowMap.emplace( *plot_iter, dynamic_cast<TH1F*>(inputFile->Get( (*plot_iter+"cutFlow").c_str() )->Clone() ) );
+  }
+  return cutFlowMap;
+}
+
 void HistogramPlotter::saveHistos(std::map<std::string, TH1F*> cutFlowMap, std::string plotName, std::string channel){
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     TFile* outFile = new TFile{ (histogramDirectory_ + *plot_iter + "_" + channel + "_" + plotName + "_Histo.root").c_str(), "RECREATE"};
@@ -106,16 +116,6 @@ void HistogramPlotter::saveHistos(std::map<std::string, TH1F*> cutFlowMap, std::
     outFile->Close();
     delete outFile;
   }
-}
-
-std::map<std::string, TH1F*> HistogramPlotter::loadCutFlowMap( std::string plotName, std::string channel ){
-  std::map<std::string, TH1F*> cutFlowMap;
-
-  for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
-    TFile* inputFile = new TFile{ (histogramDirectory_ + *plot_iter + "_" + channel + "_" + plotName + "_Histo.root").c_str(), "READ"};
-    cutFlowMap.emplace( *plot_iter, dynamic_cast<TH1F*>(inputFile->Get( (*plot_iter+"cutFlow").c_str() )->Clone() ) );
-  }
-  return cutFlowMap;
 }
 
 void HistogramPlotter::saveHistos(std::map<std::string, std::map<std::string, Plots*> > plotMap){
@@ -138,6 +138,7 @@ void HistogramPlotter::saveHistos(std::map<std::string, std::map<std::string, Pl
       for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
         TFile* outFile = new TFile{ (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "_Histo.root").c_str(), "RECREATE"};
 	outFile->cd();
+	tempPlotMap[*plot_iter]->SetName( (firstIt->second[*stageIt]->getPlotPoint()[i].name).c_str() );
         tempPlotMap[*plot_iter]->Write(); // Write histo to file
         outFile->Write();
         outFile->Close();
