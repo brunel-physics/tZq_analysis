@@ -3,7 +3,7 @@ fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 145803217
 crossSection = 5765.4
 runType = mc
-histoName = NPL
+histoName = NPL_zPlusJetsMadgraph
 colour = kPurple
 label = NPL
 plotType = f
@@ -13,17 +13,17 @@ fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
 totalEvents = 35291566
 crossSection = 18610.0
 runType = mc
-histoName = NPL
+histoName = NPL_zPlusJetsMadgraph
 colour = kPurple
 label = NPL
 plotType = f
 
-[ttbarInclusivePowerheg]
-fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 77229341
-crossSection = 831.76
+[ttbarDilepton_aMCatNLO]
+fileName = configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
+totalEvents = 30682233
+crossSection = 87.31
 runType = mc
-histoName = NPL
+histoName = NPL_ttbarDileptonNLO
 colour = kPurple
 label = NPL
 plotType = f
@@ -312,7 +312,7 @@ fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 145803217
 crossSection = 5765.4
 runType = mc
-histoName = zPlusJets
+histoName = zPlusJetsMadgraph
 colour = kBlue
 label = zPlusJets
 plotType = f
@@ -322,17 +322,17 @@ fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
 totalEvents = 35291566
 crossSection = 18610.0
 runType = mc
-histoName = zPlusJets
+histoName = zPlusJetsMadgraph
 colour = kBlue
 label = zPlusJets
 plotType = f
 
-[ttbarInclusivePowerheg]
-fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 77229341
-crossSection = 831.76
+[ttbarDilepton_aMCatNLO]
+fileName = configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
+totalEvents = 30682233
+crossSection = 87.31
 runType = mc
-histoName = ttbar
+histoName = ttbarDileptonNLO
 colour = kRed
 label = ttbar
 plotType = f
