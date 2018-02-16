@@ -86,10 +86,14 @@ void HistogramPlotter::plotHistos(std::map<std::string, std::map<std::string, Pl
       std::map<std::string, TH1F*> tempPlotMap;
       for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++){
         if ( loadHistos_ ) {
-          TFile* inputFile = new TFile{ (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "_Histo.root").c_str(), "READ"};	
-	  tempPlotMap[mapIt->first] = dynamic_cast<TH1F*>(inputFile->Get( (firstIt->second[*stageIt]->getPlotPoint()[i].name).c_str() )->Clone() );// Load histo here?
+          TFile* inputFile = new TFile { (histogramDirectory_ + firstIt->second[*stageIt]->getPlotPoint()[i].name + "_Histo.root").c_str(), "READ"};
+	  TH1F* tempHist = dynamic_cast<TH1F*>(inputFile->Get( (firstIt->second[*stageIt]->getPlotPoint()[i].name).c_str() )->Clone() );
+	  tempHist->SetDirectory(0);
+          tempPlotMap[mapIt->first] = tempHist;
+	  inputFile->Close();
+	  delete inputFile;
         }
-	if ( !loadHistos_ ) tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
+	else if ( !loadHistos_ ) tempPlotMap[mapIt->first] = mapIt->second[*stageIt]->getPlotPoint()[i].plotHist;
       }
       std::vector<std::string> xAxisLabel = {firstIt->second[*stageIt]->getPlotPoint()[i].xAxisLabel};
       makePlot(tempPlotMap,firstIt->second[*stageIt]->getPlotPoint()[i].title,firstIt->second[*stageIt]->getPlotPoint()[i].name,xAxisLabel);
