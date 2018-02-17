@@ -1,4 +1,4 @@
-[DYJetsToLL_Pt-M-100To200]
+[DYJetsToLL_M-100To200]
 fileName = configs/2016/datasets/fileLists/DYJets100To200Files.txt
 totalEvents = 16204289
 crossSection = 226.6
@@ -8,7 +8,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-200To400]
+[DYJetsToLL_M-200To400]
 fileName = configs/2016/datasets/fileLists/DYJets200To400Files.txt
 totalEvents = 3176602
 crossSection = 7.77
@@ -18,7 +18,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-400To500]
+[DYJetsToLL_M-400To500]
 fileName = configs/2016/datasets/fileLists/DYJets400To500Files.txt
 totalEvents = 287262
 crossSection = 0.4065
@@ -28,7 +28,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-500To700]
+[DYJetsToLL_M-500To700]
 fileName = configs/2016/datasets/fileLists/DYJets500To700Files.txt
 totalEvents = 280940
 crossSection = 0.2334
@@ -38,7 +38,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-700To800]
+[DYJetsToLL_M-700To800]
 fileName = configs/2016/datasets/fileLists/DYJets700To800Files.txt
 totalEvents = 276235
 crossSection = 0.03614
@@ -48,7 +48,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-800To1000]
+[DYJetsToLL_M-800To1000]
 fileName = configs/2016/datasets/fileLists/DYJets800To1000Files.txt
 totalEvents = 271768
 crossSection = 0.03047
@@ -58,7 +58,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-1000To1500]
+[DYJetsToLL_M-1000To1500]
 fileName = configs/2016/datasets/fileLists/DYJets1000To1500Files.txt
 totalEvents = 258620
 crossSection = 0.01636
@@ -68,7 +68,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-1500To2000]
+[DYJetsToLL_M-1500To2000]
 fileName = configs/2016/datasets/fileLists/DYJets1500To2000Files.txt
 totalEvents = 258625
 crossSection = 0.00218
@@ -78,7 +78,7 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-M-2000To3000]
+[DYJetsToLL_M-2000To3000]
 fileName = configs/2016/datasets/fileLists/DYJets2000To3000Files.txt
 totalEvents = 255342
 crossSection = 0.0005156
