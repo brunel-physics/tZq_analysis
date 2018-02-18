@@ -449,7 +449,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Apply an mTW cut. Trilepton only.")
     ("mzCut", po::value<float>(&mzCut)->default_value(20.),
      "Apply an mZ cut. Dilepton only.")
-    ("mwCut", po::value<float>(&mwCut)->default_value(50.),
+    ("mwCut", po::value<float>(&mwCut)->default_value(20.),
      "Apply an mW cut. Dilepton only.");
   po::variables_map vm;
 
