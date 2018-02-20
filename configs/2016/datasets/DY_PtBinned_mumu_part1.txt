@@ -50,7 +50,7 @@ plotType = f
 
 [DYJetsToLL_Pt-650ToInf]
 fileName = configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
-totalEvents = 1630021
+totalEvents = 1627882
 crossSection = 0.040981055
 runType = mc
 histoName = zPlusJetsPtBinned
