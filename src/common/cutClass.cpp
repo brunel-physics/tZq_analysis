@@ -507,8 +507,17 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
 
   if ( isNPL_ ) { // if is NPL channel
-    if ( numTightEle_ == 2 ) *eventWeight *= 1.24806;
-    if ( numTightMu_ == 2 ) *eventWeight *= 1.03226;
+    double eeWeight {1.0}, mumuWeight {1.0};
+    if ( invZMassCut_ == 20. && invWMassCut_ == 20. ) {
+      eeWeight = 1.05277828116;
+      mumuWeight = 0.731767900788;
+    }
+    if ( invZMassCut_ == 20. && invWMassCut_ == 50. ) {
+      eeWeight = 1.12750771638;
+      mumuWeight = 0.853155120216;
+    }
+    if ( numTightEle_ == 2 ) *eventWeight *= eeWeight;
+    if ( numTightMu_ == 2 ) *eventWeight *= mumuWeight;
   }
 
   if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
