@@ -516,6 +516,10 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
       eeWeight = 1.12750771638;
       mumuWeight = 0.853155120216;
     }
+    if ( invZMassCut_ == 50. && invWMassCut_ == 50. ) {
+      eeWeight = 1.2334461839;
+      mumuWeight = 0.997331838956;
+    }
     if ( numTightEle_ == 2 ) *eventWeight *= eeWeight;
     if ( numTightMu_ == 2 ) *eventWeight *= mumuWeight;
   }
