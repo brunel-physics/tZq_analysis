@@ -365,8 +365,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         tree.GetEntry(event)
 
         ## If same sign and non-prompt, continue
-##        if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState == 0 ) : continue
-##        if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState == 0 ) : continue
+	if ( tree.isMC == 1 ) :
+            if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState == 0 ) : continue
+            if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState == 0 ) : continue
 
 	##Save event number for debugging
 	varMap["eventNumber"][0] = tree.eventNum
@@ -383,6 +384,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         ## SFs for NPL lepton estimation normilisation
 	## mz20 mw 20, ee = 1.05277828116; mumu = 0.731767900788
 	## mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
+	## mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
         if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.12750771638 # SF we weight fake ee shape by
         elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.853155120216 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
@@ -575,10 +577,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 def main():
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 #    listOfMCs = {"QCD_EMEnriched_Pt-20to30":"QCD_EM","QCD_EMEnriched_Pt-30to50":"QCD_EM","QCD_EMEnriched_Pt-50to80":"QCD_EM","QCD_EMEnriched_Pt-80to120":"QCD_EM","QCD_EMEnriched_Pt-120to170":"QCD_EM","QCD_EMEnriched_Pt-170to300":"QCD_EM","QCD_EMEnriched_Pt-300toInf":"QCD_EM","QCD_EMEnriched_Pt-15to20":"QCD_Mu","QCD_EMEnriched_Pt-20to30":"QCD_Mu","QCD_EMEnriched_Pt-30to50":"QCD_Mu","QCD_EMEnriched_Pt-50to80":"QCD_Mu","QCD_EMEnriched_Pt805to120":"QCD_Mu","QCD_EMEnriched_Pt-120to170":"QCD_Mu","QCD_EMEnriched_Pt-170to300":"QCD_Mu","QCD_EMEnriched_Pt-300to470":"QCD_Mu","QCD_EMEnriched_Pt-470to600":"QCD_Mu","QCD_EMEnriched_Pt-600to800":"QCD_Mu","QCD_EMEnriched_Pt-800to1000":"QCD_Mu","QCD_EMEnriched_Pt-1000toInf":"QCD_Mu"}
-#    listOfMCs = {}
+#    listOfMCs = {"ttbarDilepton_aMCatNLO":"TT"}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
@@ -709,7 +711,7 @@ def main():
     outFakeChanToData["FakeEG"] = ["ee"]
     outFakeChanToData["FakeMu"] = ["mumu"]
 
-    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 
     #Loop over opposite sign samples to create fake shape
