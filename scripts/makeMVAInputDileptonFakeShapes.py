@@ -618,7 +618,10 @@ def main():
     outFakeChanToData["FakeEG"] = ["ee"]
     outFakeChanToData["FakeMu"] = ["mumu"]
 
+## Madgraph DYJets
     listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+## aMC@NLO DYJets
+#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 
     #Loop over opposite sign samples to create fake shape
     for outChan in outFakeChannels:
