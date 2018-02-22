@@ -1,0 +1,31 @@
+[DYToLL_0J]
+fileName = configs/2016/datasets/fileLists/DY0JetsFiles.txt
+totalEvents = 49579613
+crossSection = 4620.519036
+runType = mc
+histoName = zPlusJetsJetBinnedNLO
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[DYToLL_1J]
+fileName = configs/2016/datasets/fileLists/DY1JetsFiles.txt
+totalEvents = 49902571
+crossSection = 859.589402
+runType = mc
+histoName = zPlusJetsJetBinnedNLO
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[DYToLL_2J]
+fileName = configs/2016/datasets/fileLists/DY2JetsFiles.txt
+totalEvents = 90299356
+crossSection = 338.258531
+runType = mc
+histoName = zPlusJetsJetBinnedNLO
+colour = kBlue
+label = zPlusJets
+plotType = f
+
+[]
