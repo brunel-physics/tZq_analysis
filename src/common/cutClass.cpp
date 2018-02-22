@@ -1156,7 +1156,7 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
     bool jetId{true};
 
     // Jet ID == loose
-    if ( jetIDDo_ ) {
+    if ( jetIDDo_ && isProper) {
       if ( std::abs( jetVec.Eta() ) <= 2.7 ) { // for cases where jet eta <= 2.7
 
         // for all jets with eta <= 2.7
@@ -1210,10 +1210,10 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
       deltaLep = deltaR(event->wLepton.Eta(),event->wLepton.Phi(),jetVec.Eta(),jetVec.Phi());
 
     //std::cout << event->jetPF2PATPtRaw[i] << " " << deltaLep << std::endl;
-  if (deltaLep < 0.4) continue;
+  if (deltaLep < 0.4 && isProper) continue; // Only start rejecting things when actually making the jet cuts!
 
     //    if (event->jetPF2PATdRClosestLepton[i] < 0.5) continue;
-   if (isMC_ && makeBTagEffPlots_){
+   if (isMC_ && makeBTagEffPlots_ && isProper){
       //Fill eff info here if needed.
       if (std::abs(event->jetPF2PATPID[i]) == 5){ // b-jets
 	bTagEffPlots_[0]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
