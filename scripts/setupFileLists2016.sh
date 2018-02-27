@@ -123,15 +123,15 @@ ls /scratch/data/tZqSkimsRun2016/DYToLL_1J_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/con
 ls /scratch/data/tZqSkimsRun2016/DYToLL_2J_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY2JetsFiles.txt
 ls /scratch/data/tZqSkimsRun2016/DYToLL_2J_amcatnlo_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY2JetsFiles.txt
 
-ls /scratch/data/tZqSkimsRun2016/DY1JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY1Jets10to50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY2JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY2Jets10to50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY3JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY3Jets10to50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY4Jets10to50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY1JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY1Jets10to50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY2JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY2Jets10to50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY3JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY3Jets10to50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY4Jets10to50MadgraphFiles.txt
 
-ls /scratch/data/tZqSkimsRun2016/DY1JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY1Jets50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY2JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY2Jets50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY3JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY3Jets50MadgraphFiles.txt
-ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/configs/2016/datasets/fileLists/DY4Jets50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY1JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY1Jets50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY2JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY2Jets50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY3JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY3Jets50MadgraphFiles.txt
+ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY4Jets50MadgraphFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
