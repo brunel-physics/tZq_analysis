@@ -502,9 +502,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 
   * eventWeight *= getLeptonWeight(event,syst);
 
-  event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
-  if(doPlots_) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
-  if(doPlots_||fillCutFlow_) cutFlow->Fill(0.5,*eventWeight);
+  if ( doPlots_||fillCutFlow_ ) event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
+  if ( doPlots_ ) plotMap["lepSel"]->fillAllPlots(event,*eventWeight);
+  if ( doPlots_||fillCutFlow_ ) cutFlow->Fill(0.5,*eventWeight);
 
   if ( isNPL_ ) { // if is NPL channel
     double eeWeight {1.0}, mumuWeight {1.0};
@@ -528,9 +528,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 //  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl) return false;
   if (std::abs(invZmass) < 106 && isControl) return false;  
 
-  event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
-  if(doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
-  if (doPlots_||fillCutFlow_) cutFlow->Fill(1.5,*eventWeight);
+  if ( doPlots_||fillCutFlow_ )e vent->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
+  if ( doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
+  if ( doPlots_||fillCutFlow_ ) cutFlow->Fill(1.5,*eventWeight);
 
   return true;
 }
