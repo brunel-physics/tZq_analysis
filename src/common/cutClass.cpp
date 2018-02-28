@@ -375,10 +375,12 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
+
+  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
+
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
-  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
@@ -528,7 +530,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
 //  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl) return false;
   if (std::abs(invZmass) < 106 && isControl) return false;  
 
-  if ( doPlots_||fillCutFlow_ )e vent->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
+  if ( doPlots_||fillCutFlow_ ) event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if ( doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);
   if ( doPlots_||fillCutFlow_ ) cutFlow->Fill(1.5,*eventWeight);
 
@@ -1666,9 +1668,10 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
 
     if (event->jetIndex.size() < numJets_) return false;
     if (event->jetIndex.size() > maxJets_) return false;
-    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
 
     event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
+    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+
     if (event->bTagIndex.size() < numbJets_) return false;
     if (event->bTagIndex.size() > maxbJets_) return false;
     synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
@@ -2137,10 +2140,12 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   if (event->jetIndex.size() < numJets_) return false;
   if (event->jetIndex.size() > maxJets_) return false;
+
+  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
+
   if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
-  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
   if (event->bTagIndex.size() < numbJets_) return false;
   if (event->bTagIndex.size() > maxbJets_) return false;
 
