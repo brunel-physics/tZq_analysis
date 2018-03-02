@@ -968,11 +968,9 @@ void AnalysisAlgo::runMainAnalysis(){
       TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
       lEventTimer->DrawProgressBar(0, "");
       for (int i{0}; i < numberOfEvents; i++) {
-	std::stringstream lSStrFoundLeptons;
 	std::stringstream lSStrFoundEvents;
-	lSStrFoundLeptons <<  event->numElePF2PAT + event->numMuonPF2PAT;
 	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
-	lEventTimer->DrawProgressBar(i, ("Found "+ lSStrFoundLeptons.str() + " leptons. Found " + lSStrFoundEvents.str() + " events."));
+	lEventTimer->DrawProgressBar(i, ("Found " + lSStrFoundEvents.str() + " events."));
 	event->GetEntry(i);
 	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
 	int systMask{1};
