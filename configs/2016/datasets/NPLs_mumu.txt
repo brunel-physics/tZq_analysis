@@ -18,14 +18,14 @@ colour = kPurple
 label = NPL
 plotType = f
 
-[ttbarDilepton_aMCatNLO]
-fileName = configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
-totalEvents = 30682233
-crossSection = 87.31
+[ttbarInclusivePowerheg]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+totalEvents = 77229341
+crossSection = 831.76
 runType = mc
-histoName = NPL
-colour = kPurple
-label = NPL
+histoName = ttbarInc
+colour = kRed
+label = ttbar
 plotType = f
 
 [tHq]
