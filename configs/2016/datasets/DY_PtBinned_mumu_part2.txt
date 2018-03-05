@@ -58,6 +58,16 @@ colour = kBlue
 label = zPlusJets
 plotType = f
 
+[ttbarInclusivePowerheg]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+totalEvents = 77229341
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
 [tHq]
 fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3495799
