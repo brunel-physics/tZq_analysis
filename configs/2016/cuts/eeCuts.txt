@@ -1,15 +1,15 @@
 cuts = 
 {
 	tightMuons = {
-	      pt     	= 20.;
-	      ptLeading = 27.;
+	      pt     	= 30.;
+	      ptLeading = 30.;
 	      eta    	= 2.4;
 	      relIso 	= 0.15;
 	      number 	= 0;
 	      },
 	looseMuons = {
-	      pt     	= 20.;
-	      ptLeading = 27.;
+	      pt     	= 30.;
+	      ptLeading = 30.;
 	      eta    	= 2.4;
 	      relIso 	= 0.25;
 	      number 	= 0;
@@ -29,7 +29,7 @@ cuts =
 	      number 	= 2.; 
 	      }
 	jets = {
-		pt   	= 40.0;
+		pt   	= 30.0;
 		eta  	= 4.7;
 		numJets = 4;
 		maxJets = 6;
