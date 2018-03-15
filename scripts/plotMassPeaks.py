@@ -17,25 +17,28 @@ def main():
   wSigma = 8.0
   topSigma = 30.0
 
-  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_tZq.root")
-  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TT.root")
-  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M50.root")
-  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M50_aMCatNLO.root")
+  mzCut = "20"
+  mwCut = "50"
 
-  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M10To50.root")
-#  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_DYToLL_M10To50_aMCatNLO.root")
-  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TbartChan.root")
-  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TbartW.root")
-  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_THQ.root")
-  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TsChan.root")
-  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TtChan.root")
-  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TtW.root")
-  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TTW.root")
-  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_TTZ.root")
-  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_Wjets.root")
-  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_WW.root")
-  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_WZ.root")
-  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz50mw50/histofile_ZZ.root")
+  infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_tZq.root")
+  infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TT.root")
+  infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M50.root")
+  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M50_aMCatNLO.root")
+
+  infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M10To50.root")
+#  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M10To50_aMCatNLO.root")
+  infile_TbartChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TbartChan.root")
+  infile_TbartW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TbartW.root")
+  infile_THQ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_THQ.root")
+  infile_TsChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TsChan.root")
+  infile_TtChan = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TtChan.root")
+  infile_TtW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TtW.root")
+  infile_TTW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TTW.root")
+  infile_TTZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TTZ.root")
+  infile_Wjets = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_Wjets.root")
+  infile_WW = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_WW.root")
+  infile_WZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_WZ.root")
+  infile_ZZ = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_ZZ.root")
 
 
   # tZq Histos
