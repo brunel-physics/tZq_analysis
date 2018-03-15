@@ -109,6 +109,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //Same for trigger flag.
   triggerFlag_{},
   isNPL_{false},
+  doGenMassCuts_{false},
+  doGenPtCuts_{false},
   //Make cloned lepton sel tree false for now
   postLepSelTree_{nullptr},
   //Skips running trigger stuff
@@ -473,6 +475,38 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
 
+/*
+  if ( doGenMassCuts_ && postLepSelTree_ ) {
+  if ( postLepSelTree_ && numTightEle_ == 2 && isMC_ ) {
+    if ( event->genElePF2PATHardProcess[event->zPairIndex.first] == 1 && event->genElePF2PATHardProcess[event->zPairIndex.second] == 1) {
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() >= 250. ) return false;
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() < 100. ) return false;
+    }
+  }
+
+  if ( postLepSelTree_ && numTightMu_ == 2 && isMC_ ) {
+    if ( event->genMuonPF2PATHardProcess[event->zPairIndex.first] == 1 && event->genMuonPF2PATHardProcess[event->zPairIndex.second] == 1) {
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() >= 250. ) return false;
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() < 100. ) return false;
+    }
+  }
+
+  if ( doGenPtCuts_ && postLepSelTree_ ) {
+  if ( postLepSelTree_ && numTightEle_ == 2 && isMC_ ) {
+    if ( event->genElePF2PATHardProcess[event->zPairIndex.first] == 1 && event->genElePF2PATHardProcess[event->zPairIndex.second] == 1) {
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() >= 250. ) return false;
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() < 100. ) return false;
+    }
+  }
+
+  if ( postLepSelTree_ && numTightMu_ == 2 && isMC_ ) {
+    if ( event->genMuonPF2PATHardProcess[event->zPairIndex.first] == 1 && event->genMuonPF2PATHardProcess[event->zPairIndex.second] == 1) {
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() >= 250. ) return false;
+      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() < 100. ) return false;
+    }
+  }
+*/
+
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_ && !synchCutFlow_) postLepSelTree_->Fill();
 
@@ -511,8 +545,8 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if ( isNPL_ ) { // if is NPL channel
     double eeWeight {1.0}, mumuWeight {1.0};
     if ( invZMassCut_ == 20. && invWMassCut_ == 20. ) {
-      eeWeight = 1.05277828116;
-      mumuWeight = 0.731767900788;
+      eeWeight = 0.939531423783;
+      mumuWeight = 0.803926726112;
     }
     if ( invZMassCut_ == 20. && invWMassCut_ == 50. ) {
       eeWeight = 1.12750771638;
@@ -932,6 +966,7 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
     event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
     event->zPairRelIso.second = lepton1.Pt() > lepton2.Pt()?event->elePF2PATComRelIsoRho[electrons[1]]:event->elePF2PATComRelIsoRho[electrons[0]];
     event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? electrons[1]:electrons[0];
+
     return true;
   } // end electron if 
 
