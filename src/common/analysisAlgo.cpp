@@ -895,6 +895,7 @@ void AnalysisAlgo::runMainAnalysis(){
       float muonMomentumSF[3] {};
       float jetSmearValue[15] {};
       int isMC{dataset->isMC()}; // isMC flag for debug purposes
+      event->isMC = (dataset->isMC());
       //Now add in the branches:
 
       if (makeMVATree){
