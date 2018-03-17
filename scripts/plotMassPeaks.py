@@ -124,7 +124,7 @@ def main():
 
   All_wVsTopvsChi2Histo = ROOT.TH3D("All_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
-  All_metVsWmassHisto = ROOT.TH2D("Akk_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
+  All_metVsWmassHisto = ROOT.TH2D("All_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
 
   for event in infile_tZq.Ttree_tZq :
 #    if (event.Channel != 0) : continue
@@ -651,7 +651,7 @@ def main():
   TT_chi2Histo.SaveAs("plots/chiSquared/TT/chi2.root")
   TT_topVsWsignalHisto.SaveAs("plots/chiSquared/TT/signalMassPlot.root")
   TT_topVsWcontrolHisto.SaveAs("plots/chiSquared/TT/controlMassPlot.root")
-  TT_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
+  TT_metVsWmassHisto.SaveAs("plots/chiSquared/TT/metVsWmass.root")
 
   DY_topMassHisto.Fit("gaus")
   DY_wMassHisto.Fit("gaus")
@@ -665,7 +665,7 @@ def main():
   DY_chi2Histo.SaveAs("plots/chiSquared/DY/chi2.root")
   DY_topVsWsignalHisto.SaveAs("plots/chiSquared/DY/signalMassPlot.root")
   DY_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY/controlMassPlot.root")
-  DY_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
+  DY_metVsWmassHisto.SaveAs("plots/chiSquared/DY/metVsWmass.root")
 
   DY_amcatnlo_topMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/topMass.root")
   DY_amcatnlo_wMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/wMass.root")
@@ -676,7 +676,7 @@ def main():
   DY_amcatnlo_chi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/chi2.root")
   DY_amcatnlo_topVsWsignalHisto.SaveAs("plots/chiSquared/DY_amcatnlo/signalMassPlot.root")
   DY_amcatnlo_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY_amcatnlo/controlMassPlot.root")
-  DY_amcatnlo_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
+  DY_amcatnlo_metVsWmassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/metVsWmass.root")
 
   All_topMassHisto.Fit("gaus")
   All_wMassHisto.Fit("gaus")
@@ -690,7 +690,7 @@ def main():
   All_chi2Histo.SaveAs("plots/chiSquared/All/chi2.root")
   All_topVsWsignalHisto.SaveAs("plots/chiSquared/All/signalMassPlot.root")
   All_topVsWcontrolHisto.SaveAs("plots/chiSquared/All/controlMassPlot.root")
-  All_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
+  All_metVsWmassHisto.SaveAs("plots/chiSquared/All/metVsWmass.root")
 
 ##############
 
