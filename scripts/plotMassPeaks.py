@@ -18,7 +18,7 @@ def main():
   topSigma = 30.0
 
   mzCut = "20"
-  mwCut = "50"
+  mwCut = "9999"
 
   infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_tZq.root")
   infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TT.root")
@@ -56,6 +56,8 @@ def main():
 
   tZq_wVsTopvsChi2Histo = ROOT.TH3D("tZq_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
+  tZq_metVsWmassHisto = ROOT.TH2D("tZq_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
+
   ## TT Histos
 
   TT_topMassHisto = ROOT.TH1D("TT_topMassHisto","Top Mass Histo", 300, 0.0, 300.0)
@@ -70,6 +72,8 @@ def main():
   TT_wVsChi2Histo    = ROOT.TH2D("TT_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
 
   TT_wVsTopvsChi2Histo = ROOT.TH3D("TT_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
+
+  TT_metVsWmassHisto = ROOT.TH2D("TT_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
 
   ## DY Histos
 
@@ -86,6 +90,8 @@ def main():
 
   DY_wVsTopvsChi2Histo = ROOT.TH3D("DY_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
+  DY_metVsWmassHisto = ROOT.TH2D("DY_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
+
   ## DY aMCatNLO Histos
 
   DY_amcatnlo_topMassHisto = ROOT.TH1D("DY_amcatnlo_topMassHisto","Top Mass Histo", 300, 0.0, 300.0)
@@ -100,6 +106,8 @@ def main():
   DY_amcatnlo_wVsChi2Histo    = ROOT.TH2D("DY_amcatnlo_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
 
   DY_amcatnlo_wVsTopvsChi2Histo = ROOT.TH3D("DY_amcatnlo_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
+
+  DY_amcatnlo_metVsWmassHisto = ROOT.TH2D("DY_amcatnlo_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
 
   ## All MC Histos
 
@@ -116,6 +124,7 @@ def main():
 
   All_wVsTopvsChi2Histo = ROOT.TH3D("All_wVsTopvsChi2Histo", "Chi2 vs Top vs W Masses; m_{W}; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300., 300, 0., 300.)
 
+  All_metVsWmassHisto = ROOT.TH2D("Akk_metVsWmassHisto", "MET vs W Mass; m_{W}; MET", 150, 0., 150., 300, 0., 300.)
 
   for event in infile_tZq.Ttree_tZq :
 #    if (event.Channel != 0) : continue
@@ -136,6 +145,8 @@ def main():
     tZq_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     tZq_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     tZq_chi2Histo.Fill(chi2,weight)
+
+    tZq_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : tZq_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : tZq_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -160,6 +171,8 @@ def main():
     TT_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     TT_chi2Histo.Fill(chi2,weight)
 
+    TT_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : TT_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : TT_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -183,6 +196,8 @@ def main():
     DY_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     DY_chi2Histo.Fill(chi2,weight)
 
+    DY_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : DY_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -205,6 +220,8 @@ def main():
     DY_amcatnlo_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     DY_amcatnlo_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     DY_amcatnlo_chi2Histo.Fill(chi2,weight)
+
+    DY_amcatnlo_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : DY_amcatnlo_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_amcatnlo_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -230,6 +247,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -251,6 +270,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -274,6 +295,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -295,6 +318,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -318,6 +343,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -339,6 +366,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -362,6 +391,9 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -383,6 +415,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -406,6 +440,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -427,6 +463,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -450,6 +488,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -471,6 +511,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -494,6 +536,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -515,6 +559,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -538,6 +584,8 @@ def main():
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
 
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
+
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
@@ -559,6 +607,8 @@ def main():
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
     All_chi2Histo.Fill(chi2,weight)
+
+    All_metVsWmassHisto.Fill(event.wPairMass,event.met,weight)
 
     if ( chi2 < sigCut ) : All_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : All_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
@@ -587,6 +637,7 @@ def main():
   tZq_chi2Histo.SaveAs("plots/chiSquared/tZq/chi2.root")
   tZq_topVsWsignalHisto.SaveAs("plots/chiSquared/tZq/signalMassPlot.root")
   tZq_topVsWcontrolHisto.SaveAs("plots/chiSquared/tZq/controlMassPlot.root")
+  tZq_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
 
   TT_topMassHisto.Fit("gaus")
   TT_wMassHisto.Fit("gaus")
@@ -600,6 +651,7 @@ def main():
   TT_chi2Histo.SaveAs("plots/chiSquared/TT/chi2.root")
   TT_topVsWsignalHisto.SaveAs("plots/chiSquared/TT/signalMassPlot.root")
   TT_topVsWcontrolHisto.SaveAs("plots/chiSquared/TT/controlMassPlot.root")
+  TT_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
 
   DY_topMassHisto.Fit("gaus")
   DY_wMassHisto.Fit("gaus")
@@ -613,6 +665,7 @@ def main():
   DY_chi2Histo.SaveAs("plots/chiSquared/DY/chi2.root")
   DY_topVsWsignalHisto.SaveAs("plots/chiSquared/DY/signalMassPlot.root")
   DY_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY/controlMassPlot.root")
+  DY_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
 
   DY_amcatnlo_topMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/topMass.root")
   DY_amcatnlo_wMassHisto.SaveAs("plots/chiSquared/DY_amcatnlo/wMass.root")
@@ -623,6 +676,7 @@ def main():
   DY_amcatnlo_chi2Histo.SaveAs("plots/chiSquared/DY_amcatnlo/chi2.root")
   DY_amcatnlo_topVsWsignalHisto.SaveAs("plots/chiSquared/DY_amcatnlo/signalMassPlot.root")
   DY_amcatnlo_topVsWcontrolHisto.SaveAs("plots/chiSquared/DY_amcatnlo/controlMassPlot.root")
+  DY_amcatnlo_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
 
   All_topMassHisto.Fit("gaus")
   All_wMassHisto.Fit("gaus")
@@ -636,6 +690,7 @@ def main():
   All_chi2Histo.SaveAs("plots/chiSquared/All/chi2.root")
   All_topVsWsignalHisto.SaveAs("plots/chiSquared/All/signalMassPlot.root")
   All_topVsWcontrolHisto.SaveAs("plots/chiSquared/All/controlMassPlot.root")
+  All_metVsWmassHisto.SaveAs("plots/chiSquared/tZq/metVsWmass.root")
 
 ##############
 
