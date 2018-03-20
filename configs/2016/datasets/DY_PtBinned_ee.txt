@@ -347,15 +347,14 @@ plotType = f
 colour = kPurple
 triggerFlag = eCt
 
-~~~
 [DYJetsToLL_Pt-0To50]
 fileName = configs/2016/datasets/fileLists/DYJetsPt0To50Files.txt
 totalEvents = 32734121
 crossSection = 5352.57924
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-0To50
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-0To50
 plotType = f
 
 [DYJetsToLL_Pt-50To100]
@@ -363,9 +362,9 @@ fileName = configs/2016/datasets/fileLists/DYJetsPt50To100Files.txt
 totalEvents = 130582589
 crossSection = 363.81428
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-50To100
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-50To100
 plotType = f
 
 [DYJetsToLL_Pt-100To250]
@@ -373,9 +372,9 @@ fileName = configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
 totalEvents = 83686174
 crossSection = 84.014804
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-100To250
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-100To250
 plotType = f
 
 [DYJetsToLL_Pt-250To400]
@@ -383,9 +382,9 @@ fileName = configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
 totalEvents = 21185045
 crossSection = 3.228256512
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-250To400
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-250To400
 plotType = f
 
 [DYJetsToLL_Pt-400To650]
@@ -393,9 +392,9 @@ fileName = configs/2016/datasets/fileLists/DYJetsPt400To650Files.txt
 totalEvents = 1625936
 crossSection = 0.436041144
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-400To650
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-400To650
 plotType = f
 
 [DYJetsToLL_Pt-650ToInf]
@@ -403,9 +402,9 @@ fileName = configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
 totalEvents = 1627882
 crossSection = 0.040981055
 runType = mc
-histoName = zPlusJetsPtBinned
+histoName = zPlusJetsPtBinned_Pt-650ToInf
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_Pt-650ToInf
 plotType = f
 
 [ttbarInclusivePowerheg]
