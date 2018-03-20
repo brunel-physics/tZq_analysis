@@ -1201,7 +1201,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("genElePF2PATMotherId", genElePF2PATMotherId.data(), &b_genElePF2PATMotherId);
      fChain->SetBranchAddress("genElePF2PATPromptDecayed", genElePF2PATPromptDecayed.data(), &b_genElePF2PATPromptDecayed);
      fChain->SetBranchAddress("genElePF2PATPromptFinalState", genElePF2PATPromptFinalState.data(), &b_genElePF2PATPromptFinalState);
-//     fChain->SetBranchAddress("genElePF2PATHardProcess", genElePF2PATHardProcess.data(), &b_genElePF2PATHardProcess);
+     fChain->SetBranchAddress("genElePF2PATHardProcess", genElePF2PATHardProcess.data(), &b_genElePF2PATHardProcess);
    }
    fChain->SetBranchAddress("numMuonPF2PAT", &numMuonPF2PAT, &b_numMuonPF2PAT);
    fChain->SetBranchAddress("muonPF2PATE", muonPF2PATE.data(), &b_muonPF2PATE);
@@ -1262,7 +1262,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("genMuonPF2PATMotherId", genMuonPF2PATMotherId.data(), &b_genMuonPF2PATMotherId);
      fChain->SetBranchAddress("genMuonPF2PATPromptDecayed", genMuonPF2PATPromptDecayed.data(), &b_genMuonPF2PATPromptDecayed);
      fChain->SetBranchAddress("genMuonPF2PATPromptFinalState", genMuonPF2PATPromptFinalState.data(), &b_genMuonPF2PATPromptFinalState);
-//     fChain->SetBranchAddress("genMuonPF2PATHardProcess", genMuonPF2PATHardProcess.data(), &b_genMuonPF2PATHardProcess);
+     fChain->SetBranchAddress("genMuonPF2PATHardProcess", genMuonPF2PATHardProcess.data(), &b_genMuonPF2PATHardProcess);
    }
    fChain->SetBranchAddress("numJetPF2PAT", &numJetPF2PAT, &b_numJetPF2PAT);
    fChain->SetBranchAddress("jetPF2PATE", jetPF2PATE.data(), &b_jetPF2PATE);
