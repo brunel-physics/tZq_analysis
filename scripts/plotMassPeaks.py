@@ -692,6 +692,15 @@ def main():
   All_topVsWcontrolHisto.SaveAs("plots/chiSquared/All/controlMassPlot.root")
   All_metVsWmassHisto.SaveAs("plots/chiSquared/All/metVsWmass.root")
 
+  metVsWmassStack = ROOT.THStack("metVsWmassStack","met vs w mass")
+  tZq_metVsWmassHisto.SetFillColor(5)
+  metVsWmassStack.Add(tZq_metVsWmassHisto)
+  TT_metVsWmassHisto.SetFillColor(2)
+  metVsWmassStack.Add(TT_metVsWmassHisto)
+  DY_metVsWmassHisto.SetFillColor(4)
+  metVsWmassStack.Add(DY_metVsWmassHisto)
+  metVsWmassStack.SaveAs("plots/chiSquared/All/metVsWmassStack.root")
+
 ##############
 
   print "##############"
