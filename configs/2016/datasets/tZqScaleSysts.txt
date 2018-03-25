@@ -1,0 +1,21 @@
+[tZq_scaleup]
+fileName = configs/2016/datasets/fileLists/tZqScaleUpFiles.txt
+totalEvents = 6890240
+crossSection = 0.0758
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
+plotType = f
+
+[tZq_scaledown]
+fileName = configs/2016/datasets/fileLists/tZqScaleDownFiles.txt
+totalEvents = 6982676
+crossSection = 0.0758
+runType = mc
+histoName = tZq
+colour = kYellow
+label = tZq
+plotType = f
+
+[]

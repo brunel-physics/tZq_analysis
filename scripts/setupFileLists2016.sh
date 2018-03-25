@@ -152,6 +152,8 @@ ls /scratch/data/tZqSkimsRun2016/ttZ2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/dat
 ls /scratch/data/tZqSkimsRun2016/tW_top_5f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWInclusiveFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/tZq_ll_4Flavour3Lepton/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_4Flavour3Lepton_scaleup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqScaleUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tZq_ll_4Flavour3Lepton_scaledown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tZqScaleDownFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/tHq/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tHqFiles.txt
 ls /scratch/data/tZqSkimsRun2016/wPlusJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/wPlusJetsFiles.txt
