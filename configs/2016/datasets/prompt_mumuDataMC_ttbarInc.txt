@@ -219,7 +219,7 @@ plotType = f
 
 [ttZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 7974473
+totalEvents = 13908701
 crossSection = 0.2529
 runType = mc
 histoName = NPL_mumu
@@ -528,7 +528,7 @@ plotType = f
 
 [ttZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
-totalEvents = 7974473
+totalEvents = 13908701
 crossSection = 0.2529
 runType = mc
 histoName = ttV
