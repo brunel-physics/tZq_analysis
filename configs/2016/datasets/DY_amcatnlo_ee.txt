@@ -116,6 +116,7 @@ histoName = zz
 colour = kPink
 label = zz
 plotType = f
+runType = mc
 
 [ZZ2l2q]
 fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
