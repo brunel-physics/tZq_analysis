@@ -1061,7 +1061,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
 	  //Everything else uses LHE event weights
 	  if ( systMask == 1024 || systMask == 2048 ){
-	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" ) {
+	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" || dataset->name() == "tWInclusive_scaleup" || dataset->name() == "tWInclusive_scaledown" || dataset->name() == "tbarWInclusive_scaleup" || dataset->name() == "tbarWInclusive_scaledown" ) {
 	      //std::cout << std::setprecision(15) << eventWeight << " ";
 	      LHAPDF::usePDFMember(1,0);
 	      float q{event->genPDFScale};
