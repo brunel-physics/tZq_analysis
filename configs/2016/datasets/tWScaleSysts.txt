@@ -1,0 +1,41 @@
+[tWInclusive_scaleup]
+fileName = configs/2016/datasets/fileLists/tWInclusiveScaleUpFiles.txt
+totalEvents = 997880
+crossSection = 35.85
+runType = mc
+histoName = tW
+colour = kMagenta
+label = tW
+plotType = f
+
+[tWInclusive_scaledown]
+fileName = configs/2016/datasets/fileLists/tWInclusiveScaleDownFiles.txt
+totalEvents = 993640
+crossSection = 35.85
+runType = mc
+histoName = tW
+colour = kMagenta
+label = tW
+plotType = f
+
+[tbarWInclusive_scaleup]
+fileName = configs/2016/datasets/fileLists/tbarWInclusiveScaleUpFiles.txt
+totalEvents = 1000000
+crossSection = 35.85
+runType = mc
+histoName = tW
+colour = kMagenta
+label = tW
+plotType = f
+
+[tbarWInclusive_scaledown]
+fileName = configs/2016/datasets/fileLists/tbarWInclusiveScaleDownFiles.txt
+totalEvents = 999068
+crossSection = 35.85
+runType = mc
+histoName = tW
+colour = kMagenta
+label = tW
+plotType = f
+
+[]

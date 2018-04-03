@@ -35,7 +35,8 @@ AnalysisAlgo::AnalysisAlgo():
   is2016_{false},
   isFCNC_{false},
   isCtag_{false},
-  doNPLs_{false}
+  doNPLs_{false},
+  doZplusCR_{false}
 {}
 
 AnalysisAlgo::~AnalysisAlgo(){}
@@ -414,6 +415,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
     ("NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")
+    ("zPlus", po::bool_switch(&doZplusCR_),"Use Z+jets CR for dilepton channel. Region mwCut and metCut set by --mwCut and --metCut.")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.")
     ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
@@ -444,7 +446,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("jetRegion", po::value<std::vector<unsigned>>(&jetRegVars),
      "Set a sustom jet region in the format NJETS NBJETS MAXJETS MAXBJETS.")
     ("metCut", po::value<float>(&metCut)->default_value(0),
-     "Apply an MET cut. Trilepton only.")
+     "Apply an MET cut. Trilepton SR only and Dilepton Z+jets CR.")
     ("mtwCut", po::value<float>(&mtwCut)->default_value(0),
      "Apply an mTW cut. Trilepton only.")
     ("mzCut", po::value<float>(&mzCut)->default_value(20.),
@@ -495,6 +497,11 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     {
       throw std::logic_error("C-tagging is only used during an FCNC search. "
           "Set --FCNC & --dilepton arguements.");
+    }
+    if (doZplusCR_ && trileptonChannel_)
+    {
+      throw std::logic_error("Z+jets CR is only setup for the dilepton channel. "
+      "Set --dilepton arguement and --mwCut and --metCut to define CR region.");
     }
   }
   catch (const std::logic_error& e)
@@ -665,6 +672,7 @@ void AnalysisAlgo::setupCuts()
   cutObj->setMTWCut(mtwCut);
   cutObj->setMWCut(mwCut);
   cutObj->setMZCut(mzCut);
+  if (doZplusCR_) cutObj->setZplusControlRegionFlag(true);
 }
 
 void AnalysisAlgo::setupPlots()

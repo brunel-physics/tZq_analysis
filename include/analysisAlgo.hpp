@@ -75,6 +75,7 @@ class AnalysisAlgo{
 	bool isFCNC_;
 	bool isCtag_;
 	bool doNPLs_;
+        bool doZplusCR_;
 
 	std::vector<Dataset> datasets;
 	double totalLumi;

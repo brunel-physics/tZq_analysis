@@ -189,6 +189,8 @@ class Cuts{
   std::string postfixName_;
   //Set the flag used to reject non-prompt leptons when making the NPL shapes for plotting purposes
   bool isNPL_;
+  //Set the flag used to use the Z+jets CR
+  bool isZplusCR_;
   //Set flag and vars for gen level cuts
   bool doGenMassCuts_;
   bool doGenPtCuts_;
@@ -282,6 +284,7 @@ class Cuts{
   int numFound(){return synchCutFlowHist_->GetBinContent(4);}
   void setEventInfoFlag(bool flag){singleEventInfoDump_ = flag;}
   void setNplFlag(bool isNPL){isNPL_ = isNPL;}
+  void setZplusControlRegionFlag(bool isZplusCR){isZplusCR_ = isZplusCR;}
 
   void setGenMassCuts( float minCut ) {doGenMassCuts_ = true; minGenMassCut_ = minCut;}
   void setGenMassCuts( float minCut, float maxCut ) {doGenMassCuts_ = true; minGenMassCut_ = minCut; maxGenMassCut_ = maxCut;}

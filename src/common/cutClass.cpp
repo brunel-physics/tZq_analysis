@@ -109,6 +109,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //Same for trigger flag.
   triggerFlag_{},
   isNPL_{false},
+  isZplusCR_{false},
   doGenMassCuts_{false},
   doGenPtCuts_{false},
   //Make cloned lepton sel tree false for now
@@ -121,7 +122,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   //MET and mTW cuts go here.
   metCut_{0.0},
-  metDileptonCut_{100.0},
+  metDileptonCut_{50.0},
   mTWCut_{20.0},
   mTWCutSynch_{20.0},
   TopMassCutLower_{95.},
@@ -400,8 +401,17 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 //   float chi2 = topTerm*topTerm + wTerm*wTerm;
 //   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
 //   if ( chi2 >= 2.0 ) return false; //signal region
+    
+// Signal Region W mass cut
+    if (!isZplusCR_){
+      if ( std::abs(invWmass) > invWMassCut_ ) return false;
+    }
+// Z+jets Control Region
+    else {
+      if ( std::abs(invWmass) <= invWMassCut_ ) return false;
+      if ( event->metPF2PATEt >= metDileptonCut_ ) return false;
+    }
 
-    if ( std::abs(invWmass) > invWMassCut_ ) return false;
     if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
     if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
   }
@@ -474,42 +484,82 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.first] ) return false;
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
-
 /*
-  if ( doGenMassCuts_ && postLepSelTree_ ) {
   if ( postLepSelTree_ && numTightEle_ == 2 && isMC_ ) {
     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] == 1 && event->genElePF2PATHardProcess[event->zPairIndex.second] == 1) {
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() >= 250. ) return false;
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() < 100. ) return false;
+      Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]+event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]+event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]+event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]+event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2).M() >= 50. ) return false;
+      if ( (lepton1 + lepton2).M() < 10. )return false;
     }
   }
 
   if ( postLepSelTree_ && numTightMu_ == 2 && isMC_ ) {
     if ( event->genMuonPF2PATHardProcess[event->zPairIndex.first] == 1 && event->genMuonPF2PATHardProcess[event->zPairIndex.second] == 1) {
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() >= 250. ) return false;
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).M() < 100. ) return false;
+      Double_t genEnergy1 = event->genMuonPF2PATET[event->zPairIndex.first] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.first]*event->genMuonPF2PATPX[event->zPairIndex.first]+event->genMuonPF2PATPY[event->zPairIndex.first]*event->genMuonPF2PATPY[event->zPairIndex.first]+event->genMuonPF2PATPZ[event->zPairIndex.first]*event->genMuonPF2PATPZ[event->zPairIndex.first])/event->genMuonPF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genMuonPF2PATET[event->zPairIndex.second] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.second]*event->genMuonPF2PATPX[event->zPairIndex.second]+event->genMuonPF2PATPY[event->zPairIndex.second]*event->genMuonPF2PATPY[event->zPairIndex.second]+event->genMuonPF2PATPZ[event->zPairIndex.second]*event->genMuonPF2PATPZ[event->zPairIndex.second])/event->genMuonPF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genMuonPF2PATPX[event->zPairIndex.first],event->genMuonPF2PATPY[event->zPairIndex.first],event->genMuonPF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genMuonPF2PATPX[event->zPairIndex.second],event->genMuonPF2PATPY[event->zPairIndex.second],event->genMuonPF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2).M() >= 50. ) return false;
+      if ( (lepton1 + lepton2).M() < 10. )return false;
     }
+  }
+*/
+/*
+  if ( doGenMassCuts_ && postLepSelTree_ ) {
+  if ( postLepSelTree_ && numTightEle_ == 2 && isMC_ ) {
+    if ( event->genElePF2PATHardProcess[event->zPairIndex.first] == 1 && event->genElePF2PATHardProcess[event->zPairIndex.second] == 1) {
+      Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]+event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]+event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]+event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]+event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2 ).M() >= 650. ) return false;
+      if ( (lepton1 + lepton2 ).M() < 450. )return false;
+    }
+  }
+
+  if ( postLepSelTree_ && numTightMu_ == 2 && isMC_ ) {
+    if ( event->genMuonPF2PATHardProcess[event->zPairIndex.first] == 1 && event->genMuonPF2PATHardProcess[event->zPairIndex.second] == 1) {
+      Double_t genEnergy1 = event->genMuonPF2PATET[event->zPairIndex.first] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.first]*event->genMuonPF2PATPX[event->zPairIndex.first]+event->genMuonPF2PATPY[event->zPairIndex.first]*event->genMuonPF2PATPY[event->zPairIndex.first]+event->genMuonPF2PATPZ[event->zPairIndex.first]*event->genMuonPF2PATPZ[event->zPairIndex.first])/event->genMuonPF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genMuonPF2PATET[event->zPairIndex.second] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.second]*event->genMuonPF2PATPX[event->zPairIndex.second]+event->genMuonPF2PATPY[event->zPairIndex.second]*event->genMuonPF2PATPY[event->zPairIndex.second]+event->genMuonPF2PATPZ[event->zPairIndex.second]*event->genMuonPF2PATPZ[event->zPairIndex.second])/event->genMuonPF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genMuonPF2PATPX[event->zPairIndex.first],event->genMuonPF2PATPY[event->zPairIndex.first],event->genMuonPF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genMuonPF2PATPX[event->zPairIndex.second],event->genMuonPF2PATPY[event->zPairIndex.second],event->genMuonPF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2 ).M() >= 650. ) return false;
+      if ( (lepton1 + lepton2 ).M() < 450. )return false;
+    }
+  }
   }
 
   if ( doGenPtCuts_ && postLepSelTree_ ) {
   if ( postLepSelTree_ && numTightEle_ == 2 && isMC_ ) {
     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] == 1 && event->genElePF2PATHardProcess[event->zPairIndex.second] == 1) {
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() >= 250. ) return false;
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() < 100. ) return false;
+      Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]+event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]+event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]+event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]+event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2 ).Pt() >= 650. ) return false;
+      if ( (lepton1 + lepton2 ).Pt() < 450. )return false;
     }
   }
 
   if ( postLepSelTree_ && numTightMu_ == 2 && isMC_ ) {
     if ( event->genMuonPF2PATHardProcess[event->zPairIndex.first] == 1 && event->genMuonPF2PATHardProcess[event->zPairIndex.second] == 1) {
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() >= 250. ) return false;
-      if ( (event->zPairLeptons.first + event->zPairLeptons.second).Pt() < 100. ) return false;
+      Double_t genEnergy1 = event->genMuonPF2PATET[event->zPairIndex.first] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.first]*event->genMuonPF2PATPX[event->zPairIndex.first]+event->genMuonPF2PATPY[event->zPairIndex.first]*event->genMuonPF2PATPY[event->zPairIndex.first]+event->genMuonPF2PATPZ[event->zPairIndex.first]*event->genMuonPF2PATPZ[event->zPairIndex.first])/event->genMuonPF2PATPT[event->zPairIndex.first];
+      Double_t genEnergy2 = event->genMuonPF2PATET[event->zPairIndex.second] * sqrt (event->genMuonPF2PATPX[event->zPairIndex.second]*event->genMuonPF2PATPX[event->zPairIndex.second]+event->genMuonPF2PATPY[event->zPairIndex.second]*event->genMuonPF2PATPY[event->zPairIndex.second]+event->genMuonPF2PATPZ[event->zPairIndex.second]*event->genMuonPF2PATPZ[event->zPairIndex.second])/event->genMuonPF2PATPT[event->zPairIndex.second];
+      TLorentzVector lepton1{event->genMuonPF2PATPX[event->zPairIndex.first],event->genMuonPF2PATPY[event->zPairIndex.first],event->genMuonPF2PATPZ[event->zPairIndex.first],genEnergy1};
+      TLorentzVector lepton2{event->genMuonPF2PATPX[event->zPairIndex.second],event->genMuonPF2PATPY[event->zPairIndex.second],event->genMuonPF2PATPZ[event->zPairIndex.second],genEnergy2};
+      if ( (lepton1 + lepton2 ).Pt() >= 650. ) return false;
+      if ( (lepton1 + lepton2 ).Pt() < 450. )return false;
     }
+  }
   }
 */
 
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_ && !synchCutFlow_) postLepSelTree_->Fill();
-
+  
   // DO ROCHESTER CORRECTIONS HERE
   std::vector<float> SFs = {1.0};
 
@@ -1537,40 +1587,30 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98709; // 0.97491 for data eff; 0.98845 for SF
-        if (syst == 1) twgt += 0.00028; // -0.00105/+0.00110 for eff; 0.00028 for SF
-        if (syst == 2) twgt -= 0.00028;
+        twgt = 0.98710; // 0.97562 for data eff; 0.98710 for SF
+        if (syst == 1) twgt += 0.00062; // -0.00130/+0.00138 for eff; 0.00062 for SF
+        if (syst == 2) twgt -= 0.00062;
       }
     }
     else if (channel == "mumu"){
       if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
 
-	// Single muon only: (preHIP) 0.991+/-0.001 (postHIP) 1.002+/-0.000
-	// Double muon only: (preHIP) 0.80757+/-0.00113 (postHIP) 0.94326+/-0.00062 (all runs) 0.80062 +/- 0.00057
+        // eff pre-HIP fix: 0.97906 -0.00073/+0.00076; eff post-HIP fix: 0.99036 -0.00058/0.00062; 
+        //SF pre-HIP fix 0.98703 +/- 0.00016 and 0.99843 +/- 0.00016  for post-HIP fix
 
-        // eff across all runs: 0.96167 +0.00068/-0.00067; SF across all runs: 0.99201 +/- 0.00042
-        // eff pre-HIP fix: 0.95855 -0.00091/0.00093; eff post-HIP fix: 0.97105 -0.00089/0.00093; SF pre-HIP fix 0.98879 +/- 0.00017 and 1.00168 +/-0.00020  for post-HIP fix
-
-//        twgt = ( 0.98879 * lumiRunsBCDEF_ + 1.00168 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+//        twgt = ( 0.98703 * lumiRunsBCDEF_ + 0.99843 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
 
         twgt = 1.0;
 
-//        if (syst == 1) twgt += ( 0.00017 * lumiRunsBCDEF_ + 0.00020 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//        if (syst == 2) twgt -= ( 0.00017 * lumiRunsBCDEF_ + 0.00020 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-
-        // mumu separate runs SFs
-        // RunB: 0.987; RunC: 0.981; RunD: 0.988; RunE: 0.985; RunF: 0.993; RunG: 0.999; RunH: 0.998
-//         twgt = 0.809;
-//        if (syst == 1) twgt += ( 0.001 );
-//        if (syst == 2) twgt -= ( 0.001 );
-
+//        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+//        if (syst == 2) twgt -= ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
       }
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 1.00378; // 0.86655 for eff; 1.00378 for SF
-        if (syst == 1) twgt += 0.00909; // +/- -0.01207/0.01313 for eff; 0.00909 for SF
-        if (syst == 2) twgt -= 0.00909;
+        twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF 
+        if (syst == 1) twgt += 0.01018; // -0.01220/0.01339 for eff; 0.01018 for SF
+        if (syst == 2) twgt -= 0.01018;
       }
     }
 

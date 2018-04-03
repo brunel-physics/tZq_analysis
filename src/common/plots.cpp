@@ -607,10 +607,30 @@ float Plots::fillWLepRelIso(AnalysisEvent* event){
 
 float Plots::fillZPairMass(AnalysisEvent* event){
   return (event->zPairLeptons.first + event->zPairLeptons.second).M();
+/*  if ( !event->isMC ) return (event->zPairLeptons.first + event->zPairLeptons.second).M();
+  else {
+     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] != 1 ) return -999.;
+     if ( event->genElePF2PATHardProcess[event->zPairIndex.second] != 1 ) return -999.;
+     Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]+event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]+event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
+     Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]+event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]+event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
+     TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
+     TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};    
+     return (lepton1 + lepton2).M();
+  }*/
 }
 
 float Plots::fillZPairPt(AnalysisEvent* event){
   return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
+/*  if ( !event->isMC ) return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
+  else {
+     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] != 1 ) return -999.;
+     if ( event->genElePF2PATHardProcess[event->zPairIndex.second] != 1 ) return -999.;
+     Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
+     Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
+     TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
+     TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};    
+     return (lepton1 + lepton2).Pt();
+  }*/
 }
 
 float Plots::fillZPairEta(AnalysisEvent* event){
