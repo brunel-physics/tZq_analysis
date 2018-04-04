@@ -134,9 +134,7 @@ ls /scratch/data/tZqSkimsRun2016/DY3JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_P
 ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DY4Jets50MadgraphFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
-ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tWZ_5f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWZ_ll_Files.txt
-ls /scratch/data/tZqSkimsRun2016/tChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_aMCatNLO/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
@@ -148,6 +146,17 @@ ls /scratch/data/tZqSkimsRun2016/ttWlnu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/da
 ls /scratch/data/tZqSkimsRun2016/ttW2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttW2qFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttZ2l2nu/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2l2nuFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttZ2q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttZ2qFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/tChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tChannel_4f_scaleup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelScaleUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tChannel_4f_scaledown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelScaleDownFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tChannel_4f_hdampup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelHdampUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tChannel_4f_hdampdown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tChannelHdampDownFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f_scaleup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelScaleUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f_scaledown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelScaleDownFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f_hdampup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelHdampUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/tbarChannel_4f_hdampdown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarChannelHdampDownFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/tW_antitop_5f/* -1d  >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tW_antitop_5f_scaledown/* -1d  >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tbarWInclusiveScaleDownFiles.txt

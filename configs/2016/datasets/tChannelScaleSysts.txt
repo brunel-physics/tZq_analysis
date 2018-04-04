@@ -1,0 +1,81 @@
+[tChannel_scaleup]
+fileName = configs/2016/datasets/fileLists/tChannelScaleUpFiles.txt
+totalEvents = 5709148
+crossSection = 136.02
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = tChannel
+plotType = f
+
+[tChannel_scaledown]
+fileName = configs/2016/datasets/fileLists/tChannelScaleDownFiles.txt
+totalEvents = 5946672
+crossSection = 136.02
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = tChannel
+plotType = f
+
+[tChannel_hdampup]
+fileName = configs/2016/datasets/fileLists/tChannelHdampUpFiles.txt
+totalEvents = 6000000
+crossSection = 136.02
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = tChannel
+plotType = f
+
+[tChannel_hdampdown]
+fileName = configs/2016/datasets/fileLists/tChannelHdampDownFiles.txt
+totalEvents = 6000000
+crossSection = 136.02
+runType = mc
+histoName = tChannel
+colour = kMagenta
+label = tChannel
+plotType = f
+
+[tbarChannel_scaleup]
+fileName = configs/2016/datasets/fileLists/tbarChannelScaleUpFiles.txt
+totalEvents = 3970546
+crossSection = 80.95
+runType = mc
+histoName = tbarChannel
+colour = kMagenta
+label = tbarChannel
+plotType = f
+
+[tbarChannel_scaledown]
+fileName = configs/2016/datasets/fileLists/tbarChannelScaleDownFiles.txt
+totalEvents = 3894778
+crossSection = 80.95
+runType = mc
+histoName = tbarChannel
+colour = kMagenta
+label = tbarChannel
+plotType = f
+
+[tbarChannel_hdampup]
+fileName = configs/2016/datasets/fileLists/tbarChannelHdampUpFiles.txt
+totalEvents = 4000000
+crossSection = 80.95
+runType = mc
+histoName = tbarChannel
+colour = kMagenta
+label = tbarChannel
+plotType = f
+
+[tbarChannel_hdampdown]
+fileName = configs/2016/datasets/fileLists/tbarChannelHdampDownFiles.txt
+totalEvents = 3999346
+crossSection = 80.95
+runType = mc
+histoName = tbarChannel
+colour = kMagenta
+label = tbarChannel
+plotType = f
+
+[]
