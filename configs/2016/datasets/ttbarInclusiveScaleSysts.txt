@@ -10,7 +10,7 @@ plotType = f
 
 [ttbarInclusivePowerheg_hdampUP]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
-totalEvents = 58807200
+totalEvents = 58858606
 crossSection = 831.76
 runType = mc
 histoName = ttbarInc
