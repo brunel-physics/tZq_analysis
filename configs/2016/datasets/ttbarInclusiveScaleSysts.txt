@@ -1,0 +1,71 @@
+[ttbarInclusivePowerheg_colourFlip]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegColourFlipFiles.txt
+totalEvents = 11621730
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_hdampUP]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
+totalEvents = 58807200
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_hdampDown]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampDownFiles.txt
+totalEvents = 58163976
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_fsrup]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUpFiles.txt
+totalEvents = 29777488
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_fsrdown]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrDownFiles.txt
+totalEvents = 29716580
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_isrup]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrUpFiles.txt
+totalEvents = 59033604
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[ttbarInclusivePowerheg_isrdown]
+fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrDownFiles.txt
+totalEvents = 29084029
+crossSection = 831.76
+runType = mc
+histoName = ttbarInc
+colour = kRed
+label = ttbar
+plotType = f
+
+[]

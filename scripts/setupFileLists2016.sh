@@ -137,7 +137,25 @@ ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/tWZ_5f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_aMCatNLO/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
+
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_colourFlip/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegColourFlipFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampUP/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdamp_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampDOWN/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampDownFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampDOWN_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampDownFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUp.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrup_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUp.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrup_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUp.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrdown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrDown.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrdown_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrDown.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrdown_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrDown.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrup_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrUp.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrup_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrUp.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrdown/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrDown.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrdown_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrDown.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrdown_ext2/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrDown.txt
 
 ls /scratch/data/tZqSkimsRun2016/ttHTobb/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttHTobbFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttHToNonbb/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
