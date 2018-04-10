@@ -1042,10 +1042,11 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	  //If amcatnlo DY, normalise
 	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
+//	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.796091;
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
-	  if ( dataset->name() == "ttbarInclusivePowerheg") eventWeight *= event->topPtReweight;
+	  if ( dataset->name() == "ttbarInclusivePowerheg" || dataset->name() == "ttbarInclusivePowerheg_colourFlip" || dataset->name() == "ttbarInclusivePowerheg_hdampUP" || dataset->name() == "ttbarInclusivePowerheg_hdampDown" || dataset->name() == "ttbarInclusivePowerheg_fsrup" || dataset->name() == "ttbarInclusivePowerheg_fsrdown" || dataset->name() == "ttbarInclusivePowerheg_isrup" || dataset->name() == "ttbarInclusivePowerheg_isrdown" ) eventWeight *= event->topPtReweight;
 	  //	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
 
