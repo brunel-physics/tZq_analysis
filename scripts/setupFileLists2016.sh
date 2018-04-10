@@ -142,7 +142,7 @@ ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PAT
 
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_colourFlip/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegColourFlipFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampUP/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdamp_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
+ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampUP_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampUpFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampDOWN/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampDownFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampDOWN_ext1/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegHdampDownFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_fsrup/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUpFiles.txt
