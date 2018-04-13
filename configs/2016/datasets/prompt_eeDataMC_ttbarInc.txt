@@ -20,7 +20,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 77229341
+totalEvents = 77081156
 crossSection = 831.76
 runType = mc
 histoName = NPL_ee
@@ -330,7 +330,7 @@ plotType = f
 
 [ttbarInclusivePowerheg]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
-totalEvents = 77229341
+totalEvents = 77081156
 crossSection = 831.76
 runType = mc
 histoName = ttbarInc
