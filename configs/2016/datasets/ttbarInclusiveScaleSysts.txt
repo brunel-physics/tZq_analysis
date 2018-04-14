@@ -60,7 +60,7 @@ plotType = f
 
 [ttbarInclusivePowerheg_isrdown]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegIsrDownFiles.txt
-totalEvents = 29084029
+totalEvents = 58999580
 crossSection = 831.76
 runType = mc
 histoName = ttbarInc
