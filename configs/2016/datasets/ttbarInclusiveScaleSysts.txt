@@ -30,7 +30,7 @@ plotType = f
 
 [ttbarInclusivePowerheg_fsrup]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrUpFiles.txt
-totalEvents = 29777488
+totalEvents = 59230899
 crossSection = 831.76
 runType = mc
 histoName = ttbarInc
@@ -40,7 +40,7 @@ plotType = f
 
 [ttbarInclusivePowerheg_fsrdown]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFsrDownFiles.txt
-totalEvents = 29716580
+totalEvents = 59306906
 crossSection = 831.76
 runType = mc
 histoName = ttbarInc
