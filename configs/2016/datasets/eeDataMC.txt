@@ -1,7 +1,7 @@
 [DYJetsToLL_M-50]
 fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 145803217
-crossSection = 5765.4
+crossSection = 5941.0
 runType = mc
 histoName = zPlusJetsMadgraph
 colour = kBlue
@@ -11,7 +11,7 @@ plotType = f
 [DYJetsToLL_M-10To50]
 fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
 totalEvents = 35291566
-crossSection = 18610.0
+crossSection = 18810.0
 runType = mc
 histoName = zPlusJetsMadgraph
 colour = kBlue
@@ -31,7 +31,7 @@ plotType = f
 [tHq]
 fileName = configs/2016/datasets/fileLists/tHqFiles.txt
 totalEvents = 3495799
-crossSection = 0.07096
+crossSection = 0.07462
 runType = mc
 histoName = SingleTop
 colour = kMagenta
@@ -71,7 +71,7 @@ plotType = f
 [WZ1l1nu2q]
 fileName = configs/2016/datasets/fileLists/WZ1l1nu2q.txt
 totalEvents = 24221923
-crossSection = 10.71
+crossSection = 10.73
 runType = mc
 histoName = wz
 colour = kOrange
@@ -81,7 +81,7 @@ plotType = f
 [WZ2l2q]
 fileName = configs/2016/datasets/fileLists/WZ2l2q.txt
 totalEvents = 26517272
-crossSection = 5.595
+crossSection = 5.606
 runType = mc
 histoName = wz
 colour = kOrange
@@ -101,7 +101,7 @@ plotType = f
 [ZZ4l]
 fileName = configs/2016/datasets/fileLists/ZZ4lFiles.txt
 totalEvents = 10709784
-crossSection = 1.212
+crossSection = 1.204
 runType = mc
 histoName = zz
 colour = kPink
@@ -111,7 +111,7 @@ plotType = f
 [ZZ2l2nu]
 fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 totalEvents = 8842475
-crossSection = 0.564
+crossSection = 0.5644
 runType = mc
 histoName = zz
 colour = kPink
@@ -121,7 +121,7 @@ plotType = f
 [ZZ2l2q]
 fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
 runType = mc
-crossSection = 3.22
+crossSection = 3.222
 totalEvents = 14534622
 histoName = zz
 colour = kPink
@@ -201,7 +201,7 @@ plotType = f
 [ttWlnu]
 fileName = configs/2016/datasets/fileLists/ttWlnuFiles.txt
 totalEvents = 5280565
-crossSection = 0.2043
+crossSection = 0.2001
 runType = mc
 histoName = ttV
 colour = kGreen
@@ -211,7 +211,7 @@ plotType = f
 [ttW2q]
 fileName = configs/2016/datasets/fileLists/ttW2qFiles.txt
 totalEvents = 833298
-crossSection = 0.4062
+crossSection = 0.405
 runType = mc
 histoName = ttV
 colour = kGreen
@@ -241,7 +241,7 @@ plotType = f
 [ttHTobb]
 fileName = configs/2016/datasets/fileLists/ttHTobbFiles.txt
 totalEvents = 3845992
-crossSection = 0.2934
+crossSection = 0.2942
 runType = mc
 histoName = ttV
 colour = kGreen
@@ -251,7 +251,7 @@ plotType = f
 [ttHToNonbb]
 fileName = configs/2016/datasets/fileLists/ttHToNonbbFiles.txt
 totalEvents = 3981250
-crossSection = 0.2151
+crossSection = 0.2123
 runType = mc
 histoName = ttV
 colour = kGreen
@@ -281,7 +281,7 @@ plotType = f
 [tWZ]
 fileName = configs/2016/datasets/fileLists/tWZ_ll_Files.txt
 totalEvents = 50000
-crossSection = 0.01123
+crossSection = 0.01104
 runType = mc
 histoName = SingleTop
 colour = kMagenta
