@@ -80,7 +80,7 @@ plotType = f
 
 [sChannel]
 fileName = configs/2016/datasets/fileLists/sChannelFiles.txt
-totalEvents = 1000000
+totalEvents = 2989199
 crossSection = 10.32
 runType = mc
 histoName = NPL
@@ -430,7 +430,7 @@ plotType = f
 
 [sChannel]
 fileName = configs/2016/datasets/fileLists/sChannelFiles.txt
-totalEvents = 1000000
+totalEvents = 2989199
 crossSection = 10.32
 runType = mc
 histoName = SingleTop
