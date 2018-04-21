@@ -1,7 +1,7 @@
 [DYJetsToLL_M-50]
 fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 145803217
-crossSection = 5765.4
+crossSection = 5941.0
 runType = mc
 histoName = zPlusJets
 colour = kBlue

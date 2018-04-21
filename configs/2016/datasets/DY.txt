@@ -1,7 +1,7 @@
 [DYJetsToLL_M-50]
 fileName = configs/2016/datasets/fileLists/DYJets50MadgraphFiles.txt
 totalEvents = 145803217
-crossSection = 5765.4
+crossSection = 5941.0
 runType = mc
 histoName = zPlusJetsMadgraph
 colour = kBlue
@@ -11,7 +11,7 @@ plotType = f
 [DYJetsToLL_M-10To50]
 fileName = configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt
 totalEvents = 35291566
-crossSection = 18610.0
+crossSection = 18810.0
 runType = mc
 histoName = zPlusJetsMadgraph
 colour = kBlue
