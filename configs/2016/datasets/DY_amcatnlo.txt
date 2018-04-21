@@ -1,7 +1,7 @@
 [DYJetsToLL_M-50_amcatnlo]
 fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
 totalEvents = 151023640
-crossSection = 5765.4
+crossSection = 5941.0
 runType = mc
 histoName = zPlusJetsAmcAtNlo
 colour = kBlue
@@ -11,7 +11,7 @@ plotType = f
 [DYJetsToLL_M-10To50_amcatnlo]
 fileName = configs/2016/datasets/fileLists/DYJets10To50Files.txt
 totalEvents = 106269624
-crossSection = 18610.0
+crossSection = 18810.0
 runType = mc
 histoName = zPlusJetsAmcAtNlo
 colour = kBlue
