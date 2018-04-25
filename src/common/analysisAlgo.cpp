@@ -1041,8 +1041,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //}
 
 	  //If amcatnlo DY, normalise
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.420257;
-//	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.796091;
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && doZplusCR_ ) eventWeight *= 0.384378; // New CR def
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && !doZplusCR_ ) eventWeight *= 0.407213; // Old CR def
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
