@@ -38,10 +38,6 @@ public :
    std::array<Float_t, NELECTRONSMAX> elePF2PATEta;
    std::array<Float_t, NELECTRONSMAX> elePF2PATPT;
    std::array<Int_t,   NELECTRONSMAX> elePF2PATCharge;
-   std::array<Float_t, NELECTRONSMAX> elePF2PATMVA;
-   std::array<Float_t, NELECTRONSMAX> elePF2PATMVAcategory;
-   std::array<Float_t, NELECTRONSMAX> elePF2PATNonTrigMVA;
-   std::array<Float_t, NELECTRONSMAX> elePF2PATNonTrigMVAcategory;
    std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdVeto;
    std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdLoose;
    std::array<Int_t,   NELECTRONSMAX> elePF2PATCutIdMedium;
@@ -523,10 +519,6 @@ public :
    TBranch        *b_elePF2PATEta;   //!
    TBranch        *b_elePF2PATPT;   //!
    TBranch        *b_elePF2PATCharge;   //!
-   TBranch        *b_elePF2PATMVA;   //!
-   TBranch        *b_elePF2PATMVAcategory;   //!
-   TBranch        *b_elePF2PATNonTrigMVA;   //!
-   TBranch        *b_elePF2PATNonTrigMVAcategory;   //!
    TBranch        *b_elePF2PATCutIdVeto;   //!
    TBranch        *b_elePF2PATCutIdLoose;   //!
    TBranch        *b_elePF2PATCutIdMedium;   //!
@@ -1109,10 +1101,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("elePF2PATEta", elePF2PATEta.data(), &b_elePF2PATEta);
    fChain->SetBranchAddress("elePF2PATPT", elePF2PATPT.data(), &b_elePF2PATPT);
    fChain->SetBranchAddress("elePF2PATCharge", elePF2PATCharge.data(), &b_elePF2PATCharge);
-   fChain->SetBranchAddress("elePF2PATMVA", elePF2PATMVA.data(), &b_elePF2PATMVA);
-   fChain->SetBranchAddress("elePF2PATMVAcategory", elePF2PATMVAcategory.data(), &b_elePF2PATMVAcategory);
-   fChain->SetBranchAddress("elePF2PATNonTrigMVA", elePF2PATNonTrigMVA.data(), &b_elePF2PATNonTrigMVA);
-   fChain->SetBranchAddress("elePF2PATNonTrigMVAcategory", elePF2PATNonTrigMVAcategory.data(), &b_elePF2PATNonTrigMVAcategory);
    fChain->SetBranchAddress("elePF2PATCutIdVeto", elePF2PATCutIdVeto.data(), &b_elePF2PATCutIdVeto);
    fChain->SetBranchAddress("elePF2PATCutIdLoose", elePF2PATCutIdLoose.data(), &b_elePF2PATCutIdLoose);
    fChain->SetBranchAddress("elePF2PATCutIdMedium", elePF2PATCutIdMedium.data(), &b_elePF2PATCutIdMedium);
