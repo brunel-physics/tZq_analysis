@@ -223,6 +223,10 @@ public :
    std::array<Float_t,  NJETSMAX> jetPF2PATBDiscriminator;
    std::array<Float_t,  NJETSMAX> jetPF2PATCvsLDiscriminator;
    std::array<Float_t,  NJETSMAX> jetPF2PATCvsBDiscriminator;
+   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;
+   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedMVAV2BJetTags;
+   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsLJetTags;
+   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsBJetTags;
    std::array<Int_t,    NJETSMAX> jetPF2PATNConstituents;
    std::array<Int_t,    NJETSMAX> jetPF2PATPID;
    std::array<Float_t,  NJETSMAX> jetPF2PATClosestBPartonDeltaR;
@@ -703,6 +707,10 @@ public :
    TBranch        *b_jetPF2PATBDiscriminator;   //!
    TBranch        *b_jetPF2PATCvsLDiscriminator;   //!
    TBranch        *b_jetPF2PATCvsBDiscriminator;   //!
+   TBranch        *b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;   //!
+   TBranch        *b_jetPF2PATpfCombinedMVAV2BJetTags;   //!
+   TBranch        *b_jetPF2PATpfCombinedCvsLJetTags;   //!
+   TBranch        *b_jetPF2PATpfCombinedCvsBJetTags;   //!
    TBranch        *b_jetPF2PATNConstituents;   //!
    TBranch        *b_jetPF2PATPID;   //!
    TBranch        *b_jetPF2PATClosestBPartonDeltaR;   //!
@@ -1288,8 +1296,12 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("jetPF2PATSVDY", jetPF2PATSVDY.data(), &b_jetPF2PATSVDY);
    fChain->SetBranchAddress("jetPF2PATSVDZ", jetPF2PATSVDZ.data(), &b_jetPF2PATSVDZ);
    fChain->SetBranchAddress("jetPF2PATBDiscriminator", jetPF2PATBDiscriminator.data(), &b_jetPF2PATBDiscriminator);
-//   fChain->SetBranchAddress("jetPF2PATCvsLDiscriminator", jetPF2PATCvsLDiscriminator.data(), &b_jetPF2PATCvsLDiscriminator);
-//   fChain->SetBranchAddress("jetPF2PATCvsBDiscriminator", jetPF2PATCvsBDiscriminator.data(), &b_jetPF2PATCvsBDiscriminator);
+   fChain->SetBranchAddress("jetPF2PATCvsLDiscriminator", jetPF2PATCvsLDiscriminator.data(), &b_jetPF2PATCvsLDiscriminator);
+   fChain->SetBranchAddress("jetPF2PATCvsBDiscriminator", jetPF2PATCvsBDiscriminator.data(), &b_jetPF2PATCvsBDiscriminator);
+//   fChain->SetBranchAddress("jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags", jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags.data(), &b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags);
+//   fChain->SetBranchAddress("jetPF2PATpfCombinedMVAV2BJetTags", jetPF2PATpfCombinedMVAV2BJetTags.data(), &b_jetPF2PATpfCombinedMVAV2BJetTags);
+//   fChain->SetBranchAddress("jetPF2PATpfCombinedCvsLJetTags", jetPF2PATpfCombinedCvsLJetTags.data(), &b_jetPF2PATpfCombinedCvsLJetTags);
+//   fChain->SetBranchAddress("jetPF2PATpfCombinedCvsBJetTags", jetPF2PATpfCombinedCvsBJetTags.data(), &b_jetPF2PATpfCombinedCvsBJetTags);
    fChain->SetBranchAddress("jetPF2PATNConstituents", jetPF2PATNConstituents.data(), &b_jetPF2PATNConstituents);
    fChain->SetBranchAddress("jetPF2PATPID", jetPF2PATPID.data(), &b_jetPF2PATPID);
    fChain->SetBranchAddress("jetPF2PATClosestBPartonDeltaR", jetPF2PATClosestBPartonDeltaR.data(), &b_jetPF2PATClosestBPartonDeltaR);
