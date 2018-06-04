@@ -17,17 +17,17 @@ def sortOutLeptons(tree,channel):
     #if tree.numElePF2PAT < 3:
     #    return (0,0,0)
     if channel == "eee":
-        wLep = TLorentzVector(tree.elePF2PATGsfPx[tree.wLepIndex],tree.elePF2PATGsfPy[tree.wLepIndex],tree.elePF2PATGsfPz[tree.wLepIndex],tree.elePF2PATGsfE[tree.wLepIndex])
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
+        wLep = TLorentzVector(tree.elePF2PATPX[tree.wLepIndex],tree.elePF2PATPY[tree.wLepIndex],tree.elePF2PATPZ[tree.wLepIndex],tree.elePF2PATE[tree.wLepIndex])
+        zLep1 = TLorentzVector(tree.elePF2PATPX[tree.zLep1Index],tree.elePF2PATPY[tree.zLep1Index],tree.elePF2PATPZ[tree.zLep1Index],tree.elePF2PATE[tree.zLep1Index])
+        zLep2 = TLorentzVector(tree.elePF2PATPX[tree.zLep2Index],tree.elePF2PATPY[tree.zLep2Index],tree.elePF2PATPZ[tree.zLep2Index],tree.elePF2PATE[tree.zLep2Index])
     if channel == "eemu":
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
+        zLep1 = TLorentzVector(tree.elePF2PATPX[tree.zLep1Index],tree.elePF2PATPY[tree.zLep1Index],tree.elePF2PATPZ[tree.zLep1Index],tree.elePF2PATE[tree.zLep1Index])
+        zLep2 = TLorentzVector(tree.elePF2PATPX[tree.zLep2Index],tree.elePF2PATPY[tree.zLep2Index],tree.elePF2PATPZ[tree.zLep2Index],tree.elePF2PATE[tree.zLep2Index])
         wLep = TLorentzVector(tree.muonPF2PATPx[tree.wLepIndex],tree.muonPF2PATPy[tree.wLepIndex],tree.muonPF2PATPz[tree.wLepIndex],tree.muonPF2PATE[tree.wLepIndex])
     if channel == "emumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
-        wLep = TLorentzVector(tree.elePF2PATGsfPx[tree.wLepIndex],tree.elePF2PATGsfPy[tree.wLepIndex],tree.elePF2PATGsfPz[tree.wLepIndex],tree.elePF2PATGsfE[tree.wLepIndex])
+        wLep = TLorentzVector(tree.elePF2PATPX[tree.wLepIndex],tree.elePF2PATPY[tree.wLepIndex],tree.elePF2PATPZ[tree.wLepIndex],tree.elePF2PATE[tree.wLepIndex])
     if channel == "mumumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])

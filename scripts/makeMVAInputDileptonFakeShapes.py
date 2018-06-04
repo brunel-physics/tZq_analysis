@@ -27,8 +27,8 @@ def sortOutLeptons(tree,channel):
     #Let's try commenting this out and see if everything breaks? Hopefully it won't do...
     #if tree.numElePF2PAT < 3:
     if channel == "ee":
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
+        zLep1 = TLorentzVector(tree.elePF2PATPX[tree.zLep1Index],tree.elePF2PATPY[tree.zLep1Index],tree.elePF2PATPZ[tree.zLep1Index],tree.elePF2PATE[tree.zLep1Index])
+        zLep2 = TLorentzVector(tree.elePF2PATPX[tree.zLep2Index],tree.elePF2PATPY[tree.zLep2Index],tree.elePF2PATPZ[tree.zLep2Index],tree.elePF2PATE[tree.zLep2Index])
     if channel == "mumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
@@ -565,7 +565,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 def main():
 
     #Mapping of our mc names to IPHC names
-#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
     listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")

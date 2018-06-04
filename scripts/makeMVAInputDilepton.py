@@ -27,13 +27,13 @@ def sortOutLeptons(tree,channel):
     #Let's try commenting this out and see if everything breaks? Hopefully it won't do...
     #if tree.numElePF2PAT < 3:
     if channel == "ee":
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
+        zLep1 = TLorentzVector(tree.elePF2PATPX[tree.zLep1Index],tree.elePF2PATPY[tree.zLep1Index],tree.elePF2PATPZ[tree.zLep1Index],tree.elePF2PATE[tree.zLep1Index])
+        zLep2 = TLorentzVector(tree.elePF2PATPX[tree.zLep2Index],tree.elePF2PATPY[tree.zLep2Index],tree.elePF2PATPZ[tree.zLep2Index],tree.elePF2PATE[tree.zLep2Index])
     if channel == "mumu":
         zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
     if channel == "emu":
-        zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
+        zLep1 = TLorentzVector(tree.elePF2PATPX[tree.zLep1Index],tree.elePF2PATPY[tree.zLep1Index],tree.elePF2PATPZ[tree.zLep1Index],tree.elePF2PATE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
 
     return (zLep1,zLep2)
@@ -577,7 +577,8 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 def main():
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+    listOfMCs = {"WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 #    listOfMCs = {"QCD_EMEnriched_Pt-20to30":"QCD_EM","QCD_EMEnriched_Pt-30to50":"QCD_EM","QCD_EMEnriched_Pt-50to80":"QCD_EM","QCD_EMEnriched_Pt-80to120":"QCD_EM","QCD_EMEnriched_Pt-120to170":"QCD_EM","QCD_EMEnriched_Pt-170to300":"QCD_EM","QCD_EMEnriched_Pt-300toInf":"QCD_EM","QCD_EMEnriched_Pt-15to20":"QCD_Mu","QCD_EMEnriched_Pt-20to30":"QCD_Mu","QCD_EMEnriched_Pt-30to50":"QCD_Mu","QCD_EMEnriched_Pt-50to80":"QCD_Mu","QCD_EMEnriched_Pt805to120":"QCD_Mu","QCD_EMEnriched_Pt-120to170":"QCD_Mu","QCD_EMEnriched_Pt-170to300":"QCD_Mu","QCD_EMEnriched_Pt-300to470":"QCD_Mu","QCD_EMEnriched_Pt-470to600":"QCD_Mu","QCD_EMEnriched_Pt-600to800":"QCD_Mu","QCD_EMEnriched_Pt-800to1000":"QCD_Mu","QCD_EMEnriched_Pt-1000toInf":"QCD_Mu"}
 #    listOfMCs = {"ttbarDilepton_aMCatNLO":"TT_aMCatNLO"}
@@ -587,6 +588,9 @@ def main():
 #    listOfMCs = {"tWInclusive_scaleup":"TtW_scaleup","tWInclusive_scaledown":"TtW_scaledown","tbarWInclusive_scaleup":"TbartW_scaleup","tbarWInclusive_scaledown":"TbartW_scaledown"}
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq_scaleup","tZq_scaledown":"tZq_scaledown"}
+#    listOfMCs = {"ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ"}
+#    listOfMCs = {"ttZ2l2nu":"TTZ"}
+#    listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
@@ -662,7 +666,7 @@ def main():
                     #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
                 inFile.Close()
             outFile.cd()
-            outFile.Write()
+#            outFile.Write()
             outTreeSig.Write()
             if useSidebandRegion:
                 outTreeSdBnd.Write()
@@ -686,7 +690,7 @@ def main():
     outChanToData = {}
     outChanToData["DataEG"] = ["ee"]
     outChanToData["DataMu"] = ["mumu"]
-    outChanToData["MuonEG"] = ["emu"]
+#    outChanToData["MuonEG"] = ["emu"]
 
     for outChan in outChannels:
         print "Data ",outChan

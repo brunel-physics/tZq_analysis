@@ -174,7 +174,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
 
 float Plots::fillLepton1Pt(AnalysisEvent* event){
   if (event->electronIndexTight.size() >1){
-    TLorentzVector tempVec{event->elePF2PATGsfPx[event->electronIndexTight[0]],event->elePF2PATGsfPy[event->electronIndexTight[0]],event->elePF2PATGsfPz[event->electronIndexTight[0]],event->elePF2PATGsfE[event->electronIndexTight[0]]};
+    TLorentzVector tempVec{event->elePF2PATPX[event->electronIndexTight[0]],event->elePF2PATPY[event->electronIndexTight[0]],event->elePF2PATPZ[event->electronIndexTight[0]],event->elePF2PATE[event->electronIndexTight[0]]};
     return tempVec.Pt();
   }
   else{
@@ -191,7 +191,7 @@ float Plots::fillLepton1Eta(AnalysisEvent* event){
 }
 float Plots::fillLepton2Pt(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1) {
-    TLorentzVector tempVec{event->elePF2PATGsfPx[event->electronIndexTight[1]],event->elePF2PATGsfPy[event->electronIndexTight[1]],event->elePF2PATGsfPz[event->electronIndexTight[1]],event->elePF2PATGsfE[event->electronIndexTight[1]]};
+    TLorentzVector tempVec{event->elePF2PATPX[event->electronIndexTight[1]],event->elePF2PATPY[event->electronIndexTight[1]],event->elePF2PATPZ[event->electronIndexTight[1]],event->elePF2PATE[event->electronIndexTight[1]]};
     return tempVec.Pt();
   }
   else return  event->muonPF2PATPt[event->muonIndexTight[1]]*event->muonMomentumSF[1];
