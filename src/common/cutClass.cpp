@@ -2090,9 +2090,6 @@ std::vector<int> Cuts::getInvIsoEles(AnalysisEvent* event) {
     if (std::abs(event->elePF2PATBeamSpotCorrectedTrackD0[i]) > tightEled0_)continue;
     if (event->elePF2PATMissingInnerLayers[i] > tightEleMissLayers_) continue;
     if (!event->elePF2PATPhotonConversionVeto[i] && tightEleCheckPhotonVeto_)continue;
-    if ( event->elePF2PATMVAcategory[i] == 0 && (event->elePF2PATMVA[i] < tightEleMVA0_) ) continue;
-    if ( event->elePF2PATMVAcategory[i] == 1 && (event->elePF2PATMVA[i] < tightEleMVA1_) ) continue;
-    if ( event->elePF2PATMVAcategory[i] == 2 && (event->elePF2PATMVA[i] < tightEleMVA2_) ) continue;
     if (event->elePF2PATComRelIsoRho[i] < tightEleRelIso_)continue;
 
     electrons.emplace_back(i);
@@ -2176,7 +2173,6 @@ void Cuts::dumpLeptonInfo(AnalysisEvent* event){
     std::cout << " | " << event->elePF2PATPhi[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATD0PV[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATMVA[event->electronIndexTight[i]];
-    std::cout << " | " << event->elePF2PATMVAcategory[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATMissingInnerLayers[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATComRelIsoRho[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATPhotonConversionVeto[event->electronIndexTight[i]];
