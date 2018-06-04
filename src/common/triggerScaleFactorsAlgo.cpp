@@ -918,6 +918,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
   else if (nElectrons == 1){
     std::vector<int> electrons = event->electronIndexTight;
     std::vector<int> muons = event->muonIndexTight;
+    if ( electrons.size() != 1 && muons.size() != 1 ) return false;
     for ( unsigned i = 0; i < electrons.size(); i++ ){
       for ( unsigned j = 0; j < muons.size(); j++ ){
         if ( !(event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue; // check muon-electron pair have correct (same) charge.
