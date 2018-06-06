@@ -959,11 +959,11 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
       if ( !(event->muonPF2PATCharge[muons[0]] * event->muonPF2PATCharge[muons[1]] >= 0) ) return false;
     }
 
-//  TLorentzVector lepton1{event->muonPF2PATPX[muons[i]], event->muonPF2PATPY[muons[i]],event->muonPF2PATPZ[muons[i]],event->muonPF2PATE[muons[i]]};
-//  TLorentzVector lepton2{event->muonPF2PATPX[muons[j]], event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]};
+    TLorentzVector lepton1{event->muonPF2PATPX[muons[0]], event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
+    TLorentzVector lepton2{event->muonPF2PATPX[muons[1]], event->muonPF2PATPY[muons[1]],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]};
 
-    TLorentzVector lepton1{event->muonPF2PATPX[muons[0]] * event->muonMomentumSF[0], event->muonPF2PATPY[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
-    TLorentzVector lepton2{event->muonPF2PATPX[muons[1]] * event->muonMomentumSF[1], event->muonPF2PATPY[muons[1]] * event->muonMomentumSF[1],event->muonPF2PATPZ[muons[1]],event->muonPF2PATE[muons[1]]};
+    lepton1 *= event->muonMomentumSF[0]; 
+    lepton2 *= event->muonMomentumSF[1]; 
 
     event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
     event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? muons[0]:muons[1];
@@ -977,7 +977,10 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
   else if ( electrons.size() == 1 && muons.size() == 1 ) {
     if (event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return false;
     TLorentzVector lepton1{event->elePF2PATPX[electrons[0]],event->elePF2PATPY[electrons[0]],event->elePF2PATPZ[electrons[0]],event->elePF2PATE[electrons[0]]};
-    TLorentzVector lepton2{event->muonPF2PATPX[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPY[muons[0]] * event->muonMomentumSF[0],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
+    TLorentzVector lepton2{event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
+
+    lepton2 *= event->muonMomentumSF[0];
+
     event->zPairLeptons.first = lepton1;
     event->zPairLeptons.second = lepton2;
     return true;
@@ -1518,9 +1521,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     //Dilepton channels
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98710; // 0.97562 for data eff; 0.98710 for SF
-        if (syst == 1) twgt += 0.00062; // -0.00130/+0.00138 for eff; 0.00062 for SF
-        if (syst == 2) twgt -= 0.00062;
+        twgt = 0.98713; // 0.97552 for data eff; 0.98713 for SF
+        if (syst == 1) twgt += 0.00063; // -0.00130/+0.00138 for eff; 0.00063 for SF
+        if (syst == 2) twgt -= 0.00063;
       }
     }
     else if (channel == "mumu"){

@@ -178,7 +178,9 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
     return tempVec.Pt();
   }
   else{
-    return event->muonPF2PATPt[event->muonIndexTight[0]]*event->muonMomentumSF[0];
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[0]],event->muonPF2PATPY[event->muonIndexTight[0]],event->muonPF2PATPZ[event->muonIndexTight[0]],event->muonPF2PATE[event->muonIndexTight[0]]}
+    tempVec *= event->muonMomentumSF[0];
+    return tempVec.Pt();
   }
   return -10;
 }
@@ -186,7 +188,11 @@ float Plots::fillLepton1Pt(AnalysisEvent* event){
 float Plots::fillLepton1Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATSCEta[event->electronIndexTight[0]]);
-  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[0]]);
+  else {
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[0]],event->muonPF2PATPY[event->muonIndexTight[0]],event->muonPF2PATPZ[event->muonIndexTight[0]],event->muonPF2PATE[event->muonIndexTight[0]]}
+    tempVec *= event->muonMomentumSF[0];
+    return tempVec.Eta();
+  }
   return -10;
 }
 float Plots::fillLepton2Pt(AnalysisEvent* event){
@@ -194,14 +200,22 @@ float Plots::fillLepton2Pt(AnalysisEvent* event){
     TLorentzVector tempVec{event->elePF2PATPX[event->electronIndexTight[1]],event->elePF2PATPY[event->electronIndexTight[1]],event->elePF2PATPZ[event->electronIndexTight[1]],event->elePF2PATE[event->electronIndexTight[1]]};
     return tempVec.Pt();
   }
-  else return  event->muonPF2PATPt[event->muonIndexTight[1]]*event->muonMomentumSF[1];
+  else {
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[1]],event->muonPF2PATPY[event->muonIndexTight[1]],event->muonPF2PATPZ[event->muonIndexTight[1]],event->muonPF2PATE[event->muonIndexTight[1]]}
+    tempVec *= event->muonMomentumSF[1];
+    return tempVec.Pt();
+  }
   return -10;
 }
 
 float Plots::fillLepton2Eta(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return std::abs(event->elePF2PATSCEta[event->electronIndexTight[1]]);
-  else return std::abs(event->muonPF2PATEta[event->muonIndexTight[1]]);
+  else {
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[1]],event->muonPF2PATPY[event->muonIndexTight[1]],event->muonPF2PATPZ[event->muonIndexTight[1]],event->muonPF2PATE[event->muonIndexTight[1]]}
+    tempVec *= event->muonMomentumSF[1];
+    return tempVec.Pt();
+  }
   return -10;
 }
 float Plots::fillLepton3Pt(AnalysisEvent* event){
@@ -282,13 +296,21 @@ float Plots::fillLepton3RelIso(AnalysisEvent* event){
 float Plots::fillLepton1Phi(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return (event->elePF2PATPhi[event->electronIndexTight[0]]);
- else return  (event->muonPF2PATPhi[event->muonIndexTight[0]]);
+  else{
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[0]],event->muonPF2PATPY[event->muonIndexTight[0]],event->muonPF2PATPZ[event->muonIndexTight[0]],event->muonPF2PATE[event->muonIndexTight[0]]}
+    tempVec *= event->muonMomentumSF[0];
+    return tempVec.Phi();
+  }
   return -10;
 }
 float Plots::fillLepton2Phi(AnalysisEvent* event){
   if (event->electronIndexTight.size() > 1)
     return (event->elePF2PATPhi[event->electronIndexTight[1]]);
-  else return  (event->muonPF2PATPhi[event->muonIndexTight[1]]);
+  else {
+    TLorentzVector tempVec{event->muonPF2PATPX[event->muonIndexTight[1]],event->muonPF2PATPY[event->muonIndexTight[1]],event->muonPF2PATPZ[event->muonIndexTight[1]],event->muonPF2PATE[event->muonIndexTight[1]]}
+    tempVec *= event->muonMomentumSF[1];
+    return tempVec.Phi();
+  }
   return -10;
 }
 float Plots::fillLepton3Phi(AnalysisEvent* event){
@@ -607,30 +629,10 @@ float Plots::fillWLepRelIso(AnalysisEvent* event){
 
 float Plots::fillZPairMass(AnalysisEvent* event){
   return (event->zPairLeptons.first + event->zPairLeptons.second).M();
-/*  if ( !event->isMC ) return (event->zPairLeptons.first + event->zPairLeptons.second).M();
-  else {
-     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] != 1 ) return -999.;
-     if ( event->genElePF2PATHardProcess[event->zPairIndex.second] != 1 ) return -999.;
-     Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]+event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]+event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
-     Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]+event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]+event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
-     TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
-     TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};    
-     return (lepton1 + lepton2).M();
-  }*/
 }
 
 float Plots::fillZPairPt(AnalysisEvent* event){
   return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
-/*  if ( !event->isMC ) return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
-  else {
-     if ( event->genElePF2PATHardProcess[event->zPairIndex.first] != 1 ) return -999.;
-     if ( event->genElePF2PATHardProcess[event->zPairIndex.second] != 1 ) return -999.;
-     Double_t genEnergy1 = event->genElePF2PATET[event->zPairIndex.first] * sqrt (event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPX[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPY[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first]*event->genElePF2PATPZ[event->zPairIndex.first])/event->genElePF2PATPT[event->zPairIndex.first];
-     Double_t genEnergy2 = event->genElePF2PATET[event->zPairIndex.second] * sqrt (event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPX[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPY[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second]*event->genElePF2PATPZ[event->zPairIndex.second])/event->genElePF2PATPT[event->zPairIndex.second];
-     TLorentzVector lepton1{event->genElePF2PATPX[event->zPairIndex.first],event->genElePF2PATPY[event->zPairIndex.first],event->genElePF2PATPZ[event->zPairIndex.first],genEnergy1};
-     TLorentzVector lepton2{event->genElePF2PATPX[event->zPairIndex.second],event->genElePF2PATPY[event->zPairIndex.second],event->genElePF2PATPZ[event->zPairIndex.second],genEnergy2};    
-     return (lepton1 + lepton2).Pt();
-  }*/
 }
 
 float Plots::fillZPairEta(AnalysisEvent* event){
