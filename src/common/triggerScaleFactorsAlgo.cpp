@@ -740,7 +740,7 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
   std::vector<int> electrons;
   for (int i{0}; i < event->numElePF2PAT; i++){
     if (!event->elePF2PATIsGsf[i]) continue;
-    TLorentzVector tempVec{event->elePF2PATGsfPx[i],event->elePF2PATGsfPy[i],event->elePF2PATGsfPz[i],event->elePF2PATGsfE[i]};
+    TLorentzVector tempVec{event->elePF2PATPX[i],event->elePF2PATPY[i],event->elePF2PATPZ[i],event->elePF2PATE[i]};
 
     if ( electrons.size() < 1 && tempVec.Pt() <= 20. && !is2016_ ) continue;
     else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
@@ -878,8 +878,8 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
     for ( unsigned i = 0; i < leptons.size(); i++ ){
       for ( unsigned j = i + 1; j < leptons.size(); j++ ){
         if (event->elePF2PATCharge[leptons[i]] * event->elePF2PATCharge[leptons[j]] >= 0) continue; // check electron pair have correct charge.
-        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[leptons[i]],event->elePF2PATGsfPy[leptons[i]],event->elePF2PATGsfPz[leptons[i]],event->elePF2PATGsfE[leptons[i]]);
-        TLorentzVector lepton2 = TLorentzVector(event->elePF2PATGsfPx[leptons[j]],event->elePF2PATGsfPy[leptons[j]],event->elePF2PATGsfPz[leptons[j]],event->elePF2PATGsfE[leptons[j]]);
+        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATPX[leptons[i]],event->elePF2PATPY[leptons[i]],event->elePF2PATPZ[leptons[i]],event->elePF2PATE[leptons[i]]);
+        TLorentzVector lepton2 = TLorentzVector(event->elePF2PATPX[leptons[j]],event->elePF2PATPY[leptons[j]],event->elePF2PATPZ[leptons[j]],event->elePF2PATE[leptons[j]]);
         float candidateMass  = (lepton1 + lepton2).M();
 	if ( std::abs( (lepton1 + lepton2).Pt() ) > std::abs(pT) ){
         	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
@@ -922,7 +922,7 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
     for ( unsigned i = 0; i < electrons.size(); i++ ){
       for ( unsigned j = 0; j < muons.size(); j++ ){
         if ( !(event->elePF2PATCharge[electrons[i]] * event->muonPF2PATCharge[muons[j]] >= 0) ) continue; // check muon-electron pair have correct (same) charge.
-        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATGsfPx[electrons[i]],event->elePF2PATGsfPy[electrons[i]],event->elePF2PATGsfPz[electrons[i]],event->elePF2PATGsfE[electrons[i]]);
+        TLorentzVector lepton1 = TLorentzVector(event->elePF2PATPX[electrons[i]],event->elePF2PATPY[electrons[i]],event->elePF2PATPZ[electrons[i]],event->elePF2PATE[electrons[i]]);
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
 	float candidateMass = (lepton1 + lepton2).M();
 	if ( std::abs( (lepton1 + lepton2).Pt() ) > std::abs(pT) ){
