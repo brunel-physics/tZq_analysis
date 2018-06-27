@@ -3,9 +3,9 @@ fileName = configs/2016/datasets/fileLists/DY1Jets10to50MadgraphFiles.txt
 totalEvents = 39840774
 crossSection = 730.3
 runType = mc
-histoName = zPlusJetsJetBinnedLO
+histoName = zPlusJetsJetBinnedLO_1J
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_1J
 plotType = f
 
 [DY1JetsToLL_M-50]
@@ -13,9 +13,9 @@ fileName = configs/2016/datasets/fileLists/DY1Jets50MadgraphFiles.txt
 totalEvents = 62627174
 crossSection = 1012.0
 runType = mc
-histoName = zPlusJetsJetBinnedLO
+histoName = zPlusJetsJetBinnedLO_1J
 colour = kBlue
-label = zPlusJets
+label = zPlusJets_1J
 plotType = f
 
 [DY2JetsToLL_M-10to50]
@@ -23,9 +23,9 @@ fileName = configs/2016/datasets/fileLists/DY2Jets10to50MadgraphFiles.txt
 totalEvents = 19442927
 crossSection = 387.4
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_2J
+colour = kRed
+label = zPlusJets_2J
 plotType = f
 
 [DY2JetsToLL_M-50]
@@ -33,9 +33,9 @@ fileName = configs/2016/datasets/fileLists/DY2Jets50MadgraphFiles.txt
 totalEvents = 19970551
 crossSection = 334.7
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_2J
+colour = kRed
+label = zPlusJets_2J
 plotType = f
 
 [DY3JetsToLL_M-10to50]
@@ -43,9 +43,9 @@ fileName = configs/2016/datasets/fileLists/DY3Jets10to50MadgraphFiles.txt
 totalEvents = 4964197
 crossSection = 95.02
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_3J
+colour = kGreen
+label = zPlusJets_3J
 plotType = f
 
 [DY3JetsToLL_M-50]
@@ -53,9 +53,9 @@ fileName = configs/2016/datasets/fileLists/DY3Jets50MadgraphFiles.txt
 totalEvents = 5856110
 crossSection = 102.3
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_3J
+colour = kGreen
+label = zPlusJets_3J
 plotType = f
 
 [DY4JetsToLL_M-10to50]
@@ -63,9 +63,9 @@ fileName = configs/2016/datasets/fileLists/DY4Jets10to50MadgraphFiles.txt
 totalEvents = 2087849
 crossSection = 36.71
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_4J
+colour = kYellow
+label = zPlusJets_4J
 plotType = f
 
 [DY4JetsToLL_M-50]
@@ -73,9 +73,9 @@ fileName = configs/2016/datasets/fileLists/DY4Jets50MadgraphFiles.txt
 totalEvents = 4197868
 crossSection = 54.52
 runType = mc
-histoName = zPlusJetsJetBinnedLO
-colour = kBlue
-label = zPlusJets
+histoName = zPlusJetsJetBinnedLO_4J
+colour = kYellow
+label = zPlusJets_4J
 plotType = f
 
 []
