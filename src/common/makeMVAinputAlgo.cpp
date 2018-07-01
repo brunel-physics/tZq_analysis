@@ -65,7 +65,8 @@ void MakeMvaInputs::runMainAnalysis() {
 //  std::map< std::string, std::string > listOfMCs = {{"ttbarInclusivePowerheg_hdampUP","TT_hdampUP"},{"ttbarInclusivePowerheg_hdampDown","TT_hdampDOWN"},{"ttbarInclusivePowerheg_fsrup","TT_fsrup"},{"ttbarInclusivePowerheg_fsrdown","TT_fsrdown"},{"ttbarInclusivePowerheg_isrup","TT_isrup"},{"ttbarInclusivePowerheg_isrdown","TT_isrdown"}};
 //  std::map< std::string, std::string > listOfMCs = {{"tChannel_scaleup","TtChan_scaleup"},{"tChannel_scaledown","TtChan_scaledown"},{"tChannel_hdampup","TtChan_hdampup"},{"tChannel_hdampdown","TtChan_hdampdown"},{"tbarChannel_scaleup","TbartChan_scaleup"},{"tbarChannel_scaledown","TbartChan_scaledown"},{"tbarChannel_hdampup","TbartChan_hdampup"},{"tbarChannel_hdampdown","TbartChan_hdampdown"}};
 //  std::map< std::string, std::string > listOfMCs = {{"tWInclusive_scaleup","TtW_scaleup"},{"tWInclusive_scaledown","TtW_scaledown"},{"tbarWInclusive_scaleup","TbartW_scaleup"},{"tbarWInclusive_scaledown","TbartW_scaledown"}};
-  std::map< std::string, std::string > listOfMCs = {{"tZq_scaleup","tZq_scaleup"},{"tZq_scaledown","tZq_scaledown"}};
+//  std::map< std::string, std::string > listOfMCs = {{"tZq_scaleup","tZq_scaleup"},{"tZq_scaledown","tZq_scaledown"}};
+  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH"}};
 //  std::map< std::string, std::string > listOfMCs = {};
 
   std::map< std::string, std::string > channelToDataset  {{"ee","DataEG"},{"mumu","DataMu"},{"emu","MuonEG"}};
@@ -196,11 +197,11 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getJet
   std::vector<TLorentzVector> jetVecList {};
 
   for ( int i = 0; i != 15; i++ ) {
-    if ( tree->jetInd[i] > -1 ) {
+//    if ( tree->jetInd[i] > -1 ) {
       jetList.emplace_back( tree->jetInd[i] );
       jetVecList.emplace_back( getJetVec( tree, tree->jetInd[i], tree->jetSmearValue[i], met,  syst, true ) );
-    }
-    else continue;
+//    }
+//    else continue;
   }
 
   return std::make_pair( jetList, jetVecList );
@@ -213,11 +214,11 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getBje
   std::vector<TLorentzVector> bJetVecList {};
 
   for ( int i = 0; i != 10; i++ ) {
-    if ( tree->bJetInd[i] > -1 ) {
+//    if ( tree->bJetInd[i] > -1 ) {
       bJetList.emplace_back( tree->bJetInd[i] );
       bJetVecList.emplace_back( getJetVec( tree, jets[tree->bJetInd[i]], tree->jetSmearValue[tree->bJetInd[i]], met, syst, false ) );
-    }
-    else continue;
+//    }
+//    else continue;
   }
 
   return std::make_pair( bJetList, bJetVecList );
@@ -512,248 +513,250 @@ void MakeMvaInputs::fillTree ( TTree* outTreeSig, TTree* outTreeSdBnd, std::map<
   if ( channel == "ee"   ) varMap["chan"][0] = 1;
   if ( channel == "mumu" ) varMap["chan"][0] = 0;
 
-    varMap["eventNumber"][0] = tree->eventNum;
+  varMap["eventNumber"][0] = tree->eventNum;
 
-    std::pair<TLorentzVector,TLorentzVector> zPairLeptons = sortOutLeptons( tree,channel );
-    TLorentzVector zLep1 = zPairLeptons.first;
-    TLorentzVector zLep2 = zPairLeptons.second;
+  std::pair<TLorentzVector,TLorentzVector> zPairLeptons = sortOutLeptons( tree,channel );
+  TLorentzVector zLep1 = zPairLeptons.first;
+  TLorentzVector zLep2 = zPairLeptons.second;
 
-    TLorentzVector metVec(tree->metPF2PATPx,tree->metPF2PATPy,0,tree->metPF2PATEt);
+  TLorentzVector metVec(tree->metPF2PATPx,tree->metPF2PATPy,0,tree->metPF2PATEt);
 
-    std::pair< std::vector<int>, std::vector<TLorentzVector> > jetPair = getJets(tree,syst,metVec);
-    std::vector< int > jets = jetPair.first;
-    std::vector<TLorentzVector> jetVecs = jetPair.second;
+  std::cout << (zLep1+zLep2).M() << std::endl;
 
-    std::pair< std::vector<int>, std::vector<TLorentzVector> > bJetPair = getBjets(tree,syst,metVec,jets);
-    std::vector< int > bJets = bJetPair.first;
-    std::vector<TLorentzVector> bJetVecs = bJetPair.second;
+  std::pair< std::vector<int>, std::vector<TLorentzVector> > jetPair = getJets(tree,syst,metVec);
+  std::vector< int > jets = jetPair.first;
+  std::vector<TLorentzVector> jetVecs = jetPair.second;
 
-    std::pair<TLorentzVector,TLorentzVector> wQuarkPair = sortOutHadronicW(tree);
-    TLorentzVector wQuark1 = wQuarkPair.first;
-    TLorentzVector wQuark2 = wQuarkPair.second;
+  std::pair< std::vector<int>, std::vector<TLorentzVector> > bJetPair = getBjets(tree,syst,metVec,jets);
+  std::vector< int > bJets = bJetPair.first;
+  std::vector<TLorentzVector> bJetVecs = bJetPair.second;
 
-    // Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc ...
-    if ( syst == 1024 || syst == 2048 ) metVec = doUncMet(metVec,zLep1,zLep2,jetVecs,syst);
+  std::pair<TLorentzVector,TLorentzVector> wQuarkPair = sortOutHadronicW(tree);
+  TLorentzVector wQuark1 = wQuarkPair.first;
+  TLorentzVector wQuark2 = wQuarkPair.second;
+
+  // Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc ...
+   if ( syst == 1024 || syst == 2048 ) metVec = doUncMet(metVec,zLep1,zLep2,jetVecs,syst);
     
-    // SFs for NPL lepton estimation normilisation
-    // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
-    // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
-    // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
+  // SFs for NPL lepton estimation normilisation
+  // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
+  // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
+  // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
 
-    if ( SameSignMC == true && channel == "ee" ) varMap["eventWeight"][0] = tree->eventWeight * 0.958391264995;
-    else if ( SameSignMC == true && channel == "mumu" ) varMap["eventWeight"][0] = tree->eventWeight * 1.02492608673;
-    else varMap["eventWeight"][0] = tree->eventWeight;
+  if ( SameSignMC == true && channel == "ee" ) varMap["eventWeight"][0] = tree->eventWeight * 0.958391264995;
+  else if ( SameSignMC == true && channel == "mumu" ) varMap["eventWeight"][0] = tree->eventWeight * 1.02492608673;
+  else varMap["eventWeight"][0] = tree->eventWeight;
 
-    varMap["leadJetPt"][0] = jetVecs[0].Pt();
-    varMap["leadJetEta"][0] = jetVecs[0].Eta();
-    varMap["leadJetPhi"][0] = jetVecs[0].Phi();
+  varMap["leadJetPt"][0] = jetVecs[0].Pt();
+  varMap["leadJetEta"][0] = jetVecs[0].Eta();
+  varMap["leadJetPhi"][0] = jetVecs[0].Phi();
 
-    float totPx {0.0}, totPy {0.0};
+  float totPx {0.0}, totPy {0.0};
 
-    totPx += zLep1.Px() + zLep2.Px();
-    totPy += zLep1.Py() + zLep2.Py();
-    varMap["lep1Pt"][0] = zLep1.Pt();
-    varMap["lep1Eta"][0] = zLep1.Eta();
-    varMap["lep1Phi"][0] = zLep1.Phi();
-    varMap["lep2Pt"][0] = zLep2.Pt();
-    varMap["lep2Eta"][0] = zLep2.Eta();
-    varMap["lep2Phi"][0] = zLep2.Phi();
+  totPx += zLep1.Px() + zLep2.Px();
+  totPy += zLep1.Py() + zLep2.Py();
+  varMap["lep1Pt"][0] = zLep1.Pt();
+  varMap["lep1Eta"][0] = zLep1.Eta();
+  varMap["lep1Phi"][0] = zLep1.Phi();
+  varMap["lep2Pt"][0] = zLep2.Pt();
+  varMap["lep2Eta"][0] = zLep2.Eta();
+  varMap["lep2Phi"][0] = zLep2.Phi();
 
-    if ( channel == "ee" ) {
-      varMap["lep1RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep1Index];
-      varMap["lep1D0"][0] = tree->elePF2PATD0PV[tree->zLep1Index];
-      varMap["lep2RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep2Index];
-      varMap["lep2D0"][0] = tree->elePF2PATD0PV[tree->zLep2Index];
-    }
-    if ( channel == "mumu" ) {
-      varMap["lep1RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep1Index];
-      varMap["lep1D0"][0] = tree->muonPF2PATDBPV[tree->zLep1Index];
-      varMap["lep2RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
-      varMap["lep2D0"][0] = tree->muonPF2PATDBPV[tree->zLep2Index];
-    }
-    if ( channel == "emu" ) {
-      varMap["lep1RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep1Index];
-      varMap["lep1D0"][0] = tree->elePF2PATD0PV[tree->zLep1Index];
-      varMap["lep2RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
-      varMap["lep2D0"][0] = tree->muonPF2PATDBPV[tree->zLep2Index];
-    }
+  if ( channel == "ee" ) {
+    varMap["lep1RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep1Index];
+    varMap["lep1D0"][0] = tree->elePF2PATD0PV[tree->zLep1Index];
+    varMap["lep2RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep2Index];
+    varMap["lep2D0"][0] = tree->elePF2PATD0PV[tree->zLep2Index];
+  }
+  if ( channel == "mumu" ) {
+    varMap["lep1RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep1Index];
+    varMap["lep1D0"][0] = tree->muonPF2PATDBPV[tree->zLep1Index];
+    varMap["lep2RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
+    varMap["lep2D0"][0] = tree->muonPF2PATDBPV[tree->zLep2Index];
+  }
+  if ( channel == "emu" ) {
+    varMap["lep1RelIso"][0] = tree->elePF2PATComRelIsoRho[tree->zLep1Index];
+    varMap["lep1D0"][0] = tree->elePF2PATD0PV[tree->zLep1Index];
+    varMap["lep2RelIso"][0] = tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
+    varMap["lep2D0"][0] = tree->muonPF2PATDBPV[tree->zLep2Index];
+  }
     
-    varMap["lepMass"][0] = ( zLep1 + zLep2 ).M();
-    varMap["lepPt"][0] = std::sqrt(totPx * totPx + totPy * totPy);
-    varMap["lepEta"][0] = ( zLep1 + zLep2 ).Eta();
-    varMap["lepPhi"][0] = ( zLep1 + zLep2 ).Phi();
-    varMap["wQuark1Pt"][0] = wQuark1.Pt();
-    varMap["wQuark1Eta"][0] = wQuark1.Eta();
-    varMap["wQuark1Phi"][0] = wQuark1.Phi();
-    varMap["wQuark2Pt"][0] = wQuark2.Pt();
-    varMap["wQuark2Eta"][0] = wQuark2.Eta();
-    varMap["wQuark2Phi"][0] = wQuark2.Phi();
+  varMap["lepMass"][0] = ( zLep1 + zLep2 ).M();
+  varMap["lepPt"][0] = std::sqrt(totPx * totPx + totPy * totPy);
+  varMap["lepEta"][0] = ( zLep1 + zLep2 ).Eta();
+  varMap["lepPhi"][0] = ( zLep1 + zLep2 ).Phi();
+  varMap["wQuark1Pt"][0] = wQuark1.Pt();
+  varMap["wQuark1Eta"][0] = wQuark1.Eta();
+  varMap["wQuark1Phi"][0] = wQuark1.Phi();
+  varMap["wQuark2Pt"][0] = wQuark2.Pt();
+  varMap["wQuark2Eta"][0] = wQuark2.Eta();
+  varMap["wQuark2Phi"][0] = wQuark2.Phi();
 
-    float wPairMass = ( wQuark1 + wQuark2 ).M();
-    varMap["wPairMass"][0] = wPairMass;
-    varMap["wPairPt"][0] = ( wQuark1 + wQuark2 ).Pt();
-    varMap["wPairEta"][0] = ( wQuark1 + wQuark2 ).Eta();
-    varMap["wPairPhi"][0] = ( wQuark1 + wQuark2 ).Phi();
-    totPx += jetVecs[0].Px();
-    totPy += jetVecs[0].Py();
+  float wPairMass = ( wQuark1 + wQuark2 ).M();
+  varMap["wPairMass"][0] = wPairMass;
+  varMap["wPairPt"][0] = ( wQuark1 + wQuark2 ).Pt();
+  varMap["wPairEta"][0] = ( wQuark1 + wQuark2 ).Eta();
+  varMap["wPairPhi"][0] = ( wQuark1 + wQuark2 ).Phi();
+  totPx += jetVecs[0].Px();
+  totPy += jetVecs[0].Py();
 
-    if ( jetVecs.size() > 1 ) {
-      totPx += jetVecs[1].Px();
-      totPy += jetVecs[1].Py();
-    }
-    varMap["totPt2Jet"][0] = std::sqrt(totPx * totPx + totPy * totPy);
+  if ( jetVecs.size() > 1 ) {
+    totPx += jetVecs[1].Px();
+    totPy += jetVecs[1].Py();
+  }
+  varMap["totPt2Jet"][0] = std::sqrt(totPx * totPx + totPy * totPy);
 
-    for ( uint i = 2; i != jetVecs.size(); i++ ) {
-      totPx+=jetVecs[i].Px();
-      totPy+=jetVecs[i].Py();
-    }
+  for ( uint i = 2; i != jetVecs.size(); i++ ) {
+    totPx+=jetVecs[i].Px();
+    totPy+=jetVecs[i].Py();
+  }
     
-    varMap["totPt"][0] = std::sqrt(totPx * totPx + totPy * totPy);
-    TLorentzVector totVec = (zLep1+zLep2);
+  varMap["totPt"][0] = std::sqrt(totPx * totPx + totPy * totPy);
+  TLorentzVector totVec = (zLep1+zLep2);
     
-    for ( uint i = 0; i != jetVecs.size(); i++ ) {
-      totVec += jetVecs[i];
-    }
+  for ( uint i = 0; i != jetVecs.size(); i++ ) {
+    totVec += jetVecs[i];
+  }
     
-    varMap["totEta"][0] = totVec.Eta();
-    varMap["totEta"][0] = totVec.Phi();
-    varMap["totPtVec"][0] = totVec.Pt();
-    varMap["totVecM"][0] = totVec.M();
-    varMap["mTW"][0] = std::sqrt(2*tree->jetPF2PATPt[tree->wQuark1Index]*tree->jetPF2PATPt[tree->wQuark2Index] * (1-cos(tree->jetPF2PATPhi[tree->wQuark1Index] - tree->jetPF2PATPhi[tree->wQuark2Index])));
-    varMap["nJets"][0] = float(jets.size());
-    varMap["nBjets"][0] = float(bJets.size());
-    varMap["met"][0] = tree->metPF2PATEt;
-    varMap["bTagDisc"][0] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
-    varMap["leadJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[0]];
-    varMap["secJetbTag"][0] = -1.;
-    varMap["secJetPt"][0] = -1.;
-    varMap["secJetEta"][0] = -500.;
-    varMap["secJetPhi"][0] = -500.;
-    varMap["thirdJetbTag"][0] = -1.;
-    varMap["thirdJetPt"][0] = -1.;
-    varMap["thirdJetEta"][0] = -500.;
-    varMap["thirdJetPhi"][0] = -500.;
-    varMap["fourthJetbTag"][0] = -1.;
-    varMap["fourthJetPt"][0] = -1.;
-    varMap["fourthJetEta"][0] = -500.;
-    varMap["fourthJetPhi"][0] = -500.;
+  varMap["totEta"][0] = totVec.Eta();
+  varMap["totEta"][0] = totVec.Phi();
+  varMap["totPtVec"][0] = totVec.Pt();
+  varMap["totVecM"][0] = totVec.M();
+  varMap["mTW"][0] = std::sqrt(2*tree->jetPF2PATPt[tree->wQuark1Index]*tree->jetPF2PATPt[tree->wQuark2Index] * (1-cos(tree->jetPF2PATPhi[tree->wQuark1Index] - tree->jetPF2PATPhi[tree->wQuark2Index])));
+  varMap["nJets"][0] = float(jets.size());
+  varMap["nBjets"][0] = float(bJets.size());
+  varMap["met"][0] = tree->metPF2PATEt;
+  varMap["bTagDisc"][0] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
+  varMap["leadJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[0]];
+  varMap["secJetbTag"][0] = -1.;
+  varMap["secJetPt"][0] = -1.;
+  varMap["secJetEta"][0] = -500.;
+  varMap["secJetPhi"][0] = -500.;
+  varMap["thirdJetbTag"][0] = -1.;
+  varMap["thirdJetPt"][0] = -1.;
+  varMap["thirdJetEta"][0] = -500.;
+  varMap["thirdJetPhi"][0] = -500.;
+  varMap["fourthJetbTag"][0] = -1.;
+  varMap["fourthJetPt"][0] = -1.;
+  varMap["fourthJetEta"][0] = -500.;
+  varMap["fourthJetPhi"][0] = -500.;
 
-    if ( jetVecs.size() > 1 ) {
-      varMap["secJetPt"][0] = jetVecs[1].Pt();
-      varMap["secJetEta"][0] = jetVecs[1].Eta();
-      varMap["secJetPhi"][0] = jetVecs[1].Phi();
-      varMap["secJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[1]];
-    }
+  if ( jetVecs.size() > 1 ) {
+    varMap["secJetPt"][0] = jetVecs[1].Pt();
+    varMap["secJetEta"][0] = jetVecs[1].Eta();
+    varMap["secJetPhi"][0] = jetVecs[1].Phi();
+    varMap["secJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[1]];
+  }
 
-    if ( jetVecs.size() > 2 ) {
-      varMap["thirdJetPt"][0] = jetVecs[2].Pt();
-      varMap["thirdJetEta"][0] = jetVecs[2].Eta();
-      varMap["thirdJetPhi"][0] = jetVecs[2].Phi();
-      varMap["thirdJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[2]];
-    }
+  if ( jetVecs.size() > 2 ) {
+    varMap["thirdJetPt"][0] = jetVecs[2].Pt();
+    varMap["thirdJetEta"][0] = jetVecs[2].Eta();
+    varMap["thirdJetPhi"][0] = jetVecs[2].Phi();
+    varMap["thirdJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[2]];
+  }
 
-    if ( jetVecs.size() > 3) {
-      varMap["fourthJetPt"][0] = jetVecs[3].Pt();
-      varMap["fourthJetEta"][0] = jetVecs[3].Eta();
-      varMap["fourthJetPhi"][0] = jetVecs[3].Phi();
-      varMap["fourthJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[3]];
-    }
+  if ( jetVecs.size() > 3) {
+    varMap["fourthJetPt"][0] = jetVecs[3].Pt();
+    varMap["fourthJetEta"][0] = jetVecs[3].Eta();
+    varMap["fourthJetPhi"][0] = jetVecs[3].Phi();
+    varMap["fourthJetbTag"][0] = tree->jetPF2PATBDiscriminator[jets[3]];
+  }
 
-    float topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
-    varMap["topMass"][0] = topMass;
-    varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
-    varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
-    varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi();
-    varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2);
-    varMap["wZdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark1 + wQuark2);
+  float topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
+  varMap["topMass"][0] = topMass;
+  varMap["topPt"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
+  varMap["topEta"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
+  varMap["topPhi"][0] = (bJetVecs[0] + wQuark1 + wQuark2).Phi();
+  varMap["wZdelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2);
+  varMap["wZdelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark1 + wQuark2);
 
-    varMap["zQuark1DelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1);
-    varMap["zQuark1DelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark1);
-    varMap["zQuark2DelR"][0] = (zLep2 + zLep1).DeltaR(wQuark2);
-    varMap["zQuark2DelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark2);
+  varMap["zQuark1DelR"][0] = (zLep2 + zLep1).DeltaR(wQuark1);
+  varMap["zQuark1DelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark1);
+  varMap["zQuark2DelR"][0] = (zLep2 + zLep1).DeltaR(wQuark2);
+  varMap["zQuark2DelPhi"][0] = (zLep2 + zLep1).DeltaPhi(wQuark2);
 
-    varMap["zTopDelR"][0] = (zLep2 + zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["zTopDelPhi"][0] = (zLep2 + zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["zl1TopDelR"][0] = (zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["zl1TopDelPhi"][0] = (zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["zl2TopDelR"][0] = (zLep2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["zl2TopDelPhi"][0] = (zLep2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zTopDelR"][0] = (zLep2 + zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zTopDelPhi"][0] = (zLep2 + zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zl1TopDelR"][0] = (zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zl1TopDelPhi"][0] = (zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zl2TopDelR"][0] = (zLep2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["zl2TopDelPhi"][0] = (zLep2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
 
-    varMap["wTopDelR"][0] = (wQuark1 + wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["wTopDelPhi"][0] = (wQuark1 + wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["w1TopDelR"][0] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["w1TopDelR"][0] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["w1TopDelPhi"][0] = (wQuark1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["w2TopDelR"][0] = (wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    varMap["w2TopDelPhi"][0] = (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["wTopDelR"][0] = (wQuark1 + wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["wTopDelPhi"][0] = (wQuark1 + wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["w1TopDelR"][0] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["w1TopDelR"][0] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["w1TopDelPhi"][0] = (wQuark1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["w2TopDelR"][0] = (wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+  varMap["w2TopDelPhi"][0] = (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
 
-    varMap["j1j2delR"][0] = -1.;
-    varMap["j1j2delPhi"][0] = -10.;
+  varMap["j1j2delR"][0] = -1.;
+  varMap["j1j2delPhi"][0] = -10.;
 
-    if ( jetVecs.size() > 1 ) {
-      varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1]);
-      varMap["j1j2delPhi"][0] = jetVecs[0].DeltaPhi(jetVecs[1]);
-    }
+  if ( jetVecs.size() > 1 ) {
+    varMap["j1j2delR"][0] = jetVecs[0].DeltaR(jetVecs[1]);
+    varMap["j1j2delPhi"][0] = jetVecs[0].DeltaPhi(jetVecs[1]);
+  }
 
-    varMap["w1w2delR"][0] = (wQuark1).DeltaR(wQuark2);
-    varMap["w1w2delPhi"][0] = (wQuark1).DeltaPhi(wQuark2);
-    varMap["zLepdelR"][0] = (zLep1).DeltaR(zLep2);
-    varMap["zLepdelPhi"][0] = (zLep1).DeltaPhi(zLep2);
-    varMap["zl1Quark1DelR"][0] = (zLep1).DeltaR(wQuark1);
-    varMap["zl1Quark1DelPhi"][0] = (zLep1).DeltaPhi(wQuark1);
-    varMap["zl1Quark2DelR"][0] = (zLep1).DeltaR(wQuark2);
-    varMap["zl1Quark2DelPhi"][0] = (zLep1).DeltaPhi(wQuark2);
-    varMap["zl2Quark1DelR"][0] = (zLep2).DeltaR(wQuark1);
-    varMap["zl2Quark1DelPhi"][0] = (zLep2).DeltaPhi(wQuark1);
-    varMap["zl2Quark2DelR"][0] = (zLep2).DeltaR(wQuark2);
-    varMap["zl2Quark2DelPhi"][0] = (zLep2).DeltaPhi(wQuark2);
-    varMap["minZJetR"][0] = 3.0;
+  varMap["w1w2delR"][0] = (wQuark1).DeltaR(wQuark2);
+  varMap["w1w2delPhi"][0] = (wQuark1).DeltaPhi(wQuark2);
+  varMap["zLepdelR"][0] = (zLep1).DeltaR(zLep2);
+  varMap["zLepdelPhi"][0] = (zLep1).DeltaPhi(zLep2);
+  varMap["zl1Quark1DelR"][0] = (zLep1).DeltaR(wQuark1);
+  varMap["zl1Quark1DelPhi"][0] = (zLep1).DeltaPhi(wQuark1);
+  varMap["zl1Quark2DelR"][0] = (zLep1).DeltaR(wQuark2);
+  varMap["zl1Quark2DelPhi"][0] = (zLep1).DeltaPhi(wQuark2);
+  varMap["zl2Quark1DelR"][0] = (zLep2).DeltaR(wQuark1);
+  varMap["zl2Quark1DelPhi"][0] = (zLep2).DeltaPhi(wQuark1);
+  varMap["zl2Quark2DelR"][0] = (zLep2).DeltaR(wQuark2);
+  varMap["zl2Quark2DelPhi"][0] = (zLep2).DeltaPhi(wQuark2);
+  varMap["minZJetR"][0] = 3.0;
 
-    float jetHt = 0.;
-    TLorentzVector jetVector;
+  float jetHt = 0.;
+  TLorentzVector jetVector;
 
-    for ( uint i = 0; i != jetVecs.size(); i++ ){
-      jetHt += jetVecs[i].Pt();
-      jetVector += jetVecs[i];
-      if ( jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0] ) varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1);
-      if ( jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0] ) varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1);
-    }
+  for ( uint i = 0; i != jetVecs.size(); i++ ){
+    jetHt += jetVecs[i].Pt();
+    jetVector += jetVecs[i];
+    if ( jetVecs[i].DeltaR(zLep2 + zLep1) < varMap["minZJetR"][0] ) varMap["minZJetR"][0] = jetVecs[i].DeltaR(zLep2 + zLep1);
+    if ( jetVecs[i].DeltaPhi(zLep2 + zLep1) < varMap["minZJetR"][0] ) varMap["minZJetPhi"][0] = jetVecs[i].DeltaPhi(zLep2 + zLep1);
+  }
 
-    varMap["zlb1DelR"][0] = zLep1.DeltaR(bJetVecs[0]);
-    varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(bJetVecs[0]);
-    varMap["zlb2DelR"][0] = zLep2.DeltaR(bJetVecs[0]);
-    varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(bJetVecs[0]);
+  varMap["zlb1DelR"][0] = zLep1.DeltaR(bJetVecs[0]);
+  varMap["zlb1DelPhi"][0] = zLep1.DeltaPhi(bJetVecs[0]);
+  varMap["zlb2DelR"][0] = zLep2.DeltaR(bJetVecs[0]);
+  varMap["zlb2DelPhi"][0] = zLep2.DeltaPhi(bJetVecs[0]);
 
-    float ht = 0.;
-    ht += zLep1.Pt() + zLep2.Pt();
+  float ht = 0.;
+  ht += zLep1.Pt() + zLep2.Pt();
 
-    varMap["lepHt"][0] = ht;
-    varMap["jetHt"][0] = jetHt;
-    varMap["jetMass"][0] = jetVector.M();
-    varMap["jetPt"][0] = jetVector.Pt();
-    varMap["jetEta"][0] = jetVector.Eta();
-    varMap["jetPhi"][0] = jetVector.Phi();
+  varMap["lepHt"][0] = ht;
+  varMap["jetHt"][0] = jetHt;
+  varMap["jetMass"][0] = jetVector.M();
+  varMap["jetPt"][0] = jetVector.Pt();
+  varMap["jetEta"][0] = jetVector.Eta();
+  varMap["jetPhi"][0] = jetVector.Phi();
 
-    if ( channel !=  "emu" ) varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M();
-    else varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1]).M();
+  if ( channel !=  "emu" ) varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M();
+  else varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1]).M();
 
-    varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt();
+  varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt();
 
-    ht += jetHt;
-    varMap["totHt"][0] = ht;
-    varMap["totHtOverPt"][0] = ht / std::sqrt(totPx * totPx + totPy * totPy);
-    varMap["zMass"][0] = (zLep1+zLep2).M();
-    varMap["zPt"][0] = (zLep2 + zLep1).Pt();
-    varMap["zEta"][0] = (zLep2 + zLep1).Eta();
-    varMap["zPhi"][0] = (zLep2 + zLep1).Phi();
+  ht += jetHt;
+  varMap["totHt"][0] = ht;
+  varMap["totHtOverPt"][0] = ht / std::sqrt(totPx * totPx + totPy * totPy);
+  varMap["zMass"][0] = (zLep1+zLep2).M();
+  varMap["zPt"][0] = (zLep2 + zLep1).Pt();
+  varMap["zEta"][0] = (zLep2 + zLep1).Eta();
+  varMap["zPhi"][0] = (zLep2 + zLep1).Phi();
 
-    float wChi2Term = (wPairMass - 80.3585)/8.0;
-    float topChi2Term = (topMass - 173.21)/30.0;
-    varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term;
+  float wChi2Term = (wPairMass - 80.3585)/8.0;
+  float topChi2Term = (topMass - 173.21)/30.0;
+  varMap["chi2"][0] = wChi2Term*wChi2Term + topChi2Term*topChi2Term;
 
-    if ( useSidebandRegion ) {
-      if ( varMap["chi2"][0] >= 40. and varMap["chi2"][0] < 150. ) outTreeSdBnd->Fill();
-      if ( varMap["chi2"][0] < 40. ) outTreeSig->Fill();
-    }
-    else outTreeSig->Fill();
+  if ( useSidebandRegion ) {
+    if ( varMap["chi2"][0] >= 40. and varMap["chi2"][0] < 150. ) outTreeSdBnd->Fill();
+    if ( varMap["chi2"][0] < 40. ) outTreeSig->Fill();
+  }
+  else outTreeSig->Fill();
 }
