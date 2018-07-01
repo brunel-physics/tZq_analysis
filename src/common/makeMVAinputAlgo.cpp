@@ -197,11 +197,11 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getJet
   std::vector<TLorentzVector> jetVecList {};
 
   for ( int i = 0; i != 15; i++ ) {
-//    if ( tree->jetInd[i] > -1 ) {
+    if ( tree->jetInd[i] > -1 ) {
       jetList.emplace_back( tree->jetInd[i] );
       jetVecList.emplace_back( getJetVec( tree, tree->jetInd[i], tree->jetSmearValue[i], met,  syst, true ) );
-//    }
-//    else continue;
+    }
+    else continue;
   }
 
   return std::make_pair( jetList, jetVecList );
@@ -214,11 +214,11 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getBje
   std::vector<TLorentzVector> bJetVecList {};
 
   for ( int i = 0; i != 10; i++ ) {
-//    if ( tree->bJetInd[i] > -1 ) {
+    if ( tree->bJetInd[i] > -1 ) {
       bJetList.emplace_back( tree->bJetInd[i] );
       bJetVecList.emplace_back( getJetVec( tree, jets[tree->bJetInd[i]], tree->jetSmearValue[tree->bJetInd[i]], met, syst, false ) );
-//    }
-//    else continue;
+    }
+    else continue;
   }
 
   return std::make_pair( bJetList, bJetVecList );

@@ -1016,10 +1016,10 @@ public :
    int zLep2Index;
    int wQuark1Index;
    int wQuark2Index;
-   std::vector<int> jetInd;
-   std::vector<int> bJetInd;
-   std::vector<float> muonMomentumSF;
-   std::vector<float> jetSmearValue;
+   int jetInd[15];
+   int bJetInd[10];
+   float muonMomentumSF[3];
+   float jetSmearValue[15];
 
    // End MVA tree specific
 
