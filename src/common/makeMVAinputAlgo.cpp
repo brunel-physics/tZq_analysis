@@ -157,19 +157,23 @@ double MakeMvaInputs::deltaR(float eta1, float phi1, float eta2, float phi2){
 
 std::pair<TLorentzVector,TLorentzVector> MakeMvaInputs::sortOutLeptons(MvaEvent* tree, std::string channel) {
 
-  TLorentzVector zLep1, zLep2;
+  TLorentzVector zLep1;
+  TLorentzVector zLep2;
   
+  int zlep1Index = tree->zLep1Index;
+  int zlep2Index = tree->zLep2Index;
+
   if (channel == "ee") {
-    zLep1.SetPxPyPzE(tree->elePF2PATGsfPx[tree->zLep1Index],tree->elePF2PATGsfPy[tree->zLep1Index],tree->elePF2PATGsfPz[tree->zLep1Index],tree->elePF2PATGsfE[tree->zLep1Index]);
-    zLep2.SetPxPyPzE(tree->elePF2PATGsfPx[tree->zLep2Index],tree->elePF2PATGsfPy[tree->zLep2Index],tree->elePF2PATGsfPz[tree->zLep2Index],tree->elePF2PATGsfE[tree->zLep2Index]);
+    zLep1.SetPxPyPzE(tree->elePF2PATPX[zlep1Index],tree->elePF2PATPY[zlep1Index],tree->elePF2PATPZ[zlep1Index],tree->elePF2PATE[zlep1Index]);
+    zLep2.SetPxPyPzE(tree->elePF2PATPX[zlep2Index],tree->elePF2PATPY[zlep2Index],tree->elePF2PATPZ[zlep2Index],tree->elePF2PATE[zlep2Index]);
   }
   if (channel == "mumu") {
-    zLep1.SetPxPyPzE(tree->muonPF2PATPX[tree->zLep1Index],tree->muonPF2PATPY[tree->zLep1Index],tree->muonPF2PATPZ[tree->zLep1Index],tree->muonPF2PATE[tree->zLep1Index]);
-    zLep2.SetPxPyPzE(tree->muonPF2PATPX[tree->zLep2Index],tree->muonPF2PATPY[tree->zLep2Index],tree->muonPF2PATPZ[tree->zLep2Index],tree->muonPF2PATE[tree->zLep2Index]);
+    zLep1.SetPxPyPzE(tree->muonPF2PATPX[zlep1Index],tree->muonPF2PATPY[zlep1Index],tree->muonPF2PATPZ[zlep1Index],tree->muonPF2PATE[zlep1Index]);
+    zLep2.SetPxPyPzE(tree->muonPF2PATPX[zlep2Index],tree->muonPF2PATPY[zlep2Index],tree->muonPF2PATPZ[zlep2Index],tree->muonPF2PATE[zlep2Index]);
   }
   if (channel == "emu") {
-    zLep1.SetPxPyPzE(tree->elePF2PATGsfPx[tree->zLep1Index],tree->elePF2PATGsfPy[tree->zLep1Index],tree->elePF2PATGsfPz[tree->zLep1Index],tree->elePF2PATGsfE[tree->zLep1Index]);
-    zLep2.SetPxPyPzE(tree->muonPF2PATPX[tree->zLep2Index],tree->muonPF2PATPY[tree->zLep2Index],tree->muonPF2PATPZ[tree->zLep2Index],tree->muonPF2PATE[tree->zLep2Index]);
+    zLep1.SetPxPyPzE(tree->elePF2PATPX[zlep1Index],tree->elePF2PATPY[zlep1Index],tree->elePF2PATPZ[zlep1Index],tree->elePF2PATE[zlep1Index]);
+    zLep2.SetPxPyPzE(tree->muonPF2PATPX[zlep2Index],tree->muonPF2PATPY[zlep2Index],tree->muonPF2PATPZ[zlep2Index],tree->muonPF2PATE[zlep2Index]);
   }
 
   return std::make_pair( zLep1, zLep2 );
@@ -192,7 +196,7 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getJet
   std::vector<TLorentzVector> jetVecList {};
 
   for ( int i = 0; i != 15; i++ ) {
-    if ( tree->jetInd[i] > -0.5 ) {
+    if ( tree->jetInd[i] > -1 ) {
       jetList.emplace_back( tree->jetInd[i] );
       jetVecList.emplace_back( getJetVec( tree, tree->jetInd[i], tree->jetSmearValue[i], met,  syst, true ) );
     }
@@ -209,7 +213,7 @@ std::pair< std::vector<int>, std::vector<TLorentzVector> > MakeMvaInputs::getBje
   std::vector<TLorentzVector> bJetVecList {};
 
   for ( int i = 0; i != 10; i++ ) {
-    if ( tree->bJetInd[i] > -0.5 ) {
+    if ( tree->bJetInd[i] > -1 ) {
       bJetList.emplace_back( tree->bJetInd[i] );
       bJetVecList.emplace_back( getJetVec( tree, jets[tree->bJetInd[i]], tree->jetSmearValue[tree->bJetInd[i]], met, syst, false ) );
     }
