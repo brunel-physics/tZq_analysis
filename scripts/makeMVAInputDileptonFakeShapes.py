@@ -632,7 +632,7 @@ def main():
         if useSidebandRegion:
             outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
             setupBranches(outTreeSdBnd,inputVars)
-        outFile = TFile(outputDir+"histofile_"+outChan+".root","UPDATE")
+        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
 
         # Get same sign data
         for chan in outFakeChanToData[outChan]:

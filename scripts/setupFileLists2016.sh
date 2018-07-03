@@ -80,6 +80,20 @@ ls /scratch/data/tZqSkimsRun2016/metRun2016F/* -1d >> $TQZ_TOOLS_PATH/configs/20
 ls /scratch/data/tZqSkimsRun2016/metRun2016G/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016GFiles.txt
 ls /scratch/data/tZqSkimsRun2016/metRun2016H/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/metRun2016HFiles.txt
 
+ls /scratch/data/tZqSkimsRun2016/TGJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/TGJetsFiles.txt
+ls /scratch/data/tZqSkimsRun2016/TTGJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/TTGJetsFiles.txt
+ls /scratch/data/tZqSkimsRun2016/TTGJets_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/TTGJetsFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/GJet_Pt-20to40_MGG-80toInf/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/GJetPt20to40_MGG80toInfFiles.txt
+ls /scratch/data/tZqSkimsRun2016/GJet_Pt-20toInf_MGG-40to80/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/GJetPt20toInf_MGG40to80Files.txt
+ls /scratch/data/tZqSkimsRun2016/GJet_Pt-40toInf_MGG-80toInf/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/GJetPt40toInf_MGG80toInfFiles.txt
+
+ls /scratch/data/tZqSkimsRun2016/ttbarttbar/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarttbarFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WWG/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WWGFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WZG/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZGFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WGGJets/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WGGJetsFiles.txt
+ls /scratch/data/tZqSkimsRun2016/WW4q/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WW4qFiles.txt
+
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_amcatnlo/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_amcatnlo_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50Files.txt
 ls /scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/DYJets10To50MadgraphFiles.txt

@@ -1,15 +1,15 @@
 cuts = 
 {
 	tightMuons = {
-	      pt     	= 30.;
-	      ptLeading = 30.;
+	      pt     	= 20.;
+	      ptLeading = 26.;
 	      eta    	= 2.4;
 	      relIso 	= 0.15;
 	      number 	= 0;
 	      },
 	looseMuons = {
-	      pt     	= 30.;
-	      ptLeading = 30.;
+	      pt     	= 20.;
+	      ptLeading = 26.;
 	      eta    	= 2.4;
 	      relIso 	= 0.25;
 	      number 	= 0;

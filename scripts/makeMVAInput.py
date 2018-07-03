@@ -397,7 +397,7 @@ def main():
 
         outFile = 0
         #update the appropriate root file
-        outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","UPDATE")
+        outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
 
         for syst in systs:
             #We now define the outtree out here, coz it seems like a more sensible option.
@@ -441,7 +441,7 @@ def main():
         print "Data ",outChan
         outTree = TTree("Ttree_"+outChan,"Ttree_"+outChan)
         setupBranches(outTree,inputVars)
-        outFile = TFile(outputDir+"histofile_"+outChan+".root","UPDATE")
+        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
         for chan in outChanToData[outChan]:
             dataChain = TChain("tree")
 #            for run in ["A","B","C","D"]:
@@ -456,7 +456,7 @@ def main():
     zEnrichSyst = ["","__zPt__plus","__zPt__minus"]
     for outChan in outChannels:
         print "And finally z-enriched data ",outChan
-        outFileZ = TFile(outputDir+"histofile_"+outChan+"Zenriched.root","UPDATE")
+        outFileZ = TFile(outputDir+"histofile_"+outChan+"Zenriched.root","RECREATE")
         for systPost in zEnrichSyst:
             outTreeZ = TTree("Ttree_"+outChan+"Zenriched"+systPost,"Ttree_"+outChan+"Zenriched"+systPost)
             setupBranches(outTreeZ,inputVars)

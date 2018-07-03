@@ -1,6 +1,7 @@
 #include "jetCorrectionUncertainty.hpp"
 #include "config_parser.hpp"
 #include "MvaEvent.hpp"
+#include "jetCorrectionUncertainty.hpp"
 
 #include "TTree.h"
 #include "TLorentzVector.h"

@@ -18,7 +18,7 @@
 //For debugging. *sigh*
 #include <iostream>
 
-const bool BLIND_PLOTS( true );
+const bool BLIND_PLOTS( false );
 const bool writeExtraText( true );
 
 HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vector<std::string> plotOrder, std::map<std::string,datasetInfo> dsetMap, const bool is2016):
