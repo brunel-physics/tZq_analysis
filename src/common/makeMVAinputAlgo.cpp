@@ -98,7 +98,7 @@ void MakeMvaInputs::runMainAnalysis() {
     for ( std::vector<std::string>::iterator syst = systs.begin(); syst != systs.end(); ++syst) {
       std::string systName {*syst};
       TTree* outTreeSig = new TTree( ("Ttree_"+treeNamePostfixSig+outSample+systName).c_str(), ("Ttree_"+treeNamePostfixSig+outSample+systName).c_str() );
-      TTree* outTreeSdBnd;
+      TTree* outTreeSdBnd {};
       setupBranches(outTreeSig, mvaMap);
 
       if ( useSidebandRegion ) {
