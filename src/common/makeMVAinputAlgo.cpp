@@ -521,8 +521,6 @@ void MakeMvaInputs::fillTree ( TTree* outTreeSig, TTree* outTreeSdBnd, std::map<
 
   TLorentzVector metVec(tree->metPF2PATPx,tree->metPF2PATPy,0,tree->metPF2PATEt);
 
-  std::cout << (zLep1+zLep2).M() << std::endl;
-
   std::pair< std::vector<int>, std::vector<TLorentzVector> > jetPair = getJets(tree,syst,metVec);
   std::vector< int > jets = jetPair.first;
   std::vector<TLorentzVector> jetVecs = jetPair.second;

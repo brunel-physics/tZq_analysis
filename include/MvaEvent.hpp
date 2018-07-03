@@ -512,6 +512,25 @@ public :
    Int_t   eventNum;
    Float_t eventLumiblock;
 
+   // MVA tree specific
+
+   static const size_t NJETS{15};
+   static const size_t NBJETS{10};
+   static const size_t NMUONS{3};
+
+   Float_t eventWeight;
+   Int_t zLep1Index;
+   Int_t zLep2Index;
+   Int_t wQuark1Index;
+   Int_t wQuark2Index;
+   std::array<Int_t, NJETS> jetInd;
+   std::array<Int_t, NBJETS> bJetInd;
+   std::array<Float_t, NMUONS> muonMomentumSF;
+   std::array<Float_t, NJETS> jetSmearValue;
+
+   // End MVA tree specific
+
+
    // List of branches
    TBranch        *b_numElePF2PAT;   //!
    TBranch        *b_elePF2PATE;   //!
@@ -987,7 +1006,17 @@ public :
    TBranch        *b_eventNum;   //!
    TBranch        *b_eventLumiblock;   //!
 
-   bool isMC;
+// MVA tree specific
+   TBranch *b_eventWeight;   //!
+   TBranch *b_zLep1Index;   //!
+   TBranch *b_zLep2Index;   //!
+   TBranch *b_wQuark1Index;   //!
+   TBranch *b_wQuark2Index;   //!
+   TBranch *b_jetInd;   //!
+   TBranch *b_bJetInd;   //!
+   TBranch *b_muonMomentumSF;   //!
+   TBranch *b_jetSmearValue;   //!
+   TBranch *b_isMC;   //!
 
    std::vector<int> electronIndexTight;
    std::vector<int> electronIndexLoose;
@@ -1008,20 +1037,6 @@ public :
    TLorentzVector wLepton;
    int wLepIndex;
    float wLeptonRelIso;
-
-   // MVA tree specific
-
-   float eventWeight;
-   int zLep1Index;
-   int zLep2Index;
-   int wQuark1Index;
-   int wQuark2Index;
-   int jetInd[15];
-   int bJetInd[10];
-   float muonMomentumSF[3];
-   float jetSmearValue[15];
-
-   // End MVA tree specific
 
    Int_t numVert;
    TBranch * b_numVert;
@@ -1604,6 +1619,22 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("eventRun", &eventRun, &b_eventRun);
    fChain->SetBranchAddress("eventNum", &eventNum, &b_eventNum);
    fChain->SetBranchAddress("eventLumiblock", &eventLumiblock, &b_eventLumiblock);
+
+   // MVA tree specific
+
+   fChain->SetBranchAddress("eventWeight", &eventWeight, &b_eventWeight);
+   fChain->SetBranchAddress("zLep1Index", &zLep1Index, &b_zLep1Index);
+   fChain->SetBranchAddress("zLep2Index", &zLep2Index, &b_zLep2Index);
+   fChain->SetBranchAddress("wQuark1Index", &wQuark1Index, &b_wQuark1Index);
+   fChain->SetBranchAddress("wQuark2Index", &wQuark2Index, &b_wQuark2Index);
+   fChain->SetBranchAddress("jetInd", jetInd.data(), &b_jetInd);
+   fChain->SetBranchAddress("bJetInd", bJetInd.data(), &b_bJetInd);
+   fChain->SetBranchAddress("muonMomentumSF", muonMomentumSF.data(), &b_muonMomentumSF);
+   fChain->SetBranchAddress("jetSmearValue", jetSmearValue.data(), &b_jetSmearValue);
+
+   // End MVA tree specific
+
+
    fChain->SetBranchAddress("numVert", &numVert, &b_numVert);
    Notify();
 }
