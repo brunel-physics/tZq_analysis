@@ -95,6 +95,7 @@ void MakeMvaInputs::runMainAnalysis() {
 
     TFile* outFile = new TFile( (outputDir+"histofile_"+listOfMCs[sample] + ".root").c_str(),"RECREATE");
 
+    // loop over systematics
     for ( std::vector<std::string>::iterator syst = systs.begin(); syst != systs.end(); ++syst) {
       std::string systName {*syst};
       TTree* outTreeSig = new TTree( ("Ttree_"+treeNamePostfixSig+outSample+systName).c_str(), ("Ttree_"+treeNamePostfixSig+outSample+systName).c_str() );
@@ -106,17 +107,18 @@ void MakeMvaInputs::runMainAnalysis() {
         setupBranches(outTreeSdBnd, mvaMap);
       }
       
+      // loop over channels
       for ( std::vector<std::string>::iterator channel = channels.begin(); channel != channels.end(); channel++) {
 
-//        TFile* inFile = new TFile((inputDir+sample+(*channel)+"mvaOut.root").c_str(),"READ");
-//        TTree* tree; 
-//        if ( systName == "__met__plus" || systName == "__met__minus" ) tree = (TTree*)inFile->Get("tree");
-//        else tree = (TTree*)inFile->Get( ("tree"+systName).c_str() );
+        TFile* inFile = new TFile((inputDir+sample+(*channel)+"mvaOut.root").c_str(),"READ");
+        TTree* tree; 
+        if ( systName == "__met__plus" || systName == "__met__minus" ) tree = (TTree*)inFile->Get("tree");
+        else tree = (TTree*)inFile->Get( ("tree"+systName).c_str() );
 
-        TChain* tree;
-        if ( systName == "__met__plus" || systName == "__met__minus" ) tree = new TChain("tree");
-        else tree = new TChain(("tree"+systName).c_str());
-        tree->Add((inputDir+sample+(*channel)+"mvaOut.root").c_str());
+//        TChain* tree;
+//        if ( systName == "__met__plus" || systName == "__met__minus" ) tree = new TChain("tree");
+//        else tree = new TChain(("tree"+systName).c_str());
+//        tree->Add((inputDir+sample+(*channel)+"mvaOut.root").c_str());
 
 	std::cout << systName << " : " << tree->GetEntries() << std::endl;
 	MvaEvent* event = new MvaEvent( true, "", tree, true);
@@ -124,6 +126,8 @@ void MakeMvaInputs::runMainAnalysis() {
         long long numberOfEvents{tree->GetEntries()};        
         TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
         lEventTimer->DrawProgressBar(0);
+
+        // loop over events
         for (int i{0}; i < numberOfEvents; i++) {
           lEventTimer->DrawProgressBar(i);
           event->GetEntry(i);
@@ -133,15 +137,18 @@ void MakeMvaInputs::runMainAnalysis() {
           if ( SameSignMC == true && *channel == "mumu" && (event->genMuonPF2PATPromptFinalState[0] == 0 || event->genMuonPF2PATPromptFinalState[1] == 0) ) continue;
 
           fillTree(outTreeSig, outTreeSdBnd, mvaMap, event, outSample+systName, (*channel));
-        }
-      }
+        } // end event loop
+        inFile->Close();
+      }// end channel loop
       outFile->cd();
       outTreeSig->Write();
+      delete outTreeSig;
+      delete outTreeSdBnd;
       if ( useSidebandRegion ) outTreeSdBnd->Write();
-    }
+    } // end systematic loop
     outFile->Write();
     outFile->Close();
-  }
+  } // end sample loop
 }
 
 double MakeMvaInputs::deltaR(float eta1, float phi1, float eta2, float phi2){
