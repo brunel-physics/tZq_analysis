@@ -1016,7 +1016,6 @@ public :
    TBranch *b_bJetInd;   //!
    TBranch *b_muonMomentumSF;   //!
    TBranch *b_jetSmearValue;   //!
-   TBranch *b_isMC;   //!
 
    std::vector<int> electronIndexTight;
    std::vector<int> electronIndexLoose;

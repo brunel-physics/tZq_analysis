@@ -127,16 +127,13 @@ void MakeMvaInputs::runMainAnalysis() {
         for (int i{0}; i < numberOfEvents; i++) {
           lEventTimer->DrawProgressBar(i);
           event->GetEntry(i);
-/*
-          bool SameSignMC = false
-          if ( tree->isMC == 1 ) {
-            if ( SameSignMC == true && *channel == "ee" && (event->genElePF2PATPromptFinalState[0] == 0 || event->genElePF2PATPromptFinalState[1] == 0) ) continue;
-            if ( SameSignMC == true && *channel == "mumu" && (event->genMuonPF2PATPromptFinalState[0] == 0 || event->genMuonPF2PATPromptFinalState[1] == 0) ) continue;
-          }
-*/
+
+          bool SameSignMC = false;
+          if ( SameSignMC == true && *channel == "ee" && (event->genElePF2PATPromptFinalState[0] == 0 || event->genElePF2PATPromptFinalState[1] == 0) ) continue;
+          if ( SameSignMC == true && *channel == "mumu" && (event->genMuonPF2PATPromptFinalState[0] == 0 || event->genMuonPF2PATPromptFinalState[1] == 0) ) continue;
+
           fillTree(outTreeSig, outTreeSdBnd, mvaMap, event, outSample+systName, (*channel));
         }
-   
       }
       outFile->cd();
       outTreeSig->Write();
