@@ -260,7 +260,7 @@ plotType = f
 
 [tWInclusive]
 fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
-totalEvents = 3516550
+totalEvents = 6952830
 crossSection = 35.85
 runType = mc
 histoName = NPL_mumu_DYamcatnlo
@@ -270,7 +270,7 @@ plotType = f
 
 [tbarWInclusive]
 fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 5205966
+totalEvents = 6933094
 crossSection = 35.85
 runType = mc
 histoName = NPL_mumu_DYamcatnlo
@@ -570,7 +570,7 @@ plotType = f
 
 [tWInclusive]
 fileName = configs/2016/datasets/fileLists/tWInclusiveFiles.txt
-totalEvents = 3516550
+totalEvents = 6952830
 crossSection = 35.85
 runType = mc
 histoName = SingleTop
@@ -580,7 +580,7 @@ plotType = f
 
 [tbarWInclusive]
 fileName = configs/2016/datasets/fileLists/tbarWInclusiveFiles.txt
-totalEvents = 5205966
+totalEvents = 6933094
 crossSection = 35.85
 runType = mc
 histoName = SingleTop
