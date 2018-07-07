@@ -90,7 +90,7 @@ plotType = f
 
 [WZjets]
 fileName = configs/2016/datasets/fileLists/WZjets.txt
-totalEvents = 1927043
+totalEvents = 1930828
 crossSection = 5.26
 runType = mc
 histoName = NPL
@@ -400,7 +400,7 @@ plotType = f
 
 [WZjets]
 fileName = configs/2016/datasets/fileLists/WZjets.txt
-totalEvents = 1927043
+totalEvents = 1930828
 crossSection = 5.26
 runType = mc
 histoName = wz
