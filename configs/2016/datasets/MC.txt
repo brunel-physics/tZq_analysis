@@ -120,7 +120,7 @@ plotType = f
 
 [ZZ2l2q]
 fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
-totalEvents = 14534622
+totalEvents = 15345572
 crossSection = 3.222
 runType = mc
 histoName = zz
