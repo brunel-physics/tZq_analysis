@@ -142,8 +142,8 @@ int main(int argc, char* argv[])
 
                     if (eeTrig)
                     {
-                        triggerDoubleCountCheck.emplace(
-                            std::make_pair(event.eventRun, event.eventNum));
+                        triggerDoubleCountCheck.emplace(event.eventRun,
+                                                        event.eventNum);
                         outTree->Fill();
                     }
                 }
@@ -165,8 +165,8 @@ int main(int argc, char* argv[])
 
                     if (mumuTrig)
                     {
-                        triggerDoubleCountCheck.emplace(
-                            std::make_pair(event.eventRun, event.eventNum));
+                        triggerDoubleCountCheck.emplace(event.eventRun,
+                                                        event.eventNum);
                         outTree->Fill();
                     }
                 }
@@ -223,8 +223,8 @@ int main(int argc, char* argv[])
 
                     if (muEGTrig)
                     {
-                        triggerDoubleCountCheck.emplace(
-                            std::make_pair(event.eventRun, event.eventNum));
+                        triggerDoubleCountCheck.emplace(event.eventRun,
+                                                        event.eventNum);
                         outTree->Fill();
                     }
                 } // end emu
@@ -298,8 +298,8 @@ int main(int argc, char* argv[])
 
                     if (eTrig)
                     {
-                        auto it = triggerDoubleCountCheck.find(
-                        std::make_pair(event.eventRun, event.eventNum));
+                        auto it{triggerDoubleCountCheck.find(
+                            {event.eventRun, event.eventNum})};
                         singleElectron++;
                         // If event has already been found ... skip event
                         if (it != triggerDoubleCountCheck.end())
@@ -310,7 +310,7 @@ int main(int argc, char* argv[])
                         else
                         {
                             // triggerDoubleCountCheck.emplace(
-                            // std::make_pair(event.eventRun, event.eventNum) );
+                            // event.eventRun, event.eventNum);
                             outTree->Fill();
                         }
                     }
@@ -331,8 +331,8 @@ int main(int argc, char* argv[])
                     if (muTrig)
                     {
                         singleMuon++;
-                        auto it = triggerDoubleCountCheck.find(
-                            std::make_pair(event.eventRun, event.eventNum));
+                        auto it{triggerDoubleCountCheck.find(
+                            {event.eventRun, event.eventNum})};
                         // If event has already been found ... skip event
                         if (it != triggerDoubleCountCheck.end())
                         {
@@ -342,7 +342,7 @@ int main(int argc, char* argv[])
                         else
                         {
                             // triggerDoubleCountCheck.emplace(
-                            // std::make_pair(event.eventRun, event.eventNum) );
+                            // event.eventRun, event.eventNum);
                             outTree->Fill();
                         }
                     }
@@ -381,8 +381,8 @@ int main(int argc, char* argv[])
                         {
                             singleMuon++;
                         }
-                        auto it = triggerDoubleCountCheck.find(
-                            std::make_pair(event.eventRun, event.eventNum));
+                        auto it{triggerDoubleCountCheck.find(
+                            {event.eventRun, event.eventNum})};
                         // If event has already been found ... skip event
                         if (it != triggerDoubleCountCheck.end())
                         {
@@ -399,7 +399,7 @@ int main(int argc, char* argv[])
                         else
                         {
                             // triggerDoubleCountCheck.emplace(
-                            // std::make_pair(event.eventRun, event.eventNum) );
+                            // event.eventRun, event.eventNum);
                             outTree->Fill();
                         }
                     }
