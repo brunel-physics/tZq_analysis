@@ -3,8 +3,10 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 #include <boost/filesystem.hpp>
+#include <boost/functional/hash.hpp>
 #include <boost/program_options.hpp>
 #include <boost/progress.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -71,7 +73,7 @@ int main (int argc, char* argv[])
   const std::regex mask{".*\\.root"};
   int fileNum{0};
   
-  std::set< std::pair < Int_t, Int_t > > triggerDoubleCountCheck;
+  std::unordered_set <std::pair <int, int>, boost::hash <std::pair <Int_t, Int_t>>> triggerDoubleCountCheck;
  
   for (const auto& dileptonDir: dileptonDirs) {  // for each dilepton input directory
     for (const auto& file : boost::make_iterator_range(fs::directory_iterator{dileptonDir}, {}))  {  // for each file in directory
