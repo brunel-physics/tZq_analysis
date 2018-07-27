@@ -21,5 +21,5 @@ if len(sys.argv) > 3 and sys.argv[3] == "-s" :
 #subprocess.call("mkdir /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr,shell=True)
 #subprocess.call("rm /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"/*",shell=True)
 
-print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"_debug/ --2016 "+useSideBandRegion
-subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"_debug/ --2016 "+useSideBandRegion,shell=True)
+print "python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"_test/ --2016 "+useSideBandRegion
+subprocess.call("python scripts/makeMVAInputDilepton.py [\\\"ee\\\",\\\"mumu\\\"] /scratch/data/TopPhysics/mvaDirs/skims/2016/mz"+mzStr+"mw"+mwStr+"/ /scratch/data/TopPhysics/mvaDirs/inputs/2016/"+dirExt+"mz"+mzStr+"mw"+mwStr+"_test/ --2016 "+useSideBandRegion,shell=True)
