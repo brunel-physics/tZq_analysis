@@ -442,7 +442,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["mTW"][0] = math.sqrt(2*tree.jetPF2PATPt[tree.wQuark1Index]*tree.jetPF2PATPt[tree.wQuark2Index] * (1-math.cos(tree.jetPF2PATPhi[tree.wQuark1Index] - tree.jetPF2PATPhi[tree.wQuark2Index])))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
-        varMap["met"][0] = tree.metPF2PATEt
+        varMap["met"][0] = metVec.Pt()
         varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]
         varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
         varMap["secJetbTag"][0] = -1.

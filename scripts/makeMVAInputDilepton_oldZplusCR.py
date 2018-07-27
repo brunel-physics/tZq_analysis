@@ -452,7 +452,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["mTW"][0] = math.sqrt(2*tree.jetPF2PATPt[tree.wQuark1Index]*tree.jetPF2PATPt[tree.wQuark2Index] * (1-math.cos(tree.jetPF2PATPhi[tree.wQuark1Index] - tree.jetPF2PATPhi[tree.wQuark2Index])))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
-        varMap["met"][0] = tree.metPF2PATEt
+        varMap["met"][0] = metVec.Pt()
         varMap["bTagDisc"][0] = -1.
         varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
         varMap["secJetbTag"][0] = -1.
@@ -577,7 +577,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 def main():
 
     #Mapping of our mc names to IPHC names
-    listOfMCs = {"WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+#    listOfMCs = {"WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 #    listOfMCs = {"QCD_EMEnriched_Pt-20to30":"QCD_EM","QCD_EMEnriched_Pt-30to50":"QCD_EM","QCD_EMEnriched_Pt-50to80":"QCD_EM","QCD_EMEnriched_Pt-80to120":"QCD_EM","QCD_EMEnriched_Pt-120to170":"QCD_EM","QCD_EMEnriched_Pt-170to300":"QCD_EM","QCD_EMEnriched_Pt-300toInf":"QCD_EM","QCD_EMEnriched_Pt-15to20":"QCD_Mu","QCD_EMEnriched_Pt-20to30":"QCD_Mu","QCD_EMEnriched_Pt-30to50":"QCD_Mu","QCD_EMEnriched_Pt-50to80":"QCD_Mu","QCD_EMEnriched_Pt805to120":"QCD_Mu","QCD_EMEnriched_Pt-120to170":"QCD_Mu","QCD_EMEnriched_Pt-170to300":"QCD_Mu","QCD_EMEnriched_Pt-300to470":"QCD_Mu","QCD_EMEnriched_Pt-470to600":"QCD_Mu","QCD_EMEnriched_Pt-600to800":"QCD_Mu","QCD_EMEnriched_Pt-800to1000":"QCD_Mu","QCD_EMEnriched_Pt-1000toInf":"QCD_Mu"}
@@ -589,7 +589,7 @@ def main():
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
 #    listOfMCs = {"ttZ2l2nu":"TTZ"}
-#    listOfMCs = {"ttZ2l2nu":"TTZ"}
+    listOfMCs = {"wPlusJets":"Wjets"}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
