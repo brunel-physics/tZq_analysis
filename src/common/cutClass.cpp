@@ -2201,6 +2201,23 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
   if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
   if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
 
+  float invWmass{0.};
+  invWmass = getWbosonQuarksCand(event,event->jetIndex,systToRun);
+
+   // Debug chi2 cut
+//   float topMass = getTopMass(event);
+//   float topTerm = ( topMass-173.21 )/30.0;
+//   float wTerm = ( (event->wPairQuarks.first + event->wPairQuarks.second).M() - 80.3585 )/8.0;
+
+//   float chi2 = topTerm*topTerm + wTerm*wTerm;
+//   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
+//   if ( chi2 >= 2.0 ) return false; //signal region
+
+    if ( std::abs(invWmass) > invWMassCut_ ) return false;
+
+    if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
+    if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
+
   return true;
 }
 
