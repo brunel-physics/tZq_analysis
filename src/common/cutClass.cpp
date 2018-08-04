@@ -181,8 +181,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIDsFile2 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
     muonIsoFile1 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
     muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
-    muonRecoFile1 = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEF.root"};
-    muonRecoFile2 = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_GH.root"};
 
     muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
     muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
@@ -196,8 +194,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
     h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
     h_muonPFiso2 = dynamic_cast<TH2F*>(muonIsoFile2->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
-    h_muonRecoGraph1 = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile1->Get("ratio_eff_eta3_dr030e030_corr"));
-    h_muonRecoGraph2 = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile2->Get("ratio_eff_eta3_dr030e030_corr"));
     std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
 
@@ -2728,7 +2724,7 @@ float Cuts::muonSF(double pt, double eta, int syst){
     else binIso2 = h_muonPFiso2->FindBin(std::abs(eta),pt);
   }
 
-  float muonIdSF {1.0}, muonPFisoSF {1.0}, muonRecoSF {1.0};
+  float muonIdSF {1.0}, muonPFisoSF {1.0};
 
   if ( !is2016_ ) muonIdSF = h_muonIDs1->GetBinContent(binId1);
   if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
@@ -2736,13 +2732,10 @@ float Cuts::muonSF(double pt, double eta, int syst){
   if ( is2016_ ) {
     muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
     muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
 //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
-//    muonRecoSF = h_muonRecoGraph1->Eval(eta);
 //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
 //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
-//    muonRecoSF = h_muonRecoGraph2->Eval(eta);
   }
 
   if ( is2016_ ) {
@@ -2755,7 +2748,6 @@ float Cuts::muonSF(double pt, double eta, int syst){
     if ( is2016_ ) {
       muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
       muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.005;
-      muonRecoSF += muonRecoSF*0.01;
 //      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
 //      muonIdSF += ( h_muonIDs2->GetBinError(binId2) );
@@ -2770,7 +2762,6 @@ float Cuts::muonSF(double pt, double eta, int syst){
     if ( is2016_ ) {
       muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
       muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
-      muonRecoSF -= muonRecoSF*0.01;
 //      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
 //      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
 //      muonIdSF -= ( h_muonIDs2->GetBinError(binId2) );
@@ -2778,7 +2769,7 @@ float Cuts::muonSF(double pt, double eta, int syst){
     }
   }
 
-  return muonIdSF*muonPFisoSF*muonRecoSF;
+  return muonIdSF*muonPFisoSF;
 }
 
 float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){

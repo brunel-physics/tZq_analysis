@@ -248,16 +248,12 @@ class Cuts{
   TFile* muonIsoFile1;
   TFile* muonIDsFile2;
   TFile* muonIsoFile2;
-  TFile* muonRecoFile1;
-  TFile* muonRecoFile2;
   TH2F* h_muonHlt1;
   TH2F* h_muonHlt2;
   TH2F* h_muonIDs1;
   TH2F* h_muonIDs2;
   TH2F* h_muonPFiso1;
   TH2F* h_muonPFiso2;
-  TGraphAsymmErrors* h_muonRecoGraph1;
-  TGraphAsymmErrors* h_muonRecoGraph2;
 
  public:
   Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool, const bool);
