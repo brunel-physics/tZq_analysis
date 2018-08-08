@@ -43,13 +43,14 @@ def main():
   sameSignDY_mumu = 0
   oppSignDY_mumu = 0
 
-  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50eemvaOut.root")
-  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50mumumvaOut.root")
+
+  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eemvaOut.root")
+  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumumvaOut.root")
   tree_DY_ee = infile_DY_ee.Get("tree")
   tree_DY_mumu = infile_DY_mumu.Get("tree")
 
-  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50eeinvLepmvaOut.root")
-  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz50mw50/DYJetsToLL_M-50mumuinvLepmvaOut.root")
+  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eeinvLepmvaOut.root")
+  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumuinvLepmvaOut.root")
   tree_DY_SS_ee = infile_DY_SS_ee.Get("tree")
   tree_DY_SS_mumu = infile_DY_SS_mumu.Get("tree")
 
@@ -142,11 +143,15 @@ def main():
   fakeGen_ee = 0.
   genGen_mumu = 0.
   fakeGen_mumu = 0.
+  genGen_emu = 0.
+  fakeGen_emu = 0.
 
   genGen_inv_ee = 0.
   fakeGen_inv_ee = 0.
   genGen_inv_mumu = 0.
   fakeGen_inv_mumu = 0.
+  genGen_inv_emu = 0.
+  fakeGen_inv_emu = 0.
 
   #Loop over all MC samples
   for sample in listOfMCs.keys():
@@ -156,6 +161,8 @@ def main():
     infile_MC_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumumvaOut.root")
     infile_MC_inv_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"eeinvLepmvaOut.root")
     infile_MC_inv_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumuinvLepmvaOut.root")
+    infile_MC_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/emu/"+sample+"emumvaOut.root")
+    infile_MC_inv_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/emu/"+sample+"emuinvLepmvaOut.root")
 
     tree_MC_ee = infile_MC_ee.Get("tree")
     try:
@@ -204,6 +211,30 @@ def main():
 
     infile_MC_mumu.Close()
 
+    tree_MC_emu = infile_MC_emu.Get("tree")
+    try:
+      print str(tree_MC_emu.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_MC_emu.GetEntries() ) :
+      tree_MC_emu.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC_emu.eventWeight
+
+      lep1_emu = 0
+      lep2_emu = 0
+ 
+      if (tree_MC_emu.genElePF2PATPromptDecayed[tree_MC_emu.zLep1Index] == 1 or tree_MC_emu.genElePF2PATPromptFinalState[tree_MC_emu.zLep1Index] == 1 ) : lep1_emu = 1
+      if (tree_MC_emu.genMuonPF2PATPromptDecayed[tree_MC_emu.zLep2Index] == 1 or tree_MC_emu.genMuonPF2PATPromptFinalState[tree_MC_emu.zLep2Index] == 1 ) : lep2_emu = 1
+
+      if ( lep1_emu == 1 and lep2_emu == 1 ) : genGen_emu += 1.0 * weight
+      else: fakeGen_emu += 1.0 * weight
+
+    infile_MC_emu.Close()
+
     tree_MC_inv_ee = infile_MC_inv_ee.Get("tree")
     try:
       print str(tree_MC_inv_ee.GetEntriesFast())
@@ -251,6 +282,30 @@ def main():
       else: fakeGen_inv_mumu += 1.0 * weight
 
     infile_MC_inv_mumu.Close()
+
+    tree_MC_inv_emu = infile_MC_inv_emu.Get("tree")
+    try:
+      print str(tree_MC_inv_emu.GetEntriesFast())
+      sys.stdout.flush()
+    except AttributeError:
+      print "\nAttribute Error \n"
+      sys.stdout.flush()
+
+    for event in range ( tree_MC_inv_emu.GetEntries() ) :
+      tree_MC_inv_mumu.GetEntry(event)
+      weight = 1
+      if (weighted) : weight = tree_MC_inv_emu.eventWeight
+
+      lep1_inv_emu = 0
+      lep2_inv_emu = 0
+
+      if (tree_MC_inv_emu.genElePF2PATPromptDecayed[tree_MC_inv_emu.zLep1Index] == 1 or tree_MC_inv_emu.genElePF2PATPromptFinalState[tree_MC_inv_emu.zLep1Index] == 1 ) : lep1_inv_emu = 1
+      if (tree_MC_inv_emu.genMuonPF2PATPromptDecayed[tree_MC_inv_emu.zLep2Index] == 1 or tree_MC_inv_emu.genMuonPF2PATPromptFinalState[tree_MC_inv_emu.zLep2Index] == 1 ) : lep2_inv_emu = 1
+
+      if ( lep1_inv_emu == 1 and lep2_inv_emu == 1 ) : genGen_inv_emu += 1.0 * weight
+      else: fakeGen_inv_emu += 1.0 * weight
+
+    infile_MC_inv_emu.Close()
 
   print "number of prompt (final state or decayed) OS electron gen particles: ", genGen_ee
   print "number of non-prompt (final state or decayed) OS electron gen particles: ", fakeGen_ee
