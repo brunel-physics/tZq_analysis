@@ -971,7 +971,14 @@ bool Cuts::getDileptonZCand(AnalysisEvent *event, std::vector<int> electrons, st
   }
 
   else if ( electrons.size() == 1 && muons.size() == 1 ) {
-    if (event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] > 0) return false;
+
+    if ( !invertLepCut_) {
+      if (event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] >= 0) return false;
+    }
+    else {
+      if ( !(event->elePF2PATCharge[electrons[0]] * event->muonPF2PATCharge[muons[1]] >= 0) ) return false;
+    }
+
     TLorentzVector lepton1{event->elePF2PATPX[electrons[0]],event->elePF2PATPY[electrons[0]],event->elePF2PATPZ[electrons[0]],event->elePF2PATE[electrons[0]]};
     TLorentzVector lepton2{event->muonPF2PATPX[muons[0]],event->muonPF2PATPY[muons[0]],event->muonPF2PATPZ[muons[0]],event->muonPF2PATE[muons[0]]};
 
@@ -1518,8 +1525,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if (channel == "ee"){
       if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
         twgt = 0.98713; // 0.97552 for data eff; 0.98713 for SF
-        if (syst == 1) twgt += 0.00063; // -0.00130/+0.00138 for eff; 0.00063 for SF
-        if (syst == 2) twgt -= 0.00063;
+        if (syst == 1) twgt += 0.01; // -0.00130/+0.00138 for eff; 0.00063 for SF
+        if (syst == 2) twgt -= 0.01;
       }
     }
     else if (channel == "mumu"){
@@ -1528,9 +1535,12 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         // eff pre-HIP fix: 0.97906 -0.00073/+0.00076; eff post-HIP fix: 0.99036 -0.00058/0.00062; 
         //SF pre-HIP fix 0.98703 +/- 0.00016 and 0.99843 +/- 0.00016  for post-HIP fix
 
-//        twgt = ( 0.98703 * lumiRunsBCDEF_ + 0.99843 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+        twgt = ( 0.98703 * lumiRunsBCDEF_ + 0.99843 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
 
-        twgt = 1.0;
+//        twgt = 0.99843;
+
+          if (syst == 1) twgt += 0.01;
+          if (syst == 2) twgt -= 0.01;
 
 //        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
 //        if (syst == 2) twgt -= ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
@@ -2634,7 +2644,7 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
 
-      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
+//      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
 
     }
     else if (numTightEle_ == 1 && numTightMu_ == 1){
@@ -2736,9 +2746,6 @@ float Cuts::muonSF(double pt, double eta, int syst){
 //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
 //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
 //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
-  }
-
-  if ( is2016_ ) {
   }
 
   if ( syst == 1 ) {

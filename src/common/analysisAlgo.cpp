@@ -577,6 +577,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
       if (channelInd & 16){ //nominal samples and emu
         std::cout << "emu - used only for ttbar control region " << std::endl;
       }
+      if (channelInd & 32){ //nominal samples and emu
+        std::cout << "emu - used only for ttbar same sign control region " << std::endl;
+      }
     }
   }
 }
@@ -683,7 +686,8 @@ void AnalysisAlgo::setupPlots()
   stageNames.emplace_back( std::make_pair ("zMass","Z Mass Cuts") );
   stageNames.emplace_back( std::make_pair ("jetSel","Jet Cuts") );
   stageNames.emplace_back( std::make_pair ("bTag","b-tag Cuts") );
-  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
+  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
+//  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
   if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back( std::make_pair ("cTag","c-tag Cuts") );}
 }
 
@@ -706,7 +710,7 @@ void AnalysisAlgo::runMainAnalysis(){
     TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
     unsigned channelIndMax{256};
 
-    if ( !trileptonChannel_ ){ channelIndMax = 32; }
+    if ( !trileptonChannel_ ){ channelIndMax = 64; }
     for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1) {
       if (!(channelInd & channelsToRun) && channelsToRun) continue;
 
@@ -998,10 +1002,10 @@ void AnalysisAlgo::runMainAnalysis(){
 	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
 	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
-	    //	      std::cout << std::setprecision(5) << std::fixed;
-	    //            std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
-	    //            std::cout << "generator level SF = " << generatorWeight << std::endl;
-	    //            std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
+//	    	      std::cout << std::setprecision(5) << std::fixed;
+//	                std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
+//	                std::cout << "generator level SF = " << generatorWeight << std::endl;
+//	                std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
 	  }
 	  eventWeight *= generatorWeight;
 	  //apply pileup weights here.
@@ -1041,8 +1045,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //}
 
 	  //If amcatnlo DY, normalise
-//	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && doZplusCR_ ) eventWeight *= 0.384378; // New CR def
-//	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && !doZplusCR_ ) eventWeight *= 0.407213; // Old CR def
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && doZplusCR_ ) eventWeight *= 0.384378; // New CR def
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && !doZplusCR_ ) eventWeight *= 0.407213; // Old CR def
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
@@ -1387,6 +1391,15 @@ std::string AnalysisAlgo::channelSetup (unsigned channelInd) {
       channel = "emu";
       postfix = "emu";
       chanName += "emu";
+    }
+    if (channelInd & 32){ //same signemu channel for NPL ttbar background estimation
+      cutObj->setNumLeps(1,1,1,1);
+      cutObj->setCutConfTrigLabel("d");
+      channel = "emu";
+      postfix = "emu";
+      cutObj->setInvLepCut(true);
+      invertLepCut = true;
+      chanName += "invemu";
     }
   }
   return chanName;
