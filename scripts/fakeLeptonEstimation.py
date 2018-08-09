@@ -292,7 +292,7 @@ def main():
       sys.stdout.flush()
 
     for event in range ( tree_MC_inv_emu.GetEntries() ) :
-      tree_MC_inv_mumu.GetEntry(event)
+      tree_MC_inv_emu.GetEntry(event)
       weight = 1
       if (weighted) : weight = tree_MC_inv_emu.eventWeight
 
@@ -319,11 +319,19 @@ def main():
   print "number of prompt (final state or decayed) SS muon gen particles: ", genGen_inv_mumu
   print "number of non-prompt (final state or decayed) SS muon gen particles: ", fakeGen_inv_mumu
 
+  print "number of prompt (final state or decayed) OS emu gen particles: ", genGen_emu
+  print "number of non-prompt (final state or decayed) OS emu gen particles: ", fakeGen_emu
+
+  print "number of prompt (final state or decayed) SS emu gen particles: ", genGen_inv_emu
+  print "number of non-prompt (final state or decayed) SS emu gen particles: ", fakeGen_inv_emu
+
   print "number of OS/SS prompt electron gen-matched particles: ", abs( genGen_ee/(genGen_inv_ee + 1.0e-06) )
   print "number of OS/SS prompt muon gen-matched particles: ", abs( genGen_mumu/(genGen_inv_mumu + 1.0e-06) )
+  print "number of OS/SS prompt emu gen-matched particles: ", abs( genGen_emu/(genGen_inv_emu + 1.0e-06) )
 
   print "number of OS/SS non-prompt electron gen-matched particles: ", abs( fakeGen_ee/(fakeGen_inv_ee + 1.0e-06) )
   print "number of OS/SS non-prompt muon gen-matched particles: ", abs( fakeGen_mumu/(fakeGen_inv_mumu + 1.0e-06) )
+  print "number of OS/SS non-prompt emu gen-matched particles: ", abs( fakeGen_emu/(fakeGen_inv_emu + 1.0e-06) )
 
 ##############
 #Number of expected Same sign events with no fakes - DY mis-id stuff
