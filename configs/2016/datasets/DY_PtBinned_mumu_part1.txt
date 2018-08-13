@@ -690,7 +690,7 @@ plotType = f
 
 [mumuRun2016_part1]
 fileName = configs/2016/datasets/fileLists/mumuRun2016FilesPart1.txt
-luminosity = 19648.534
+luminosity = 19713.888
 runType = data
 histoName = data
 label = Data
