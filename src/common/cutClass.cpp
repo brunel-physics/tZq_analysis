@@ -1573,8 +1573,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
         twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF 
-        if (syst == 1) twgt += 0.01018; // -0.01220/0.01339 for eff; 0.01018 for SF
-        if (syst == 2) twgt -= 0.01018;
+        if (syst == 1) twgt += 0.02; // -0.01220/0.01339 for eff; 0.01018 for SF
+        if (syst == 2) twgt -= 0.02;
       }
     }
 
