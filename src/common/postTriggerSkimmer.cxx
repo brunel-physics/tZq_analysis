@@ -126,16 +126,27 @@ int main (int argc, char* argv[])
 	
 	if ( channel == "mumu" ) {
 	  bool mumuTrig{false};
+
+          // non-DZ legs are prescaled for Run2016H
+          if ( event.eventRun < 280919 ) {
+            if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true;
+            if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true;
+            if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true;
+            if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true;
+
+            if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2  > 0 ) mumuTrig = true;
+            if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3  > 0 ) mumuTrig = true;
+            if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5  > 0 ) mumuTrig = true;
+          }
+
+          // DZ legs avaliable all the time but inefficient in data for Runs B-F -> hence uses of non-DZ legs
+
 	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-	  if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-	  if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
 	  if ( event.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
 	  
 	  if ( mumuTrig ) {

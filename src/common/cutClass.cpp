@@ -101,8 +101,8 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   rc_{"scaleFactors/2016/rcdata.2016.v3"},
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
-  lumiRunsBCDEF_{19648.534}, // Lumi for hip era runs
-  lumiRunsGH_{16144.444}, // Lumi for post-hip era runs
+  lumiRunsBCDEF_{19713.888}, // Lumi for hip era runs
+  lumiRunsGH_{16146.178}, // Lumi for post-hip era runs
 
   //Set isMC. Default is true, but it's called everytime a new dataset is processed anyway.
   isMC_{true},
@@ -422,7 +422,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 
       if (isCtag_) // Do cTagging
       {
-          event->cTagIndex = makeCCuts(event,event->jetIndex);
+//          event->cTagIndex = makeCCuts(event,event->jetIndex);
 
           if (event->cTagIndex.size() < numcJets_
               || event->cTagIndex.size() > maxJets_)
@@ -481,6 +481,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
   }
 
+  if ( isNPL_ && numTightEle_ == 1 && numTightMu_ == 1 && isMC_ ) { // if emu channel
+    *eventWeight *= -1.0;
+    if ( !event->genElePF2PATPromptFinalState[event->zPairIndex.first] ) return false;
+    if ( !event->genMuonPF2PATPromptFinalState[event->zPairIndex.second] ) return false;
+  }
+
   //This is to make some skims for faster running. Do lepSel and save some files.
   if(postLepSelTree_ && !synchCutFlow_) postLepSelTree_->Fill();
   
@@ -517,10 +523,11 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if ( doPlots_||fillCutFlow_ ) cutFlow->Fill(0.5,*eventWeight);
 
   if ( isNPL_ ) { // if is NPL channel
-    double eeWeight {1.0}, mumuWeight {1.0};
+    double eeWeight {1.0}, mumuWeight {1.0}, emuWeight{1.0};
     if ( invZMassCut_ == 20. && invWMassCut_ == 20. ) {
-      eeWeight = 0.958391264995;
-      mumuWeight = 1.02492608673;
+      eeWeight = 0.939;
+      mumuWeight = 0.894;
+      emuWeight = 1.513;
     }
     if ( invZMassCut_ == 20. && invWMassCut_ == 50. ) {
       eeWeight = 1.12750771638;
@@ -532,6 +539,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     }
     if ( numTightEle_ == 2 ) *eventWeight *= eeWeight;
     if ( numTightMu_ == 2 ) *eventWeight *= mumuWeight;
+    if ( numTightEle_ == 1 && numTightMu_ == 1 ) *eventWeight *= emuWeight;
   }
 
   if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
@@ -1318,19 +1326,21 @@ std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jet
   return bJets;
 }
 
+/*
 std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
 
   std::vector<int> cJets;
   for (unsigned i{0}; i < jets.size(); i++){
-    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATCvsLDiscriminator[jets[i]] << std::endl;
+    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATpfCombinedCvsLJetTags[jets[i]] << std::endl;
 //      if (event->jetPF2PATJetCharge[jets[i]] <= 0) continue; // If a negatively charged jet ... I.e. if not a  u or c ...
-    if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
+    if (event->jetPF2PATpfCombinedCvsLJetTags[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
     if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
     cJets.emplace_back(i);
   }
   return cJets;
 
 }
+*/
 
 void Cuts::setTightEle(float,float,float)
 {
@@ -1421,17 +1431,33 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   }
 
   else {
+
+    // non-DZ legs are prescaled for Run2016H
+    if ( event->eventRun < 280919 && !isMC_ ) {
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true;
+
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2  > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3  > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5  > 0 ) mumuTrig = true;
+    }
+    // non-DZ legs in MC
+    else if ( isMC_ ) {
+      if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true;
+      if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5  > 0 ) mumuTrig = true;
+    }
+
+    // DZ legs avaliable all the time but inefficient in data for Runs B-F -> hence uses of non-DZ legs
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
+
   }
 
   //single electron triggers
@@ -2643,7 +2669,6 @@ float Cuts::getLeptonWeight(AnalysisEvent * event, int syst){
 	// DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
 //      leptonWeight *= singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
-
 //      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), syst);
 
     }

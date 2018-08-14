@@ -129,8 +129,8 @@ int main(int argc, char* argv[]) {
         Double_t lPt{lEvent->jetPF2PATPt[k]};
         Double_t lEta{lEvent->jetPF2PATEta[k]};
         Int_t lFlavour{lEvent->genJetPF2PATPID[k]};
-        Double_t lCvsBdisc{lEvent->jetPF2PATCvsBDiscriminator[k]};
-        Double_t lCvsLdisc{(lEvent->jetPF2PATCvsLDiscriminator[k])};
+        Double_t lCvsBdisc{0.}; //lEvent->jetPF2PATCvsBDiscriminator[k]};
+        Double_t lCvsLdisc{0.}; //(lEvent->jetPF2PATCvsLDiscriminator[k])};
 
 	if ( lPt < 30.0 && std::abs( lEta > 5.0 )) continue; // Check it isn't out of eta range or is too soft.
 	bool jetID{false};

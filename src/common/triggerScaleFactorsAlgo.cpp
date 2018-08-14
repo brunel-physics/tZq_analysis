@@ -301,17 +301,22 @@ void TriggerScaleFactors::setBranchStatusAll(TTree * chain, bool isMC, std::stri
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7",1);
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8",1);
     chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9",1);
+
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3",1);
+    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5",1);
     chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6",1);
+
     chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
     chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4",1);
     chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5",1);
@@ -1075,6 +1080,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
 
   bool mumuTrig{false};
 
+  // is 2015
   if ( !is2016_ ) {
     if ( !isMC ) {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
@@ -1087,25 +1093,62 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
     }
   }
+  // is 2016
   else {
+    // if data
     if ( !isMC ) {
       
       if ( DO_HIPS ) {
+        // Runs B-F
 	if ( HIP_ERA ) {
+          // non-DZ legs are prescaled for Run2016H
+          
+          if ( event->eventRun < 280919 ) {
+            if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true; //pre-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true; //pre-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true; //pre- and post-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true; //pre-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true; //pre- and post-HIP
+          }  
+          
+          // DZ legs avaliable all the time but inefficient in data for Runs B-F -> hence uses of non-DZ legs
 	  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true; //pre-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true; //pre-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
 	}
+        // Runs G-H
 	else {
+          // non-DZ legs are prescaled for Run2016H
+          if ( event->eventRun < 280919 ) {
+            if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true; //pre and post-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true; //post-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true; //pre and post-HIP
+            if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5 > 0 ) mumuTrig = true; //post-HIP
+          }
+
+          // DZ legs avaliable all the time but inefficient in data for Runs B-F -> hence uses of non-DZ legs
 	  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true; //post-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
 	  if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true; //post-HIP
 	}
       }
+      // Runs B-H
       else {
+        // non-DZ legs are prescaled for Run2016H
+        if ( event->eventRun < 280919 ) {
+          if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true; //pre-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true; //pre-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true; //pre- and post-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true; //post-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true; //pre-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true; //pre- and post-HIP
+          if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5 > 0 ) mumuTrig = true; //post-HIP
+        }
+
+        // DZ legs avaliable all the time but inefficient in data for Runs B-F -> hence uses of non-DZ legs
 	if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true; //pre-HIP
 	if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true; //pre-HIP
 	if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true; //pre-HIP & post-HIP
@@ -1147,6 +1190,7 @@ bool TriggerScaleFactors::doubleMuonTriggerCut( AnalysisEvent* event, bool isMC 
  //     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 && event->eventRun >= 280919 ) mumuTrig = true; // RunH
 
     }
+    // if MC
     else {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true; //post-HIP

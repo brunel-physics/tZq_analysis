@@ -221,12 +221,10 @@ public :
    std::array<Float_t,  NJETSMAX> jetPF2PATSVDY;
    std::array<Float_t,  NJETSMAX> jetPF2PATSVDZ;
    std::array<Float_t,  NJETSMAX> jetPF2PATBDiscriminator;
-   std::array<Float_t,  NJETSMAX> jetPF2PATCvsLDiscriminator;
-   std::array<Float_t,  NJETSMAX> jetPF2PATCvsBDiscriminator;
-   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;
-   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedMVAV2BJetTags;
-   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsLJetTags;
-   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsBJetTags;
+//   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;
+//   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedMVAV2BJetTags;
+//   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsLJetTags;
+//   std::array<Float_t,  NJETSMAX> jetPF2PATpfCombinedCvsBJetTags;
    std::array<Int_t,    NJETSMAX> jetPF2PATNConstituents;
    std::array<Int_t,    NJETSMAX> jetPF2PATPID;
    std::array<Float_t,  NJETSMAX> jetPF2PATClosestBPartonDeltaR;
@@ -264,6 +262,8 @@ public :
    Float_t  metPF2PATScalarEt;
    Float_t  metPF2PATEtUncorrected;
    Float_t  metPF2PATPhiUncorrected;
+   Float_t  metPF2PATUnclusteredEnUp;
+   Float_t  metPF2PATUnclusteredEnDown;
    Float_t  genMetPF2PATEt;
    Float_t  genMetPF2PATPhi;
    Float_t  genMetPF2PATPt;
@@ -388,15 +388,24 @@ public :
    Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7;
    Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8;
    Int_t	   HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9;
+
+
+   Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2;
+   Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3;
+   Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4;
+   Int_t           HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6;
+   Int_t           HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2;
+   Int_t           HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3;
+   Int_t           HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5;
+
+//   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2; // delcared elsewhere
    Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3;
    Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4;
-   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5;
-   Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6;
    Int_t	   HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7;
+//   Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2; // delcared elsewhere
    Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3;
-   Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4;
-   Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5;
    Int_t	   HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6;
+
    Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4;
    Int_t	   HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5;
@@ -705,12 +714,10 @@ public :
    TBranch        *b_jetPF2PATSVDY;   //!
    TBranch        *b_jetPF2PATSVDZ;   //!
    TBranch        *b_jetPF2PATBDiscriminator;   //!
-   TBranch        *b_jetPF2PATCvsLDiscriminator;   //!
-   TBranch        *b_jetPF2PATCvsBDiscriminator;   //!
-   TBranch        *b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;   //!
-   TBranch        *b_jetPF2PATpfCombinedMVAV2BJetTags;   //!
-   TBranch        *b_jetPF2PATpfCombinedCvsLJetTags;   //!
-   TBranch        *b_jetPF2PATpfCombinedCvsBJetTags;   //!
+//   TBranch        *b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags;   //!
+//   TBranch        *b_jetPF2PATpfCombinedMVAV2BJetTags;   //!
+//   TBranch        *b_jetPF2PATpfCombinedCvsLJetTags;   //!
+//   TBranch        *b_jetPF2PATpfCombinedCvsBJetTags;   //!
    TBranch        *b_jetPF2PATNConstituents;   //!
    TBranch        *b_jetPF2PATPID;   //!
    TBranch        *b_jetPF2PATClosestBPartonDeltaR;   //!
@@ -748,6 +755,8 @@ public :
    TBranch        *b_metPF2PATScalarEt;   //!
    TBranch        *b_metPF2PATEtUncorrected;   //!
    TBranch        *b_metPF2PATPhiUncorrected;   //!
+   TBranch        *b_metPF2PATUnclusteredEnUp;   //!
+   TBranch        *b_metPF2PATUnclusteredEnDown;   //!
    TBranch        *b_genMetPF2PATEt;   //!
    TBranch        *b_genMetPF2PATPhi;   //!
    TBranch        *b_genMetPF2PATPt;   //!
@@ -865,15 +874,22 @@ public :
    TBranch	   *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7;
    TBranch	   *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8;
    TBranch	   *b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5;
-   TBranch	   *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6;
+
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5;
+//   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2; // declared elsewhere
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7;
+//   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2; // declared elsewhere
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3;
+   TBranch        *b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6;
+
    TBranch	   *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3;
    TBranch	   *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4;
    TBranch	   *b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5;
@@ -1296,8 +1312,6 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("jetPF2PATSVDY", jetPF2PATSVDY.data(), &b_jetPF2PATSVDY);
    fChain->SetBranchAddress("jetPF2PATSVDZ", jetPF2PATSVDZ.data(), &b_jetPF2PATSVDZ);
    fChain->SetBranchAddress("jetPF2PATBDiscriminator", jetPF2PATBDiscriminator.data(), &b_jetPF2PATBDiscriminator);
-   fChain->SetBranchAddress("jetPF2PATCvsLDiscriminator", jetPF2PATCvsLDiscriminator.data(), &b_jetPF2PATCvsLDiscriminator);
-   fChain->SetBranchAddress("jetPF2PATCvsBDiscriminator", jetPF2PATCvsBDiscriminator.data(), &b_jetPF2PATCvsBDiscriminator);
 //   fChain->SetBranchAddress("jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags", jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags.data(), &b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags);
 //   fChain->SetBranchAddress("jetPF2PATpfCombinedMVAV2BJetTags", jetPF2PATpfCombinedMVAV2BJetTags.data(), &b_jetPF2PATpfCombinedMVAV2BJetTags);
 //   fChain->SetBranchAddress("jetPF2PATpfCombinedCvsLJetTags", jetPF2PATpfCombinedCvsLJetTags.data(), &b_jetPF2PATpfCombinedCvsLJetTags);
@@ -1341,6 +1355,8 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("metPF2PATScalarEt", &metPF2PATScalarEt, &b_metPF2PATScalarEt);
    fChain->SetBranchAddress("metPF2PATEtUncorrected", &metPF2PATEtUncorrected, &b_metPF2PATEtUncorrected);
    fChain->SetBranchAddress("metPF2PATPhiUncorrected", &metPF2PATPhiUncorrected, &b_metPF2PATPhiUncorrected);
+   fChain->SetBranchAddress("metPF2PATUnclusteredEnUp", &metPF2PATUnclusteredEnUp, &b_metPF2PATUnclusteredEnUp);
+   fChain->SetBranchAddress("metPF2PATUnclusteredEnDown", &metPF2PATUnclusteredEnDown, &b_metPF2PATUnclusteredEnDown);
    if (isMC) {
      fChain->SetBranchAddress("genMetPF2PATEt", &genMetPF2PATEt, &b_genMetPF2PATEt);
      fChain->SetBranchAddress("genMetPF2PATPhi", &genMetPF2PATPhi, &b_genMetPF2PATPhi);
@@ -1469,15 +1485,22 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
      fChain->SetBranchAddress("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7", &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7, &b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7);
      fChain->SetBranchAddress("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8", &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8, &b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8);
      fChain->SetBranchAddress("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9", &HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9, &b_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9);
+
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2);
      fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3);
      fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4);
-     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5);
-     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6);
      fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7", &HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7, &b_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7);
+     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2);
      fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3);
-     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4);
-     fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5);
      fChain->SetBranchAddress("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6", &HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6, &b_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6);
+
      fChain->SetBranchAddress("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3", &HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3, &b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3);
      fChain->SetBranchAddress("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4", &HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4, &b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4);
      fChain->SetBranchAddress("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5", &HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5, &b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5);
