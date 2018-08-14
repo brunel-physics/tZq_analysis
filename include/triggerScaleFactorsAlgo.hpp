@@ -19,6 +19,7 @@ class TH1F;
 class TH2F;
 class TProfile;
 class TProfile2D;
+class TLorentzVector;
 
 class TriggerScaleFactors{
 
@@ -48,6 +49,8 @@ class TriggerScaleFactors{
 	double* lumiPtr;
 
 	bool is2016_;
+        bool jetCuts_;
+        bool bCuts_;
 	bool applyHltSf_;
 
 	// Command line arguement related variables, replacing hard coded logic
@@ -61,6 +64,10 @@ class TriggerScaleFactors{
      	std::vector<double> electronCutsVars;
      	std::vector<double> muonCutsVars;
 
+        bool makeJetCuts(AnalysisEvent *event, bool isMC);
+        TLorentzVector getJetLVec(AnalysisEvent* event, int index, bool isMC);
+        double deltaR(float eta1, float phi1, float eta2, float phi2);
+ 
 	// PU reweighting
 	TFile * dataPileupFile;
 	TH1F* dataPU;
