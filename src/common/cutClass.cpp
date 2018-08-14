@@ -1354,6 +1354,22 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
       return true;
   }
 
+  // TRIGGER SFs
+  // NB, Synch logic doesn't allow for them to be applied currently
+
+  std::string channel = "";
+
+  //Dilepton channels
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
+  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
+
+  //Trilepton channels
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
+  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
+
 // TRIGGER LOGIC
   bool eTrig{false};
   bool muTrig{false};
@@ -1433,7 +1449,8 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   else {
 
     // non-DZ legs are prescaled for Run2016H
-    if ( event->eventRun < 280919 && !isMC_ ) {
+    // as non-muon datasets have not been reprocessed, only check the non-DZ legs for the mumu channel
+    if ( event->eventRun < 280919 && !isMC_ && channel == "mumu") {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true;
@@ -1483,22 +1500,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_IsoTkMu24_v3 > 0 ) muTrig = true;
     if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
   }
-
-  // TRIGGER SFs
-  // NB, Synch logic doesn't allow for them to be applied currently
-
-  std::string channel = "";
-
-  //Dilepton channels
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos ) channel = "ee";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) channel = "emu";
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos ) channel = "mumu";
-
-  //Trilepton channels
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("e")  != std::string::npos ) channel = "eee";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos ) channel = "eemu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos ) channel = "emumu";
-  if ( trileptonChannel_ && cutConfTrigLabel_.find("m")  != std::string::npos ) channel = "mumumu";
 
   float twgt {1.0};
 
