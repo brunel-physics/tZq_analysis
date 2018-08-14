@@ -1,0 +1,6 @@
+datasets = "configs/2016/datasets/prompt_ttbarControl.txt";
+cuts = "configs/2016/cuts/ttbarCuts.txt";
+plots = "configs/plots/plotTtbarConf.cfg";
+outputFolder = "plots/2016/prompt_ttbarControl/";
+outputPostfix = "emu";
+channelName = "emu";
