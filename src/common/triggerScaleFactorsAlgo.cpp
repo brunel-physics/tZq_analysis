@@ -38,6 +38,7 @@ Int_t numEta_bins{4};
 TriggerScaleFactors::TriggerScaleFactors():
 
   is2016_{false},
+  zCuts_{false},
   jetCuts_{false},
   bCuts_{false},
   applyHltSf_{false},
@@ -417,6 +418,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
      "Set postfix for plots. Overrides the config file.")
     ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.)")
+    ("zCuts", po::bool_switch(&zCuts_), "Use z mass veto cut")
     ("jetCuts", po::bool_switch(&jetCuts_), "Use jet cuts")
     ("bCuts", po::bool_switch(&bCuts_), "Use btag cuts")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
@@ -957,7 +959,12 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
     exit(888);
   }
 
-  if ( invMass > 20.0 ) return true;
+  if ( !zCuts_ && invMass > 20.0 ) return true;
+  if ( zCuts_ ) {
+    double zMass = std::abs( invMass - 91.1);
+    if ( zMass <= 20. ) return true;
+  }
+
   else return false;
 }
 

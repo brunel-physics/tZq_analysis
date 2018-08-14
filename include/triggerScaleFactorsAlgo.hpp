@@ -49,6 +49,7 @@ class TriggerScaleFactors{
 	double* lumiPtr;
 
 	bool is2016_;
+        bool zCuts_;
         bool jetCuts_;
         bool bCuts_;
 	bool applyHltSf_;
