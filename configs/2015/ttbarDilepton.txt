@@ -1,7 +1,0 @@
-datasets = "configs/2015/datasets/ttbarDilepton.txt";
-cuts = "configs/2015/cuts/eeCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2015/ttbarDilepton/";
-outputPostfix = "ee";
-channelName = "ee";
-

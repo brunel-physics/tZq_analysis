@@ -39,7 +39,7 @@ class HistogramPlotter{
   TPad* canvy_2;
 
   // writes the lumi information and the CMS "logo" in the FigGuidelines style
-  void CMS_lumi ( TPad*, int period = 1, int = 10);
+  void CMS_lumi ( TPad*, int = 10);
   void setTDRStyle ();
 
  public:

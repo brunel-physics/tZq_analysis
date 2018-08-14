@@ -99,7 +99,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   //cVsBDiscCut_{0.08}, // Medium level
   //cVsBDiscCut_{-0.17}, // Loose cut
 
-  rc_{"scaleFactors/2016/rcdata.2016.v3"},
+  rc_{"scaleFactors/2017/RoccoR2017v0.txt"},
   tempSmearValue_{1.0}, // Temporary solution to smearing propagation bug fix. A more elegant solution is needed!
   lumiRunsBCDEF_{19648.534}, // Lumi for hip era runs
   lumiRunsGH_{16144.444}, // Lumi for post-hip era runs
@@ -148,21 +148,24 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   std::cout << "Gets past JEC Cors" << std::endl;
 
   if ( !is2016_ ) {
-    std::cout << "\nLoad 2015 electron SFs from root file ... " << std::endl;
-    electronSFsFile = new TFile("scaleFactors/2015/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root"); // Electron cut-based Tight ID
+    std::cout << "\nLoad 2017 electron SFs from root file ... " << std::endl;
+    electronSFsFile = new TFile("scaleFactors/2017/egammaEffi.txt_EGM2D_runBCDEF_passingTight94X.root"); // Electron cut-based Tight ID
     h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
-    electronRecoFile = new TFile{"scaleFactors/2015/eleRECO.txt.egamma_SF2D.root"}; // Electron Reco SF
+    electronRecoFile = new TFile{"scaleFactors/2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"}; // Electron Reco SF
     h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
-    std::cout << "Got 2015 electron SFs!\n" << std::endl;
+    std::cout << "Got 2017 electron SFs!\n" << std::endl;
 
-    std::cout << "Load 2015 muon SFs from root file ... " << std::endl;
-    muonIDsFile1 = new TFile{"scaleFactors/2015/MuonID_Z_RunCD_Reco76X_Feb15.root"};
-    muonIsoFile1 = new TFile{"scaleFactors/2015/MuonIso_Z_RunCD_Reco76X_Feb15.root"};
+    std::cout << "Load 2017 muon SFs from root file ... " << std::endl;
+    muonHltFile1 = new TFile{"scaleFactors/2017/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
+    muonIDsFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ID.root"};
+    muonIsoFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ISO.root"};
+    muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
+    h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get("IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon HLT SF
     muonIDsFile1->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonIDs1 = dynamic_cast<TH2F*>(muonIDsFile1->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
     muonIsoFile1->cd("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
     h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio")); // Tight ID
-    std::cout << "Got 2015 muon SFs!\n" << std::endl;
+    std::cout << "Got 2017 muon SFs!\n" << std::endl;
   }
   else {
     std::cout << "\nLoad 2016 electron SFs from root file ... " << std::endl;
@@ -181,8 +184,6 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIDsFile2 = new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
     muonIsoFile1 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; //RunsB-F - pre-HIP fix
     muonIsoFile2 = new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; //RunsG-H - post-HIP fix
-    muonRecoFile1 = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_BCDEF.root"};
-    muonRecoFile2 = new TFile{"scaleFactors/2016/Muon_Tracking_EfficienciesAndSF_GH.root"};
 
     muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
     muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
@@ -196,15 +197,13 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
     muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
     h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
     h_muonPFiso2 = dynamic_cast<TH2F*>(muonIsoFile2->Get("TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
-    h_muonRecoGraph1 = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile1->Get("ratio_eff_eta3_dr030e030_corr"));
-    h_muonRecoGraph2 = dynamic_cast<TGraphAsymmErrors*>(muonRecoFile2->Get("ratio_eff_eta3_dr030e030_corr"));
     std::cout << "Got 2016 muon SFs!\n" << std::endl;
   }
 
-  // Setup bTag calibration code (2015/2016)
+  // Setup bTag calibration code (2016/2017)
   // bTag calib code
-  calib2015 = BTagCalibration ("CSVv2", "scaleFactors/2015/CSVv2.csv");
   calib2016 = BTagCalibration ("CSVv2", "scaleFactors/2016/CSVv2.csv");
+  calib2017 = BTagCalibration ("CSVv2", "scaleFactors/2017/CSVv2_94XSF_V2_B_F.csv");
 
   // udsg jets
   lightReader = BTagCalibrationReader (BTagEntry::OP_TIGHT,"central",{"up","down"});// operating point
@@ -217,9 +216,9 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
   // N.B. 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
   if ( getBTagWeight_ ) {
     if ( !is2016_ ) {
-      lightReader.load(calib2015, BTagEntry::FLAV_UDSG, "incl");
-      charmReader.load(calib2015, BTagEntry::FLAV_C, "mujets");
-      beautyReader.load(calib2015, BTagEntry::FLAV_B, "mujets");
+      lightReader.load(calib2017, BTagEntry::FLAV_UDSG, "incl");
+      charmReader.load(calib2017, BTagEntry::FLAV_C, "mujets");
+      beautyReader.load(calib2017, BTagEntry::FLAV_B, "mujets");
     }
     else {
       lightReader.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
@@ -235,8 +234,8 @@ Cuts::~Cuts(){
   electronRecoFile->Close();
   muonIDsFile1->Close();
   muonIsoFile1->Close();
+  muonHltFile1->Close();
   if ( is2016_ ) {
-    muonHltFile1->Close();
     muonHltFile2->Close();
     muonIDsFile2->Close();
     muonIsoFile2->Close();
@@ -419,7 +418,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   if (!trileptonChannel_ && isFCNC_) // Do FCNC stuff
   {
       // Leading jet cannot be b-tagged
-      if (event->jetPF2PATBDiscriminator[0] > bDiscCut_)
+      if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[0] > bDiscCut_)
       {
           return false;
       }
@@ -491,13 +490,37 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   // DO ROCHESTER CORRECTIONS HERE
   std::vector<float> SFs = {1.0};
 
-  for ( auto muonIt = event->muonIndexTight.begin(); muonIt != event->muonIndexTight.end(); muonIt++) {
-    float tempSF {1.0};
-    if ( is2016_ && event->muonPF2PATPt[*muonIt] < 200. ) { // Only doing Rochester for 2016, method only applicable for pT < 200
-      if ( isMC_ ) tempSF = rc_.kScaleAndSmearMC( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], event->muonPF2PATTkLysWithMeasurements[*muonIt], gRandom->Rndm(), gRandom->Rndm(), 0, 0 );
-      else tempSF = rc_.kScaleDT( event->muonPF2PATCharge[*muonIt], event->muonPF2PATPt[*muonIt], event->muonPF2PATEta[*muonIt], event->muonPF2PATPhi[*muonIt], 0, 0 );
-    }
-    SFs.emplace_back(tempSF);
+  for (auto muonIt = event->muonIndexTight.begin();
+       muonIt != event->muonIndexTight.end();
+       muonIt++)
+  {
+      float tempSF{1.0};
+      if (event->muonPF2PATPt[*muonIt] < 200.)
+      { // Only doing Rochester for 2016, method only applicable for pT < 200
+          if (isMC_)
+          {
+              tempSF = rc_.kScaleAndSmearMC(
+                  event->muonPF2PATCharge[*muonIt],
+                  event->muonPF2PATPt[*muonIt],
+                  event->muonPF2PATEta[*muonIt],
+                  event->muonPF2PATPhi[*muonIt],
+                  event->muonPF2PATTkLysWithMeasurements[*muonIt],
+                  gRandom->Rndm(),
+                  gRandom->Rndm(),
+                  0,
+                  0);
+          }
+          else
+          {
+              tempSF = rc_.kScaleDT(event->muonPF2PATCharge[*muonIt],
+                                    event->muonPF2PATPt[*muonIt],
+                                    event->muonPF2PATEta[*muonIt],
+                                    event->muonPF2PATPhi[*muonIt],
+                                    0,
+                                    0);
+          }
+      }
+      SFs.emplace_back(tempSF);
   }
 
   event->muonMomentumSF = SFs;
@@ -549,285 +572,171 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   return true;
 }
 
-std::vector<int> Cuts::getTightEles(AnalysisEvent* event) {
-  std::vector<int> electrons;
+std::vector<int> Cuts::getTightEles(AnalysisEvent* event)
+{
+    std::vector<int> electrons;
 
-  for (int i{0}; i < event->numElePF2PAT; i++){
+    for (int i{0}; i < event->numElePF2PAT; i++)
+    {
+        if (!event->elePF2PATIsGsf[i])
+            continue;
+        TLorentzVector tempVec{event->elePF2PATPX[i],
+                               event->elePF2PATPY[i],
+                               event->elePF2PATPZ[i],
+                               event->elePF2PATE[i]};
 
-    if (!event->elePF2PATIsGsf[i]) continue;
-    TLorentzVector tempVec{event->elePF2PATPX[i],event->elePF2PATPY[i],event->elePF2PATPZ[i],event->elePF2PATE[i]};
+        if (electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_)
+            continue;
+        else if (electrons.size() >= 1 && tempVec.Pt() <= tightElePt_)
+            continue;
 
-    if ( electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= tightElePt_) continue;
+        if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)
+            continue;
 
-    if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_) continue;
+        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
+        // range
+        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
+             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
+            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
+            continue;
 
-    // 2015 cuts
-    if ( !is2016_ ) {
+        // VID cut
+        if (event->elePF2PATCutIdTight[i] < 1)
+            continue;
 
-      // Ensure we aren't in the barrel/endcap gap and below the max safe eta range
-      if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
-
-      // VID cut
-      if ( event->elePF2PATCutIdTight[i] < 1 ) continue;
-
-      // Old hand cuts for cut based IDs
-/*
-      if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 ) continue;
-        // Barrel cut-based ID
-        if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0101 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00926 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0336 ) continue;
-	if ( event->elePF2PATHoverE[i] >= 0.0597 ) continue;
-	if ( event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue;
-	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.012 ) continue;
-	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0111 )continue;
-	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.0466 ) continue;
-	if ( event->elePF2PATMissingInnerLayers[i] > 2 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ ) continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){ // Endcap cut-based ID
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0279 ) continue;
-	if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.00724 ) continue;
-	if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0918 ) continue;
-	if ( event->elePF2PATHoverE[i] >= 0.0615 ) continue;
-	if ( event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue;
-	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.00999 ) continue;
-	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0351 )continue;
-	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.417 ) continue;
-	if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ ) continue;
-      }
-      else continue;
-*/      
-    }
-
-    // 2016 cuts
-    else {
-
-      // Ensure we aren't in the barrel/endcap gap and below the max safe eta range
-      if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
-
-      // VID cut
-      if ( event->elePF2PATCutIdTight[i] < 1 ) continue;
-
-      // Cuts not part of the tuned ID
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.05  ) continue;
-        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.10  ) continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
-        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.10 ) continue;
-        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.20 ) continue;
-      }
-
-      // Old hand cuts for cut based IDs
-/*
-      // Barrel cut-based ID
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.00998 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSeedSC[i]) >= 0.00308 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0816 ) continue;
-        if ( event->elePF2PATHoverE[i] >= 0.0414 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.0588 ) continue;
-        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
-        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ ) continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50_ ){ // Endcap cut-based ID
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0292 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSeedSC[i]) >= 0.00605 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.0394 ) continue;
-        if ( event->elePF2PATHoverE[i] >= 0.0641 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.0571 ) continue;
-        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.0129 ) continue;
-        if ( event->elePF2PATMissingInnerLayers[i] > 1 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ ) continue;
+        // Cuts not part of the tuned ID
+        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
+        {
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
+                continue;
         }
-	else continue; // If outside barrel range, kill
-*/
-      }
-    electrons.emplace_back(i);
-  }
-  return electrons;
+        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
+        {
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
+                continue;
+        }
+        electrons.emplace_back(i);
+    }
+    return electrons;
 }
 
-std::vector<int> Cuts::getLooseEles(AnalysisEvent* event){
-  std::vector<int> electrons;
-  for (int i{0}; i < event->numElePF2PAT; i++){
-    TLorentzVector tempVec{event->elePF2PATPX[i],event->elePF2PATPY[i],event->elePF2PATPZ[i],event->elePF2PATE[i]};
+std::vector<int> Cuts::getLooseEles(AnalysisEvent* event)
+{
+    std::vector<int> electrons;
+    for (int i{0}; i < event->numElePF2PAT; i++)
+    {
+        TLorentzVector tempVec{event->elePF2PATPX[i],
+                               event->elePF2PATPY[i],
+                               event->elePF2PATPZ[i],
+                               event->elePF2PATE[i]};
 
-    if ( electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= looseElePt_) continue;
+        if (electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_)
+            continue;
+        else if (electrons.size() >= 1 && tempVec.Pt() <= looseElePt_)
+            continue;
 
-    if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)continue;
+        if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)
+            continue;
 
-    // 2015 cuts
-    if ( !is2016_ ) {
+        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
+        // range
+        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
+             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
+            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
+            continue;
 
-      // Ensure we aren't in the barrel/endcap gap and below the max safe eta range
-      if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
+        // VID cut
+        if (event->elePF2PATCutIdVeto[i] < 1)
+            continue;
 
-      // VID cut
-      if ( event->elePF2PATCutIdVeto[i] < 1 ) continue;
-/*
-    // Old hand cuts for cut based IDs
-
-    // Barrel cut-based Veto ID
-      if ( std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566 && postLepSelTree_ ) continue;
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-	if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0114 ) continue;
-	if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0152 ) continue;
-	if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.216 ) continue;
-	if ( event->elePF2PATHoverE[i] >= 0.181 ) continue;
-	if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0354 ) continue; // Use same rel iso as tight
-	if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.126 ) continue; // Use same rel iso as loose
-	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.207 ) continue;
-	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.0564)continue;
-	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.472 ) continue;
-	if ( event->elePF2PATMissingInnerLayers[i] > 2  ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ )continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
-	if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0352 ) continue;
-	if ( std::abs(event->elePF2PATDeltaEtaSC[i]) >= 0.0113 ) continue;
-	if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.237 ) continue;
-	if ( event->elePF2PATHoverE[i] >= 0.116 ) continue;
-	if ( synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.0646 ) continue; // Use same rel iso as tight
-	if ( !synchCutFlow_ && event->elePF2PATComRelIsoRho[i] >= 0.144 ) continue; // Use same rel iso as loose
-	if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.174 ) continue;
-	if ( std::abs(event->elePF2PATD0PV[i]) >= 0.222 )continue;
-	if ( std::abs(event->elePF2PATDZPV[i]) >= 0.921 ) continue;
-	if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ )continue;
-      }
-      else continue;
-*/      
+        // Cuts not part of the tuned ID
+        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
+        {
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
+                continue;
+        }
+        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
+        {
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
+                continue;
+        }
+        electrons.emplace_back(i);
     }
-
-    // 2016 cuts
-    else {
-
-      // Ensure we aren't in the barrel/endcap gap and below the max safe eta range
-      if ( (std::abs(event->elePF2PATSCEta[i]) > 1.4442 && std::abs(event->elePF2PATSCEta[i]) < 1.566) || std::abs(event->elePF2PATSCEta[i]) > 2.50 ) continue;
-
-      // VID cut
-      if ( event->elePF2PATCutIdVeto[i] < 1 ) continue;
-
-      // Cuts not part of the tuned ID
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.05  ) continue;
-        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.10  ) continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
-        if ( std::abs(event->elePF2PATD0PV[i]) >= 0.10 ) continue;
-        if ( std::abs(event->elePF2PATDZPV[i]) >= 0.20 ) continue;
-      }
-
-      // Old hand cuts for cut based IDs
-/*
-      if ( std::abs(event->elePF2PATSCEta[i]) <= 1.479 ){
-
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.0115 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSeedSC[i]) >= 0.00749 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.228 ) continue;
-        if ( event->elePF2PATHoverE[i] >= 0.356 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.175 ) continue;
-        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.299 ) continue;
-        if ( event->elePF2PATMissingInnerLayers[i] > 2  ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ )continue;
-      }
-      else if ( std::abs(event->elePF2PATSCEta[i]) > 1.479 && std::abs(event->elePF2PATSCEta[i]) < 2.50 ){
-
-        if ( event->elePF2PATSCSigmaIEtaIEta5x5[i] >= 0.037 ) continue;
-        if ( std::abs(event->elePF2PATDeltaEtaSeedSC[i]) >= 0.00895 ) continue;
-        if ( std::abs(event->elePF2PATDeltaPhiSC[i]) >= 0.213 ) continue;
-        if ( event->elePF2PATHoverE[i] >= 0.211 ) continue;
-        if ( event->elePF2PATComRelIsoRho[i] >= 0.159 ) continue;
-        if ( (std::abs(1.0 - event->elePF2PATSCEoverP[i])*(1.0/event->elePF2PATEcalEnergy[i])) >= 0.15 ) continue;
-        if ( event->elePF2PATMissingInnerLayers[i] > 3 ) continue;
-        if ( event->elePF2PATPhotonConversionTag[i] && tightEleCheckPhotonVeto_ )continue;
-      }
-      else continue;
-*/
-    }
-    electrons.emplace_back(i);
-
-  }
-  return electrons;
+    return electrons;
 }
 
-std::vector<int> Cuts::getTightMuons(AnalysisEvent* event){
-  std::vector<int> muons;
-  for (int i{0}; i < event->numMuonPF2PAT; i++){
-    //if (i == 0) std::cout << "Starts doing first..." << event->muonPF2PATIsPFMuon[i];
-    //if (i > 0) std::cout << "   " << event->muonPF2PATIsPFMuon[i];
-    //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" << event->muonPF2PATEta[i] << "\t" << event->muonPF2PATComRelIsodBeta[i] << "\t" << event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" << event->muonPF2PATGlobalID[i] << "\t" << event->muonPF2PATIsPFMuon[i] << "\t" << event->muonPF2PATTrackID[i] << "\t" <<  event->muonPF2PATTkLysWithMeasurements[i] << "\t" << event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i] << "\t" << event->muonPF2PATMuonNHits[i] << "\t" << event->muonPF2PATVldPixHits[i] << "\t" << event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ - event->muonPF2PATVertZ[i]) << std::endl;
+std::vector<int> Cuts::getTightMuons(AnalysisEvent* event)
+{
+    std::vector<int> muons;
+    for (int i{0}; i < event->numMuonPF2PAT; i++)
+    {
+        // if (i == 0) std::cout << "Starts doing first..." <<
+        // event->muonPF2PATIsPFMuon[i]; if (i > 0) std::cout << "   " <<
+        // event->muonPF2PATIsPFMuon[i];
+        //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" <<
+        //    event->muonPF2PATEta[i] << "\t" <<
+        //    event->muonPF2PATComRelIsodBeta[i] << "\t" <<
+        //    event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" <<
+        //    event->muonPF2PATGlobalID[i] << "\t" <<
+        //    event->muonPF2PATIsPFMuon[i] << "\t" <<
+        //    event->muonPF2PATTrackID[i] << "\t" <<
+        //    event->muonPF2PATTkLysWithMeasurements[i] << "\t" <<
+        //    event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i]
+        //    << "\t" << event->muonPF2PATMuonNHits[i] << "\t" <<
+        //    event->muonPF2PATVldPixHits[i] << "\t" <<
+        //    event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ
+        //    - event->muonPF2PATVertZ[i]) << std::endl;
 
-    if (!event->muonPF2PATIsPFMuon[i]) continue;
+        if (!event->muonPF2PATIsPFMuon[i])
+            continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_ ) continue;
+        if (muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_)
+            continue;
+        else if (muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_)
+            continue;
 
-    if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_) continue;
-    if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_) continue;
+        if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_)
+            continue;
+        if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_)
+            continue;
 
-    // 2015 cuts
-    if ( !is2016_ ) {
-      //Do a little test of muon id stuff here.
-      if (!event->muonPF2PATTrackID[i]) continue;
-      if (!event->muonPF2PATGlobalID[i]) continue;
+        // Tight ID Cut
+        if (!event->muonPF2PATTrackID[i])
+            continue;
+        if (!event->muonPF2PATGlobalID[i])
+            continue;
 
-      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 10.) continue;
-      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
-      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
-      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
-      if (event->muonPF2PATMuonNHits[i] < 1) continue;
-      if (event->muonPF2PATVldPixHits[i] < 1) continue;
-      if (event->muonPF2PATMatchedStations[i] < 2) continue;
+        //      if (!event->muonPF2PATTrackID[i] &&
+        //      !event->muonPF2PATGlobalID[i]) continue; //
+
+        if (event->muonPF2PATGlbTkNormChi2[i] >= 10.)
+            continue;
+        if (event->muonPF2PATMatchedStations[i] < 2)
+            continue; //
+        if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2)
+            continue;
+        if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5)
+            continue;
+        if (event->muonPF2PATMuonNHits[i] < 1)
+            continue;
+        if (event->muonPF2PATVldPixHits[i] < 1)
+            continue;
+        if (event->muonPF2PATTkLysWithMeasurements[i] <= 5)
+            continue;
+
+        muons.emplace_back(i);
     }
-    // 2016 cuts
-    else {
-
-      //Tight ID Cut
-      if (!event->muonPF2PATTrackID[i]) continue;
-      if (!event->muonPF2PATGlobalID[i]) continue;
-
-//      if (!event->muonPF2PATTrackID[i] && !event->muonPF2PATGlobalID[i]) continue; //
-
-      if (event->muonPF2PATGlbTkNormChi2[i] >= 10.) continue;
-      if (event->muonPF2PATMatchedStations[i] < 2) continue; //
-      if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2) continue;
-      if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5) continue;
-      if (event->muonPF2PATMuonNHits[i] < 1) continue;
-      if (event->muonPF2PATVldPixHits[i] < 1) continue;
-      if (event->muonPF2PATTkLysWithMeasurements[i] <= 5) continue;
-
-      //ICHEP Medium Cut
-/*
-      // If not either track muon and global muon ...
-      if ( !(event->muonPF2PATTrackID[i]) && !(event->muonPF2PATGlobalID[i]) ) continue; // Normal loose ID on top of ICHEP cuts
-      if ( event->muonPF2PATValidFraction[i] <= 0.49 ) continue;
-
-      bool goodGlobalMuon (true), tightSegmentCompatible (true);
-
-      if (!event->muonPF2PATTrackID[i]) goodGlobalMuon = false;
-      if (event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] >= 3.) goodGlobalMuon = false;
-      if (event->muonPF2PATChi2LocalPosition[i] >= 12.) goodGlobalMuon = false;
-      if (event->muonPF2PATTrkKick[i] >= 20.) goodGlobalMuon = false;
-      if (event->muonPF2PATSegmentCompatibility[i] <= 0.303) goodGlobalMuon = false;
-
-      if (event->muonPF2PATSegmentCompatibility[i] <= 0.451) tightSegmentCompatible = false;
-
-      // If both good global muon and tight segment compatible are not true ...
-      if ( !(goodGlobalMuon) && !(tightSegmentCompatible) ) continue;
-*/
-    }
-
-    muons.emplace_back(i);
-  }
-  return muons;
+    return muons;
 }
 
 std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event){
@@ -995,10 +904,10 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent *event, std::vector<int> jets, int
       for ( unsigned l{k + 1}; l < jets.size(); l++ ){
 	// Now ensure that the leading b jet isn't one of these!
         if ( event->bTagIndex.size() > 0 ) {
-  	  if ( event->jetPF2PATBDiscriminator[jets[k]] > bDiscCut_ ){
+  	  if ( event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[k]] > bDiscCut_ ){
 	    if( event->jetIndex[event->bTagIndex[0]] == jets[k] ) continue;
 	  }
-	  else if ( event->jetPF2PATBDiscriminator[jets[l]] > bDiscCut_ ){
+	  else if ( event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[l]] > bDiscCut_ ){
 	    if( event->jetIndex[event->bTagIndex[0]] == jets[l] ) continue;
 	  }
         }
@@ -1238,22 +1147,22 @@ std::pair< std::vector<int>, std::vector<float> > Cuts::makeJetCuts(AnalysisEven
       //Fill eff info here if needed.
       if (std::abs(event->jetPF2PATPID[i]) == 5){ // b-jets
 	bTagEffPlots_[0]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
-	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
+	if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[i] > bDiscCut_)
 	  bTagEffPlots_[4]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) == 4){ // charm
 	bTagEffPlots_[1]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
-	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
+	if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[i] > bDiscCut_)
 	  bTagEffPlots_[5]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) > 0 && std::abs(event->jetPF2PATPID[i]) < 4){ // light jets
 	bTagEffPlots_[2]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
-	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
+	if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[i] > bDiscCut_)
 	  bTagEffPlots_[6]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
       if (std::abs(event->jetPF2PATPID[i]) == 21){ // gluons
 	bTagEffPlots_[3]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
-	if (event->jetPF2PATBDiscriminator[i] > bDiscCut_)
+	if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[i] > bDiscCut_)
 	  bTagEffPlots_[7]->Fill(jetVec.Pt(),std::abs(jetVec.Eta()));
       }
     }
@@ -1289,9 +1198,9 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent* event, std::vector<int> jets, in
   std::vector<int> bJets;
   for (unsigned int i = 0; i != jets.size(); i++){
     TLorentzVector jetVec{getJetLVec(event,jets[i],syst,false)};
-    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
-    if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscSynchCut_ && (synchCutFlow_ && trileptonChannel_)) continue;
-    if (event->jetPF2PATBDiscriminator[jets[i]] <= bDiscCut_ ) continue;
+    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] << std::endl;
+    if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] <= bDiscSynchCut_ && (synchCutFlow_ && trileptonChannel_)) continue;
+    if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] <= bDiscCut_ ) continue;
     if (jetVec.Eta() >= 2.40) continue;
 //    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
@@ -1306,8 +1215,8 @@ std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent* event, std::vector<int> jet
   for (unsigned int i = 0; i != jets.size(); i++){
 
     TLorentzVector jetVec{getJetLVec(event,jets[i],syst,false)};
-    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATBDiscriminator[jets[i]] << std::endl;
-    if (event->jetPF2PATBDiscriminator[jets[i]] <= bLooseDiscCut_) continue;
+    if (singleEventInfoDump_) std::cout << __LINE__ << "/" << __FILE__ << ": " << event->jetPF2PATPtRaw[i] << " " << event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] << std::endl;
+    if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] <= bLooseDiscCut_) continue;
     if (jetVec.Eta() >= 2.40) continue;
 //    if (event->jetPF2PATEta[ jets[i] ] >= 2.40) continue;
     bJets.emplace_back(i);
@@ -1319,10 +1228,10 @@ std::vector<int> Cuts::makeCCuts(AnalysisEvent* event, std::vector<int> jets){
 
   std::vector<int> cJets;
   for (unsigned i{0}; i < jets.size(); i++){
-    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATCvsLDiscriminator[jets[i]] << std::endl;
+    if (singleEventInfoDump_) std::cout << event->jetPF2PATPtRaw[jets[i]] << " " << event->jetPF2PATpfCombinedCvsLJetTags[jets[i]] << std::endl;
 //      if (event->jetPF2PATJetCharge[jets[i]] <= 0) continue; // If a negatively charged jet ... I.e. if not a  u or c ...
-    if (event->jetPF2PATCvsLDiscriminator[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
-    if (event->jetPF2PATBDiscriminator[jets[i]] > bDiscCut_) continue; // If a b jet, continue
+    if (event->jetPF2PATpfCombinedCvsLJetTags[jets[i]] < cVsLDiscCut_) continue; // If doesn't pass c vs light discriminator
+    if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] > bDiscCut_) continue; // If a b jet, continue
     cJets.emplace_back(i);
   }
   return cJets;
@@ -1336,124 +1245,158 @@ void Cuts::setTightEle(float,float,float)
 bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
   if (skipTrigger_) return true;
 
-  if (synchCutFlow_){
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0)
-      return true;
-  }
+  // TRIGGER LOGIC
 
-// TRIGGER LOGIC
-  bool eTrig{false};
-  bool muTrig{false};
-
-  bool muEGTrig{false};
-  bool eeTrig{false};
-  bool mumuTrig{false};
-
-  //MuEG triggers
-  if ( !is2016_ ) {
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 ) muEGTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 ) muEGTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;
-    if ( event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 ) muEGTrig = true;
-    if ( event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 ) muEGTrig = true;
-    if ( event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;
-  }
-  else {
-    if ( event->eventRun < 280919 && !isMC_ ) { // Mu8 leg disabled and non-DZ versions prescaled for Run2016H 
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) muEGTrig = true;
-    }
-    if ( event->eventRun >= 280919 && !isMC_ ) {
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
-    }
-    if ( isMC_ ) {
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0 ) muEGTrig = true;
-      if ( event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) muEGTrig = true;
-    }
-  }
+  // MuEG triggers
+  // clang-format off
+  const bool muEGTrig{
+      is2016_ ? event->eventRun < 280919 // different triggers for run H
+                    ? event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 > 0
+                          || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0
+                    : event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                          || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                          || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
+                          || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
+                          || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                          || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+              : event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                    || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                    || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0};
+    // clang-format on
 
   //double electron triggers
-  if ( !is2016_ ) {
-    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;
-  }
-  else {
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0 ) eeTrig = true;
-    if ( event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0 ) eeTrig = true;
-  }
+  const bool eeTrig{
+      is2016_
+          ? event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+          : event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v10 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v11 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v12 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v13 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v14 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v15 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v16 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v17 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v14 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v15 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v16 > 0
+                || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v17 > 0};
 
-  //double muon triggers
-  if ( !is2016_ ) {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-  }
-
-  else {
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
-  }
+  // double muon triggers
+  const bool mumuTrig{
+      is2016_
+          ? event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0
+                || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0
+                || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0
+                || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4 > 0
+                || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5 > 0
+                || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0
+          : event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v8 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v9 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v10 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v11 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v12 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v13 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v14 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v1 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v2 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v3 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v4 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v7 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v8 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v1 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v2 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v3 > 0
+                || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v4 > 0};
 
   //single electron triggers
-
-  if ( is2016_ ) { // Only avaliable in 2016, not 2015!
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0 ) eTrig = true;
-    if ( event->HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0 ) eTrig = true;
-  }
+  const bool eTrig{is2016_
+                       ? event->HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0
+                             || event->HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0
+                       : event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v1 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v2 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v3 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v4 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v5 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v6 > 0
+                             || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v7 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v1 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v2 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v3 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v4 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v5 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v6 > 0
+                             || event->HLT_Ele35_WPTight_Gsf_v7 > 0};
 
   //single muon triggers
-    if ( is2016_ ) { // Only avaliable in 2016, not 2015!
-    if ( event->HLT_IsoMu24_v1 > 0 ) muTrig = true;
-    if ( event->HLT_IsoMu24_v2 > 0 ) muTrig = true;
-    if ( event->HLT_IsoMu24_v3 > 0 ) muTrig = true;
-    if ( event->HLT_IsoMu24_v4 > 0 ) muTrig = true;
-    if ( event->HLT_IsoTkMu24_v1 > 0 ) muTrig = true;
-    if ( event->HLT_IsoTkMu24_v2 > 0 ) muTrig = true;
-    if ( event->HLT_IsoTkMu24_v3 > 0 ) muTrig = true;
-    if ( event->HLT_IsoTkMu24_v4 > 0 ) muTrig = true;
-  }
+  const bool muTrig{
+      is2016_
+          ? event->HLT_IsoMu24_v1 > 0 || event->HLT_IsoMu24_v2 > 0
+                || event->HLT_IsoMu24_v3 > 0 || event->HLT_IsoMu24_v4 > 0
+                || event->HLT_IsoTkMu24_v1 > 0 || event->HLT_IsoTkMu24_v2 > 0
+                || event->HLT_IsoTkMu24_v3 > 0 || event->HLT_IsoTkMu24_v4 > 0
+          : event->HLT_IsoMu27_v8 > 0 || event->HLT_IsoMu27_v9 > 0
+                || event->HLT_IsoMu27_v10 > 0 || event->HLT_IsoMu27_v11 > 0
+                || event->HLT_IsoMu27_v12 > 0 || event->HLT_IsoMu27_v13 > 0
+                || event->HLT_IsoMu27_v14 > 0};
 
   // TRIGGER SFs
   // NB, Synch logic doesn't allow for them to be applied currently
@@ -1473,137 +1416,240 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
   float twgt {1.0};
 
-  if ( !is2016_ && isMC_ ) { // Apply SFs to MC if 2015; no single lepton logic is present due to inclusion of single lepton triggers from 2016 onwards only
-    //Dilepton channels
-   if ( channel == "ee" ){
-      twgt = 0.95113; // tight=0.954; medium=0.958
-      if (syst == 1) twgt += 0.00926;
-      if (syst == 2) twgt -= 0.00926;
-    }
-    else if (channel == "mumu"){
-      twgt = 0.92886; // tight=0.934; medium=0.931
-      if (syst == 1) twgt += 0.00630;
-      if (syst == 2) twgt -= 0.00630;
-    }
-    else if (channel == "emu"){
-      twgt = 1.05038;
-      if (syst == 1) twgt += 0.05427;
-      if (syst == 2) twgt -= 0.05427;
-    }
-    //Trilepton channels
-    else if (channel == "eee"){
-      twgt = 0.987;
-      if (syst == 1) twgt += 0.036;
-      if (syst == 2) twgt -= 0.036;
-    }
-    else if (channel == "eemu"){
-      twgt = 0.987;
-      if (syst == 1) twgt += 0.035;
-      if (syst == 2) twgt -= 0.035;
-    }
-    else if (channel == "emumu"){
-      twgt = 0.886;
-      if (syst == 1) twgt += 0.042;
-      if (syst == 2) twgt -= 0.042;
-    }
-    else if (channel == "mumumu"){
-      twgt = 0.9871;
-      if (syst == 1) twgt += 0.0242;
-      if (syst == 2) twgt -= 0.0212;
-    }
-    else {
-      std::cout << "Trigger not found!" << std::endl;
-      twgt =  0.0; // Return 0.0 if trigger isn't found.
-    }
+  if (!is2016_ && isMC_)
+  { // Placeholder SFs for 2017
+    // TODO: Update SFs
+      // Dilepton channels
+      if (channel == "ee")
+      {
+          if (eTrig || eeTrig)
+          {
+              twgt = 1.;
+              if (syst == 1)
+              {
+                  twgt += 0.01;
+              }
+              else if (syst == 2)
+              {
+                  twgt -= 0.01;
+              }
+          }
+      }
+      else if (channel == "mumu")
+      {
+          if (muTrig || mumuTrig)
+          {
+              twgt = 1.0;
+          }
+      }
+      else if (channel == "emu")
+      {
+          if (muEGTrig)
+          {
+              twgt = 1.;
+              if (syst == 1)
+              {
+                  twgt += 0.01;
+              }
+              else if (syst == 2)
+              {
+                  twgt -= 0.01;
+              }
+          }
+      }
+
+      // Trilepton channels
+      else if (channel == "eee")
+      {
+          twgt = 1.;
+          if (syst == 1)
+          {
+              twgt += 0.01;
+          }
+          else if (syst == 2)
+          {
+              twgt -= 0.01;
+          }
+      }
+      else if (channel == "eemu")
+      {
+          twgt = 1.;
+          if (syst == 1)
+          {
+              twgt += 0.01;
+          }
+          else if (syst == 2)
+          {
+              twgt -= 0.01;
+          }
+      }
+      else if (channel == "emumu")
+      {
+          twgt = 1.;
+          if (syst == 1)
+          {
+              twgt += 0.01;
+          }
+          else if (syst == 2)
+          {
+              twgt -= 0.01;
+          }
+      }
+      else if (channel == "mumumu")
+      {
+          twgt = 1.;
+          if (syst == 1)
+          {
+              twgt += 0.01;
+          }
+          else if (syst == 2)
+          {
+              twgt -= 0.01;
+          }
+      }
+      else
+      {
+          throw std::runtime_error("Unknown channel");
+      }
+  }
+  else if (is2016_ && isMC_)
+  { // Apply SFs to MC if 2016
+      // Dilepton channels
+      if (channel == "ee")
+      {
+          if (eTrig || eeTrig)
+          { // If singleElectron or doubleEG trigger fires ...
+              twgt = 0.98713; // 0.97552 for data eff; 0.98713 for SF
+              if (syst == 1)
+                  twgt += 0.00063; // -0.00130/+0.00138 for eff; 0.00063 for SF
+              if (syst == 2)
+                  twgt -= 0.00063;
+          }
+      }
+      else if (channel == "mumu")
+      {
+          if (muTrig || mumuTrig)
+          { // If doubleMuon or singleMuon trigger fires ...
+
+              // eff pre-HIP fix: 0.97906 -0.00073/+0.00076; eff post-HIP
+              // fix: 0.99036 -0.00058/0.00062;
+              // SF pre-HIP fix 0.98703 +/- 0.00016 and 0.99843 +/- 0.00016
+              // for post-HIP fix
+
+              //        twgt = ( 0.98703 * lumiRunsBCDEF_ + 0.99843 *
+              //        lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_
+              //        + 1.0e-06 );
+
+              twgt = 1.0;
+
+              //        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ +
+              //        0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ +
+              //        lumiRunsGH_ + 1.0e-06 ); if (syst == 2) twgt -= (
+              //        0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) /
+              //        ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
+          }
+      }
+      else if (channel == "emu")
+      { // If MuonEG trigger fires, regardless of singleElectron/singleMuon
+        // triggers
+          if (muEGTrig)
+          {
+              twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF
+              if (syst == 1)
+                  twgt += 0.01018; // -0.01220/0.01339 for eff; 0.01018 for SF
+              if (syst == 2)
+                  twgt -= 0.01018;
+          }
+      }
+
+      // Trilepton channels
+      else if (channel == "eee")
+      {
+          twgt = 0.894;
+          if (syst == 1)
+              twgt += 0.003;
+          if (syst == 2)
+              twgt -= 0.003;
+      }
+      else if (channel == "eemu")
+      {
+          twgt = 0.987;
+          if (syst == 1)
+              twgt += 0.035;
+          if (syst == 2)
+              twgt -= 0.035;
+      }
+      else if (channel == "emumu")
+      {
+          twgt = 0.886;
+          if (syst == 1)
+              twgt += 0.042;
+          if (syst == 2)
+              twgt -= 0.042;
+      }
+      else if (channel == "mumumu")
+      {
+          twgt = 0.9871;
+          if (syst == 1)
+              twgt += 0.0242;
+          if (syst == 2)
+              twgt -= 0.0212;
+      }
+      else
+      {
+          std::cout << "Trigger not found!" << std::endl;
+          twgt = 0.0; // Return 0.0 if trigger isn't found.
+      }
   }
 
-  else if ( is2016_ && isMC_ ) { // Apply SFs to MC if 2016
-    //Dilepton channels
-    if (channel == "ee"){
-      if ( eTrig || eeTrig ) { // If singleElectron or doubleEG trigger fires ...
-        twgt = 0.98713; // 0.97552 for data eff; 0.98713 for SF
-        if (syst == 1) twgt += 0.00063; // -0.00130/+0.00138 for eff; 0.00063 for SF
-        if (syst == 2) twgt -= 0.00063;
-      }
-    }
-    else if (channel == "mumu"){
-      if ( muTrig || mumuTrig ) { // If doubleMuon or singleMuon trigger fires ...
-
-        // eff pre-HIP fix: 0.97906 -0.00073/+0.00076; eff post-HIP fix: 0.99036 -0.00058/0.00062; 
-        //SF pre-HIP fix 0.98703 +/- 0.00016 and 0.99843 +/- 0.00016  for post-HIP fix
-
-//        twgt = ( 0.98703 * lumiRunsBCDEF_ + 0.99843 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
-
-        twgt = 1.0;
-
-//        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//        if (syst == 2) twgt -= ( 0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-      }
-    }
-    else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
-      if ( muEGTrig ) {
-        twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF 
-        if (syst == 1) twgt += 0.01018; // -0.01220/0.01339 for eff; 0.01018 for SF
-        if (syst == 2) twgt -= 0.01018;
-      }
-    }
-
-    //Trilepton channels
-    else if (channel == "eee"){
-      twgt = 0.894;
-      if (syst == 1) twgt += 0.003;
-      if (syst == 2) twgt -= 0.003;
-    }
-    else if (channel == "eemu"){
-      twgt = 0.987;
-      if (syst == 1) twgt += 0.035;
-      if (syst == 2) twgt -= 0.035;
-    }
-    else if (channel == "emumu"){
-      twgt = 0.886;
-      if (syst == 1) twgt += 0.042;
-      if (syst == 2) twgt -= 0.042;
-    }
-    else if (channel == "mumumu"){
-      twgt = 0.9871;
-      if (syst == 1) twgt += 0.0242;
-      if (syst == 2) twgt -= 0.0212;
-    }
-    else {
-      std::cout << "Trigger not found!" << std::endl;
-      twgt = 0.0; // Return 0.0 if trigger isn't found.
-    }
-  }
-
-  // Check which trigger fired and if it correctly corresponds to the channel being scanned over.
+  // Check which trigger fired and if it correctly corresponds to the
+  // channel being scanned over.
 
   // Is emu, eemu or emumu?
-  if ( channel == "eemu" || channel == "emumu" || channel == "emu" ) {
-    if (muEGTrig)
-    {
-      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
-      return true;
-    }
+  if (channel == "eemu" || channel == "emumu" || channel == "emu")
+  {
+      if (muEGTrig)
+      {
+          if (isMC_)
+              *eventWeight *= twgt; // trigger weight should be unchanged
+                                    // for data anyway, but good practice to
+                                    // explicitly not apply it.
+          return true;
+      }
   }
 
   // Is ee or eee?
-  if ( channel == "ee" || channel == "eee" ) { 
-//    if ( eeTrig && !(muEGTrig || mumuTrig) ) { // Original trigger logic, for double triggers only 
-    if ( (eeTrig || eTrig) && !(muEGTrig || mumuTrig || muTrig) ) { 
-      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
-      return true;
-    } 
+  if (channel == "ee" || channel == "eee")
+  {
+      //    if ( eeTrig && !(muEGTrig || mumuTrig) ) { // Original trigger
+      //    logic, for double triggers only
+      if ((eeTrig || eTrig) && !(muEGTrig || mumuTrig || muTrig))
+      {
+          if (isMC_)
+              *eventWeight *= twgt; // trigger weight should be unchanged
+                                    // for data anyway, but good practice to
+                                    // explicitly not apply it.
+          return true;
+      }
   }
 
   // Is mumu or mumumu?
-  if ( channel == "mumu" || channel == "mumumu" ) { 
-//    if ( mumuTrig && !(eeTrig || muEGTrig) ) // Original trigger logic, for double triggers only
-    if ( (mumuTrig || muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Trigger logic for double + single triggers
-//    if ( (muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Single trigger only whilst in debug mode
-    {
-      if (isMC_) * eventWeight *= twgt; // trigger weight should be unchanged for data anyway, but good practice to explicitly not apply it.
-      return true;
-    }
+  if (channel == "mumu" || channel == "mumumu")
+  {
+      //    if ( mumuTrig && !(eeTrig || muEGTrig) ) // Original trigger
+      //    logic, for double triggers only
+      if ((mumuTrig || muTrig)
+          && !(eeTrig || muEGTrig
+               || eTrig)) // Trigger logic for double + single triggers
+      //    if ( (muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Single
+      //    trigger only whilst in debug mode
+      {
+          if (isMC_)
+              *eventWeight *= twgt; // trigger weight should be unchanged
+                                    // for data anyway, but good practice to
+                                    // explicitly not apply it.
+          return true;
+      }
   }
   return false;
 }
@@ -1615,14 +1661,11 @@ bool Cuts::metFilters(AnalysisEvent* event){
   if ( event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0 ) return false;
   if ( event->Flag_goodVertices <= 0 ) return false;
   if ( event->Flag_eeBadScFilter <= 0 ) return false;
-  if ( !is2016_ && event->Flag_CSCTightHalo2015Filter <= 0 ) return false;
-  if ( is2016_ ) {
-    if ( event->Flag_globalTightHalo2016Filter <= 0 ) return false;
-    if ( event->Flag_chargedHadronTrackResolutionFilter <= 0 ) return false;
-    if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
-    if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
-    if ( !isMC_ && event->Flag_noBadMuons <= 0 ) return false;
-  }
+  if ( event->Flag_globalTightHalo2016Filter <= 0 ) return false;
+  if ( event->Flag_chargedHadronTrackResolutionFilter <= 0 ) return false;
+  if ( event->Flag_muonBadTrackFilter <= 0 ) return false;
+  if ( event->Flag_ecalLaserCorrFilter <= 0 ) return false;
+  if ( !isMC_ && event->Flag_noBadMuons <= 0 ) return false;
   return true;
 }
 
@@ -2130,9 +2173,9 @@ double Cuts::getChiSquared( double wMass, double topMass ){
 
 bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
 
-  if( !skipTrigger_ ) {
-    if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
-    if ( is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger for data and 2016, exclude MC.
+  if( !skipTrigger_ && !triggerCuts(event, eventWeight, systToRun))
+  {
+      return false;
   }
 
   if (!metFilters(event)) return false;
@@ -2149,7 +2192,7 @@ bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::str
 
   event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
 
-  if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
+  if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
   if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
 
   if (event->bTagIndex.size() < numbJets_) return false;
@@ -2178,7 +2221,6 @@ void Cuts::dumpLeptonInfo(AnalysisEvent* event){
     std::cout << " | " << tempVec.Phi();
     std::cout << " | " << event->elePF2PATPhi[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATD0PV[event->electronIndexTight[i]];
-    std::cout << " | " << event->elePF2PATMVA[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATMissingInnerLayers[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATComRelIsoRho[event->electronIndexTight[i]];
     std::cout << " | " << event->elePF2PATPhotonConversionVeto[event->electronIndexTight[i]];
@@ -2326,12 +2368,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
     step9EventDump_ << event->eventNum << " " << event->numElePF2PAT << " " << event->numMuonPF2PAT << " " << event->numJetPF2PAT << " " << event->electronIndexTight.size() << " " << event->muonIndexTight.size() << " " << event->jetIndex.size() << " " << synchTrigger << std::endl;
   }
 
-  if ( step == 0 ) { // Used for 2015/2016 synch
-
-    // Get trigger bit setup
-    if ( event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0 || event->HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3 > 0 ) triggerFlag[2] = 1; // Set Z=1 if MuonEG trigger fires
-    if ( event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0 || event->HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0 ) triggerFlag[1] = 1; // Set Y=1 if DoubleEG trigger fires
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1 > 0 || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) triggerFlag[0] = 1; // Set X=1 if DoubleMuon trigger fires
+  if ( step == 0 ) { // Used for 2016/2017 synch
 
   // Get leading 3 leptons pT
   // Search over electrons
@@ -2514,7 +2551,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step){
   switch (step){
   case 0:
     step0EventDump_.precision(3);
-    step0EventDump_ << event->jetPF2PATPt[0] << "|" << event->jetPF2PATBDiscriminator[0] << "|";
+    step0EventDump_ << event->jetPF2PATPt[0] << "|" << event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[0] << "|";
     break;
   }
 
@@ -2686,13 +2723,33 @@ float Cuts::muonSF(double pt, double eta, int syst){
   unsigned binId1 {0}, binIso1 {0};
   unsigned binId2 {0}, binIso2 {0};
 
-  if ( !is2016_ ) {
-    if ( pt > maxIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),maxIdPt);
-    else if ( pt < minIdPt ) binId1 = h_muonIDs1->FindBin(std::abs(eta),minIdPt);
-    else binId1 = h_muonIDs1->FindBin(std::abs(eta),pt);
-    if ( pt > maxIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),maxIsoPt);
-    else if ( pt < minIsoPt ) binIso1 = h_muonPFiso1->FindBin(std::abs(eta),minIsoPt);
-    else binIso1 = h_muonPFiso1->FindBin(std::abs(eta),pt);
+  if ( !is2016_ )
+  {
+      if (pt > maxIdPt)
+      {
+          binId1 = h_muonIDs1->FindBin(std::abs(eta), maxIdPt);
+      }
+      else if (pt < minIdPt)
+      {
+          binId1 = h_muonIDs1->FindBin(std::abs(eta), minIdPt);
+      }
+      else
+      {
+          binId1 = h_muonIDs1->FindBin(std::abs(eta), pt);
+      }
+
+      if (pt > maxIsoPt)
+      {
+          binIso1 = h_muonPFiso1->FindBin(std::abs(eta), maxIsoPt);
+      }
+      else if (pt < minIsoPt)
+      {
+          binIso1 = h_muonPFiso1->FindBin(std::abs(eta), minIsoPt);
+      }
+      else
+      {
+          binIso1 = h_muonPFiso1->FindBin(std::abs(eta), pt);
+      }
   }
 
   else { // Run2016 needs separate treatments in pre and post HIP eras
@@ -2711,57 +2768,78 @@ float Cuts::muonSF(double pt, double eta, int syst){
     else binIso2 = h_muonPFiso2->FindBin(std::abs(eta),pt);
   }
 
-  float muonIdSF {1.0}, muonPFisoSF {1.0}, muonRecoSF {1.0};
+  float muonIdSF {1.0};
+  float muonPFisoSF {1.0};
 
-  if ( !is2016_ ) muonIdSF = h_muonIDs1->GetBinContent(binId1);
-  if ( !is2016_ ) muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
-
-  if ( is2016_ ) {
-    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_ + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-    muonRecoSF = ( h_muonRecoGraph1->Eval(eta) * lumiRunsBCDEF_ + h_muonRecoGraph2->Eval(eta) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
-//    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
-//    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
-//    muonRecoSF = h_muonRecoGraph1->Eval(eta);
-//    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
-//    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
-//    muonRecoSF = h_muonRecoGraph2->Eval(eta);
+  if (!is2016_)
+  {
+      muonIdSF = h_muonIDs1->GetBinContent(binId1);
+      muonPFisoSF = h_muonPFiso1->GetBinContent(binIso1);
+  }
+  else
+  {
+      muonIdSF = (h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_
+                  + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_)
+                 / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+      muonPFisoSF = (h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_
+                     + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_)
+                    / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
+      //    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
+      //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
+      //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
+      //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
   }
 
-  if ( is2016_ ) {
-  }
-
-  if ( syst == 1 ) {
-    if ( !is2016_) muonIdSF    += h_muonIDs1->GetBinError(binId1);
-    if ( !is2016_ ) muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
-
-    if ( is2016_ ) {
-      muonIdSF += ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
-      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) + 0.005;
-      muonRecoSF += muonRecoSF*0.01;
-//      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
-//      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
-//      muonIdSF += ( h_muonIDs2->GetBinError(binId2) );
-//      muonPFisoSF += ( h_muonPFiso2->GetBinError(binIso2) );
+  if ( syst == 1 )
+  {
+      if (!is2016_)
+      {
+          muonIdSF += h_muonIDs1->GetBinError(binId1);
+          muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
+      }
+      else
+      {
+          muonIdSF += (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
+                       + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                          / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                      + 0.01; // Additional 1% uncert for ID and 0.5% for iso as
+                              // recommended
+          muonPFisoSF += (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
+                          + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                             / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                         + 0.005;
+          //      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
+          //      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
+          //      muonIdSF += ( h_muonIDs2->GetBinError(binId2) );
+          //      muonPFisoSF += ( h_muonPFiso2->GetBinError(binIso2) );
     }
   }
-
-  if ( syst == 2 ) {
-    if ( !is2016_) muonIdSF    -= h_muonIDs1->GetBinError(binId1);
-    if ( !is2016_ ) muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
-
-    if ( is2016_ ) {
-      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.01; // Additional 1% uncert for ID and 0.5% for iso as recommended
-      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_ + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ) - 0.005;
-      muonRecoSF -= muonRecoSF*0.01;
-//      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
-//      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
-//      muonIdSF -= ( h_muonIDs2->GetBinError(binId2) );
-//      muonPFisoSF -= ( h_muonPFiso2->GetBinError(binIso2) );
-    }
+  else if (syst == 2)
+  {
+      if (!is2016_)
+      {
+          muonIdSF -= h_muonIDs1->GetBinError(binId1);
+          muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
+      }
+      else
+      {
+          muonIdSF -= (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
+                       + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                          / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                      - 0.01; // Additional 1% uncert for ID and 0.5% for iso as
+                              // recommended
+          muonPFisoSF -= (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
+                          + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                             / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                         - 0.005;
+          //      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
+          //      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
+          //      muonIdSF -= ( h_muonIDs2->GetBinError(binId2) );
+          //      muonPFisoSF -= ( h_muonPFiso2->GetBinError(binIso2) );
+      }
   }
 
-  return muonIdSF*muonPFisoSF*muonRecoSF;
+  return muonIdSF * muonPFisoSF;
 }
 
 float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
@@ -2774,11 +2852,17 @@ float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
 
   unsigned binSf {0};
 
-  if ( !is2016_ ) return 1.0;
-  else {
-    if ( pt > maxSfPt ) binSf = h_eleHlt->FindBin(std::abs(eta),maxSfPt);
-    else if ( pt < minSfPt ) binSf = h_eleHlt->FindBin(std::abs(eta),minSfPt);
-    else binSf = h_eleHlt->FindBin(std::abs(eta),pt);
+  if (pt > maxSfPt)
+  {
+      binSf = h_eleHlt->FindBin(std::abs(eta), maxSfPt);
+  }
+  else if (pt < minSfPt)
+  {
+      binSf = h_eleHlt->FindBin(std::abs(eta), minSfPt);
+  }
+  else
+  {
+      binSf = h_eleHlt->FindBin(std::abs(eta), pt);
   }
 
   twgt = h_eleHlt->GetBinContent(binSf);
@@ -2791,8 +2875,6 @@ float Cuts::singleElectronTriggerSF(double pt, double eta, int syst){
 
 float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
 
-  if ( !is2016_ ) return 1.0;
-
   // Single Muon ROOT File SFs
   double twgt {1.0};
 
@@ -2801,7 +2883,21 @@ float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
 
   unsigned binSf1 {0}, binSf2 {0};
 
-  if ( !is2016_ ) return 1.0;
+  if ( !is2016_ )
+  {
+      if (pt > maxSfPt)
+      {
+          binSf1 = h_muonHlt1->FindBin(std::abs(eta), maxSfPt);
+      }
+      else if (pt < minSfPt)
+      {
+          binSf1 = h_muonHlt1->FindBin(std::abs(eta), minSfPt);
+      }
+      else
+      {
+          binSf1 = h_muonHlt1->FindBin(std::abs(eta), pt);
+      }
+  }
   else {
     if ( pt > maxSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),maxSfPt);
     else if ( pt < minSfPt ) binSf1 = h_muonHlt1->FindBin(std::abs(eta),minSfPt);
@@ -2822,7 +2918,7 @@ float Cuts::singleMuonTriggerSF(double pt, double eta, int syst){
 }
 
 float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int syst){
-  if ( !is2016_ ) return 1.0;
+  // TODO: add muon SFs for 2017
 
   double twgt {1.0};
 
@@ -3230,7 +3326,7 @@ float Cuts::muonTriggerSF(double pt1, double pt2, double eta1, double eta2, int 
 
 void Cuts::initialiseJECCors(){
   std::ifstream jecFile;
-  if ( !is2016_ ) jecFile.open( "scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
+  if ( !is2016_ ) jecFile.open( "scaleFactors/2017/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   else jecFile.open( "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt", std::ifstream::in );
   std::string line;
   bool first{true};
@@ -3328,7 +3424,7 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
   float jerSigma{0.};
   std::pair< float, float > jetSFs{};
 
-  if ( !is2016_ ) jetSFs = jet2015SFs( std::abs(event->jetPF2PATEta[index]) );
+  if ( !is2016_ ) jetSFs = jet2017SFs( std::abs(event->jetPF2PATEta[index]) );
   else jetSFs = jet2016SFs( std::abs(event->jetPF2PATEta[index]) );
 
   jerSF = jetSFs.first;
@@ -3379,67 +3475,6 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent* event, int index, int syst, bool 
   
   tempSmearValue_ = newSmearValue;
   return returnJet;
-}
-
-std::pair< float, float > Cuts::jet2015SFs( float eta ) {
-  // JER Scaling Factors and uncertainities for 2015
-  float jerSF{0.};
-  float jerSigma{0.};
-
-  if (eta <= 0.5) {
-    jerSF = 1.095;
-    jerSigma = 0.018;
-  }
-  else if (eta <= 0.8) {
-    jerSF = 1.120;
-    jerSigma = 0.028;
-  }
-  else if (eta <= 1.1) {
-    jerSF = 1.097;
-    jerSigma = 0.017;
-  }
-  else if (eta <= 1.3) {
-    jerSF = 1.103;
-    jerSigma = 0.033;
-  }
-  else if (eta <= 1.7) {
-    jerSF = 1.118;
-    jerSigma = 0.014;
-  }
-  else if (eta <= 1.9) {
-    jerSF = 1.100;
-    jerSigma = 0.033;
-  }
-  else if (eta <= 2.1) {
-    jerSF = 1.162;
-    jerSigma = 0.044;
-  }
-  else if (eta <= 2.3) {
-    jerSF = 1.160;
-    jerSigma = 0.048;
-  }
-  else if (eta <= 2.5) {
-    jerSF = 1.161;
-    jerSigma = 0.060;
-  }
-  else if (eta <= 2.8) {
-    jerSF = 1.209;
-    jerSigma = 0.059;
-  }
-  else if (eta <= 3.0){
-    jerSF = 1.564;
-    jerSigma = 0.321;
-  }
-  else if (eta <= 3.2){
-    jerSF = 1.384;
-    jerSigma = 0.033;
-  }
-  else {
-    jerSF = 1.216;
-    jerSigma = 0.050;
-  }
-
-  return std::make_pair( jerSF, jerSigma );
 }
 
 std::pair< float, float > Cuts::jet2016SFs( float eta ) {
@@ -3501,6 +3536,59 @@ std::pair< float, float > Cuts::jet2016SFs( float eta ) {
   }
 
   return std::make_pair( jerSF, jerSigma );
+}
+
+std::pair<double, double> Cuts::jet2017SFs(const double eta) const
+{
+    // https://indico.cern.ch/event/735951/contributions/3035608/attachments/1665505/2669871/JER_MEETING_11_06_2018.pdf
+    constexpr std::array<double, 14> etaBinEdges{0,
+                                                 0.522,
+                                                 0.783,
+                                                 1.131,
+                                                 1.305,
+                                                 1.740,
+                                                 1.930,
+                                                 2.043,
+                                                 2.322,
+                                                 2.5,
+                                                 2.853,
+                                                 2.964,
+                                                 3.319,
+                                                 5.191};
+
+    switch (std::distance(
+        etaBinEdges.begin(),
+        std::upper_bound(etaBinEdges.begin(), etaBinEdges.end(), eta)))
+    {
+        case 1:
+            return {1.072, 0.00355243};
+        case 2:
+            return {1.09955, 0.00769757};
+        case 3:
+            return {1.06982, 0.00585163};
+        case 4:
+            return {1.09573, 0.0078385};
+        case 5:
+            return {1.0778, 0.00632877};
+        case 6:
+            return {1.10929, 0.0116475};
+        case 7:
+            return {1.17148, 0.0168652};
+        case 8:
+            return {1.15621, 0.0125006};
+        case 9:
+            return {1.31407, 0.025415};
+        case 10:
+            return {2.08284, 0.0407744};
+        case 11:
+            return {2.20438, 0.0652898};
+        case 12:
+            return {1.49907, 0.0205643};
+        case 13:
+            return {1.52548, 0.0308124};
+        default:
+            throw std::runtime_error("Eta out of range");
+    }
 }
 
 void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float * mcTag, float * mcNoTag, float * dataTag, float * dataNoTag, float * err1, float * err2, float * err3, float * err4){
@@ -3585,7 +3673,7 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
   SFerr = std::abs(jet_scalefactor_up - jet_scalefactor)>std::abs(jet_scalefactor_do - jet_scalefactor)? std::abs(jet_scalefactor_up - jet_scalefactor):std::abs(jet_scalefactor_do - jet_scalefactor);
 
   //Apply the weight of the jet and set the error
-  if (event->jetPF2PATBDiscriminator[index] > bDiscCut_){
+  if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[index] > bDiscCut_){
     *mcTag *= eff;
     *dataTag *= eff*jet_scalefactor;
 
@@ -3604,400 +3692,548 @@ void Cuts::getBWeight(AnalysisEvent* event, TLorentzVector jet, int index, float
 }
 
 // Backup temporary method to do Btag Scale Factors whilst debugging is ongoing.
+// TODO: F1X TH1S
 
-float Cuts::getBweight_backup(int flavour, int type, float pt){
+double Cuts::getBweight_backup(const int flavour,
+                               const int type,
+                               const double pt) const
+{
+    double sf{1.0};
+    const double& x{pt};
 
-  float sf = 1.0;
-  float x = pt;
+    if (!is2016_)
+    { // is 2017
+        // MEDIUM
+        switch (flavour)
+        {
+            case 0: // B flavour
+                switch (type)
+                {
+                    case 0: // central
+                        if (pt > 20 && pt < 1000)
+                        {
+                            return 0.941966
+                                   * ((1. + (0.0241018 * x))
+                                      / (1. + (0.0248776 * x)));
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    case 1: // up
+                        if (pt > 20 && pt < 30)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.051529459655284882;
+                        }
+                        else if (pt < 50)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.017671864479780197;
+                        }
+                        else if (pt < 70)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.022306634113192558;
+                        }
+                        else if (pt < 100)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.023042259737849236;
+                        }
+                        else if (pt < 140)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.039661582559347153;
+                        }
+                        else if (pt < 200)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.061514820903539658;
+                        }
+                        else if (pt < 300)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.071018315851688385;
+                        }
+                        else if (pt < 600)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.054169680923223495;
+                        }
+                        else if (pt < 1000)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.063008971512317657;
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    case -1: // down
+                        if (pt > 20 && pt < 30)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.051529459655284882;
+                        }
+                        else if (pt < 50)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.017671864479780197;
+                        }
+                        else if (pt < 70)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.022306634113192558;
+                        }
+                        else if (pt < 100)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.023042259737849236;
+                        }
+                        else if (pt < 140)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.039661582559347153;
+                        }
+                        else if (pt < 200)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.061514820903539658;
+                        }
+                        else if (pt < 300)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.071018315851688385;
+                        }
+                        else if (pt < 600)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.054169680923223495;
+                        }
+                        else if (pt < 1000)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.063008971512317657;
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    default:
+                        throw std::runtime_error(
+                            "Unknown b tag systematic type");
+                }
+            case 1: // C flavour
+                switch (type)
+                {
+                    case 0: // central
+                        if (pt > 20 && pt < 1000)
+                        {
+                            return 0.941966
+                                   * ((1. + (0.0241018 * x))
+                                      / (1. + (0.0248776 * x)));
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    case 1: // up
+                        if (pt > 20 && pt < 30)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.15458837151527405;
+                        }
+                        else if (pt < 50)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.053015593439340591;
+                        }
+                        else if (pt < 70)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.066919900476932526;
+                        }
+                        else if (pt < 100)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.069126777350902557;
+                        }
+                        else if (pt < 140)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.11898474395275116;
+                        }
+                        else if (pt < 200)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.18454445898532867;
+                        }
+                        else if (pt < 300)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.21305495500564575;
+                        }
+                        else if (pt < 600)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.16250903904438019;
+                        }
+                        else if (pt < 1000)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   + 0.18902692198753357;
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    case -1: // down
+                        if (pt > 20 && pt < 30)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.15458837151527405;
+                        }
+                        else if (pt < 50)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.053015593439340591;
+                        }
+                        else if (pt < 70)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.066919900476932526;
+                        }
+                        else if (pt < 100)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.069126777350902557;
+                        }
+                        else if (pt < 140)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.11898474395275116;
+                        }
+                        else if (pt < 200)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.18454445898532867;
+                        }
+                        else if (pt < 300)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.21305495500564575;
+                        }
+                        else if (pt < 600)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.16250903904438019;
+                        }
+                        else if (pt < 1000)
+                        {
+                            return (0.941966
+                                    * ((1. + (0.0241018 * x))
+                                       / (1. + (0.0248776 * x))))
+                                   - 0.18902692198753357;
+                        }
+                        else
+                        {
+                            throw std::runtime_error(
+                                "pT out of range of b tag SFs");
+                        }
+                    default:
+                        throw std::runtime_error(
+                            "Unknown b tag systematic type");
+                }
+            case 2: // UDSG flavour
+                switch (type)
+                {
+                    case 0: // central
+                        return 0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
+                               + -3.55644e-10 * x * x * x;
+                    case 1: // up
+                        return (0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
+                                + -3.55644e-10 * x * x * x)
+                               * (1
+                                  + (0.115123 + 0.000153114 * x
+                                     + -1.72111e-07 * x * x));
+                    case -1: // down
+                        return (0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
+                                + -3.55644e-10 * x * x * x)
+                               * (1
+                                  - (0.115123 + 0.000153114 * x
+                                     + -1.72111e-07 * x * x));
+                    default:
+                        throw std::runtime_error(
+                            "Unknown b tag systematic type");
+                }
+            default:
+                throw std::runtime_error("Unknown b tag systematic flavour");
+        }
+    }
+    else
+    { // is 2016
+        // MEDIUM
+        if (flavour == 0)
+        { // B flavour
+            if (type == 0)
+                sf = 0.718014
+                     * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x)));
+            if (type == 1)
+            {
+                if (pt < 30.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.040554910898208618;
+                if (pt < 50.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.01836167648434639;
+                if (pt < 70.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.016199169680476189;
+                if (pt < 100.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.014634267427027225;
+                if (pt < 140.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.014198922552168369;
+                if (pt < 200.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.016547618433833122;
+                if (pt < 300.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.02140621654689312;
+                if (pt < 600.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.023563217371702194;
+                else
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.034716218709945679;
+            }
+            if (type == -1)
+            {
+                if (pt < 30.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.040554910898208618;
+                if (pt < 50.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.01836167648434639;
+                if (pt < 70.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.016199169680476189;
+                if (pt < 100.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.014634267427027225;
+                if (pt < 140.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.014198922552168369;
+                if (pt < 200.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.016547618433833122;
+                if (pt < 300.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.02140621654689312;
+                if (pt < 600.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.023563217371702194;
+                else
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.034716218709945679;
+            }
+        }
+        if (flavour == 1)
+        { // C flavour
+            if (type == 0)
+                sf = 0.718014
+                     * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x)));
+            if (type == 1)
+            {
+                if (pt < 30.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.12166473269462585;
+                if (pt < 50.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.055085029453039169;
+                if (pt < 70.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.048597507178783417;
+                if (pt < 100.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.043902803212404251;
+                if (pt < 140.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.042596768587827682;
+                if (pt < 200.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.049642853438854218;
+                if (pt < 300.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.06421864777803421;
+                if (pt < 600.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.070689648389816284;
+                else
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         + 0.10414865612983704;
+            }
+            if (type == -1)
+            {
+                if (pt < 30.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.12166473269462585;
+                if (pt < 50.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.055085029453039169;
+                if (pt < 70.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.048597507178783417;
+                if (pt < 100.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.043902803212404251;
+                if (pt < 140.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.042596768587827682;
+                if (pt < 200.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.049642853438854218;
+                if (pt < 300.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.06421864777803421;
+                if (pt < 600.0)
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.070689648389816284;
+                else
+                    sf = (0.718014
+                          * ((1. + (0.0685826 * x)) / (1. + (0.0475779 * x))))
+                         - 0.10414865612983704;
+            }
+        }
+        if (flavour == 2)
+        { // UDSG flavour
+            if (type == 0)
+                sf = 1.0589 + 0.000382569 * x + -2.4252e-07 * x * x
+                     + 2.20966e-10 * x * x * x;
+            if (type == 1)
+                sf =
+                    (1.0589 + 0.000382569 * x + -2.4252e-07 * x * x
+                     + 2.20966e-10 * x * x * x)
+                    * (1 + (0.100485 + 3.95509e-05 * x + -4.90326e-08 * x * x));
+            if (type == -1)
+                sf =
+                    (1.0589 + 0.000382569 * x + -2.4252e-07 * x * x
+                     + 2.20966e-10 * x * x * x)
+                    * (1 - (0.100485 + 3.95509e-05 * x + -4.90326e-08 * x * x));
+        }
+        }
 
-  //--------------------------------------------------------------------------------------------------------------------------
-  // START SFs for B-H
-  //--------------------------------------------------------------------------------------------------------------------------
-
-  if (!is2016_){
-
-    if (flavour == 0) { // B flavour
-      if (type == 0) sf = 0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x)));
-
-      if (type == 1) { // scale up
-	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.019803794100880623;
-	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.026958625763654709;
-	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.024285079911351204;
-	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.028512096032500267;
-	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.029808893799781799;
-	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.026503190398216248;
-	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.042264193296432495;
-      }
-
-      if (type == -1) { // scale down
-	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.019803794100880623;
-	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.026958625763654709;
-	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.024285079911351204;
-	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.028512096032500267;
-	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.029808893799781799;
-	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.026503190398216248;
-	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.042264193296432495;
-      }
-    }
-
-    if (flavour == 1) { // C flavour
-      if (type == 0) sf = 0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x)));
-
-      if ( type == 1 ) {
-	if ( pt < 50.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.039607588201761246;
-	if ( pt < 70.0 )   sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.053917251527309418;
-	if ( pt < 100.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.048570159822702408;
-	if ( pt < 140.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.057024192065000534;
-	if ( pt < 200.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.059617787599563599;
-	if ( pt < 300.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.053006380796432495;
-	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))+0.08452838659286499;
-      }
-
-      if ( type == -1 ) {
-	if ( pt < 50.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.039607588201761246;
-	if ( pt < 70.0 )  sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.053917251527309418;
-	if ( pt < 100.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.048570159822702408;
-	if ( pt < 140.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
-	if ( pt < 200.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.057024192065000534;
-	if ( pt < 300.0 ) sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.059617787599563599;
-	else sf = (0.886376*((1.+(0.00250226*x))/(1.+(0.00193725*x))))-0.08452838659286499;
-      }
-    }
-    if (flavour == 2) { // UDSG flavour
-      if (type == 0)  sf = 0.992339;
-      if (type == 1)  sf = 1.17457;
-      if (type == -1) sf = 0.810103;
-    }
-  }
-
-  else { // is 2016
-/*
-    // TIGHT 
-    if (flavour == 0) { // B flavour
-      if ( type == 0 ) sf = 0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.034476730972528458;
-        if ( pt < 50.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.022783603519201279;
-        if ( pt < 70.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.021012712270021439;
-        if ( pt < 100.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.017111778259277344;
-        if ( pt < 140.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.016918083652853966;
-        if ( pt < 200.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.016693713143467903;
-        if ( pt < 300.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.02831784263253212;
-        if ( pt < 600.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.032944366335868835;
-        else sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.054636202752590179;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.034476730972528458;
-        if ( pt < 50.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.022783603519201279;
-        if ( pt < 70.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.021012712270021439;
-        if ( pt < 100.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.017111778259277344;
-        if ( pt < 140.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.016918083652853966;
-        if ( pt < 200.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.016693713143467903;
-        if ( pt < 300.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.02831784263253212;
-        if ( pt < 600.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.032944366335868835;
-        else sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.054636202752590179;
-      }
-    }
-    if (flavour == 1) { // C flavour
-      if ( type == 0 ) sf = 0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x)));
-      if ( type == 1 ) {
-        if ( pt < 30.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.12066856026649475;
-        if ( pt < 50.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.079742610454559326;
-        if ( pt < 70.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.073544494807720184;
-        if ( pt < 100.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.059891223907470703;
-        if ( pt < 140.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.059213291853666306;
-        if ( pt < 200.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.058427996933460236;
-        if ( pt < 300.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.099112451076507568;
-        if ( pt < 600.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.11530528217554092;
-        else sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))+0.19122670590877533;
-      }
-      if ( type == -1 ) {
-        if ( pt < 30.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.12066856026649475;
-        if ( pt < 50.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.079742610454559326;
-        if ( pt < 70.0 )  sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.073544494807720184;
-        if ( pt < 100.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.059891223907470703;
-        if ( pt < 140.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.059213291853666306;
-        if ( pt < 200.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.058427996933460236;
-        if ( pt < 300.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.099112451076507568;
-        if ( pt < 600.0 ) sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.11530528217554092;
-        else sf = (0.849497*((1.+(0.01854*x))/(1.+(0.0153613*x))))-0.19122670590877533;
-      }
-    }
-    if (flavour == 2) { // UDSG flavour
-      if (type == 0)  sf = 0.971945+163.215/(x*x)+0.000517836*x;
-      if (type == 1)  sf = (0.971945+163.215/(x*x)+0.000517836*x)*(1+(0.291298+-0.000222983*x+1.69699e-07*x*x));
-      if (type == -1) sf = (0.971945+163.215/(x*x)+0.000517836*x)*(1-(0.291298+-0.000222983*x+1.69699e-07*x*x));
-    }
-  }
-  */
-
-  // MEDIUM
-  if (flavour == 0) { // B flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
-    }
-  }
-  if (flavour == 1) { // C flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
-    }
-  }
-  if (flavour == 2) { // UDSG flavour
-    if (type == 0)  sf = 1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x;
-    if (type == 1)  sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1+(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
-    if (type == -1) sf = (1.0589+0.000382569*x+-2.4252e-07*x*x+2.20966e-10*x*x*x)*(1-(0.100485+3.95509e-05*x+-4.90326e-08*x*x));
-  }
-
-  /*
-  // LOOSE
-  if (flavour == 0) { // B flavour
-    if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.025442773476243019;
-      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013995612040162086;
-      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01321903895586729;
-      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013857406564056873;
-      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.013207088224589825;
-      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.011531321331858635;
-      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.01834111288189888;
-      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.018383314833045006;
-      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.022504881024360657;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.025442773476243019;
-      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013995612040162086;
-      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01321903895586729;
-      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013857406564056873;
-      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.013207088224589825;
-      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.011531321331858635;
-      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.01834111288189888;
-      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.018383314833045006;
-      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.022504881024360657;
-    }
-  }
-  if (flavour == 1) { // C flavour
-    if ( type == 0 ) sf = 0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.063606932759284973;
-      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034989029169082642;
-      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033047597855329514;
-      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.034643515944480896;
-      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.033017721027135849;
-      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.028828304260969162;
-      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045852780342102051;
-      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.045958288013935089;
-      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))+0.056262202560901642;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.063606932759284973;
-      if ( pt < 50.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034989029169082642;
-      if ( pt < 70.0 )  sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033047597855329514;
-      if ( pt < 100.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.034643515944480896;
-      if ( pt < 140.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.033017721027135849;
-      if ( pt < 200.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.028828304260969162;
-      if ( pt < 300.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045852780342102051;
-      if ( pt < 600.0 ) sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.045958288013935089;
-      else sf = (0.884016*((1.+(0.0331508*x))/(1.+(0.0285096*x))))-0.056262202560901642;
-    }
-  }
-  if (flavour == 2) { // UDSG flavour
-    if (type == 0)  sf = 1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x;
-    if (type == 1)  sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1+(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
-    if (type == -1) sf = (1.13904+-0.000594946*x+1.97303e-06*x*x+-1.38194e-09*x*x*x)*(1-(0.0996438+-8.33354e-05*x+4.74359e-08*x*x));
-  }
-  */
-
-  //--------------------------------------------------------------------------------------------------------------------------
-  // END SFs for B-H
-  //--------------------------------------------------------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------------------------------------------------------
-  // START SFs for B-F
-  //--------------------------------------------------------------------------------------------------------------------------
-
-/*
-    // TIGHT - NOT DONE
-*/
-/*    
-  // MEDIUM
-  if (flavour == 0) { // B flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.034716218709945679;
-    }
-  }
-  if (flavour == 1) { // C flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
-    }
-  }
-  if (flavour == 2) { // UDSG flavour
-    if (type == 0)  sf = 1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x;
-    if (type == 1)  sf = (1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x)*(1+(0.100961+3.78426e-05*x+-4.74595e-08*x*x));
-    if (type == -1) sf = (1.05204+0.00106978*x+-1.25908e-06*x*x+7.72569e-10*x*x*x)*(1-(0.100961+3.78426e-05*x+-4.74595e-08*x*x));
-  }
-  */  
-  /*
-    // LOOSE - not done
-  */
-
-  //--------------------------------------------------------------------------------------------------------------------------
-  // END SFs for B-F
-  //--------------------------------------------------------------------------------------------------------------------------
-
-  //--------------------------------------------------------------------------------------------------------------------------
-  // START SFs for G-H
-  //--------------------------------------------------------------------------------------------------------------------------
-
-
-/*
-    // TIGHT - NOT DONE
-*/
-
-/*
-  // MEDIUM
-  if (flavour == 0) { // B flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.040554910898208618;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.01836167648434639;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016199169680476189;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014634267427027225;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.014198922552168369;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.016547618433833122;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.02140621654689312;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.023563217371702194;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.034716218709945679;
-    }
-  }
-  if (flavour == 1) { // C flavour
-    if ( type == 0 ) sf = 0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x)));
-    if ( type == 1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))+0.10414865612983704;
-    }
-    if ( type == -1 ) {
-      if ( pt < 30.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.12166473269462585;
-      if ( pt < 50.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.055085029453039169;
-      if ( pt < 70.0 )  sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.048597507178783417;
-      if ( pt < 100.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.043902803212404251;
-      if ( pt < 140.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.042596768587827682;
-      if ( pt < 200.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.049642853438854218;
-      if ( pt < 300.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.06421864777803421;
-      if ( pt < 600.0 ) sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.070689648389816284;
-      else sf = (0.718014*((1.+(0.0685826*x))/(1.+(0.0475779*x))))-0.10414865612983704;
-    }
-  }
-  if (flavour == 2) { // UDSG flavour
-    if (type == 0)  sf = 1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x;
-    if (type == 1)  sf = (1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x)*(1-(0.100263+3.89914e-05*x+-4.7095e-08*x*x));
-    if (type == -1) sf = (1.06175+-0.000462017*x+1.02721e-06*x*x+-4.95019e-10*x*x*x)*(1+(0.100263+3.89914e-05*x+-4.7095e-08*x*x));
-  }
-*/
-  /*
-    // LOOSE - not done
-  */
-
-  //--------------------------------------------------------------------------------------------------------------------------
-  // END SFs for G-H
-  //--------------------------------------------------------------------------------------------------------------------------
-  }
-  return sf;
+        return sf;
 }

@@ -2,7 +2,7 @@
 #define _cutClass_hpp_
 
 #include "AnalysisEvent.hpp"
-#include "RoccoR.hpp"
+#include "RoccoR.h"
 
 #include <vector>
 #include <map>
@@ -167,8 +167,8 @@ class Cuts{
   void initialiseJECCors();
   float getJECUncertainty(float,float,int);
   TLorentzVector getJetLVec(AnalysisEvent*,int,int,bool initialRun = false);
-  std::pair< float, float > jet2015SFs( float );
   std::pair< float, float > jet2016SFs( float );
+  std::pair< double, double > jet2017SFs( const double eta ) const;
 
   //Histogram to be used in synchronisation.
   TH1F* synchCutFlowHist_;
@@ -212,13 +212,15 @@ class Cuts{
   bool getBTagWeight_;
 
   //bTag callibration for SFs
-  BTagCalibration calib2015;
   BTagCalibration calib2016;
+  BTagCalibration calib2017;
   BTagCalibrationReader lightReader;
   BTagCalibrationReader charmReader;
   BTagCalibrationReader beautyReader;
 
-  float getBweight_backup(int, int, float);
+  double getBweight_backup(const int flavour,
+                           const int type,
+                           const double pt) const;
 
   void getBWeight(AnalysisEvent *, TLorentzVector, int, float*, float*, float*, float*, float*, float*, float*, float*);
 
@@ -248,16 +250,12 @@ class Cuts{
   TFile* muonIsoFile1;
   TFile* muonIDsFile2;
   TFile* muonIsoFile2;
-  TFile* muonRecoFile1;
-  TFile* muonRecoFile2;
   TH2F* h_muonHlt1;
   TH2F* h_muonHlt2;
   TH2F* h_muonIDs1;
   TH2F* h_muonIDs2;
   TH2F* h_muonPFiso1;
   TH2F* h_muonPFiso2;
-  TGraphAsymmErrors* h_muonRecoGraph1;
-  TGraphAsymmErrors* h_muonRecoGraph2;
 
  public:
   Cuts(bool, bool, bool, bool, bool, const bool, const bool, const bool, const bool);

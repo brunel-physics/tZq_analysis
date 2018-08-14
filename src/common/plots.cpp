@@ -44,15 +44,12 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap(){
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2RelIso",&Plots::fillLepton2RelIso));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1Phi",&Plots::fillLepton1Phi));
   functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2Phi",&Plots::fillLepton2Phi));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep1MVA",&Plots::fillLepton1MVA));
-  functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep2MVA",&Plots::fillLepton2MVA));
 
   if (trileptonChannel_){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Pt",&Plots::fillLepton3Pt));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Eta",&Plots::fillLepton3Eta));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3Phi",&Plots::fillLepton3Phi));
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3RelIso",&Plots::fillLepton3RelIso));
-    functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("lep3MVA",&Plots::fillLepton3MVA));
   }
   else if (!trileptonChannel_){
     functionPointerMap.insert(std::pair<std::string, float(Plots::*)(AnalysisEvent*)>("wQuark1Pt",&Plots::fillWbosonQuark1Pt));
@@ -325,31 +322,6 @@ float Plots::fillLepton3Phi(AnalysisEvent* event){
   return -10;
 }
 
-float Plots::fillLepton1MVA(AnalysisEvent* event){
-  if (event->electronIndexTight.size() > 1)
-    return event->elePF2PATMVA[event->electronIndexTight[0]];
-  else return -5;
-  return -10;
-}
-float Plots::fillLepton2MVA(AnalysisEvent* event){
-  if (event->electronIndexTight.size() > 1)
-    return event->elePF2PATMVA[event->electronIndexTight[1]];
-  else return -5;
-  return -10;
-}
-float Plots::fillLepton3MVA(AnalysisEvent* event){
-  if (event->electronIndexTight.size() > 2)
-    return event->elePF2PATMVA[event->electronIndexTight[2]];
-  if (event->muonIndexTight.size() > 2)
-    return -5;
-  if (event->electronIndexTight.size() > 1)
-    return -5;
-  else
-    return event->elePF2PATMVA[event->electronIndexTight[0]];
-
-  return -10;
-}
-
 float Plots::fillMetPlot(AnalysisEvent* event){
   return event->metPF2PATEt;
 }
@@ -551,22 +523,22 @@ float Plots::fillFourthJetPhi(AnalysisEvent* event){
 }
 
 float Plots::fillLeadingJetBDisc(AnalysisEvent* event){
-  if (event->jetIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->jetIndex[0]];
+  if (event->jetIndex.size() > 0) return event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[event->jetIndex[0]];
   else return -10;
 }
 
 float Plots::fillSecondJetBDisc(AnalysisEvent* event){
-  if (event->jetIndex.size() > 1) return event->jetPF2PATBDiscriminator[event->jetIndex[1]];
+  if (event->jetIndex.size() > 1) return event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[event->jetIndex[1]];
   else return -10;
 }
 
 float Plots::fillThirdJetBDisc(AnalysisEvent* event){
-  if (event->jetIndex.size() > 2) return event->jetPF2PATBDiscriminator[event->jetIndex[2]];
+  if (event->jetIndex.size() > 2) return event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[event->jetIndex[2]];
   else return -10;
 }
 
 float Plots::fillFourthJetBDisc(AnalysisEvent* event){
-  if (event->jetIndex.size() > 3) return event->jetPF2PATBDiscriminator[event->jetIndex[3]];
+  if (event->jetIndex.size() > 3) return event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[event->jetIndex[3]];
   else return -10;
 }
 
@@ -575,7 +547,7 @@ float Plots::numbBJets(AnalysisEvent* event){
 }
 
 float Plots::fillBtagDisc(AnalysisEvent* event){
-  if (event->bTagIndex.size() > 0) return event->jetPF2PATBDiscriminator[event->jetIndex[event->bTagIndex[0]]];
+  if (event->bTagIndex.size() > 0) return event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[event->jetIndex[event->bTagIndex[0]]];
   return -10;
 }
 

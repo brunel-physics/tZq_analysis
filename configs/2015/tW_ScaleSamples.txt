@@ -1,6 +1,0 @@
-datasets = "configs/2015/datasets/tW_ScaleSamples.txt";
-cuts = "configs/2015/cuts/eeCuts.txt";
-plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/2015/ee/";
-outputPostfix = "ee";
-channelName = "ee";

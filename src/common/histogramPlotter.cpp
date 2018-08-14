@@ -222,16 +222,13 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
   float R = 0.04*W_ref;
 
   std::string canvasName = plotName + subLabel + postfix_;
-  int period;
   int pos = 0;
   if( writeExtraText ) canvasName += "-prelim";
   if( !is2016_ ) {
-    canvasName += "-2015";
-    period = 1;
+    canvasName += "-2017";
   }
   else {
     canvasName += "-2016";
-    period = 2;
   }
 
   TCanvas * canvy = new TCanvas((canvasName).c_str(), (canvasName).c_str(), 50, 50, W, H);
@@ -347,13 +344,13 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap, std::strin
 
   // writing the lumi information and the CMS "logo"
   if ( BLIND_PLOTS ) {
-    CMS_lumi ( canvy, period, pos );
+    CMS_lumi ( canvy, pos );
     canvy->Update();
     canvy->RedrawAxis();
     canvy->Draw();
   }
   else {
-    CMS_lumi ( canvy_1, period, pos );
+    CMS_lumi ( canvy_1, pos );
     canvy_1->Update();
     canvy_1->RedrawAxis();
     canvy_1->Draw();
@@ -384,7 +381,7 @@ void HistogramPlotter::setOutputFolder(std::string output){
 
 }
 
-void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
+void HistogramPlotter::CMS_lumi(TPad* pad, int posX) {
 
   TString cmsText     = "CMS";
   float cmsTextFont   = 61;  // default is helvetic-bold
@@ -407,8 +404,7 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
   float extraOverCmsTextSize  = 0.76;
 
   TString lumi_2016 = "35.86 fb^{-1}";
-  TString lumi_2015 = "2.32 fb^{-1}";
-  TString lumi_sqrtS = "";
+  TString lumi_2017 = "41.86 fb^{-1}";
 
   bool drawLogo      = false;
 
@@ -439,19 +435,15 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
   pad->cd();
 
   TString lumiText;
-  if( period==1 )
+  if(!is2016_)
     {
-      lumiText += lumi_2015;
+      lumiText += lumi_2017;
       lumiText += " (13 TeV)";
     }
-  else if ( period==2 )
+  else
     {
       lumiText += lumi_2016;
       lumiText += " (13 TeV)";
-    }
-  else if ( period==0 )
-    {
-      lumiText += lumi_sqrtS;
     }
    
 //  std::cout << lumiText << std::endl;

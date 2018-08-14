@@ -1,6 +1,0 @@
-datasets = "configs/datasets/mumuDataMC.txt";
-cuts = "configs/cuts/eeCuts.txt";
-plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/mumumu/";
-outputPostfix = "mumumu";
-channelName = "mumumu";

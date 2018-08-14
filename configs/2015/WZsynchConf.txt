@@ -1,6 +1,0 @@
-datasets = "configs/2015/datasets/WZsynch.txt";
-cuts = "configs/2015/cuts/synchCuts.txt";
-plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/2015/eee_synch/";
-outputPostfix = "eee";
-channelName = "eee";

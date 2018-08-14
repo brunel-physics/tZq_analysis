@@ -127,236 +127,6 @@ double AnalysisAlgo::zptSF(std::string chan, float zpt){
 }
 
 
-//This method is here to set up a load of branches in the TTrees that I will be analysing. Because it's vastly quicker to not load the whole damned thing.
-void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string triggerFlag){
-  //Get electron branches
-  chain->SetBranchStatus("numElePF2PAT",1);
-  chain->SetBranchStatus("elePF2PATPT",1);
-  chain->SetBranchStatus("elePF2PATPX",1);
-  chain->SetBranchStatus("elePF2PATPY",1);
-  chain->SetBranchStatus("elePF2PATPZ",1);
-  chain->SetBranchStatus("elePF2PATE",1);
-  chain->SetBranchStatus("elePF2PATIsGsf",1);
-  chain->SetBranchStatus("elePF2PATGsfPx",1);
-  chain->SetBranchStatus("elePF2PATGsfPy",1);
-  chain->SetBranchStatus("elePF2PATGsfPz",1);
-  chain->SetBranchStatus("elePF2PATGsfE",1);
-  chain->SetBranchStatus("elePF2PATEta",1);
-  chain->SetBranchStatus("elePF2PATPhi",1);
-  chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
-  chain->SetBranchStatus("elePF2PATMissingInnerLayers",1);
-  chain->SetBranchStatus("elePF2PATPhotonConversionVeto",1);
-  chain->SetBranchStatus("elePF2PATMVA",1);
-  chain->SetBranchStatus("elePF2PATComRelIsoRho",1);
-  chain->SetBranchStatus("elePF2PATComRelIsodBeta",1);
-  chain->SetBranchStatus("elePF2PATComRelIso",1);
-  chain->SetBranchStatus("elePF2PATChHadIso",1);
-  chain->SetBranchStatus("elePF2PATNtHadIso",1);
-  chain->SetBranchStatus("elePF2PATGammaIso",1);
-  chain->SetBranchStatus("elePF2PATRhoIso",1);
-  chain->SetBranchStatus("elePF2PATAEff03",1);
-  chain->SetBranchStatus("elePF2PATCharge",1);
-  chain->SetBranchStatus("elePF2PATTrackD0",1);
-  chain->SetBranchStatus("elePF2PATTrackDBD0",1);
-  chain->SetBranchStatus("elePF2PATD0PV",1);
-  chain->SetBranchStatus("elePF2PATBeamSpotCorrectedTrackD0",1);
-  chain->SetBranchStatus("elePF2PATSCEta",1);
-  if (isMC){
-    chain->SetBranchStatus("genElePF2PATPT",1);
-    chain->SetBranchStatus("genElePF2PATET",1);
-    chain->SetBranchStatus("genElePF2PATPX",1);
-    chain->SetBranchStatus("genElePF2PATPY",1);
-    chain->SetBranchStatus("genElePF2PATPZ",1);
-    chain->SetBranchStatus("genElePF2PATPhi",1);
-    chain->SetBranchStatus("genElePF2PATTheta",1);
-    chain->SetBranchStatus("genElePF2PATEta",1);
-    chain->SetBranchStatus("genElePF2PATCharge",1);
-    chain->SetBranchStatus("genElePF2PATPdgId",1);
-    chain->SetBranchStatus("genElePF2PATMotherId",1);
-    chain->SetBranchStatus("genElePF2PATPromptDecayed",1);
-    chain->SetBranchStatus("genElePF2PATPromptFinalState",1);
-  }
-  //get muon branches
-  chain->SetBranchStatus("muonPF2PATIsPFMuon",1);
-  chain->SetBranchStatus("muonPF2PATGlobalID",1);
-  chain->SetBranchStatus("muonPF2PATTrackID",1);
-  chain->SetBranchStatus("numMuonPF2PAT",1);
-  chain->SetBranchStatus("muonPF2PATPt",1);
-  chain->SetBranchStatus("muonPF2PATPX",1);
-  chain->SetBranchStatus("muonPF2PATPY",1);
-  chain->SetBranchStatus("muonPF2PATPZ",1);
-  chain->SetBranchStatus("muonPF2PATE",1);
-  chain->SetBranchStatus("muonPF2PATEta",1);
-  chain->SetBranchStatus("muonPF2PATPhi",1);
-  chain->SetBranchStatus("muonPF2PATCharge",1);
-  chain->SetBranchStatus("muonPF2PATComRelIsodBeta",1);
-  chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
-  chain->SetBranchStatus("muonPF2PATD0",1);
-  chain->SetBranchStatus("muonPF2PATDBInnerTrackD0",1);
-  chain->SetBranchStatus("muonPF2PATTrackDBD0",1);
-  chain->SetBranchStatus("muonPF2PATBeamSpotCorrectedD0",1);
-  chain->SetBranchStatus("muonPF2PATD0",1);
-  chain->SetBranchStatus("muonPF2PATChi2",1);
-  chain->SetBranchStatus("muonPF2PATNDOF",1);
-  chain->SetBranchStatus("muonPF2PATVertX",1);
-  chain->SetBranchStatus("muonPF2PATVertY",1);
-  chain->SetBranchStatus("muonPF2PATVertZ",1);
-  chain->SetBranchStatus("muonPF2PATNChambers",1);
-  chain->SetBranchStatus("muonPF2PATTrackNHits",1);
-  chain->SetBranchStatus("muonPF2PATMuonNHits",1);
-  chain->SetBranchStatus("muonPF2PATTkLysWithMeasurements",1);
-  chain->SetBranchStatus("muonPF2PATGlbTkNormChi2",1);
-  chain->SetBranchStatus("muonPF2PATDBPV",1);
-  chain->SetBranchStatus("muonPF2PATDZPV",1);
-  chain->SetBranchStatus("muonPF2PATVldPixHits",1);
-  chain->SetBranchStatus("muonPF2PATMatchedStations",1);
-  if (isMC){
-    chain->SetBranchStatus("genMuonPF2PATPT",1);
-    chain->SetBranchStatus("genMuonPF2PATET",1);
-    chain->SetBranchStatus("genMuonPF2PATPX",1);
-    chain->SetBranchStatus("genMuonPF2PATPY",1);
-    chain->SetBranchStatus("genMuonPF2PATPZ",1);
-    chain->SetBranchStatus("genMuonPF2PATPhi",1);
-    chain->SetBranchStatus("genMuonPF2PATTheta",1);
-    chain->SetBranchStatus("genMuonPF2PATEta",1);
-    chain->SetBranchStatus("genMuonPF2PATCharge",1);
-    chain->SetBranchStatus("genMuonPF2PATPdgId",1);
-    chain->SetBranchStatus("genMuonPF2PATMotherId",1);
-    chain->SetBranchStatus("genMuonPF2PATPromptDecayed",1);
-    chain->SetBranchStatus("genMuonPF2PATPromptFinalState",1);
-  }
-    //Jet variables
-  chain->SetBranchStatus("numJetPF2PAT",1);
-  chain->SetBranchStatus("jetPF2PATPx",1);
-  chain->SetBranchStatus("jetPF2PATPy",1);
-  chain->SetBranchStatus("jetPF2PATPz",1);
-  chain->SetBranchStatus("jetPF2PATE",1);
-  chain->SetBranchStatus("jetPF2PATEt",1);
-  chain->SetBranchStatus("jetPF2PATPt",1);
-  chain->SetBranchStatus("jetPF2PATPtRaw",1);
-  chain->SetBranchStatus("jetPF2PATUnCorPt",1);
-  chain->SetBranchStatus("jetPF2PATEta",1);
-  chain->SetBranchStatus("jetPF2PATPhi",1);
-  chain->SetBranchStatus("jetPF2PATNConstituents",1);
-  chain->SetBranchStatus("jetPF2PAT*EnergyFractionCorr",1);
-  chain->SetBranchStatus("jetPF2PAT*EnergyFraction",1);
-  chain->SetBranchStatus("jetPF2PATChargedMultiplicity",1);
-  chain->SetBranchStatus("jetPF2PATdRClosestLepton",1);
-  //BTag
-  chain->SetBranchStatus("jetPF2PATBDiscriminator",1);
-  //MET variables - for plotting (no cuts on these)
-  chain->SetBranchStatus("metPF2PATEt",1);
-  chain->SetBranchStatus("metPF2PATPt",1);
-  //primary vertex info. For muon cut
-  chain->SetBranchStatus("pvX",1);
-  chain->SetBranchStatus("pvY",1);
-  chain->SetBranchStatus("pvZ",1);
-  //Event info
-  chain->SetBranchStatus("eventNum",1);
-  chain->SetBranchStatus("eventRun",1);
-  chain->SetBranchStatus("eventLumiblock",1);
-
-  chain->SetBranchStatus("Flag_HBHENoiseFilter",1);
-  chain->SetBranchStatus("Flag_HBHENoiseIsoFilter",1);
-  chain->SetBranchStatus("Flag_EcalDeadCellTriggerPrimitiveFilter",1);
-  chain->SetBranchStatus("Flag_goodVertices",1);
-  chain->SetBranchStatus("Flag_eeBadScFilter",1);
-
-  if ( !is2016_ ) {
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v2",1);
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v1",1);
-    chain->SetBranchStatus("Flag_CSCTightHalo2015Filter",1);
-  }
-  else {
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v1",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v2",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v3",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v4",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v5",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v6",1);
-    chain->SetBranchStatus("HLT_Ele25_eta2p1_WPTight_Gsf_v7",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v1",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v2",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v3",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v4",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v5",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v6",1);
-    chain->SetBranchStatus("HLT_Ele27_WPTight_Gsf_v7",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v2",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v3",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v4",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v5",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v6",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v7",1);
-    chain->SetBranchStatus("HLT_Ele32_eta2p1_WPTight_Gsf_v8",1);
-    chain->SetBranchStatus("HLT_IsoMu24_v1",1);
-    chain->SetBranchStatus("HLT_IsoMu24_v2",1);
-    chain->SetBranchStatus("HLT_IsoMu24_v3",1);
-    chain->SetBranchStatus("HLT_IsoMu24_v4",1);
-    chain->SetBranchStatus("HLT_IsoTkMu24_v1",1);
-    chain->SetBranchStatus("HLT_IsoTkMu24_v2",1);
-    chain->SetBranchStatus("HLT_IsoTkMu24_v3",1);
-    chain->SetBranchStatus("HLT_IsoTkMu24_v4",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8",1);
-    chain->SetBranchStatus("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v5",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v6",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v5",1);
-    chain->SetBranchStatus("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8",1);
-    chain->SetBranchStatus("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
-    chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1",1);
-    chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2",1);
-    chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3",1);
-    chain->SetBranchStatus("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4",1);
-    chain->SetBranchStatus("Flag_globalTightHalo2016Filter",1);
-    chain->SetBranchStatus("Flag_chargedHadronTrackResolutionFilter",1);
-    chain->SetBranchStatus("Flag_muonBadTrackFilter",1);
-    chain->SetBranchStatus("Flag_ecalLaserCorrFilter",1);
-  }
-}
-
 void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 {
   std::stringstream events;
@@ -601,17 +371,17 @@ void AnalysisAlgo::setupSystematics()
   systNames.emplace_back("__alphaS__plus");
   systNames.emplace_back("__alphaS__minus");
 
-  if ( !is2016_ ) { // If 2015 mode, get 2015 PU
+  if ( !is2016_ ) { // If 2017 mode, get 2017 PU
     //Make pileupReweighting stuff here
-    dataPileupFile = new TFile{"pileup/2015/truePileupTest.root","READ"};
+    dataPileupFile = new TFile{"pileup/2017/truePileupTest.root","READ"};
     dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile{"pileup/2015/pileupMC.root","READ"};
+    mcPileupFile = new TFile{"pileup/2017/pileupMC.root","READ"};
     mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
     //Get systematic files too.
-    systUpFile = new TFile{"pileup/2015/truePileupUp.root","READ"};
+    systUpFile = new TFile{"pileup/2017/truePileupUp.root","READ"};
     pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile{"pileup/2015/truePileupDown.root","READ"};
+    systDownFile = new TFile{"pileup/2017/truePileupDown.root","READ"};
     pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
   }
   else {
@@ -698,7 +468,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
   const std::string postLepSelSkimDir{
     std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
-							      (is2016_ ? "2016" : "2015") + (isFCNC_ ? "_FCNC" : "") + "/"};
+							      (is2016_ ? "2016" : "2017") + (isFCNC_ ? "_FCNC" : "") + "/"};
 
   // Begin to loop over all datasets
   for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
@@ -903,7 +673,7 @@ void AnalysisAlgo::runMainAnalysis(){
       float muonMomentumSF[3] {};
       float jetSmearValue[15] {};
       int isMC{dataset->isMC()}; // isMC flag for debug purposes
-      event->isMC = (dataset->isMC());
+      event->isMC_ = (dataset->isMC());
       //Now add in the branches:
 
       if (makeMVATree){
@@ -1046,11 +816,22 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
-	  if ( dataset->name() == "ttbarInclusivePowerheg" || dataset->name() == "ttbarInclusivePowerheg_colourFlip" || dataset->name() == "ttbarInclusivePowerheg_hdampUP" || dataset->name() == "ttbarInclusivePowerheg_hdampDown" || dataset->name() == "ttbarInclusivePowerheg_fsrup" || dataset->name() == "ttbarInclusivePowerheg_fsrdown" || dataset->name() == "ttbarInclusivePowerheg_isrup" || dataset->name() == "ttbarInclusivePowerheg_isrdown" ) eventWeight *= event->topPtReweight;
-	  //	  std::cout << "event->topPtReweight: " << event->topPtReweight << std::endl;
-	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
+      if (dataset->name() == "ttbarInclusivePowerheg"
+          || dataset->name() == "ttbarInclusivePowerheg_colourFlip"
+          || dataset->name() == "ttbarInclusivePowerheg_hdampUP"
+          || dataset->name() == "ttbarInclusivePowerheg_hdampDown"
+          || dataset->name() == "ttbarInclusivePowerheg_fsrup"
+          || dataset->name() == "ttbarInclusivePowerheg_fsrdown"
+          || dataset->name() == "ttbarInclusivePowerheg_isrup"
+          || dataset->name() == "ttbarInclusivePowerheg_isrdown")
+      {
+          eventWeight *= event->topPtReweight;
+      }
+      //	  std::cout << "event->topPtReweight: " << event->topPtReweight <<
+      //std::endl;
+      //          std::cout << "eventWeight: " << eventWeight << std::endl;
 
-	  //	  std::cout << "channel: " << channel << std::endl;
+      //	  std::cout << "channel: " << channel << std::endl;
 	  std::string histoName { dataset->getFillHisto() };
 
 

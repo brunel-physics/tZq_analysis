@@ -1,6 +1,0 @@
-datasets = "configs/2015/datasets/muEGDataMC.txt";
-cuts = "configs/2015/cuts/ttbarCuts.txt";
-plots = "configs/plots/plotTtbarConf.cfg";
-outputFolder = "plots/2015/ttbar/";
-outputPostfix = "emu";
-channelName = "emu";
