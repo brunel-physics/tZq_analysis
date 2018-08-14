@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <sys/stat.h>
+#include <random>
 
 #include "TH1.h"
 #include "TProfile.h"
@@ -21,6 +22,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TEfficiency.h"
+#include "TRandom.h"
 
 
 //Double_t ptBins[] = { 0, 10, 15, 18, 22, 24, 26, 30, 40, 50, 60, 80, 120, 500 };
@@ -36,6 +38,8 @@ Int_t numEta_bins{4};
 TriggerScaleFactors::TriggerScaleFactors():
 
   is2016_{false},
+  jetCuts_{false},
+  bCuts_{false},
   applyHltSf_{false},
   isPart1_{false},
   isPart2_{false},
@@ -148,6 +152,8 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
      "Set postfix for plots. Overrides the config file.")
     ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.)")
+    ("jetCuts", po::bool_switch(&jetCuts_), "Use jet cuts")
+    ("bCuts", po::bool_switch(&bCuts_), "Use btag cuts")
     ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
      "Number of files to run over. All if set to -1.");
   po::variables_map vm;
@@ -323,16 +329,20 @@ void TriggerScaleFactors::runMainAnalysis(){
 
       if ( !metFilters(event, dataset->isMC()) ) continue;
 
+      // If checking impact of jet and bjet cuts add this bool ...
+      bool passJetSelection = true;
+      if ( jetCuts_ ) passJetSelection = makeJetCuts( event, (dataset->isMC()));
+
       //Does this event pass tight electron cut?
       //Create electron index
       event->electronIndexTight = getTightElectrons( event );
-      bool passDoubleElectronSelection ( passDileptonSelection( event, 2 ) );
+      bool passDoubleElectronSelection ( passDileptonSelection( event, 2 ) * passJetSelection );
       //Does this event pass tight muon cut?
       //Create muon index
       event->muonIndexTight = getTightMuons( event );
-      bool passDoubleMuonSelection ( passDileptonSelection( event, 0 ) );
+      bool passDoubleMuonSelection ( passDileptonSelection( event, 0 ) * passJetSelection );
 
-      bool passMuonElectronSelection ( passDileptonSelection( event , 1 ) );
+      bool passMuonElectronSelection ( passDileptonSelection( event , 1 ) * passJetSelection );
 
       //Triggering stuff
       int triggerDoubleEG (0), triggerDoubleMuon (0), triggerMuonElectron (0); // Passes Double Lepton Trigger
@@ -1058,6 +1068,185 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC) {
     return event->Flag_HBHENoiseFilter > 0 || event->Flag_HBHENoiseIsoFilter > 0
            || event->Flag_EcalDeadCellTriggerPrimitiveFilter > 0
            || event->Flag_goodVertices > 0 || event->Flag_eeBadScFilter > 0;
+}
+
+bool TriggerScaleFactors::makeJetCuts(AnalysisEvent *event, bool isMC) {
+
+  std::vector<int> jets;
+  for (int i{0}; i < event->numJetPF2PAT; i++) {
+    //if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] + event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
+    TLorentzVector jetVec{getJetLVec(event,i,isMC)};
+    if (jetVec.Pt() <= 30.) continue;
+    if (std::abs(jetVec.Eta()) >= 4.70) continue;
+
+    bool jetId{true};
+
+    // Jet ID == loose
+    if ( std::abs( jetVec.Eta() ) <= 2.7 ) { // for cases where jet eta <= 2.7
+      // for all jets with eta <= 2.7
+      if ( event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99 ) jetId = false;
+      if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.99 ) jetId = false;
+      if ( ( event->jetPF2PATChargedMultiplicity[i] + event->jetPF2PATNeutralMultiplicity[i] ) <= 1 ) jetId = false;
+    }
+    //for jets with eta <= 2.40
+    if ( std::abs(jetVec.Eta()) <= 2.40 ) {
+      if ( event->jetPF2PATChargedHadronEnergyFraction[i] <= 0.0 ) jetId = false;
+      if ( event->jetPF2PATChargedMultiplicity[i] <= 0.0 ) jetId = false;
+      if ( event->jetPF2PATChargedEmEnergyFraction[i] >= 0.99 ) jetId = false;
+    }
+    else if ( std::abs( jetVec.Eta() ) <= 3.0 && std::abs( jetVec.Eta() ) > 2.70 ) {
+      if ( event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98 ) jetId = false;
+      if ( event->jetPF2PATNeutralEmEnergyFraction[i] <= 0.01 ) jetId = false;
+      if ( event->jetPF2PATNeutralMultiplicity[i] <= 2 ) jetId = false;
+    }
+    else if ( std::abs(jetVec.Eta()) > 3.0 ) { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+      if ( event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.90 ) jetId = false;
+      if ( event->jetPF2PATNeutralMultiplicity[i] <= 10 ) jetId = false;
+    }
+    
+    if (!jetId) continue;
+    double deltaLep{10000};
+
+    if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi()))
+      deltaLep = deltaR(event->zPairLeptons.first.Eta(),event->zPairLeptons.first.Phi(),jetVec.Eta(),jetVec.Phi());
+    if (deltaLep > deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),jetVec.Eta(),jetVec.Phi()))
+      deltaLep = deltaR(event->zPairLeptons.second.Eta(),event->zPairLeptons.second.Phi(),jetVec.Eta(),jetVec.Phi());
+    if (deltaLep < 0.4) continue; // Only start rejecting things when actually making the jet cuts!
+
+    jets.emplace_back(i);
+  }
+
+  if (jets.size() > 6) return false;
+  else if (jets.size() < 4) return false;
+
+  //if b cuts
+  if ( bCuts_ ) {
+  std::vector<int> bJets;
+  for (unsigned int i = 0; i != jets.size(); i++){
+    TLorentzVector jetVec{getJetLVec(event,i,isMC)};
+    if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]] <= 0.8484 ) continue;
+    if (jetVec.Eta() >= 2.40) continue;
+    bJets.emplace_back(i);
+  }
+  if (bJets.size() > 2) return false;
+  else if (bJets.size() < 1) return false;
+  }
+
+  return true;
+}
+
+TLorentzVector TriggerScaleFactors::getJetLVec(AnalysisEvent* event, int index, bool isMC_ ){
+  TLorentzVector returnJet;
+  float newSmearValue{1.0};
+  if ( !isMC_ ) {
+        event->jetSmearValue.emplace_back(newSmearValue);
+	returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+	return returnJet;
+  }
+  float jerSF{0.};
+  float jerSigma{0.};
+
+  double eta = std::abs(event->jetPF2PATEta[index]);
+
+  if (eta <= 0.5) {
+    jerSF = 1.109;
+    jerSigma = 0.008;
+  }
+  else if (eta <= 0.8) {
+    jerSF = 1.138;
+    jerSigma = 0.013;
+  }
+  else if (eta <= 1.1) {
+    jerSF = 1.114;
+    jerSigma = 0.013;
+  }
+  else if (eta <= 1.3) {
+    jerSF = 1.123;
+    jerSigma = 0.024;
+  }
+  else if (eta <= 1.7) {
+    jerSF = 1.084;
+    jerSigma = 0.011;
+  }
+  else if (eta <= 1.9) {
+    jerSF = 1.082;
+    jerSigma = 0.035;
+  }
+  else if (eta <= 2.1) {
+    jerSF = 1.140;
+    jerSigma = 0.047;
+  }
+  else if (eta <= 2.3) {
+    jerSF = 1.067;
+    jerSigma = 0.053;
+  }
+  else if (eta <= 2.5) {
+    jerSF = 1.177;
+    jerSigma = 0.041;
+  }
+  else if (eta <= 2.8) {
+    jerSF = 1.364;
+    jerSigma = 0.039;
+  }
+  else if (eta <= 3.0){
+    jerSF = 1.857;
+    jerSigma = 0.071;
+  }
+  else if (eta <= 3.2){
+    jerSF = 1.328;
+    jerSigma = 0.022;
+  }
+  else {
+    jerSF = 1.160;
+    jerSigma = 0.029;
+  }
+
+  double dR = deltaR( event->genJetPF2PATEta[index],event->genJetPF2PATPhi[index],event->jetPF2PATEta[index],event->jetPF2PATPhi[index] );
+  double min_dR = std::numeric_limits<double>::infinity();
+  double dPt = event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index];
+
+  if ( dR > min_dR ) { // If dR is greater than infinity ... just return the unsmeared jet
+    returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+    return returnJet;    
+  }
+
+  if ( isMC_ ) {
+    if ( event->genJetPF2PATPT[index] > 1e-2 && dR < (0.4/2.0) && std::abs( dPt ) < 3.0*jerSigma*event->jetPF2PATPtRaw[index] ) { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma, just scale, just scale
+      newSmearValue = 1. + ( jerSF - 1. ) * dPt / (event->jetPF2PATPtRaw[index]);
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
+    }
+
+    else { // If not matched to a gen jet, randomly smear
+      double sigma = jerSigma * std::sqrt( jerSF * jerSF - 1.0 ); 
+      std::normal_distribution<> d(0, sigma);
+      std::mt19937 gen ( rand() );
+      newSmearValue = 1.0 + d(gen); 
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
+    }
+
+    if ( returnJet.E() < 1e-2 ) { // Negative or too small smearFactor. We would change direction of the jet
+      double newSmearFactor = 1e-2 / event->jetPF2PATE[index];
+      newSmearValue = newSmearFactor;
+      returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+      returnJet *= newSmearValue;
+    } 
+  }
+
+  else returnJet.SetPxPyPzE(event->jetPF2PATPx[index],event->jetPF2PATPy[index],event->jetPF2PATPz[index],event->jetPF2PATE[index]);
+
+  return returnJet;
+}
+
+double TriggerScaleFactors::deltaR(float eta1, float phi1, float eta2, float phi2){
+  double dEta{eta1-eta2};
+  double dPhi{phi1-phi2};
+  while (std::abs(dPhi) > M_PI){
+    dPhi += (dPhi > 0.? -2*M_PI:2*M_PI);
+  }
+  //  if(singleEventInfoDump_)  std::cout << eta1 << " " << eta2 << " phi " << phi1 << " " << phi2 << " ds: " << eta1-eta2 << " " << phi1-phi2 << " dR: " << std::sqrt((dEta*dEta)+(dPhi*dPhi)) << std::endl;
+  return std::sqrt((dEta*dEta)+(dPhi*dPhi));
 }
 
 void TriggerScaleFactors::savePlots()
