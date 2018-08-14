@@ -162,7 +162,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "The output directory for the plots. Overrides the config file.")
     ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
      "Set postfix for plots. Overrides the config file.")
-    ("lumi,l", po::value<double>(&usePreLumi)->default_value(35672.846),
+    ("lumi,l", po::value<double>(&usePreLumi)->default_value(35860.066),
      "Lumi to scale MC plots to.")
     ("dump,d", po::bool_switch(&infoDump),
      "Dump event info, currently only the yield at each stage. Sets all event "
