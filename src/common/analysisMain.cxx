@@ -1,17 +1,16 @@
-#include <iostream>
-
 #include "analysisAlgo.hpp"
 
 #include <iomanip>
+#include <iostream>
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
+    AnalysisAlgo analysisMain;
 
-  AnalysisAlgo analysisMain;
-
-  analysisMain.parseCommandLineArguements(argc, argv);
-  analysisMain.setupSystematics();
-  analysisMain.setupCuts();
-  analysisMain.setupPlots();
-  analysisMain.runMainAnalysis();
-  analysisMain.savePlots();
+    analysisMain.parseCommandLineArguements(argc, argv);
+    analysisMain.setupSystematics();
+    analysisMain.setupCuts();
+    analysisMain.setupPlots();
+    analysisMain.runMainAnalysis();
+    analysisMain.savePlots();
 }

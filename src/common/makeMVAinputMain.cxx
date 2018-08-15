@@ -1,14 +1,11 @@
-#include <iostream>
-
 #include "makeMVAinputAlgo.hpp"
 
-int main(int argc, char* argv[]){
+#include <iostream>
 
-  MakeMvaInputs makeMvaInputs;
+int main(int argc, char* argv[])
+{
+    MakeMvaInputs makeMvaInputs;
 
-  makeMvaInputs.parseCommandLineArguements(argc, argv);
-  makeMvaInputs.runMainAnalysis();
-
+    makeMvaInputs.parseCommandLineArguements(argc, argv);
+    makeMvaInputs.runMainAnalysis();
 }
-
-

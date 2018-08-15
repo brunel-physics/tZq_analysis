@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     std::vector<std::string> singleLeptonDirs;
     std::string datasetName;
     std::string channel;
-bool is2016;
+    bool is2016;
 
     int singleElectron{0};
     int dupElectron{0};
@@ -168,7 +168,6 @@ bool is2016;
                 if (channel == "mumu")
                 {
                     // clang-format off
-                    // clang-format on
                     const bool mumuTrig{
                         is2016 ? (event.eventRun < 280919
                                    && (event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0
@@ -202,6 +201,7 @@ bool is2016;
                                       || event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v2 > 0
                                       || event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v3 > 0
                                       || event.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v4 > 0};
+                    // clang-format on
 
                     if (mumuTrig)
                     {

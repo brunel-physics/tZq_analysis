@@ -1,14 +1,13 @@
-#include <iostream>
-
 #include "triggerScaleFactorsAlgo.hpp"
 
 #include <iomanip>
+#include <iostream>
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[])
+{
+    TriggerScaleFactors triggerScaleFactors;
 
-  TriggerScaleFactors triggerScaleFactors;
-
-  triggerScaleFactors.parseCommandLineArguements(argc, argv);
-  triggerScaleFactors.runMainAnalysis();
-  triggerScaleFactors.savePlots();
+    triggerScaleFactors.parseCommandLineArguements(argc, argv);
+    triggerScaleFactors.runMainAnalysis();
+    triggerScaleFactors.savePlots();
 }

@@ -233,8 +233,7 @@ class AnalysisEvent
     Float_t jetPF2PATSVDX[NJETSMAX];
     Float_t jetPF2PATSVDY[NJETSMAX];
     Float_t jetPF2PATSVDZ[NJETSMAX];
-    Float_t jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-        [NJETSMAX];
+    Float_t jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedMVAV2BJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsLJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsBJetTags[NJETSMAX];
@@ -1572,11 +1571,10 @@ class AnalysisEvent
 };
 
 inline AnalysisEvent::AnalysisEvent(bool isMC,
-                             std::string triggerFlag,
-                             TTree* tree,
-                             bool is2016)
-    : fChain{nullptr}
-    , isMC_{isMC}
+                                    std::string triggerFlag,
+                                    TTree* tree,
+                                    bool is2016)
+    : fChain{nullptr}, isMC_{isMC}
 {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.

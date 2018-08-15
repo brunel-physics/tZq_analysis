@@ -1,1187 +1,1831 @@
-#include "TTree.h"
-#include "TMVA/Timer.h"
+#include "analysisAlgo.hpp"
+
+#include "AnalysisEvent.hpp"
 #include "TCanvas.h"
-#include "TPad.h"
 #include "TH1F.h"
 #include "TH1I.h"
 #include "TH2D.h"
-
-#include "analysisAlgo.hpp"
+#include "TMVA/Timer.h"
+#include "TPad.h"
+#include "TTree.h"
 #include "config_parser.hpp"
-#include "AnalysisEvent.hpp"
 
-#include <libconfig.h++>
 #include <LHAPDF/LHAPDF.h>
-
-#include <boost/numeric/conversion/cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
-#include <string>
+#include <libconfig.h++>
 #include <sstream>
+#include <string>
 
-AnalysisAlgo::AnalysisAlgo():
-  plots{false},
-  makeHistos{false},
-  useHistos{false},
-  channel{},
-  cutConfName{new std::string{}},
-  plotConfName{new std::string{}},
-  readEventList{false},
-  customJetRegion{false},
-  trileptonChannel_{true},
-  is2016_{false},
-  isFCNC_{false},
-  isCtag_{false},
-  doNPLs_{false},
-  doZplusCR_{false}
-{}
-
-AnalysisAlgo::~AnalysisAlgo(){}
-
-double AnalysisAlgo::zptSF(std::string chan, float zpt){
-
-  double param1{0};
-  double param2{0};
-  double param3{0};
-
-  if(chan == "mumumu"){
-    //mumumu
-    //1  p0           1.64891e+00   9.46744e-02   8.94955e-05 5.38436e-04
-    //2  p1          -3.18363e-02   1.83020e-03   1.43202e-06 2.28732e-02
-    //3  p2           1.96813e-01   1.80560e-02   2.59898e-05 7.20918e-03
-
-    //1  p0           9.12190e-01   6.16931e-02   8.40864e-05 3.40620e-05
-    //2  p1          -2.12648e-02   1.47982e-03   1.38426e-06 2.38949e-01
-    //3  p2           2.32868e-01   2.61906e-02   3.56068e-05 8.38502e-03
-
-
-    param1 = 9.12190e-01;
-    param2 =-2.12648e-02;
-    param3 = 2.32868e-01;
-
-  }
-
-  if(chan == "emumu"){
-    //mumue
-    //1  p0           1.08009e+00   2.20412e-01   1.81954e-04 -2.77029e-04
-    //2  p1          -1.83319e-02   2.98128e-03   1.46500e-06 -2.16667e-02
-    //3  p2          -3.79236e-03   2.77700e-02   1.94305e-05 -8.63841e-05
-
-    //1  p0           5.88293e-01   5.43378e-02   6.56657e-05 -2.55726e-03
-    //2  p1          -9.58817e-03   1.49703e-03   6.91871e-07 1.64841e-01
-    //3  p2          -3.15588e-02   7.50287e-02   3.63099e-05 1.24242e-03
-
-
-    param1 =  5.88293e-01;
-    param2 = -9.58817e-03;
-    param3 = -3.15588e-02;
-  }
-
-  if(channel == "eemu"){
-    //eemu
-    //1  p0           1.81997e+00   1.09691e-01   1.27075e-04 2.67625e-03
-    //2  p1          -3.53330e-02   2.11348e-03   2.01050e-06 2.95414e-01
-    //3  p2           2.00004e-01   1.93575e-02   3.33897e-05 1.34863e-02
-
-    //1  p0           1.03732e+00   6.79924e-02   1.10651e-04 -4.52533e-02
-    //2  p1          -2.11550e-02   1.34032e-03   1.62803e-06 -2.88549e+00
-    //3  p2           1.52830e-01   2.17467e-02   4.20291e-05 -5.57304e-02
-
-
-    param1 = 1.03732e+00;
-    param2 =-2.11550e-02;
-    param3 = 1.52830e-01;
-  }
-
-
-  if(chan == "eee"){
-    //eee
-    //1  p0           1.66655e+00   2.04856e-01   1.22417e-04 -8.87600e-06
-    // 2  p1          -2.90064e-02   3.37196e-03   1.67677e-06 1.94266e-05
-    //3  p2           1.12276e-01   2.87604e-02   2.89272e-05 -1.94049e-07
-
-    //1  p0           8.23251e-01   8.60477e-02   6.95364e-05 3.23597e-03
-    //2  p1          -1.74036e-02   2.04299e-03   1.02005e-06 2.12854e-01
-    //3  p2           1.64031e-01   4.57851e-02   3.12269e-05 7.55832e-03
-    param1 = 8.23251e-01;
-    param2 = -1.74036e-02;
-    param3 = 1.64031e-01;
-  }
-
-  // placeholder dilepton values
-  if (chan == "mumu"){
-    param1 = 9.12190e-01;
-    param2 =-2.12648e-02;
-    param3 = 2.32868e-01;
-  }
-  if (chan == "ee"){
-    param1 = 8.23251e-01;
-    param2 = -1.74036e-02;
-    param3 = 1.64031e-01;
-  }
-
-  return  (std::exp(param1+param2*zpt) +param3 );
+AnalysisAlgo::AnalysisAlgo()
+    : plots{false}
+    , makeHistos{false}
+    , useHistos{false}
+    , channel{}
+    , cutConfName{new std::string{}}
+    , plotConfName{new std::string{}}
+    , readEventList{false}
+    , customJetRegion{false}
+    , trileptonChannel_{true}
+    , is2016_{false}
+    , isFCNC_{false}
+    , isCtag_{false}
+    , doNPLs_{false}
+    , doZplusCR_{false}
+{
 }
 
+AnalysisAlgo::~AnalysisAlgo()
+{
+}
+
+double AnalysisAlgo::zptSF(std::string chan, float zpt)
+{
+    double param1{0};
+    double param2{0};
+    double param3{0};
+
+    if (chan == "mumumu")
+    {
+        // mumumu
+        // 1  p0           1.64891e+00   9.46744e-02   8.94955e-05 5.38436e-04
+        // 2  p1          -3.18363e-02   1.83020e-03   1.43202e-06 2.28732e-02
+        // 3  p2           1.96813e-01   1.80560e-02   2.59898e-05 7.20918e-03
+
+        // 1  p0           9.12190e-01   6.16931e-02   8.40864e-05 3.40620e-05
+        // 2  p1          -2.12648e-02   1.47982e-03   1.38426e-06 2.38949e-01
+        // 3  p2           2.32868e-01   2.61906e-02   3.56068e-05 8.38502e-03
+
+        param1 = 9.12190e-01;
+        param2 = -2.12648e-02;
+        param3 = 2.32868e-01;
+    }
+
+    if (chan == "emumu")
+    {
+        // mumue
+        // 1  p0           1.08009e+00   2.20412e-01   1.81954e-04 -2.77029e-04
+        // 2  p1          -1.83319e-02   2.98128e-03   1.46500e-06 -2.16667e-02
+        // 3  p2          -3.79236e-03   2.77700e-02   1.94305e-05 -8.63841e-05
+
+        // 1  p0           5.88293e-01   5.43378e-02   6.56657e-05 -2.55726e-03
+        // 2  p1          -9.58817e-03   1.49703e-03   6.91871e-07 1.64841e-01
+        // 3  p2          -3.15588e-02   7.50287e-02   3.63099e-05 1.24242e-03
+
+        param1 = 5.88293e-01;
+        param2 = -9.58817e-03;
+        param3 = -3.15588e-02;
+    }
+
+    if (channel == "eemu")
+    {
+        // eemu
+        // 1  p0           1.81997e+00   1.09691e-01   1.27075e-04 2.67625e-03
+        // 2  p1          -3.53330e-02   2.11348e-03   2.01050e-06 2.95414e-01
+        // 3  p2           2.00004e-01   1.93575e-02   3.33897e-05 1.34863e-02
+
+        // 1  p0           1.03732e+00   6.79924e-02   1.10651e-04 -4.52533e-02
+        // 2  p1          -2.11550e-02   1.34032e-03   1.62803e-06 -2.88549e+00
+        // 3  p2           1.52830e-01   2.17467e-02   4.20291e-05 -5.57304e-02
+
+        param1 = 1.03732e+00;
+        param2 = -2.11550e-02;
+        param3 = 1.52830e-01;
+    }
+
+    if (chan == "eee")
+    {
+        // eee
+        // 1  p0           1.66655e+00   2.04856e-01   1.22417e-04 -8.87600e-06
+        // 2  p1          -2.90064e-02   3.37196e-03   1.67677e-06 1.94266e-05
+        // 3  p2           1.12276e-01   2.87604e-02   2.89272e-05 -1.94049e-07
+
+        // 1  p0           8.23251e-01   8.60477e-02   6.95364e-05 3.23597e-03
+        // 2  p1          -1.74036e-02   2.04299e-03   1.02005e-06 2.12854e-01
+        // 3  p2           1.64031e-01   4.57851e-02   3.12269e-05 7.55832e-03
+        param1 = 8.23251e-01;
+        param2 = -1.74036e-02;
+        param3 = 1.64031e-01;
+    }
+
+    // placeholder dilepton values
+    if (chan == "mumu")
+    {
+        param1 = 9.12190e-01;
+        param2 = -2.12648e-02;
+        param3 = 2.32868e-01;
+    }
+    if (chan == "ee")
+    {
+        param1 = 8.23251e-01;
+        param2 = -1.74036e-02;
+        param3 = 1.64031e-01;
+    }
+
+    return (std::exp(param1 + param2 * zpt) + param3);
+}
 
 void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 {
-  std::stringstream events;
-  std::stringstream jetRegion;
+    std::stringstream events;
+    std::stringstream jetRegion;
 
-  gErrorIgnoreLevel = kInfo;
-  //Set up environment a little.
-  std::cerr << std::setprecision(6) << std::fixed;
-  std::cout << std::setprecision(6) << std::fixed;
+    gErrorIgnoreLevel = kInfo;
+    // Set up environment a little.
+    std::cerr << std::setprecision(6) << std::fixed;
+    std::cout << std::setprecision(6) << std::fixed;
 
-  namespace po = boost::program_options;
-  po::options_description desc("Options");
-  desc.add_options()
-    ("help,h", "Print this message.")
-    ("config,c", po::value<std::string>(&config)->required(),
-     "The configuration file to be used.")
-    ("dilepton", po::bool_switch(&trileptonChannel_),
-     "Look for dilepton rather than trilepton final states.")
-    ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.).")
-    ("FCNC", po::bool_switch(&isFCNC_),
-     "Look for FCNC dilepton rather than trilepton final states.")
-    ("cTag", po::bool_switch(&isCtag_),
-     "Look for FCNC dilepton rather than trilepton final states using "
-     "cTagging.")
-    (",n", po::value<long>(&nEvents)->default_value(0),
-     "The number of events to be run over. All if set to 0.")
-    ("allPlots,p", po::bool_switch(&plots), "Make all plots")
-    ("makeHistos", po::bool_switch(&makeHistos), "Make histos to be used in future plots")
-    ("useHistos", po::bool_switch(&useHistos), "Use saved histos to make plots")
-    ("histoDir", po::value<std::string>(&histoDir)->default_value("histos/mz20mw50/"),
-     "The output directory for the histos used to make the plots.")
-    ("outFolder,o", po::value<std::string>(&outFolder)->default_value("plots/"),
-     "The output directory for the plots. Overrides the config file.")
-    ("postfix,s", po::value<std::string>(&postfix)->default_value("default"),
-     "Set postfix for plots. Overrides the config file.")
-    ("lumi,l", po::value<double>(&usePreLumi)->default_value(35860.066),
-     "Lumi to scale MC plots to.")
-    ("dump,d", po::bool_switch(&infoDump),
-     "Dump event info, currently only the yield at each stage. Sets all event "
-     "weights to 1.")
-    ("cutConf,x", po::value<std::string>(cutConfName),
-     "Override the cut configuration given in the config file.")
-    ("plotConf", po::value<std::string>(plotConfName),
-     "Override the plot configuration given in the config file. Sets --allPlots.")
-    ("invert,i", po::bool_switch(&invertLepCut),
-     "Invert the isolation cut of the third lepton for trilepton searches. Inverts the different charge cut for leptons for dilepton searches.")
-    ("synch,a", po::bool_switch(&synchCutFlow),
-     "Make lepton selection cutflows for synchronisation exercises.")
-    ("MC,m", po::bool_switch(&skipData),
-     "Monte Carlo only mode. Ignores all data in the config file.")
-    ("data,b", po::bool_switch(&skipMC),
-     "Data only mode. Ignores all data in the config file.")
-    ("bTag,t", po::bool_switch(&usebTagWeight),
-     "Use b-tagging efficiencies to reweight the Monte Carlo. Currently "
-     "requires -u.")
-    (",y", po::bool_switch(&dumpEventNumbers),
-     "Produce event dumps for each stage of the synch. Requires --synch.")
-    ("NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")
-    ("zPlus", po::bool_switch(&doZplusCR_),"Use Z+jets CR for dilepton channel. Region mwCut and metCut set by --mwCut and --metCut.")
-    ("nFiles,f", po::value<int>(&numFiles)->default_value(-1),
-     "Number of files to run over. All if set to -1.")
-    ("events,e", po::value<std::vector<int>>(&eventNumbers)->multitoken(),
-     "Specify a space-separated list of events to run over.")
-    (",g", po::bool_switch(&makePostLepTree),
-     "Make post lepton selection trees and bTag efficiencies.")
-    (",u", po::bool_switch(&usePostLepTree),
-     "Use post lepton selection trees.")
-    ("makeMVATree,z", po::bool_switch(&makeMVATree),
-     "Produce trees after event selection for multivariate analysis.")
-    ("syst,v", po::value<int>(&systToRun)->default_value(0),
-     "Mask for systematics to be run. 65535 enables all systematics.")
-    ("channels,k", po::value<int>(&channelsToRun)->default_value(0),
-     "Mask describing the channels to be run over in trilepton mode. The mask "
-     "is the sum of each channel's mask, which are:\n"
-     "    eee        - 1\n"
-     "    eemu       - 2\n"
-     "    emumu      - 4\n"
-     "    mumumu     - 8\n"
-     "    eee inv    - 16\n"
-     "    eemu inv   - 32\n"
-     "    emumu inv  - 64\n"
-     "    mumumu inv - 128\n"
-     "0 runs the channels specified in the config file")
-    ("skipTrig", po::bool_switch(&skipTrig), "Skip running triggers.")
-    ("mvaDir", po::value<std::string>(&mvaDir),
-     "Output directory for the MVA files.")
-    ("jetRegion", po::value<std::vector<unsigned>>(&jetRegVars),
-     "Set a sustom jet region in the format NJETS NBJETS MAXJETS MAXBJETS.")
-    ("metCut", po::value<float>(&metCut)->default_value(0),
-     "Apply an MET cut. Trilepton SR only and Dilepton Z+jets CR.")
-    ("mtwCut", po::value<float>(&mtwCut)->default_value(0),
-     "Apply an mTW cut. Trilepton only.")
-    ("mzCut", po::value<float>(&mzCut)->default_value(20.),
-     "Apply an mZ cut. Dilepton only.")
-    ("mwCut", po::value<float>(&mwCut)->default_value(20.),
-     "Apply an mW cut. Dilepton only.");
-  po::variables_map vm;
+    namespace po = boost::program_options;
+    po::options_description desc("Options");
+    desc.add_options()("help,h", "Print this message.")(
+        "config,c",
+        po::value<std::string>(&config)->required(),
+        "The configuration file to be used.")(
+        "dilepton",
+        po::bool_switch(&trileptonChannel_),
+        "Look for dilepton rather than trilepton final states.")(
+        "2016",
+        po::bool_switch(&is2016_),
+        "Use 2016 conditions (SFs, et al.).")(
+        "FCNC",
+        po::bool_switch(&isFCNC_),
+        "Look for FCNC dilepton rather than trilepton final states.")(
+        "cTag",
+        po::bool_switch(&isCtag_),
+        "Look for FCNC dilepton rather than trilepton final states using "
+        "cTagging.")(",n",
+                     po::value<long>(&nEvents)->default_value(0),
+                     "The number of events to be run over. All if set to 0.")(
+        "allPlots,p", po::bool_switch(&plots), "Make all plots")(
+        "makeHistos",
+        po::bool_switch(&makeHistos),
+        "Make histos to be used in future plots")(
+        "useHistos",
+        po::bool_switch(&useHistos),
+        "Use saved histos to make plots")(
+        "histoDir",
+        po::value<std::string>(&histoDir)->default_value("histos/mz20mw50/"),
+        "The output directory for the histos used to make the plots.")(
+        "outFolder,o",
+        po::value<std::string>(&outFolder)->default_value("plots/"),
+        "The output directory for the plots. Overrides the config file.")(
+        "postfix,s",
+        po::value<std::string>(&postfix)->default_value("default"),
+        "Set postfix for plots. Overrides the config file.")(
+        "lumi,l",
+        po::value<double>(&usePreLumi)->default_value(35860.066),
+        "Lumi to scale MC plots to.")("dump,d",
+                                      po::bool_switch(&infoDump),
+                                      "Dump event info, currently only the "
+                                      "yield at each stage. Sets all event "
+                                      "weights to 1.")(
+        "cutConf,x",
+        po::value<std::string>(cutConfName),
+        "Override the cut configuration given in the config file.")(
+        "plotConf",
+        po::value<std::string>(plotConfName),
+        "Override the plot configuration given in the config file. Sets "
+        "--allPlots.")(
+        "invert,i",
+        po::bool_switch(&invertLepCut),
+        "Invert the isolation cut of the third lepton for trilepton searches. "
+        "Inverts the different charge cut for leptons for dilepton searches.")(
+        "synch,a",
+        po::bool_switch(&synchCutFlow),
+        "Make lepton selection cutflows for synchronisation exercises.")(
+        "MC,m",
+        po::bool_switch(&skipData),
+        "Monte Carlo only mode. Ignores all data in the config file.")(
+        "data,b",
+        po::bool_switch(&skipMC),
+        "Data only mode. Ignores all data in the config file.")(
+        "bTag,t",
+        po::bool_switch(&usebTagWeight),
+        "Use b-tagging efficiencies to reweight the Monte Carlo. Currently "
+        "requires -u.")(
+        ",y",
+        po::bool_switch(&dumpEventNumbers),
+        "Produce event dumps for each stage of the synch. Requires --synch.")(
+        "NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")(
+        "zPlus",
+        po::bool_switch(&doZplusCR_),
+        "Use Z+jets CR for dilepton channel. Region mwCut and metCut set by "
+        "--mwCut and --metCut.")(
+        "nFiles,f",
+        po::value<int>(&numFiles)->default_value(-1),
+        "Number of files to run over. All if set to -1.")(
+        "events,e",
+        po::value<std::vector<int>>(&eventNumbers)->multitoken(),
+        "Specify a space-separated list of events to run over.")(
+        ",g",
+        po::bool_switch(&makePostLepTree),
+        "Make post lepton selection trees and bTag efficiencies.")(
+        ",u",
+        po::bool_switch(&usePostLepTree),
+        "Use post lepton selection trees.")(
+        "makeMVATree,z",
+        po::bool_switch(&makeMVATree),
+        "Produce trees after event selection for multivariate analysis.")(
+        "syst,v",
+        po::value<int>(&systToRun)->default_value(0),
+        "Mask for systematics to be run. 65535 enables all systematics.")(
+        "channels,k",
+        po::value<int>(&channelsToRun)->default_value(0),
+        "Mask describing the channels to be run over in trilepton mode. The "
+        "mask "
+        "is the sum of each channel's mask, which are:\n"
+        "    eee        - 1\n"
+        "    eemu       - 2\n"
+        "    emumu      - 4\n"
+        "    mumumu     - 8\n"
+        "    eee inv    - 16\n"
+        "    eemu inv   - 32\n"
+        "    emumu inv  - 64\n"
+        "    mumumu inv - 128\n"
+        "0 runs the channels specified in the config file")(
+        "skipTrig", po::bool_switch(&skipTrig), "Skip running triggers.")(
+        "mvaDir",
+        po::value<std::string>(&mvaDir),
+        "Output directory for the MVA files.")(
+        "jetRegion",
+        po::value<std::vector<unsigned>>(&jetRegVars),
+        "Set a sustom jet region in the format NJETS NBJETS MAXJETS MAXBJETS.")(
+        "metCut",
+        po::value<float>(&metCut)->default_value(0),
+        "Apply an MET cut. Trilepton SR only and Dilepton Z+jets CR.")(
+        "mtwCut",
+        po::value<float>(&mtwCut)->default_value(0),
+        "Apply an mTW cut. Trilepton only.")(
+        "mzCut",
+        po::value<float>(&mzCut)->default_value(20.),
+        "Apply an mZ cut. Dilepton only.")(
+        "mwCut",
+        po::value<float>(&mwCut)->default_value(20.),
+        "Apply an mW cut. Dilepton only.");
+    po::variables_map vm;
 
-  try
-  {
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-
-    if (vm.count("help"))
+    try
     {
-      std::cout << desc;
-      std::exit(0);
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+
+        if (vm.count("help"))
+        {
+            std::cout << desc;
+            std::exit(0);
+        }
+
+        po::notify(vm);
+
+        trileptonChannel_ = !trileptonChannel_;
+        if (vm.count("channels") && !vm.count("config"))
+        {
+            throw std::logic_error(
+                "--channels requires --config to be specified");
+        }
+        if (vm.count("jetRegion"))
+        {
+            if (jetRegVars.size() != 4)
+            {
+                throw std::logic_error(
+                    "--jetRegion takes exactly four arguments.");
+            }
+            customJetRegion = true;
+            std::cout << "CAUTION! Using a custom jet region of "
+                      << jetRegVars[0] << "-" << jetRegVars[2] << " jets, and "
+                      << jetRegVars[1] << "-" << jetRegVars[3] << " b-jets"
+                      << std::endl;
+        }
+        if (usebTagWeight && !usePostLepTree)
+        {
+            throw std::logic_error(
+                "Currently bTag weights can only be retrieved "
+                "from post lepton selection trees. Please set -u.");
+        }
+        if (trileptonChannel_ && isFCNC_)
+        {
+            throw std::logic_error(
+                "Code has not been setup to do a trilepton FCNC "
+                "search, only a dilepton one. Please use --dilepton argument.");
+        }
+        if (!isFCNC_ && isCtag_)
+        {
+            throw std::logic_error(
+                "C-tagging is only used during an FCNC search. "
+                "Set --FCNC & --dilepton arguements.");
+        }
+        if (doZplusCR_ && trileptonChannel_)
+        {
+            throw std::logic_error(
+                "Z+jets CR is only setup for the dilepton channel. "
+                "Set --dilepton arguement and --mwCut and --metCut to define "
+                "CR region.");
+        }
+    }
+    catch (const std::logic_error& e)
+    {
+        std::cerr << "ERROR: " << e.what() << std::endl;
+        std::cerr << "Use -h or --help for help." << std::endl;
+        std::exit(1);
     }
 
-    po::notify(vm);
+    if (vm.count("events"))
+    {
+        readEventList = true;
+    }
+    if (dumpEventNumbers && !vm.count("synch"))
+    {
+        std::cerr
+            << "WARNING: Using -y without --synch will result in empty dump "
+               "files"
+            << std::endl;
+    }
+    if (vm.count("plotConf"))
+    {
+        plots = true;
+    }
 
-    trileptonChannel_ = !trileptonChannel_;
-    if (vm.count("channels") && !vm.count("config"))
-    {
-      throw std::logic_error("--channels requires --config to be specified");
-    }
-    if (vm.count("jetRegion"))
-    {
-      if (jetRegVars.size() != 4)
-      {
-        throw std::logic_error("--jetRegion takes exactly four arguments.");
-      }
-      customJetRegion = true;
-      std::cout << "CAUTION! Using a custom jet region of " << jetRegVars[0] <<
-        "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" <<
-        jetRegVars[3] << " b-jets" << std::endl;
-    }
-    if (usebTagWeight && !usePostLepTree)
-    {
-      throw std::logic_error("Currently bTag weights can only be retrieved "
-          "from post lepton selection trees. Please set -u.");
-    }
-    if (trileptonChannel_ && isFCNC_)
-    {
-      throw std::logic_error( "Code has not been setup to do a trilepton FCNC "
-          "search, only a dilepton one. Please use --dilepton argument.");
-    }
-    if (!isFCNC_ && isCtag_)
-    {
-      throw std::logic_error("C-tagging is only used during an FCNC search. "
-          "Set --FCNC & --dilepton arguements.");
-    }
-    if (doZplusCR_ && trileptonChannel_)
-    {
-      throw std::logic_error("Z+jets CR is only setup for the dilepton channel. "
-      "Set --dilepton arguement and --mwCut and --metCut to define CR region.");
-    }
-  }
-  catch (const std::logic_error& e)
-  {
-    std::cerr << "ERROR: " << e.what() << std::endl;
-    std::cerr << "Use -h or --help for help." << std::endl;
-    std::exit(1);
-  }
+    // Some vectors that will be filled in the parsing.
+    totalLumi = 0;
+    lumiPtr = &totalLumi;
 
-  if (vm.count("events"))
-  {
-    readEventList = true;
-  }
-  if (dumpEventNumbers && !vm.count("synch"))
-  {
-    std::cerr << "WARNING: Using -y without --synch will result in empty dump "
-      "files" << std::endl;
-  }
-  if (vm.count("plotConf"))
-  {
-    plots = true;
-  }
-
-  //Some vectors that will be filled in the parsing.
-  totalLumi = 0;
-  lumiPtr = &totalLumi;
-
-  if (!Parser::parse_config(config,&datasets,lumiPtr,&plotTitles,&plotNames,&xMin,&xMax,&nBins,&fillExp,&xAxisLabels,&cutStage,cutConfName,plotConfName,&outFolder,&postfix,&channel)){
-    std::cerr << "There was an error parsing the config file.\n";
-    exit(0);
-  }
-
-  if (channelsToRun && trileptonChannel_){
-    std::cout << "Running over the channels: " << std::endl;
-    for (unsigned channelInd = 1; channelInd != 256; channelInd = channelInd << 1){
-      if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelInd & 17){
-        std::cout << "eee ";
-      }
-      if (channelInd & 34){ //eemu channels
-        std::cout << "eemu ";
-      }
-      if (channelInd & 68){ // emumu channels
-        std::cout << "emumu ";
-      }
-      if (channelInd & 136){ // mumumu channels
-        std::cout << "mumumu ";
-      }
-      if (channelInd & 15){ //nominal samples
-        std::cout << "nominal" << std::endl;
-      }
-      if (channelInd & 240){ //inv iso samples
-        std::cout << "inverted" << std::endl;
-      }
+    if (!Parser::parse_config(config,
+                              &datasets,
+                              lumiPtr,
+                              &plotTitles,
+                              &plotNames,
+                              &xMin,
+                              &xMax,
+                              &nBins,
+                              &fillExp,
+                              &xAxisLabels,
+                              &cutStage,
+                              cutConfName,
+                              plotConfName,
+                              &outFolder,
+                              &postfix,
+                              &channel))
+    {
+        std::cerr << "There was an error parsing the config file.\n";
+        exit(0);
     }
-  }
-  else if (channelsToRun && !trileptonChannel_){
-    std::cout << "Running over the channels: " << std::endl;
-    for (unsigned channelInd = 1; channelInd != 32; channelInd = channelInd << 1){
-      if (!(channelInd & channelsToRun) && channelsToRun) continue;
-      if (channelInd & 5){ // ee channel
-        std::cout << "ee ";
-      }
-      if (channelInd & 10){ // mumu channel
-        std::cout << "mumu ";
-      }
-      if (channelInd & 3){ //nominal samples
-        std::cout << "nominal" << std::endl;
-      }
-      if (channelInd & 12){ //same sign samples
-        std::cout << "same lepton charge" << std::endl;
-      }
-      if (channelInd & 16){ //nominal samples and emu
-        std::cout << "emu - used only for ttbar control region " << std::endl;
-      }
-      if (channelInd & 32){ //nominal samples and emu
-        std::cout << "emu - used only for ttbar same sign control region " << std::endl;
-      }
+
+    if (channelsToRun && trileptonChannel_)
+    {
+        std::cout << "Running over the channels: " << std::endl;
+        for (unsigned channelInd = 1; channelInd != 256;
+             channelInd = channelInd << 1)
+        {
+            if (!(channelInd & channelsToRun) && channelsToRun)
+            {
+                continue;
+            }
+            if (channelInd & 17)
+            {
+                std::cout << "eee ";
+            }
+            if (channelInd & 34)
+            { // eemu channels
+                std::cout << "eemu ";
+            }
+            if (channelInd & 68)
+            { // emumu channels
+                std::cout << "emumu ";
+            }
+            if (channelInd & 136)
+            { // mumumu channels
+                std::cout << "mumumu ";
+            }
+            if (channelInd & 15)
+            { // nominal samples
+                std::cout << "nominal" << std::endl;
+            }
+            if (channelInd & 240)
+            { // inv iso samples
+                std::cout << "inverted" << std::endl;
+            }
+        }
     }
-  }
+    else if (channelsToRun && !trileptonChannel_)
+    {
+        std::cout << "Running over the channels: " << std::endl;
+        for (unsigned channelInd = 1; channelInd != 32;
+             channelInd = channelInd << 1)
+        {
+            if (!(channelInd & channelsToRun) && channelsToRun)
+                continue;
+            if (channelInd & 5)
+            { // ee channel
+                std::cout << "ee ";
+            }
+            if (channelInd & 10)
+            { // mumu channel
+                std::cout << "mumu ";
+            }
+            if (channelInd & 3)
+            { // nominal samples
+                std::cout << "nominal" << std::endl;
+            }
+            if (channelInd & 12)
+            { // same sign samples
+                std::cout << "same lepton charge" << std::endl;
+            }
+            if (channelInd & 16)
+            { // nominal samples and emu
+                std::cout << "emu - used only for ttbar control region "
+                          << std::endl;
+            }
+            if (channelInd & 32)
+            { // nominal samples and emu
+                std::cout
+                    << "emu - used only for ttbar same sign control region "
+                    << std::endl;
+            }
+        }
+    }
 }
 
 void AnalysisAlgo::setupSystematics()
 {
-  systNames.emplace_back("");
-  systNames.emplace_back("__trig__plus");
-  systNames.emplace_back("__trig__minus");
-  systNames.emplace_back("__jer__plus");
-  systNames.emplace_back("__jer__minus");
-  systNames.emplace_back("__jes__plus");
-  systNames.emplace_back("__jes__minus");
-  systNames.emplace_back("__pileup__plus");
-  systNames.emplace_back("__pileup__minus");
-  systNames.emplace_back("__bTag__plus");
-  systNames.emplace_back("__bTag__minus");
-  systNames.emplace_back("__pdf__plus");
-  systNames.emplace_back("__pdf__minus");
-  systNames.emplace_back("__ME_PS__plus");
-  systNames.emplace_back("__ME_PS__minus");
-  systNames.emplace_back("__alphaS__plus");
-  systNames.emplace_back("__alphaS__minus");
+    systNames.emplace_back("");
+    systNames.emplace_back("__trig__plus");
+    systNames.emplace_back("__trig__minus");
+    systNames.emplace_back("__jer__plus");
+    systNames.emplace_back("__jer__minus");
+    systNames.emplace_back("__jes__plus");
+    systNames.emplace_back("__jes__minus");
+    systNames.emplace_back("__pileup__plus");
+    systNames.emplace_back("__pileup__minus");
+    systNames.emplace_back("__bTag__plus");
+    systNames.emplace_back("__bTag__minus");
+    systNames.emplace_back("__pdf__plus");
+    systNames.emplace_back("__pdf__minus");
+    systNames.emplace_back("__ME_PS__plus");
+    systNames.emplace_back("__ME_PS__minus");
+    systNames.emplace_back("__alphaS__plus");
+    systNames.emplace_back("__alphaS__minus");
 
-  if ( !is2016_ ) { // If 2017 mode, get 2017 PU
-    //Make pileupReweighting stuff here
-    dataPileupFile = new TFile{"pileup/2017/truePileupTest.root","READ"};
-    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile{"pileup/2017/pileupMC.root","READ"};
-    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+    if (!is2016_)
+    { // If 2017 mode, get 2017 PU
+        // Make pileupReweighting stuff here
+        dataPileupFile = new TFile{"pileup/2017/truePileupTest.root", "READ"};
+        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        mcPileupFile = new TFile{"pileup/2017/pileupMC.root", "READ"};
+        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-    //Get systematic files too.
-    systUpFile = new TFile{"pileup/2017/truePileupUp.root","READ"};
-    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile{"pileup/2017/truePileupDown.root","READ"};
-    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
-  }
-  else {
-    //Make pileupReweighting stuff here
-    dataPileupFile = new TFile{"pileup/2016/truePileupTest.root","READ"};
-    dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
-    mcPileupFile = new TFile{"pileup/2016/pileupMC.root","READ"};
-    mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+        // Get systematic files too.
+        systUpFile = new TFile{"pileup/2017/truePileupUp.root", "READ"};
+        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        systDownFile = new TFile{"pileup/2017/truePileupDown.root", "READ"};
+        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+    }
+    else
+    {
+        // Make pileupReweighting stuff here
+        dataPileupFile = new TFile{"pileup/2016/truePileupTest.root", "READ"};
+        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        mcPileupFile = new TFile{"pileup/2016/pileupMC.root", "READ"};
+        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
 
-    //Get systematic files too.
-    systUpFile = new TFile{"pileup/2016/truePileupUp.root","READ"};
-    pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
-    systDownFile = new TFile{"pileup/2016/truePileupDown.root","READ"};
-    pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
-  }
+        // Get systematic files too.
+        systUpFile = new TFile{"pileup/2016/truePileupUp.root", "READ"};
+        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        systDownFile = new TFile{"pileup/2016/truePileupDown.root", "READ"};
+        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+    }
 
-  puReweight = (TH1F*)(dataPU->Clone());
-  puReweight->Scale(1.0/puReweight->Integral());
-  mcPU->Scale(1.0/mcPU->Integral());
-  puReweight->Divide(mcPU);
-  puReweight->SetDirectory(nullptr);
+    puReweight = (TH1F*)(dataPU->Clone());
+    puReweight->Scale(1.0 / puReweight->Integral());
+    mcPU->Scale(1.0 / mcPU->Integral());
+    puReweight->Divide(mcPU);
+    puReweight->SetDirectory(nullptr);
 
-  /// And do the same for systematic sampl
-  puSystUp = (TH1F*)(pileupUpHist->Clone());
-  puSystUp->Scale(1.0/puSystUp->Integral());
-  puSystUp->Divide(mcPU);
-  puSystUp->SetDirectory(nullptr);
-  puSystDown = (TH1F*)(pileupDownHist->Clone());
-  puSystDown->Scale(1.0/puSystDown->Integral());
-  puSystDown->Divide(mcPU);
-  puSystDown->SetDirectory(nullptr);
+    /// And do the same for systematic sampl
+    puSystUp = (TH1F*)(pileupUpHist->Clone());
+    puSystUp->Scale(1.0 / puSystUp->Integral());
+    puSystUp->Divide(mcPU);
+    puSystUp->SetDirectory(nullptr);
+    puSystDown = (TH1F*)(pileupDownHist->Clone());
+    puSystDown->Scale(1.0 / puSystDown->Integral());
+    puSystDown->Divide(mcPU);
+    puSystDown->SetDirectory(nullptr);
 
-  dataPileupFile->Close();
-  mcPileupFile->Close();
-  systUpFile->Close();
-  systDownFile->Close();
+    dataPileupFile->Close();
+    mcPileupFile->Close();
+    systUpFile->Close();
+    systDownFile->Close();
 
-  //Initialise PDFs
-  if (systToRun & 1024 || systToRun & 2048){
-    LHAPDF::initPDFSet(1, "NNPDF30_nlo_nf_5_pdfas.LHgrid");
-    //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
-    //    LHAPDF::initPDFSet(1, "cteq6lg.LHgrid");
-  }
+    // Initialise PDFs
+    if (systToRun & 1024 || systToRun & 2048)
+    {
+        LHAPDF::initPDFSet(1, "NNPDF30_nlo_nf_5_pdfas.LHgrid");
+        //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
+        //    LHAPDF::initPDFSet(1, "cteq6lg.LHgrid");
+    }
 }
 
 void AnalysisAlgo::setupCuts()
 {
-  //Make cuts object. The methods in it should perhaps just be i nthe AnalysisEvent class....
-  cutObj = new Cuts{plots,plots||infoDump,invertLepCut,synchCutFlow,dumpEventNumbers,trileptonChannel_, is2016_, isFCNC_, isCtag_};
-  if (!cutObj->parse_config(*cutConfName)){
-    std::cerr << "There was a problem with parsing the config!" << std::endl;
-    exit(0);
-  }
-  //For studying some trigger things. Default is false.
-  cutObj->setSkipTrig(skipTrig);
-  if (customJetRegion) cutObj->setJetRegion(jetRegVars[0],jetRegVars[1],jetRegVars[2],jetRegVars[3]);
-  cutObj->setMetCut(metCut);
-  cutObj->setMTWCut(mtwCut);
-  cutObj->setMWCut(mwCut);
-  cutObj->setMZCut(mzCut);
-  if (doZplusCR_) cutObj->setZplusControlRegionFlag(true);
+    // Make cuts object. The methods in it should perhaps just be i nthe
+    // AnalysisEvent class....
+    cutObj = new Cuts{plots,
+                      plots || infoDump,
+                      invertLepCut,
+                      synchCutFlow,
+                      dumpEventNumbers,
+                      trileptonChannel_,
+                      is2016_,
+                      isFCNC_,
+                      isCtag_};
+    if (!cutObj->parse_config(*cutConfName))
+    {
+        std::cerr << "There was a problem with parsing the config!"
+                  << std::endl;
+        exit(0);
+    }
+    // For studying some trigger things. Default is false.
+    cutObj->setSkipTrig(skipTrig);
+    if (customJetRegion)
+    {
+        cutObj->setJetRegion(
+            jetRegVars[0], jetRegVars[1], jetRegVars[2], jetRegVars[3]);
+    }
+    cutObj->setMetCut(metCut);
+    cutObj->setMTWCut(mtwCut);
+    cutObj->setMWCut(mwCut);
+    cutObj->setMZCut(mzCut);
+    if (doZplusCR_)
+    {
+        cutObj->setZplusControlRegionFlag(true);
+    }
 }
 
 void AnalysisAlgo::setupPlots()
 {
-  //Do a little initialisation for the plots here. Will later on be done in a config file.
-  //Initialise plot stage names.
-  stageNames.emplace_back( std::make_pair ("lepSel","Lepton Cuts") );
-  stageNames.emplace_back( std::make_pair ("zMass","Z Mass Cuts") );
-  stageNames.emplace_back( std::make_pair ("jetSel","Jet Cuts") );
-  stageNames.emplace_back( std::make_pair ("bTag","b-tag Cuts") );
-  if ( !trileptonChannel_ && !isFCNC_ ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
-//  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) ) {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
-  if ( !trileptonChannel_ && isFCNC_ && isCtag_ ) {stageNames.emplace_back( std::make_pair ("cTag","c-tag Cuts") );}
+    // Do a little initialisation for the plots here. Will later on be done in a
+    // config file. Initialise plot stage names.
+    stageNames.emplace_back(std::make_pair("lepSel", "Lepton Cuts"));
+    stageNames.emplace_back(std::make_pair("zMass", "Z Mass Cuts"));
+    stageNames.emplace_back(std::make_pair("jetSel", "Jet Cuts"));
+    stageNames.emplace_back(std::make_pair("bTag", "b-tag Cuts"));
+    if (!trileptonChannel_ && !isFCNC_)
+    {
+        stageNames.emplace_back(std::make_pair("wMass", "W Mass Cuts"));
+    }
+    //  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) )
+    //  {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
+    if (!trileptonChannel_ && isFCNC_ && isCtag_)
+    {
+        stageNames.emplace_back(std::make_pair("cTag", "c-tag Cuts"));
+    }
 }
 
-void AnalysisAlgo::runMainAnalysis(){
+void AnalysisAlgo::runMainAnalysis()
+{
+    srand(666);
 
-  srand (666);
+    if (totalLumi == 0.)
+    {
+        totalLumi = usePreLumi;
+    }
+    std::cout << "Using lumi: " << totalLumi << std::endl;
 
-  if (totalLumi == 0.) totalLumi = usePreLumi;
-  std::cout << "Using lumi: " << totalLumi << std::endl;
+    bool datasetFilled{false};
 
-  bool datasetFilled{false};
+    const std::string postLepSelSkimDir{
+        std::string{"/scratch/data/TopPhysics/postLepSelSkims"}
+        + (is2016_ ? "2016" : "2017") + (isFCNC_ ? "_FCNC" : "") + "/"};
 
-  const std::string postLepSelSkimDir{
-    std::string{"/scratch/data/TopPhysics/postLepSelSkims"} +
-							      (is2016_ ? "2016" : "2017") + (isFCNC_ ? "_FCNC" : "") + "/"};
+    // Begin to loop over all datasets
+    for (auto dataset = datasets.begin(); dataset != datasets.end(); ++dataset)
+    {
+        datasetFilled = false;
+        TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
+        unsigned channelIndMax{256};
 
-  // Begin to loop over all datasets
-  for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset) {
-    datasetFilled = false;
-    TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
-    unsigned channelIndMax{256};
-
-    if ( !trileptonChannel_ ){ channelIndMax = 64; }
-    for (unsigned channelInd{1}; channelInd != channelIndMax; channelInd = channelInd << 1) {
-      if (!(channelInd & channelsToRun) && channelsToRun) continue;
-
-      std::string chanName = channelSetup ( channelInd );
-
-      if (dataset->isMC() && skipMC) continue;
-      if (!dataset->isMC() && skipData) continue;
-
-      if (plots||infoDump) { // Initialise a load of stuff that's required by the plotting macro.
-
-	// Gather all variables for plotting to make it easier to follow
-	std::string histoName {dataset->getFillHisto()}, plotLabel {dataset->getPlotLabel()}, plotType {dataset->getPlotType()};
-	int plotColour {dataset->getColour()};
-
-	int systMask{1};
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (systInd > 0 && !(systToRun & systMask)){
-	    systMask = systMask << 1;
-	    continue;
-	  }
-	  if (cutFlowMap.find( histoName + systNames[systInd] ) == cutFlowMap.end()){
-	    const size_t numCutFlowBins{stageNames.size()};
-	    cutFlowMap[ histoName ] = new TH1F{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
-	    if (systInd == 0 && datasetInfos.find( histoName ) == datasetInfos.end()){
-	      legOrder.emplace_back( histoName );
-	      plotOrder.emplace_back( histoName );
-	      datasetInfos[ histoName ] = datasetInfo();
-	      datasetInfos[ histoName ].colour = plotColour;
-	      datasetInfos[ histoName ].legLabel = plotLabel;
-	      datasetInfos[ histoName ].legType = plotType;
-	    }
-	    if (plots){ // Only make all the plots if it's entirely necessary.
-	      std::cout << "Made plots under " << histoName << " : " << systNames[systInd]+channel << std::endl;
-	      if (plotsMap.find(channel) == plotsMap.end()){
-		plotsVec.emplace_back(systNames[systInd]+channel);
-	      }
-	      plotsMap[systNames[systInd]+channel][( histoName )] = std::map<std::string,Plots*>();
-	      for (unsigned j{0}; j < stageNames.size(); j++){
-		plotsMap[systNames[systInd]+channel][ histoName ][stageNames[j].first] = new Plots{plotTitles, plotNames, xMin, xMax,nBins, fillExp, xAxisLabels, cutStage, j, histoName + "_" + stageNames[j].first+systNames[systInd]+"_"+channel, trileptonChannel_};
-	      }
-	    }
-	  }//end cutFlow find loop
-	  if (systInd > 0) systMask = systMask << 1;
-	}//end systematic loop
-
-      } //end plots if statement
-
-      // If making plots and using saved histos, skip running over the datasets ...
-      if ( plots && useHistos ) continue;
-
-      //If making either plots or doing the event dump, make cut flow object.
-      std::cerr << "Processing dataset " << dataset->name() << std::endl;
-      if (!usePostLepTree) {
-	if (!datasetFilled) {
-	  if (!dataset->fillChain(datasetChain,numFiles)) {
-	    std::cerr << "There was a problem constructing the chain for " << dataset->name() << " made of " << numFiles << " files. Continuing with next dataset.\n";
-	    continue;
-	  }
-	  datasetFilled = true;
-	}
-      }
-      else {
-	std::string inputPostfix{};
-	inputPostfix += postfix;
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) inputPostfix += "invIso";
-	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	}
-	if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
-	  inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton skim!
-	  // If making plots which include non-prompt leptons, then when running over "non-prompt" samples (as determined by their label), set the cutClass object NPL flag to true and invert charge seletion criteria, i.e. choose same sign leptons
-	  cutObj->setNplFlag(true);
-	  cutObj->setInvLepCut(true);
-	}
-	else if ( doNPLs_ && dataset->getPlotLabel() != "NPL" && !trileptonChannel_ ) {
-	  cutObj->setNplFlag(false);
-          cutObj->setInvLepCut(false);
+        if (!trileptonChannel_)
+        {
+            channelIndMax = 64;
         }
-	std::cout << postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root" << std::endl;
-	datasetChain->Add((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str());
-      }
+        for (unsigned channelInd{1}; channelInd != channelIndMax;
+             channelInd = channelInd << 1)
+        {
+            if (!(channelInd & channelsToRun) && channelsToRun)
+            {
+                continue;
+            }
 
-      cutObj->setMC(dataset->isMC());
-      cutObj->setEventInfoFlag(readEventList);
-      cutObj->setTriggerFlag(dataset->getTriggerFlag());
-      std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
+            std::string chanName = channelSetup(channelInd);
 
-      //Here we will initialise the b-tag eff plots if we are doing b-tag efficiencies
-      std::vector<TH2D*> bTagEffPlots;
-      std::vector<std::string> denomNum {"Denom","Num"};
-      std::vector<std::string> typesOfEff {"b","c","uds","g"};
-      if (makePostLepTree && dataset->isMC()){
-	int ptBins{4};
-	int etaBins{4};
-	float ptMin{0};
-	float ptMax{200};
-	float etaMin{0};
-	float etaMax{2.4};
-	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
-	  for (unsigned type{0}; type < typesOfEff.size(); type++){
-	    bTagEffPlots.emplace_back(new TH2D{("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[type]).c_str(),ptBins,ptMin,ptMax,etaBins,etaMin,etaMax});
-	  }
-	}
-	cutObj->setBTagPlots(bTagEffPlots,true);
-      }//end btag eff plots.
-      if (usePostLepTree && usebTagWeight && dataset->isMC()) {
-	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
-	std::string inputPostfix{};
-	inputPostfix += postfix;
-        if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) inputPostfix += "invIso";
-	  else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	}
-	TFile* datasetFileForHists;
-	datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	for (unsigned denNum{0}; denNum < denomNum.size(); denNum++){
-	  for (unsigned eff{0}; eff < typesOfEff.size(); eff++){
-	    bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(datasetFileForHists->Get(("bTagEff_"+denomNum[denNum]+"_"+typesOfEff[eff]).c_str())->Clone()));
-	  }
-	}
-	for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++){
-	  bTagEffPlots[plotIt]->SetDirectory(nullptr);
-	}
-	cutObj->setBTagPlots(bTagEffPlots,false);
-	datasetFileForHists->Close();
-      }
+            if (dataset->isMC() && skipMC)
+            {
+                continue;
+            }
+            if (!dataset->isMC() && skipData)
+            {
+                continue;
+            }
 
-      //Here we will initialise the generator level weight histograms
-      TH1I* generatorWeightPlot {nullptr};
-      if ( dataset->isMC() ) {
-	if ( usePostLepTree ) {
-	  std::string inputPostfix{};
-	  inputPostfix += postfix;
-	  if (invertLepCut) {
-	    if ( trileptonChannel_ ) inputPostfix += "invIso";
-	    else if ( !trileptonChannel_ ) inputPostfix += "invLep";
-	  }
-          if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $
-	  TFile * datasetFileForHists;
-	  datasetFileForHists = new TFile ((postLepSelSkimDir + dataset->name() + inputPostfix + "SmallSkim.root").c_str(), "READ");
-	  generatorWeightPlot = dynamic_cast<TH1I*>(datasetFileForHists->Get("sumNumPosMinusNegWeights")->Clone());
-	  generatorWeightPlot->SetDirectory(nullptr);
-	  datasetFileForHists->Close();
-	}
-	else {
-	  generatorWeightPlot = dynamic_cast<TH1I*>(dataset->getGeneratorWeightHistogram(numFiles)->Clone());
-	  generatorWeightPlot->SetDirectory(nullptr);
-	}
-      }
+            if (plots || infoDump)
+            { // Initialise a load of stuff that's required by the plotting
+              // macro.
 
-      //extract the dataset weight. MC = (lumi*crossSection)/(totalEvents), data = 1.0
-      float datasetWeight{dataset->getDatasetWeight(totalLumi)};
+                // Gather all variables for plotting to make it easier to follow
+                std::string histoName{dataset->getFillHisto()},
+                    plotLabel{dataset->getPlotLabel()},
+                    plotType{dataset->getPlotType()};
+                int plotColour{dataset->getColour()};
 
-      if (infoDump) datasetWeight = 1;
-      std::cout << datasetChain->GetEntries() << " number of items in tree. Dataset weight: " << datasetWeight << std::endl;
-      if (datasetChain->GetEntries() == 0)
-	{
-	  std::cout << "No entries in tree, skipping..." << std::endl;
-	  continue;
-	}
-      AnalysisEvent* event{new AnalysisEvent{dataset->isMC(),dataset->getTriggerFlag(),datasetChain,is2016_}};
+                int systMask{1};
+                for (unsigned systInd{0}; systInd < systNames.size(); systInd++)
+                {
+                    if (systInd > 0 && !(systToRun & systMask))
+                    {
+                        systMask = systMask << 1;
+                        continue;
+                    }
+                    if (cutFlowMap.find(histoName + systNames[systInd])
+                        == cutFlowMap.end())
+                    {
+                        const size_t numCutFlowBins{stageNames.size()};
+                        cutFlowMap[histoName] = new TH1F{
+                            (histoName + systNames[systInd] + "cutFlow")
+                                .c_str(),
+                            (histoName + systNames[systInd] + "cutFlow")
+                                .c_str(),
+                            boost::numeric_cast<int>(numCutFlowBins),
+                            0,
+                            boost::numeric_cast<double>(
+                                numCutFlowBins)}; // Hopefully make this
+                                                  // configurable later on. Same
+                                                  // deal as the rest of the
+                                                  // plots I guess, work out
+                                                  // libconfig.
+                        if (systInd == 0
+                            && datasetInfos.find(histoName)
+                                   == datasetInfos.end())
+                        {
+                            legOrder.emplace_back(histoName);
+                            plotOrder.emplace_back(histoName);
+                            datasetInfos[histoName] = datasetInfo();
+                            datasetInfos[histoName].colour = plotColour;
+                            datasetInfos[histoName].legLabel = plotLabel;
+                            datasetInfos[histoName].legType = plotType;
+                        }
+                        if (plots)
+                        { // Only make all the plots if it's entirely necessary.
+                            std::cout << "Made plots under " << histoName
+                                      << " : " << systNames[systInd] + channel
+                                      << std::endl;
+                            if (plotsMap.find(channel) == plotsMap.end())
+                            {
+                                plotsVec.emplace_back(systNames[systInd]
+                                                      + channel);
+                            }
+                            plotsMap[systNames[systInd] + channel]
+                                    [(histoName)] =
+                                        std::map<std::string, Plots*>();
+                            for (unsigned j{0}; j < stageNames.size(); j++)
+                            {
+                                plotsMap[systNames[systInd] + channel]
+                                        [histoName][stageNames[j].first] =
+                                            new Plots{plotTitles,
+                                                      plotNames,
+                                                      xMin,
+                                                      xMax,
+                                                      nBins,
+                                                      fillExp,
+                                                      xAxisLabels,
+                                                      cutStage,
+                                                      j,
+                                                      histoName + "_"
+                                                          + stageNames[j].first
+                                                          + systNames[systInd]
+                                                          + "_" + channel,
+                                                      trileptonChannel_};
+                            }
+                        }
+                    } // end cutFlow find loop
+                    if (systInd > 0)
+                    {
+                        systMask = systMask << 1;
+                    }
+                } // end systematic loop
 
-      //Adding in some stuff here to make a skim file out of post lep sel stuff
-      TFile* outFile1 {nullptr};
-      TTree* cloneTree{nullptr};
+            } // end plots if statement
 
-      // If we're making the post lepton selection trees, set them up here.
-      if (makePostLepTree){
-	std::string invPostFix;
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
+            // If making plots and using saved histos, skip running over the
+            // datasets ...
+            if (plots && useHistos)
+            {
+                continue;
+            }
 
-	outFile1 = new TFile{(postLepSelSkimDir + dataset->name() + postfix + invPostFix + "SmallSkim.root").c_str(),"RECREATE"};
-	cloneTree = datasetChain->CloneTree(0);
-	cloneTree->SetDirectory(outFile1);
-	cutObj->setCloneTree(cloneTree);
-      }
+            // If making either plots or doing the event dump, make cut flow
+            // object.
+            std::cerr << "Processing dataset " << dataset->name() << std::endl;
+            if (!usePostLepTree)
+            {
+                if (!datasetFilled)
+                {
+                    if (!dataset->fillChain(datasetChain, numFiles))
+                    {
+                        std::cerr
+                            << "There was a problem constructing the chain for "
+                            << dataset->name() << " made of " << numFiles
+                            << " files. Continuing with next dataset.\n";
+                        continue;
+                    }
+                    datasetFilled = true;
+                }
+            }
+            else
+            {
+                std::string inputPostfix{};
+                inputPostfix += postfix;
+                if (invertLepCut)
+                {
+                    if (trileptonChannel_)
+                    {
+                        inputPostfix += "invIso";
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        inputPostfix += "invLep";
+                    }
+                }
+                if (doNPLs_ && dataset->getPlotLabel() == "NPL"
+                    && !trileptonChannel_)
+                {
+                    inputPostfix +=
+                        "invLep"; // If plotting non-prompt leptons for this
+                                  // dataset, be sure to read in the same sign
+                                  // lepton post lepton skim!
+                    // If making plots which include non-prompt leptons, then
+                    // when running over "non-prompt" samples (as determined by
+                    // their label), set the cutClass object NPL flag to true
+                    // and invert charge seletion criteria, i.e. choose same
+                    // sign leptons
+                    cutObj->setNplFlag(true);
+                    cutObj->setInvLepCut(true);
+                }
+                else if (doNPLs_ && dataset->getPlotLabel() != "NPL"
+                         && !trileptonChannel_)
+                {
+                    cutObj->setNplFlag(false);
+                    cutObj->setInvLepCut(false);
+                }
+                std::cout << postLepSelSkimDir + dataset->name() + inputPostfix
+                                 + "SmallSkim.root"
+                          << std::endl;
+                datasetChain->Add((postLepSelSkimDir + dataset->name()
+                                   + inputPostfix + "SmallSkim.root")
+                                      .c_str());
+            }
 
-      //If we're making the MVA tree, set it up here.
-      TFile * mvaOutFile{nullptr};
-      std::vector<TTree *> mvaTree;
-      //Add a few variables into the MVA tree for easy access of stuff like lepton index etc
-      float eventWeight{0.};
-      int zLep1Index{-1}; // Addresses in elePF2PATWhatever of the z lepton
-      int zLep2Index{-1};
-      int wLepIndex{-1};
-      int wQuark1Index{-1};
-      int wQuark2Index{-1};
-      int jetInd[15];  // The index of the selected jets;
-      int bJetInd[10]; // Index of selected b-jets;
-      float muonMomentumSF[3] {};
-      float jetSmearValue[15] {};
-      int isMC{dataset->isMC()}; // isMC flag for debug purposes
-      event->isMC_ = (dataset->isMC());
-      //Now add in the branches:
+            cutObj->setMC(dataset->isMC());
+            cutObj->setEventInfoFlag(readEventList);
+            cutObj->setTriggerFlag(dataset->getTriggerFlag());
+            std::cout << "Trigger flag: " << dataset->getTriggerFlag()
+                      << std::endl;
 
-      if (makeMVATree){
-	boost::filesystem::create_directory(mvaDir);
-	std::string invPostFix {};
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
-	mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root").c_str(),"RECREATE"};
-	if (!mvaOutFile->IsOpen()) {
-	  throw std::runtime_error("MVA Tree TFile could not be opened!");
-	}
-	int systMask{1};
-	//std::cout << "Making systematic trees for " << dataset->name() << ": ";
-	for (unsigned systIn{0}; systIn < systNames.size(); systIn++){
-	  //std::cout << systNames[systIn] << " ";
-	  //  	std::cout << "Making systs: " << systMask << " " << systToRun << " " << systIn << " " << (systMask & systToRun) << std::endl;
-	  /*  	if (systIn > 0 && !(systMask & systToRun)){
-		if (systIn > 0) systMask = systMask << 1;
-		continue;
-		}*/
-	  mvaTree.emplace_back(datasetChain->CloneTree(0));
-	  mvaTree[systIn]->SetDirectory(mvaOutFile);
-	  mvaTree[systIn]->SetName((mvaTree[systIn]->GetName()+systNames[systIn]).c_str());
-	  mvaTree[systIn]->Branch("eventWeight", &eventWeight, "eventWeight/F");
-	  mvaTree[systIn]->Branch("zLep1Index",&zLep1Index,"zLep1Index/I");
-	  mvaTree[systIn]->Branch("zLep2Index",&zLep2Index,"zLep2Index/I");
-	  if (trileptonChannel_) mvaTree[systIn]->Branch("wLepIndex",&wLepIndex,"wLepIndex/I");
-	  else if (!trileptonChannel_) {
-	    mvaTree[systIn]->Branch("wQuark1Index",&wQuark1Index,"wQuark1Index/I");
-	    mvaTree[systIn]->Branch("wQuark2Index",&wQuark2Index,"wQuark2Index/I");
-	  }
-	  mvaTree[systIn]->Branch("jetInd",&jetInd,"jetInd[15]/I");
-	  mvaTree[systIn]->Branch("muonMomentumSF",&muonMomentumSF,"muonMomentumSF[3]/F");
-	  mvaTree[systIn]->Branch("jetSmearValue",&jetSmearValue,"jetSmearValue[15]/F");
-	  mvaTree[systIn]->Branch("bJetInd",&bJetInd,"bJetInd[10]/I");
-	  mvaTree[systIn]->Branch("isMC",&isMC,"isMC/I");
-	  if (systIn > 0) systMask = systMask << 1;
-	}
-	std::cout <<std::endl;
-      }
-      /*    else{
-	    event->fChain->SetBranchStatus("*",0); //Should disable most branches.
-	    setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
-	    }*/
+            // Here we will initialise the b-tag eff plots if we are doing b-tag
+            // efficiencies
+            std::vector<TH2D*> bTagEffPlots;
+            std::vector<std::string> denomNum{"Denom", "Num"};
+            std::vector<std::string> typesOfEff{"b", "c", "uds", "g"};
+            if (makePostLepTree && dataset->isMC())
+            {
+                int ptBins{4};
+                int etaBins{4};
+                float ptMin{0};
+                float ptMax{200};
+                float etaMin{0};
+                float etaMax{2.4};
+                for (unsigned denNum{0}; denNum < denomNum.size(); denNum++)
+                {
+                    for (unsigned type{0}; type < typesOfEff.size(); type++)
+                    {
+                        bTagEffPlots.emplace_back(
+                            new TH2D{("bTagEff_" + denomNum[denNum] + "_"
+                                      + typesOfEff[type])
+                                         .c_str(),
+                                     ("bTagEff_" + denomNum[denNum] + "_"
+                                      + typesOfEff[type])
+                                         .c_str(),
+                                     ptBins,
+                                     ptMin,
+                                     ptMax,
+                                     etaBins,
+                                     etaMin,
+                                     etaMax});
+                    }
+                }
+                cutObj->setBTagPlots(bTagEffPlots, true);
+            } // end btag eff plots.
+            if (usePostLepTree && usebTagWeight && dataset->isMC())
+            {
+                // Get efficiency plots from the file. Will have to be from
+                // post-lep sel trees I guess.
+                std::string inputPostfix{};
+                inputPostfix += postfix;
+                if (doNPLs_ && dataset->getPlotLabel() == "NPL"
+                    && !trileptonChannel_)
+                {
+                    inputPostfix +=
+                        "invLep"; // If plotting non-prompt leptons for this
+                                  // dataset, be sure to read in the same sign
+                                  // lepton post lepton $
+                }
+                if (invertLepCut)
+                {
+                    if (trileptonChannel_)
+                    {
+                        inputPostfix += "invIso";
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        inputPostfix += "invLep";
+                    }
+                }
+                TFile* datasetFileForHists;
+                datasetFileForHists =
+                    new TFile((postLepSelSkimDir + dataset->name()
+                               + inputPostfix + "SmallSkim.root")
+                                  .c_str(),
+                              "READ");
+                for (unsigned denNum{0}; denNum < denomNum.size(); denNum++)
+                {
+                    for (unsigned eff{0}; eff < typesOfEff.size(); eff++)
+                    {
+                        bTagEffPlots.emplace_back(dynamic_cast<TH2D*>(
+                            datasetFileForHists
+                                ->Get(("bTagEff_" + denomNum[denNum] + "_"
+                                       + typesOfEff[eff])
+                                          .c_str())
+                                ->Clone()));
+                    }
+                }
+                for (unsigned plotIt{0}; plotIt < bTagEffPlots.size(); plotIt++)
+                {
+                    bTagEffPlots[plotIt]->SetDirectory(nullptr);
+                }
+                cutObj->setBTagPlots(bTagEffPlots, false);
+                datasetFileForHists->Close();
+            }
 
-      long long numberOfEvents{datasetChain->GetEntries()};
-      if (nEvents && nEvents < numberOfEvents) numberOfEvents = nEvents;
-      //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
-      //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
-      //    htemp->SaveAs("tempCanvas.png");
-      int foundEvents{0};
-      double foundEventsNorm{0.0};
+            // Here we will initialise the generator level weight histograms
+            TH1I* generatorWeightPlot{nullptr};
+            if (dataset->isMC())
+            {
+                if (usePostLepTree)
+                {
+                    std::string inputPostfix{};
+                    inputPostfix += postfix;
+                    if (invertLepCut)
+                    {
+                        if (trileptonChannel_)
+                        {
+                            inputPostfix += "invIso";
+                        }
+                        else if (!trileptonChannel_)
+                        {
+                            inputPostfix += "invLep";
+                        }
+                    }
+                    if (doNPLs_ && dataset->getPlotLabel() == "NPL"
+                        && !trileptonChannel_)
+                    {
+                        inputPostfix +=
+                            "invLep"; // If plotting non-prompt leptons for this
+                                      // dataset, be sure to read in the same
+                                      // sign lepton post lepton $
+                    }
+                    TFile* datasetFileForHists;
+                    datasetFileForHists =
+                        new TFile((postLepSelSkimDir + dataset->name()
+                                   + inputPostfix + "SmallSkim.root")
+                                      .c_str(),
+                                  "READ");
+                    generatorWeightPlot = dynamic_cast<TH1I*>(
+                        datasetFileForHists->Get("sumNumPosMinusNegWeights")
+                            ->Clone());
+                    generatorWeightPlot->SetDirectory(nullptr);
+                    datasetFileForHists->Close();
+                }
+                else
+                {
+                    generatorWeightPlot = dynamic_cast<TH1I*>(
+                        dataset->getGeneratorWeightHistogram(numFiles)
+                            ->Clone());
+                    generatorWeightPlot->SetDirectory(nullptr);
+                }
+            }
 
-      //If event is amc@nlo, need to sum number of positive and negative weights first.
-      if ( dataset->isMC() ) {
-	// Load in plots
-	sumPositiveWeights_ = dataset->getTotalEvents();
-	sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
-	sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(7);	// Systematic Scale up
-	sumNegativeWeightsScaleDown_ = generatorWeightPlot->GetBinContent(1);	// Systematic Scale down
-	if ( sumNegativeWeights_ > sumPositiveWeights_ ) {
-	  std::cout << "Something SERIOUSLY went wrong here - the number of postitive weights minus negative ones is greater than their sum?!" << std::endl;
-	  std::cout << "number of postitive weights: " << sumPositiveWeights_ << std::endl;
-	  std::cout << "number of negative weights: " << sumNegativeWeights_ << std::endl;
-	  exit(999);
-	}
-      }
+            // extract the dataset weight. MC =
+            // (lumi*crossSection)/(totalEvents), data = 1.0
+            float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 
-      TMVA::Timer * lEventTimer{new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents), "Running over dataset ...", false}};
-      lEventTimer->DrawProgressBar(0, "");
-      for (int i{0}; i < numberOfEvents; i++) {
-	std::stringstream lSStrFoundEvents;
-	lSStrFoundEvents <<  (synchCutFlow?cutObj->numFound():foundEvents);
-	lEventTimer->DrawProgressBar(i, ("Found " + lSStrFoundEvents.str() + " events."));
-	event->GetEntry(i);
-	//Do the systematics indicated by the systematic flag, oooor just do data if that's your thing. Whatevs.
-	int systMask{1};
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (!dataset->isMC() && systInd > 0) break;
-	  //	std::cout << systInd << " " << systMask << std::endl;
-	  if (systInd > 0 && !(systMask & systToRun)) {
-	    if (systInd > 0) systMask = systMask << 1;
-	    continue;
-	  }
-	  eventWeight = 1;
+            if (infoDump)
+            {
+                datasetWeight = 1;
+            }
+            std::cout << datasetChain->GetEntries()
+                      << " number of items in tree. Dataset weight: "
+                      << datasetWeight << std::endl;
+            if (datasetChain->GetEntries() == 0)
+            {
+                std::cout << "No entries in tree, skipping..." << std::endl;
+                continue;
+            }
+            AnalysisEvent* event{new AnalysisEvent{dataset->isMC(),
+                                                   dataset->getTriggerFlag(),
+                                                   datasetChain,
+                                                   is2016_}};
 
-	  //apply generator weights here.
-	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
-	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
-	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
-	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
-//	    	      std::cout << std::setprecision(5) << std::fixed;
-//	                std::cout << sumPositiveWeights_ << "/" << sumNegativeWeights_ << "*" << event->origWeightForNorm << "/" << std::abs(event->origWeightForNorm) << std::endl;
-//	                std::cout << "generator level SF = " << generatorWeight << std::endl;
-//	                std::cout << "NB. This should only not be 1.0 for aMC@NLO." << std::endl;
-	  }
-	  eventWeight *= generatorWeight;
-	  //apply pileup weights here.
-	  if (dataset->isMC() && !synchCutFlow){ // no weights applied for synchronisation
-	    double pileupWeight{puReweight->GetBinContent(puReweight->GetXaxis()->FindBin(event->numVert))};
-	    if (systMask == 64) pileupWeight = puSystUp->GetBinContent(puSystUp->GetXaxis()->FindBin(event->numVert));
-	    if (systMask == 128) pileupWeight = puSystDown->GetBinContent(puSystDown->GetXaxis()->FindBin(event->numVert));
-	    eventWeight *= pileupWeight;
-	    //std::cout << "pileupWeight: " <<  pileupWeight << std::endl;
-	  }
-	  if (infoDump) eventWeight = 1;
-	  if (readEventList) {
-	    bool tempBool{false};
-	    for (unsigned j{0}; j < eventNumbers.size(); j++){
-	      if (eventNumbers[j] == event->eventNum) {
-		tempBool = true;
-		break;
-	      }
-	    }
-	    if (!tempBool) continue;
-	    std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << datasetChain->GetFile()->GetName() << std::endl;
-	    cutObj->dumpLooseLepInfo(event);
-	    cutObj->dumpLeptonInfo(event);
-	  }
+            // Adding in some stuff here to make a skim file out of post lep sel
+            // stuff
+            TFile* outFile1{nullptr};
+            TTree* cloneTree{nullptr};
 
-	  if (!synchCutFlow) eventWeight*=datasetWeight; // If not synch, scale according to lumi
+            // If we're making the post lepton selection trees, set them up
+            // here.
+            if (makePostLepTree)
+            {
+                std::string invPostFix;
+                if (invertLepCut)
+                {
+                    if (trileptonChannel_)
+                    {
+                        invPostFix = "invIso";
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        invPostFix = "invLep";
+                    }
+                }
 
-	  //apply negative weighting for SameSign MC lepton samples so that further downstream
-	  if ( dataset->isMC() && !trileptonChannel_ && invertLepCut && !plots ) eventWeight *= -1.0; // Should NOT be done when plotting non-prompts - separate code for that
+                outFile1 = new TFile{(postLepSelSkimDir + dataset->name()
+                                      + postfix + invPostFix + "SmallSkim.root")
+                                         .c_str(),
+                                     "RECREATE"};
+                cloneTree = datasetChain->CloneTree(0);
+                cloneTree->SetDirectory(outFile1);
+                cutObj->setCloneTree(cloneTree);
+            }
 
-	  // Apply in cutClass, as the RATIO weight of OS/SS non-prompts cannot be applied before charge cuts (Z cand cuts) are applied
-	  // If NPLs shape (for plotting purposes) apply OS/SS ratio SF 
-	  //if ( plots && doNpls_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) {
-	    //if ( channel == "ee" ) eventWeight *= 1.24806;
-	    //if ( channel == "mumu" ) eventWeight *= 1.03226;
-	    //if ( dataset->isMC() ) eventWeight *= -1.0; 
-	  //}
+            // If we're making the MVA tree, set it up here.
+            TFile* mvaOutFile{nullptr};
+            std::vector<TTree*> mvaTree;
+            // Add a few variables into the MVA tree for easy access of stuff
+            // like lepton index etc
+            float eventWeight{0.};
+            int zLep1Index{
+                -1}; // Addresses in elePF2PATWhatever of the z lepton
+            int zLep2Index{-1};
+            int wLepIndex{-1};
+            int wQuark1Index{-1};
+            int wQuark2Index{-1};
+            int jetInd[15]; // The index of the selected jets;
+            int bJetInd[10]; // Index of selected b-jets;
+            float muonMomentumSF[3]{};
+            float jetSmearValue[15]{};
+            int isMC{dataset->isMC()}; // isMC flag for debug purposes
+            event->isMC_ = (dataset->isMC());
+            // Now add in the branches:
 
-	  //If amcatnlo DY, normalise
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && doZplusCR_ ) eventWeight *= 0.384378; // New CR def
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && !doZplusCR_ ) eventWeight *= 0.407213; // Old CR def
+            if (makeMVATree)
+            {
+                boost::filesystem::create_directory(mvaDir);
+                std::string invPostFix{};
+                if (invertLepCut)
+                {
+                    if (trileptonChannel_)
+                    {
+                        invPostFix = "invIso";
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        invPostFix = "invLep";
+                    }
+                }
+                mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix
+                                        + (invertLepCut ? invPostFix : "")
+                                        + "mvaOut.root")
+                                           .c_str(),
+                                       "RECREATE"};
+                if (!mvaOutFile->IsOpen())
+                {
+                    throw std::runtime_error(
+                        "MVA Tree TFile could not be opened!");
+                }
+                int systMask{1};
+                // std::cout << "Making systematic trees for " <<
+                // dataset->name() << ": ";
+                for (unsigned systIn{0}; systIn < systNames.size(); systIn++)
+                {
+                    // std::cout << systNames[systIn] << " ";
+                    //  	std::cout << "Making systs: " << systMask << " " <<
+                    //  systToRun << " " << systIn << " " << (systMask &
+                    //  systToRun) << std::endl;
+                    /*  	if (systIn > 0 && !(systMask & systToRun)){
+                      if (systIn > 0) systMask = systMask << 1;
+                      continue;
+                      }*/
+                    mvaTree.emplace_back(datasetChain->CloneTree(0));
+                    mvaTree[systIn]->SetDirectory(mvaOutFile);
+                    mvaTree[systIn]->SetName(
+                        (mvaTree[systIn]->GetName() + systNames[systIn])
+                            .c_str());
+                    mvaTree[systIn]->Branch(
+                        "eventWeight", &eventWeight, "eventWeight/F");
+                    mvaTree[systIn]->Branch(
+                        "zLep1Index", &zLep1Index, "zLep1Index/I");
+                    mvaTree[systIn]->Branch(
+                        "zLep2Index", &zLep2Index, "zLep2Index/I");
+                    if (trileptonChannel_)
+                    {
+                        mvaTree[systIn]->Branch(
+                            "wLepIndex", &wLepIndex, "wLepIndex/I");
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        mvaTree[systIn]->Branch(
+                            "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
+                        mvaTree[systIn]->Branch(
+                            "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
+                    }
+                    mvaTree[systIn]->Branch("jetInd", &jetInd, "jetInd[15]/I");
+                    mvaTree[systIn]->Branch("muonMomentumSF",
+                                            &muonMomentumSF,
+                                            "muonMomentumSF[3]/F");
+                    mvaTree[systIn]->Branch(
+                        "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
+                    mvaTree[systIn]->Branch(
+                        "bJetInd", &bJetInd, "bJetInd[10]/I");
+                    mvaTree[systIn]->Branch("isMC", &isMC, "isMC/I");
+                    if (systIn > 0)
+                    {
+                        systMask = systMask << 1;
+                    }
+                }
+                std::cout << std::endl;
+            }
+            /*    else{
+              event->fChain->SetBranchStatus("*",0); //Should disable most
+              branches.
+              setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
+              }*/
 
-	  //If ttbar, do reweight
-	  //          std::cout << "eventWeight: " << eventWeight << std::endl;
-      if (dataset->name() == "ttbarInclusivePowerheg"
-          || dataset->name() == "ttbarInclusivePowerheg_colourFlip"
-          || dataset->name() == "ttbarInclusivePowerheg_hdampUP"
-          || dataset->name() == "ttbarInclusivePowerheg_hdampDown"
-          || dataset->name() == "ttbarInclusivePowerheg_fsrup"
-          || dataset->name() == "ttbarInclusivePowerheg_fsrdown"
-          || dataset->name() == "ttbarInclusivePowerheg_isrup"
-          || dataset->name() == "ttbarInclusivePowerheg_isrdown")
-      {
-          eventWeight *= event->topPtReweight;
-      }
-      //	  std::cout << "event->topPtReweight: " << event->topPtReweight <<
-      //std::endl;
-      //          std::cout << "eventWeight: " << eventWeight << std::endl;
+            long long numberOfEvents{datasetChain->GetEntries()};
+            if (nEvents && nEvents < numberOfEvents)
+            {
+                numberOfEvents = nEvents;
+            }
+            //    datasetChain->Draw("numElePF2PAT","numMuonPF2PAT > 2");
+            //    TH1F * htemp = (TH1F*)gPad->GetPrimitive("htemp");
+            //    htemp->SaveAs("tempCanvas.png");
+            int foundEvents{0};
+            double foundEventsNorm{0.0};
 
-      //	  std::cout << "channel: " << channel << std::endl;
-	  std::string histoName { dataset->getFillHisto() };
+            // If event is amc@nlo, need to sum number of positive and negative
+            // weights first.
+            if (dataset->isMC())
+            {
+                // Load in plots
+                sumPositiveWeights_ = dataset->getTotalEvents();
+                sumNegativeWeights_ = generatorWeightPlot->GetBinContent(4);
+                sumNegativeWeightsScaleUp_ = generatorWeightPlot->GetBinContent(
+                    7); // Systematic Scale up
+                sumNegativeWeightsScaleDown_ =
+                    generatorWeightPlot->GetBinContent(
+                        1); // Systematic Scale down
+                if (sumNegativeWeights_ > sumPositiveWeights_)
+                {
+                    std::cout << "Something SERIOUSLY went wrong here - the "
+                                 "number of postitive weights minus negative "
+                                 "ones is greater than their sum?!"
+                              << std::endl;
+                    std::cout << "number of postitive weights: "
+                              << sumPositiveWeights_ << std::endl;
+                    std::cout
+                        << "number of negative weights: " << sumNegativeWeights_
+                        << std::endl;
+                    exit(999);
+                }
+            }
 
+            TMVA::Timer* lEventTimer{
+                new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
+                                "Running over dataset ...",
+                                false}};
+            lEventTimer->DrawProgressBar(0, "");
+            for (int i{0}; i < numberOfEvents; i++)
+            {
+                std::stringstream lSStrFoundEvents;
+                lSStrFoundEvents
+                    << (synchCutFlow ? cutObj->numFound() : foundEvents);
+                lEventTimer->DrawProgressBar(
+                    i, ("Found " + lSStrFoundEvents.str() + " events."));
+                event->GetEntry(i);
+                // Do the systematics indicated by the systematic flag, oooor
+                // just do data if that's your thing. Whatevs.
+                int systMask{1};
+                for (unsigned systInd{0}; systInd < systNames.size(); systInd++)
+                {
+                    if (!dataset->isMC() && systInd > 0)
+                    {
+                        break;
+                    }
+                    //	std::cout << systInd << " " << systMask << std::endl;
+                    if (systInd > 0 && !(systMask & systToRun))
+                    {
+                        if (systInd > 0)
+                        {
+                            systMask = systMask << 1;
+                        }
+                        continue;
+                    }
+                    eventWeight = 1;
 
-	  if (!cutObj->makeCuts(event,&eventWeight,plotsMap[systNames[systInd]+channel][ histoName ],cutFlowMap[ histoName + systNames[systInd] ],systInd?systMask:systInd)) {
-	    if (systInd) systMask = systMask << 1;
-	    continue;
-	  }
+                    // apply generator weights here.
+                    double generatorWeight{1.0};
+                    if (dataset->isMC() && sumNegativeWeights_ >= 0
+                        && event->origWeightForNorm > -998 && !synchCutFlow)
+                    {
+                        if (systMask == 4096)
+                        {
+                            generatorWeight =
+                                (sumPositiveWeights_)
+                                / (sumNegativeWeightsScaleUp_)
+                                * (event->weight_muF2muR2
+                                   / std::abs(event->origWeightForNorm));
+                        }
+                        else if (systMask == 8192)
+                        {
+                            generatorWeight =
+                                (sumPositiveWeights_)
+                                / (sumNegativeWeightsScaleDown_)
+                                * (event->weight_muF0p5muR0p5
+                                   / std::abs(event->origWeightForNorm));
+                        }
+                        else
+                        {
+                            generatorWeight =
+                                (sumPositiveWeights_) / (sumNegativeWeights_)
+                                * (event->origWeightForNorm
+                                   / std::abs(event->origWeightForNorm));
+                        }
+                        //	    	      std::cout << std::setprecision(5) <<
+                        // std::fixed; 	                std::cout <<
+                        // sumPositiveWeights_ << "/" << sumNegativeWeights_ <<
+                        // "*" << event->origWeightForNorm
+                        //<< "/" << std::abs(event->origWeightForNorm) <<
+                        // std::endl; 	                std::cout << "generator
+                        // level SF = " << generatorWeight << std::endl;
+                        // std::cout << "NB. This should only not be 1.0 for
+                        // aMC@NLO." << std::endl;
+                    }
+                    eventWeight *= generatorWeight;
+                    // apply pileup weights here.
+                    if (dataset->isMC() && !synchCutFlow)
+                    { // no weights applied for synchronisation
+                        double pileupWeight{puReweight->GetBinContent(
+                            puReweight->GetXaxis()->FindBin(event->numVert))};
+                        if (systMask == 64)
+                        {
+                            pileupWeight = puSystUp->GetBinContent(
+                                puSystUp->GetXaxis()->FindBin(event->numVert));
+                        }
+                        if (systMask == 128)
+                        {
+                            pileupWeight = puSystDown->GetBinContent(
+                                puSystDown->GetXaxis()->FindBin(
+                                    event->numVert));
+                        }
+                        eventWeight *= pileupWeight;
+                        // std::cout << "pileupWeight: " <<  pileupWeight <<
+                        // std::endl;
+                    }
+                    if (infoDump)
+                    {
+                        eventWeight = 1;
+                    }
+                    if (readEventList)
+                    {
+                        bool tempBool{false};
+                        for (unsigned j{0}; j < eventNumbers.size(); j++)
+                        {
+                            if (eventNumbers[j] == event->eventNum)
+                            {
+                                tempBool = true;
+                                break;
+                            }
+                        }
+                        if (!tempBool)
+                        {
+                            continue;
+                        }
+                        std::cout << event->eventNum << " " << event->eventRun
+                                  << " " << event->eventLumiblock << " "
+                                  << datasetChain->GetFile()->GetName()
+                                  << std::endl;
+                        cutObj->dumpLooseLepInfo(event);
+                        cutObj->dumpLeptonInfo(event);
+                    }
 
-	  //Do Run 1 style PDF reweighting things for tW samples as they use Powerheg V1
-	  //Everything else uses LHE event weights
-	  if ( systMask == 1024 || systMask == 2048 ){
-	    if ( dataset->name() == "tWInclusive" || dataset->name() == "tbarWInclusive" || dataset->name() == "tWInclusive_scaleup" || dataset->name() == "tWInclusive_scaledown" || dataset->name() == "tbarWInclusive_scaleup" || dataset->name() == "tbarWInclusive_scaledown" ) {
-	      //std::cout << std::setprecision(15) << eventWeight << " ";
-	      LHAPDF::usePDFMember(1,0);
-	      float q{event->genPDFScale};
-	      float x1{event->genPDFx1};
-	      float x2{event->genPDFx2};
-	      int id1{event->genPDFf1};
-	      int id2{event->genPDFf2};
-	      if (id2 == 21) id2 = 0;
-	      if (id1 == 21) id1 = 0;
-	      double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
-	      double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
-	      std::vector<float> pdf_weights;
-	      //std::cout << q << " " << x1 << " " << x2 << " " << id1 << " " << id2 << " ";
-	      //std::cout << xpdf1 << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
-	      float min{1};
-	      float max{1};
-	      float pdfWeightUp{0};
-	      float pdfWeightDown{0};
-	      for (int j{1}; j <= 100; j++){
-		LHAPDF::usePDFMember(1,j);
-		double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
-		double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
-		//std::cout << " " << x1 << " " << id1 << " " << x2 << " " << id2 << " " << q << " " <<xpdf1 << " " << xpdf2 << " " << xpdf1_new << " " << xpdf2_new << " ";
-		double weight{1};
-		if( (xpdf1 * xpdf2) > 0.00001)
-		  weight = xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
-		pdf_weights.emplace_back(weight);
-		if (weight > 1.0) pdfWeightUp += (1-weight) * (1-weight);
-		if (weight < 1.0) pdfWeightDown += (1-weight) * (1-weight);
-		if (weight > max) max = weight;
-		if (weight < min) min = weight;
-		//	      std::cout << " " << xpdf1_new << " " << xpdf2_new << " " << weight << " ";
-	      
-	      }
-	      if (systMask == 1024) eventWeight *= max;
-	      if (systMask == 2048) eventWeight *= min;
-	      //std::cout << eventWeight << std::setprecision(4) << max << " " << min << " " << 1+std::sqrt(pdfWeightUp) << " " << 1-std::sqrt(pdfWeightDown) << std::endl;
-	      //std::cout << std::setprecision(9) << " " << min << " " << max << " " << eventWeight << std::endl;
-	    }
-	    //LHE event weights for everything else
-	    else {
-	      if (systMask == 1024) eventWeight *= event->weight_pdfMax; //Max
-	      if (systMask == 2048) eventWeight *= event->weight_pdfMin; //Min
-	    }
-	  }
-	  if ( systMask == 16384 || systMask == 32768 ){
-	    if (systMask == 16384) eventWeight *= event->weight_alphaMin; // Max, but incorrectly named branch
-	    if (systMask == 32768) eventWeight *= event->weight_alphaMax; // Min, but incorrectly named branch
-	  }
-	  //      if (synchCutFlow){
-	  //	std::cout << event->eventNum << " " << event->eventRun << " " << event->eventLumiblock << " " << std::endl;
-	  //}
-	  //Do the Zpt reweighting here
-	  if ( invertLepCut && trileptonChannel_ ){
-	    double zPT{(event->zPairLeptons.first + event->zPairLeptons.second).Pt()};
-	    eventWeight *= zptSF(channel,zPT);
-	  }
-	  if (makeMVATree){
-	    zLep1Index = event->zPairIndex.first;
-	    zLep2Index = event->zPairIndex.second;
-	    muonMomentumSF[0] = event->muonMomentumSF[0];
-	    muonMomentumSF[1] = event->muonMomentumSF[1];
-	    if (trileptonChannel_) {
-	      wLepIndex = event->wLepIndex;
-	      muonMomentumSF[2] = event->muonMomentumSF[2];
-	    }
-	    else if (!trileptonChannel_){
-	      wQuark1Index = event->wPairIndex.first;
-	      wQuark2Index = event->wPairIndex.second;
-	    }
-	    for (unsigned jetIndexIt{0}; jetIndexIt < 15; jetIndexIt++){
-	      if (jetIndexIt < event->jetIndex.size()){
-		jetInd[jetIndexIt] = event->jetIndex[jetIndexIt];
-		jetSmearValue[jetIndexIt] = event->jetSmearValue[jetIndexIt];
-	      }
-	      else {
-		jetInd[jetIndexIt] = -1;
-		jetSmearValue[jetIndexIt] = 0.0;
-	      }
-	    }
-	    for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++){
-	      if (bJetIt < event->bTagIndex.size()) bJetInd[bJetIt] = event->bTagIndex[bJetIt];
-	      else bJetInd[bJetIt] = -1;
-	    }
-	    mvaTree[systInd]->Fill();
-	  }
+                    if (!synchCutFlow)
+                    {
+                        eventWeight *= datasetWeight; // If not synch, scale
+                                                      // according to lumi
+                    }
 
-	  foundEvents++;
-	  foundEventsNorm += eventWeight;
-	  if (systInd > 0) systMask = systMask << 1;
-	}// End systematics loop.
-      } //end event loop
+                    // apply negative weighting for SameSign MC lepton samples
+                    // so that further downstream
+                    if (dataset->isMC() && !trileptonChannel_ && invertLepCut
+                        && !plots)
+                    {
+                        eventWeight *=
+                            -1.0; // Should NOT be done when plotting
+                                  // non-prompts - separate code for that
+                    }
 
-	//If we're making post lepSel skims save the tree here
-      if (makePostLepTree){
-	outFile1->cd();
-	std::cout << "\nPrinting some info on the tree " <<dataset->name() << " " << cloneTree->GetEntries() << std::endl;
-	std::cout << "But there were :" <<  datasetChain->GetEntries() << " entries in the original tree" << std::endl;
-	cloneTree->Write();
-	//Write out mc generator level info
-	if ( dataset->isMC() ) generatorWeightPlot->Write();
-	for (unsigned i{0}; i < bTagEffPlots.size(); i++){
-	  bTagEffPlots[i]->Write();
-	}
+                    // Apply in cutClass, as the RATIO weight of OS/SS
+                    // non-prompts cannot be applied before charge cuts (Z cand
+                    // cuts) are applied If NPLs shape (for plotting purposes)
+                    // apply OS/SS ratio SF
+                    // if ( plots && doNpls_ && dataset->getPlotLabel() == "NPL"
+                    // && !trileptonChannel_ ) { if ( channel == "ee" )
+                    // eventWeight *= 1.24806; if ( channel == "mumu" )
+                    // eventWeight *= 1.03226; if ( dataset->isMC() )
+                    // eventWeight
+                    // *= -1.0;
+                    //}
 
-	delete cloneTree;
-	cloneTree = nullptr;
-	outFile1->Write();
-	outFile1->Close();
-	outFile1 = nullptr;
+                    // If amcatnlo DY, normalise
+                    if (dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_
+                        && doZplusCR_)
+                    {
+                        eventWeight *= 0.384378; // New CR def
+                    }
+                    if (dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_
+                        && !doZplusCR_)
+                    {
+                        eventWeight *= 0.407213; // Old CR def
+                    }
 
-      }
+                    // If ttbar, do reweight
+                    //          std::cout << "eventWeight: " << eventWeight <<
+                    //          std::endl;
+                    if (dataset->name() == "ttbarInclusivePowerheg"
+                        || dataset->name()
+                               == "ttbarInclusivePowerheg_colourFlip"
+                        || dataset->name() == "ttbarInclusivePowerheg_hdampUP"
+                        || dataset->name() == "ttbarInclusivePowerheg_hdampDown"
+                        || dataset->name() == "ttbarInclusivePowerheg_fsrup"
+                        || dataset->name() == "ttbarInclusivePowerheg_fsrdown"
+                        || dataset->name() == "ttbarInclusivePowerheg_isrup"
+                        || dataset->name() == "ttbarInclusivePowerheg_isrdown")
+                    {
+                        eventWeight *= event->topPtReweight;
+                    }
+                    //	  std::cout << "event->topPtReweight: " <<
+                    // event->topPtReweight << std::endl;
+                    //          std::cout << "eventWeight: " << eventWeight <<
+                    //          std::endl;
 
-      //Save mva outputs
-      if (makeMVATree) {
-	std::string invPostFix {};
-	if (invertLepCut) {
-	  if ( trileptonChannel_ ) invPostFix = "invIso";
-	  else if ( !trileptonChannel_ ) invPostFix = "invLep";
-	}
+                    //	  std::cout << "channel: " << channel << std::endl;
+                    std::string histoName{dataset->getFillHisto()};
 
-	std::cout << (mvaDir + dataset->name() + postfix + (invertLepCut?invPostFix:"")  +  "mvaOut.root") << std::endl;
-	mvaOutFile->cd();
-	std::cout << std::endl;
-	int systMask{1};
-	std::cout << "Saving Systematics: ";
-	for (unsigned systInd{0}; systInd < systNames.size(); systInd++){
-	  if (systInd > 0 && !(systToRun & systMask)){
-	    systMask = systMask << 1;
-	    continue;
-	  }
-	  std::cout << systNames[systInd] << ": " << mvaTree[systInd]->GetEntriesFast() << " " << std::flush;
-	  mvaTree[systInd]->Write();
-	  if (systInd > 0) systMask = systMask << 1;
-	  if (!dataset->isMC()) break;
-	}
-	std::cout << std::endl;
-	//Save the efficiency plots for b-tagging here if we're doing that.
-	if (makePostLepTree){
-	  for (unsigned i{0}; i < bTagEffPlots.size(); i++){
-	    bTagEffPlots[i]->Write();
-	  }
-	}
-	mvaOutFile->Write();
-	for (unsigned i{0}; i < mvaTree.size(); i++){
-	  delete mvaTree[i];
-	}
-	mvaOutFile->Close();
-      }
-      if (infoDump){
-	std::cout << "In dataset " << dataset->getFillHisto() << " the cut flow looks like:" << std::endl;
-	for (int i{0}; i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX(); i++){
-	  std::cout << stageNames[i].first << "\t" << cutFlowMap[dataset->getFillHisto()]->GetBinContent(i+1) << std::endl;
-	}
-      }
-      std::cerr << "\nFound " << foundEvents << " in " << dataset->name() << std::endl;
-      std::cerr << "Found " << foundEventsNorm << " after normalisation in " << dataset->name() << std::endl;
-      //Delete generator level plot. Avoid memory leaks, kids.
-      delete generatorWeightPlot;
-      generatorWeightPlot = nullptr;
-      //Delete plots from out btag vector. Avoid memory leaks, kids.
-      if (makePostLepTree){
-	for (unsigned i{0}; i < bTagEffPlots.size(); i++){
-	  delete bTagEffPlots[i];
-	}
-      }
+                    if (!cutObj->makeCuts(
+                            event,
+                            &eventWeight,
+                            plotsMap[systNames[systInd] + channel][histoName],
+                            cutFlowMap[histoName + systNames[systInd]],
+                            systInd ? systMask : systInd))
+                    {
+                        if (systInd)
+                        {
+                            systMask = systMask << 1;
+                        }
+                        continue;
+                    }
 
-      //datasetChain->MakeClass("AnalysisEvent");
-    } // end channel loop.
-    delete datasetChain;
-  } //end dataset loop
+                    // Do Run 1 style PDF reweighting things for tW samples as
+                    // they use Powerheg V1 Everything else uses LHE event
+                    // weights
+                    if (systMask == 1024 || systMask == 2048)
+                    {
+                        if (dataset->name() == "tWInclusive"
+                            || dataset->name() == "tbarWInclusive"
+                            || dataset->name() == "tWInclusive_scaleup"
+                            || dataset->name() == "tWInclusive_scaledown"
+                            || dataset->name() == "tbarWInclusive_scaleup"
+                            || dataset->name() == "tbarWInclusive_scaledown")
+                        {
+                            // std::cout << std::setprecision(15) << eventWeight
+                            // << " ";
+                            LHAPDF::usePDFMember(1, 0);
+                            float q{event->genPDFScale};
+                            float x1{event->genPDFx1};
+                            float x2{event->genPDFx2};
+                            int id1{event->genPDFf1};
+                            int id2{event->genPDFf2};
+                            if (id2 == 21)
+                            {
+                                id2 = 0;
+                            }
+                            if (id1 == 21)
+                            {
+                                id1 = 0;
+                            }
+                            double xpdf1{LHAPDF::xfx(1, x1, q, id1)};
+                            double xpdf2{LHAPDF::xfx(1, x2, q, id2)};
+                            std::vector<float> pdf_weights;
+                            // std::cout << q << " " << x1 << " " << x2 << " "
+                            // << id1 << " " << id2 << " "; std::cout << xpdf1
+                            // << " " << xpdf2 << " " << xpdf1 * xpdf2 << " ";
+                            float min{1};
+                            float max{1};
+                            float pdfWeightUp{0};
+                            float pdfWeightDown{0};
+                            for (int j{1}; j <= 100; j++)
+                            {
+                                LHAPDF::usePDFMember(1, j);
+                                double xpdf1_new{LHAPDF::xfx(1, x1, q, id1)};
+                                double xpdf2_new{LHAPDF::xfx(1, x2, q, id2)};
+                                // std::cout << " " << x1 << " " << id1 << " "
+                                // << x2 << " " << id2 << " " << q << " "
+                                // <<xpdf1
+                                // << " " << xpdf2 << " " << xpdf1_new << " " <<
+                                // xpdf2_new << " ";
+                                double weight{1};
+                                if ((xpdf1 * xpdf2) > 0.00001)
+                                {
+                                    weight =
+                                        xpdf1_new * xpdf2_new / (xpdf1 * xpdf2);
+                                }
+                                pdf_weights.emplace_back(weight);
+                                if (weight > 1.0)
+                                {
+                                    pdfWeightUp += (1 - weight) * (1 - weight);
+                                }
+                                if (weight < 1.0)
+                                {
+                                    pdfWeightDown +=
+                                        (1 - weight) * (1 - weight);
+                                }
+                                if (weight > max)
+                                {
+                                    max = weight;
+                                }
+                                if (weight < min)
+                                {
+                                    min = weight;
+                                }
+                                //	      std::cout << " " << xpdf1_new << " "
+                                //<< xpdf2_new << " " << weight << " ";
+                            }
+                            if (systMask == 1024)
+                            {
+                                eventWeight *= max;
+                            }
+                            if (systMask == 2048)
+                            {
+                                eventWeight *= min;
+                            }
+                            // std::cout << eventWeight << std::setprecision(4)
+                            // << max << " " << min << " " <<
+                            // 1+std::sqrt(pdfWeightUp) << " " <<
+                            // 1-std::sqrt(pdfWeightDown) << std::endl;
+                            // std::cout
+                            // << std::setprecision(9) << " " << min << " " <<
+                            // max << " " << eventWeight << std::endl;
+                        }
+                        // LHE event weights for everything else
+                        else
+                        {
+                            if (systMask == 1024)
+                            {
+                                eventWeight *= event->weight_pdfMax; // Max
+                            }
+                            if (systMask == 2048)
+                            {
+                                eventWeight *= event->weight_pdfMin; // Min
+                            }
+
+                        }
+                    }
+                    if (systMask == 16384 || systMask == 32768)
+                    {
+                        if (systMask == 16384)
+                        {
+                            eventWeight *=
+                                event->weight_alphaMin; // Max, but incorrectly
+                                                        // named branch
+                        }
+                        if (systMask == 32768)
+                        {
+                            eventWeight *=
+                                event->weight_alphaMax; // Min, but incorrectly
+                                                        // named branch
+                        }
+                    }
+                    //      if (synchCutFlow){
+                    //	std::cout << event->eventNum << " " << event->eventRun
+                    //<< " " << event->eventLumiblock << " " << std::endl;
+                    //}
+                    // Do the Zpt reweighting here
+                    if (invertLepCut && trileptonChannel_)
+                    {
+                        double zPT{(event->zPairLeptons.first
+                                    + event->zPairLeptons.second)
+                                       .Pt()};
+                        eventWeight *= zptSF(channel, zPT);
+                    }
+                    if (makeMVATree)
+                    {
+                        zLep1Index = event->zPairIndex.first;
+                        zLep2Index = event->zPairIndex.second;
+                        muonMomentumSF[0] = event->muonMomentumSF[0];
+                        muonMomentumSF[1] = event->muonMomentumSF[1];
+                        if (trileptonChannel_)
+                        {
+                            wLepIndex = event->wLepIndex;
+                            muonMomentumSF[2] = event->muonMomentumSF[2];
+                        }
+                        else if (!trileptonChannel_)
+                        {
+                            wQuark1Index = event->wPairIndex.first;
+                            wQuark2Index = event->wPairIndex.second;
+                        }
+                        for (unsigned jetIndexIt{0}; jetIndexIt < 15;
+                             jetIndexIt++)
+                        {
+                            if (jetIndexIt < event->jetIndex.size())
+                            {
+                                jetInd[jetIndexIt] =
+                                    event->jetIndex[jetIndexIt];
+                                jetSmearValue[jetIndexIt] =
+                                    event->jetSmearValue[jetIndexIt];
+                            }
+                            else
+                            {
+                                jetInd[jetIndexIt] = -1;
+                                jetSmearValue[jetIndexIt] = 0.0;
+                            }
+                        }
+                        for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++)
+                        {
+                            if (bJetIt < event->bTagIndex.size())
+                            {
+                                bJetInd[bJetIt] = event->bTagIndex[bJetIt];
+                            }
+                            else
+                            {
+                                bJetInd[bJetIt] = -1;
+                            }
+                        }
+                        mvaTree[systInd]->Fill();
+                    }
+
+                    foundEvents++;
+                    foundEventsNorm += eventWeight;
+                    if (systInd > 0)
+                    {
+                        systMask = systMask << 1;
+                    }
+                } // End systematics loop.
+            } // end event loop
+
+            // If we're making post lepSel skims save the tree here
+            if (makePostLepTree)
+            {
+                outFile1->cd();
+                std::cout << "\nPrinting some info on the tree "
+                          << dataset->name() << " " << cloneTree->GetEntries()
+                          << std::endl;
+                std::cout << "But there were :" << datasetChain->GetEntries()
+                          << " entries in the original tree" << std::endl;
+                cloneTree->Write();
+                // Write out mc generator level info
+                if (dataset->isMC())
+                {
+                    generatorWeightPlot->Write();
+                }
+                for (unsigned i{0}; i < bTagEffPlots.size(); i++)
+                {
+                    bTagEffPlots[i]->Write();
+                }
+
+                delete cloneTree;
+                cloneTree = nullptr;
+                outFile1->Write();
+                outFile1->Close();
+                outFile1 = nullptr;
+            }
+
+            // Save mva outputs
+            if (makeMVATree)
+            {
+                std::string invPostFix{};
+                if (invertLepCut)
+                {
+                    if (trileptonChannel_)
+                    {
+                        invPostFix = "invIso";
+                    }
+                    else if (!trileptonChannel_)
+                    {
+                        invPostFix = "invLep";
+                    }
+                }
+
+                std::cout << (mvaDir + dataset->name() + postfix
+                              + (invertLepCut ? invPostFix : "")
+                              + "mvaOut.root")
+                          << std::endl;
+                mvaOutFile->cd();
+                std::cout << std::endl;
+                int systMask{1};
+                std::cout << "Saving Systematics: ";
+                for (unsigned systInd{0}; systInd < systNames.size(); systInd++)
+                {
+                    if (systInd > 0 && !(systToRun & systMask))
+                    {
+                        systMask = systMask << 1;
+                        continue;
+                    }
+                    std::cout << systNames[systInd] << ": "
+                              << mvaTree[systInd]->GetEntriesFast() << " "
+                              << std::flush;
+                    mvaTree[systInd]->Write();
+                    if (systInd > 0)
+                    {
+                        systMask = systMask << 1;
+                    }
+                    if (!dataset->isMC())
+                    {
+                        break;
+                    }
+                }
+                std::cout << std::endl;
+                // Save the efficiency plots for b-tagging here if we're doing
+                // that.
+                if (makePostLepTree)
+                {
+                    for (unsigned i{0}; i < bTagEffPlots.size(); i++)
+                    {
+                        bTagEffPlots[i]->Write();
+                    }
+                }
+                mvaOutFile->Write();
+                for (unsigned i{0}; i < mvaTree.size(); i++)
+                {
+                    delete mvaTree[i];
+                }
+                mvaOutFile->Close();
+            }
+            if (infoDump)
+            {
+                std::cout << "In dataset " << dataset->getFillHisto()
+                          << " the cut flow looks like:" << std::endl;
+                for (int i{0};
+                     i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX();
+                     i++)
+                {
+                    std::cout
+                        << stageNames[i].first << "\t"
+                        << cutFlowMap[dataset->getFillHisto()]->GetBinContent(
+                               i + 1)
+                        << std::endl;
+                }
+            }
+            std::cerr << "\nFound " << foundEvents << " in " << dataset->name()
+                      << std::endl;
+            std::cerr << "Found " << foundEventsNorm
+                      << " after normalisation in " << dataset->name()
+                      << std::endl;
+            // Delete generator level plot. Avoid memory leaks, kids.
+            delete generatorWeightPlot;
+            generatorWeightPlot = nullptr;
+            // Delete plots from out btag vector. Avoid memory leaks, kids.
+            if (makePostLepTree)
+            {
+                for (unsigned i{0}; i < bTagEffPlots.size(); i++)
+                {
+                    delete bTagEffPlots[i];
+                }
+            }
+
+            // datasetChain->MakeClass("AnalysisEvent");
+        } // end channel loop.
+        delete datasetChain;
+    } // end dataset loop
 }
 
 void AnalysisAlgo::savePlots()
 {
-  //Save all plot objects. For testing purposes.
-  
-  //Now test out the histogram plotter class I just wrote.
-  //Make the plotting object.
-  if (plots||infoDump){
-    HistogramPlotter plotObj = HistogramPlotter(legOrder,plotOrder,datasetInfos,is2016_);
+    // Save all plot objects. For testing purposes.
 
-    // If either making or reading in histos, then set the correct read in directory 
-    if ( (makeHistos || useHistos) && plots ) plotObj.setHistogramFolder(histoDir);
+    // Now test out the histogram plotter class I just wrote.
+    // Make the plotting object.
+    if (plots || infoDump)
+    {
+        HistogramPlotter plotObj =
+            HistogramPlotter(legOrder, plotOrder, datasetInfos, is2016_);
 
-    //If making histos, save the output!
-    if ( makeHistos && plots ) {
-      std::cout << "Saving histograms for later use ..." << std::endl;
-      for (unsigned i{0};  i < plotsVec.size(); i++){
-        plotObj.saveHistos(plotsMap[plotsVec[i]]);
-      }
-      plotObj.saveHistos( cutFlowMap, "cutFlow", channel ); // Don't forget to save the cutflow too!      
+        // If either making or reading in histos, then set the correct read in
+        // directory
+        if ((makeHistos || useHistos) && plots)
+        {
+            plotObj.setHistogramFolder(histoDir);
+        }
+
+        // If making histos, save the output!
+        if (makeHistos && plots)
+        {
+            std::cout << "Saving histograms for later use ..." << std::endl;
+            for (unsigned i{0}; i < plotsVec.size(); i++)
+            {
+                plotObj.saveHistos(plotsMap[plotsVec[i]]);
+            }
+            plotObj.saveHistos(
+                cutFlowMap,
+                "cutFlow",
+                channel); // Don't forget to save the cutflow too!
+        }
+
+        if (!makeHistos)
+        {
+            if (useHistos)
+            {
+                plotObj.loadHistos(); // If using saved histos, read them in ...
+            }
+            plotObj.setLabelOne("CMS Preliminary");
+            plotObj.setLabelTwo("Some amount of lumi");
+            plotObj.setPostfix("");
+            plotObj.setOutputFolder(outFolder);
+
+            for (unsigned i{0}; i < plotsVec.size(); i++)
+            {
+                std::cout << plotsVec[i] << std::endl;
+                if (plots)
+                {
+                    plotObj.plotHistos(plotsMap[plotsVec[i]]);
+                }
+            }
+
+            // cut flow x axis labels
+            std::vector<std::string> cutFlowLabels;
+            for (std::vector<
+                     std::pair<std::string, std::string>>::const_iterator lIt =
+                     stageNames.begin();
+                 lIt != stageNames.end();
+                 ++lIt)
+            {
+                cutFlowLabels.emplace_back((*lIt).second);
+            }
+            if (useHistos)
+            {
+                cutFlowMap = plotObj.loadCutFlowMap("cutFlow", channel);
+            }
+            plotObj.makePlot(
+                cutFlowMap, "data/MC Yield", "cutFlow", cutFlowLabels);
+        }
+    }
+    if (synchCutFlow)
+    {
+        cutObj->getSynchCutFlow();
     }
 
-    if (!makeHistos) {
-      if ( useHistos ) plotObj.loadHistos(); // If using saved histos, read them in ...
-      plotObj.setLabelOne("CMS Preliminary");
-      plotObj.setLabelTwo("Some amount of lumi");
-      plotObj.setPostfix("");
-      plotObj.setOutputFolder(outFolder);
+    // Delete all the plot objects.
 
-      for (unsigned i{0};  i < plotsVec.size(); i++){
-        std::cout << plotsVec[i] << std::endl;
-        if (plots)
-  	  plotObj.plotHistos(plotsMap[plotsVec[i]]);
+    std::cerr << "Gets to the delete bit" << std::endl;
+    /*  if (plots || infoDump){
+        std::string histoName { dataset->getFillHisto() };
+        for (auto dataset = datasets.begin(); dataset!=datasets.end();
+      ++dataset){ if (cutFlowMap.find( histoName ) == cutFlowMap.end())
+      continue; delete cutFlowMap[ histoName ]; if (!plots) continue; for
+      (unsigned j = 0; j < stageNames.size(); j++){ int systMask = 1; for
+      (unsigned systInd = 0; systInd < systNames.size(); systInd++){ if (systInd
+      > 0 && !(systInd & systMask)) { systMask = systMask << 1; continue;
+          }
+          delete plotsMap[systNames[systInd]][ histoName ][stageNames[j].first];
+          if (systInd > 0) systMask = systMask << 1;
+        }
+          }
+        }
       }
+    */
+    delete cutConfName;
+    delete plotConfName;
 
-      // cut flow x axis labels
-      std::vector<std::string> cutFlowLabels;
-      for ( std::vector< std::pair <std::string,std::string> >::const_iterator lIt = stageNames.begin(); lIt != stageNames.end(); ++lIt){
-      	cutFlowLabels.emplace_back( (*lIt).second );
-      }
-      if (useHistos) cutFlowMap = plotObj.loadCutFlowMap("cutFlow",channel);
-      plotObj.makePlot(cutFlowMap,"data/MC Yield", "cutFlow",cutFlowLabels);
-    }
-  }
-  if (synchCutFlow){
-    cutObj->getSynchCutFlow();
-  }
-
-  //Delete all the plot objects.
-
-  std::cerr << "Gets to the delete bit" << std::endl;
-/*  if (plots || infoDump){
-    std::string histoName { dataset->getFillHisto() };
-    for (auto dataset = datasets.begin(); dataset!=datasets.end(); ++dataset){
-      if (cutFlowMap.find( histoName ) == cutFlowMap.end()) continue;
-      delete cutFlowMap[ histoName ];
-      if (!plots) continue;
-      for (unsigned j = 0; j < stageNames.size(); j++){
-	int systMask = 1;
-	for (unsigned systInd = 0; systInd < systNames.size(); systInd++){
-	  if (systInd > 0 && !(systInd & systMask)) {
-	    systMask = systMask << 1;
-	    continue;
-	  }
-	  delete plotsMap[systNames[systInd]][ histoName ][stageNames[j].first];
-	  if (systInd > 0) systMask = systMask << 1;
-	}
-      }
-    }
-  }
-*/
-  delete cutConfName;
-  delete plotConfName;
-
-  std::cerr  << "But not past it" << std::endl;
+    std::cerr << "But not past it" << std::endl;
 }
 
-std::string AnalysisAlgo::channelSetup (unsigned channelInd) {
+std::string AnalysisAlgo::channelSetup(unsigned channelInd)
+{
+    std::string chanName{};
 
-  std::string chanName {};
-
-  if (channelsToRun && trileptonChannel_){
-    if (channelInd & 17){ // eee channels
-      cutObj->setNumLeps(0,0,3,3);
-      cutObj->setCutConfTrigLabel("e");
-      channel = "eee";
-      postfix = "eee";
-      chanName += "eee";
+    if (channelsToRun && trileptonChannel_)
+    {
+        if (channelInd & 17)
+        { // eee channels
+            cutObj->setNumLeps(0, 0, 3, 3);
+            cutObj->setCutConfTrigLabel("e");
+            channel = "eee";
+            postfix = "eee";
+            chanName += "eee";
+        }
+        if (channelInd & 34)
+        { // eemu channels
+            cutObj->setNumLeps(1, 1, 2, 2);
+            cutObj->setCutConfTrigLabel("d1");
+            channel = "eemu";
+            postfix = "eemu";
+            chanName += "eemu";
+        }
+        if (channelInd & 68)
+        { // emumu channels
+            cutObj->setNumLeps(2, 2, 1, 1);
+            cutObj->setCutConfTrigLabel("d2");
+            channel = "emumu";
+            postfix = "emumu";
+            chanName += "emumu";
+        }
+        if (channelInd & 136)
+        { // mumumu channels
+            cutObj->setNumLeps(3, 3, 0, 0);
+            cutObj->setCutConfTrigLabel("m");
+            channel = "mumumu";
+            postfix = "mumumu";
+            chanName += "mumumu";
+        }
+        if (channelInd & 15)
+        { // nominal samples
+            cutObj->setInvLepCut(false);
+            invertLepCut = false;
+            chanName += "nom";
+        }
+        if (channelInd & 240)
+        { // inv iso samples
+            cutObj->setInvLepCut(true);
+            invertLepCut = true;
+            chanName += "inv";
+        }
     }
-    if (channelInd & 34){ //eemu channels
-      cutObj->setNumLeps(1,1,2,2);
-      cutObj->setCutConfTrigLabel("d1");
-      channel = "eemu";
-      postfix = "eemu";
-      chanName += "eemu";
+    if (channelsToRun && !trileptonChannel_)
+    {
+        if (channelInd & 5)
+        { // ee channels
+            cutObj->setNumLeps(0, 0, 2, 2);
+            cutObj->setCutConfTrigLabel("e");
+            channel = "ee";
+            postfix = "ee";
+            chanName += "ee";
+        }
+        if (channelInd & 10)
+        { // mumu channels
+            cutObj->setNumLeps(2, 2, 0, 0);
+            cutObj->setCutConfTrigLabel("m");
+            channel = "mumu";
+            postfix = "mumu";
+            chanName += "mumu";
+        }
+        if (channelInd & 3)
+        { // nominal samples
+            cutObj->setInvLepCut(false);
+            invertLepCut = false;
+            chanName += "nom";
+        }
+        if (channelInd & 12)
+        { // same sign samples
+            cutObj->setInvLepCut(true);
+            invertLepCut = true;
+            chanName += "inv";
+        }
+        if (channelInd & 16)
+        { // emu channel for ttbar background estimation
+            cutObj->setNumLeps(1, 1, 1, 1);
+            cutObj->setCutConfTrigLabel("d");
+            channel = "emu";
+            postfix = "emu";
+            chanName += "emu";
+        }
+        if (channelInd & 32)
+        { // same signemu channel for NPL ttbar background estimation
+            cutObj->setNumLeps(1, 1, 1, 1);
+            cutObj->setCutConfTrigLabel("d");
+            channel = "emu";
+            postfix = "emu";
+            cutObj->setInvLepCut(true);
+            invertLepCut = true;
+            chanName += "invemu";
+        }
     }
-    if (channelInd & 68){ // emumu channels
-      cutObj->setNumLeps(2,2,1,1);
-      cutObj->setCutConfTrigLabel("d2");
-      channel = "emumu";
-      postfix = "emumu";
-      chanName += "emumu";
-    }
-    if (channelInd & 136){ // mumumu channels
-      cutObj->setNumLeps(3,3,0,0);
-      cutObj->setCutConfTrigLabel("m");
-      channel = "mumumu";
-      postfix = "mumumu";
-      chanName += "mumumu";
-    }
-    if (channelInd & 15){ //nominal samples
-      cutObj->setInvLepCut(false);
-      invertLepCut = false;
-      chanName += "nom";
-    }
-    if (channelInd & 240){ //inv iso samples
-      cutObj->setInvLepCut(true);
-      invertLepCut = true;
-      chanName += "inv";
-    }
-  }
-  if (channelsToRun && !trileptonChannel_){
-    if (channelInd & 5){ // ee channels
-      cutObj->setNumLeps(0,0,2,2);
-      cutObj->setCutConfTrigLabel("e");
-      channel = "ee";
-      postfix = "ee";
-      chanName += "ee";
-    }
-    if (channelInd & 10){ // mumu channels
-      cutObj->setNumLeps(2,2,0,0);
-      cutObj->setCutConfTrigLabel("m");
-      channel = "mumu";
-      postfix = "mumu";
-      chanName += "mumu";
-    }
-    if (channelInd & 3){ //nominal samples
-      cutObj->setInvLepCut(false);
-      invertLepCut = false;
-      chanName += "nom";
-    }
-    if (channelInd & 12){ //same sign samples
-      cutObj->setInvLepCut(true);
-      invertLepCut = true;
-      chanName += "inv";
-    }
-    if (channelInd & 16){ //emu channel for ttbar background estimation
-      cutObj->setNumLeps(1,1,1,1);
-      cutObj->setCutConfTrigLabel("d");
-      channel = "emu";
-      postfix = "emu";
-      chanName += "emu";
-    }
-    if (channelInd & 32){ //same signemu channel for NPL ttbar background estimation
-      cutObj->setNumLeps(1,1,1,1);
-      cutObj->setCutConfTrigLabel("d");
-      channel = "emu";
-      postfix = "emu";
-      cutObj->setInvLepCut(true);
-      invertLepCut = true;
-      chanName += "invemu";
-    }
-  }
-  return chanName;
+    return chanName;
 }
