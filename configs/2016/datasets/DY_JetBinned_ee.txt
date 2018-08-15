@@ -310,7 +310,7 @@ plotType = f
 
 [eeRun2016]
 fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
-luminosity = 35860.065
+luminosity = 35858.984
 runType = data
 histoName = data
 label = Data
