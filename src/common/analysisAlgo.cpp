@@ -247,6 +247,8 @@ void AnalysisAlgo::setBranchStatusAll(TTree * chain, bool isMC, std::string trig
   //MET variables - for plotting (no cuts on these)
   chain->SetBranchStatus("metPF2PATEt",1);
   chain->SetBranchStatus("metPF2PATPt",1);
+  chain->SetBranchStatus("metPF2PATUnclusteredEnUp",1);
+  chain->SetBranchStatus("metPF2PATUnclusteredEnDown",1);
   //primary vertex info. For muon cut
   chain->SetBranchStatus("pvX",1);
   chain->SetBranchStatus("pvY",1);
