@@ -295,7 +295,7 @@ but are explained below also.
 
 For the trigger systematics, the Scale Factors (SF) are applied to MC
 datasets only. The relevant code can be found on lines 876-929 in
-=src/common/analysisAlgo.cpp=. Currently the SF values for the various
+=src/analysisAlgo.cpp=. Currently the SF values for the various
 lepton searches are hard-coded, but it is intended to separate them from
 the main body of code into a separate function. The values for the SFs
 can be found here:
@@ -309,7 +309,7 @@ analyses are focusing on the dilepton final state.
 
 For the JER systematics, the Scale Factors (SF) are applied to MC
 datasets only. The relevant code can be found in the function
-=Cuts::getJetLVec= in =src/common/cutClass.cpp=. Currently the SF values
+=Cuts::getJetLVec= in =src/cutClass.cpp=. Currently the SF values
 for the JER SFs are hard-coded (in various eta bins), but it is intended
 that these values will be retrieved via CMSSW and stored in nTuples
 during the next generation of nTuples. The values for the SFs can be
@@ -335,7 +335,7 @@ Gaussian of width:
 
 For the JES systematics, the Scale Factors (SF) are applied to MC datasets only.
 The relevant code can be found in the function =Cuts::getJECUncertainity= in
-=src/common/cutClass.cpp=, and it is called in the =Cuts::getJetLVec= function
+=src/cutClass.cpp=, and it is called in the =Cuts::getJetLVec= function
 in the same file. This function applies the Jet Energy Correction Uncertainties,
 which are read in from a text file. This text file is loaded by the function
 =Cuts::initialiseJECCors= in the same file. In the future, it is intended that
@@ -386,7 +386,7 @@ The latest JSON file for pileup can be found here:
 
 The b-tagging systematics require b-tagging efficiency plots to be
 created. These b-tag efficiency plots are made for the MC samples in the
-=Cuts::makeJetCuts= function in =src/common/cutClass.cpp=.
+=Cuts::makeJetCuts= function in =src/cutClass.cpp=.
 
 Using these plots, the function =Cuts::getBWeight= in the same file
 reads out these efficiencies and loads the scale factors from
@@ -398,7 +398,7 @@ by CMS. The current csv files can be found here:
 ** PDF Systematics:
 
 The PDF systematics are applied between lines 944-983 in
-=src/common/analysisAlgo.cpp= and the function used is initialised on
+=src/analysisAlgo.cpp= and the function used is initialised on
 line 584 of the same file. It is intended to separate these parts of the
 code from the main body of code into a separate function in the near
 future. The current PDF set to be used can be found here:

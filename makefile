@@ -1,12 +1,12 @@
 CXX = g++
 
-LIBRARY_SOURCES = $(wildcard src/common/*.cpp)
-LIBRARY_OBJECT_FILES = $(patsubst src/common/%.cpp,obj/%.o,${LIBRARY_SOURCES})
+LIBRARY_SOURCES = $(wildcard src/*.cpp)
+LIBRARY_OBJECT_FILES = $(patsubst src/%.cpp,obj/%.o,${LIBRARY_SOURCES})
 LIBRARY = lib/libTQZanalysisTools.so
 
-EXECUTABLE_SOURCES = $(wildcard src/common/*.cxx)
-EXECUTABLE_OBJECT_FILES = $(patsubst src/common/%.cxx,obj/%.o,${EXECUTABLE_SOURCES})
-EXECUTABLES = $(patsubst src/common/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
+EXECUTABLE_SOURCES = $(wildcard src/*.cxx)
+EXECUTABLE_OBJECT_FILES = $(patsubst src/%.cxx,obj/%.o,${EXECUTABLE_SOURCES})
+EXECUTABLES = $(patsubst src/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-L/scratch/shared/lib \
@@ -59,7 +59,7 @@ _all: ${LIBRARY} ${EXECUTABLES}
 ${LIBRARY}: ${LIBRARY_OBJECT_FILES}
 	${CXX} ${LINK_LIBRARY_FLAGS} ${LIBRARY_OBJECT_FILES} -o $@
 
-${LIBRARY_OBJECT_FILES}: obj/%.o : src/common/%.cpp
+${LIBRARY_OBJECT_FILES}: obj/%.o : src/%.cpp
 	mkdir -p {bin,obj,lib}
 	${CXX} -c ${CFLAGS}  $< -o $@
 
@@ -69,7 +69,7 @@ ${LIBRARY_OBJECT_FILES}: obj/%.o : src/common/%.cpp
 ${EXECUTABLES}: bin/%.exe: obj/%.o ${EXECUTABLE_OBJECT_FILES}
 	${CXX} ${LINK_EXECUTABLE_FLAGS} $< -o $@
 
-${EXECUTABLE_OBJECT_FILES}: obj/%.o : src/common/%.cxx
+${EXECUTABLE_OBJECT_FILES}: obj/%.o : src/%.cxx
 	mkdir -p {bin,obj,lib}
 	${CXX} -c ${CFLAGS} $< -o $@
 
