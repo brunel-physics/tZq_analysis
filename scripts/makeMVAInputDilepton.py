@@ -76,7 +76,7 @@ def getJetVec(tree, index, smearValue, metVec, is2016, syst, doMetSmear):
 
     returnJet = TLorentzVector();
     returnJet.SetPxPyPzE(tree.jetPF2PATPx[index],tree.jetPF2PATPy[index],tree.jetPF2PATPz[index],tree.jetPF2PATE[index]);
-    returnJet *= smearValue;	
+    returnJet *= smearValue;
 
     if syst == 16:
         returnJet *= 1+ jetUnc.getUncertainty(returnJet.Pt(), returnJet.Eta(),1)
@@ -371,14 +371,14 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 
 	##Save event number for debugging
 	varMap["eventNumber"][0] = tree.eventNum
-	
+
 	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
         metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
-             
+
         ## SFs for NPL lepton estimation normilisation
         if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.939 # SF we weight fake ee shape by
         elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.894 # SF we weight fake ee shape by
@@ -458,7 +458,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
              varMap["met"][0] = tree.metPF2PATUnclusteredEnUp
         elif syst == 2048:
              varMap["met"][0] =tree.metPF2PATUnclusteredEnDown
-        else: 
+        else:
              varMap["met"][0] = metVec.Pt()
 
         varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]

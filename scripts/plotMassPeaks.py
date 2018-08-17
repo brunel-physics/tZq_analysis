@@ -718,8 +718,8 @@ def main():
   totalEvents_tZq = tZq_chi2Histo.Integral()
   sumEvents_tZq = 0.0
   tZq_flag1 = 0
-  tZq_flag1a = 0 
-  tZq_flag1b = 0 
+  tZq_flag1a = 0
+  tZq_flag1b = 0
   tZq_flag2 = 0
   tZq_flag3 = 0
   for x in range(0,300):

@@ -21,7 +21,7 @@ needs to execute the following console command in the program's main
 directory:
 
 #+BEGIN_SRC sh
-    make 
+    make
 #+END_SRC
 
 The makefile will need to be modified to take into account local library

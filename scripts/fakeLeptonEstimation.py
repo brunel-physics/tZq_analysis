@@ -2,9 +2,9 @@
 
 from ROOT import *
 import math
-import os 
+import os
 import sys
-import subprocess 
+import subprocess
 
 def sortOutLeptons(tree,channel):
     ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
@@ -202,7 +202,7 @@ def main():
 
       lep1_mumu = 0
       lep2_mumu = 0
- 
+
       if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep1Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep1Index] == 1 ) : lep1_mumu = 1
       if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep2Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep2Index] == 1 ) : lep2_mumu = 1
 
@@ -226,7 +226,7 @@ def main():
 
       lep1_emu = 0
       lep2_emu = 0
- 
+
       if (tree_MC_emu.genElePF2PATPromptDecayed[tree_MC_emu.zLep1Index] == 1 or tree_MC_emu.genElePF2PATPromptFinalState[tree_MC_emu.zLep1Index] == 1 ) : lep1_emu = 1
       if (tree_MC_emu.genMuonPF2PATPromptDecayed[tree_MC_emu.zLep2Index] == 1 or tree_MC_emu.genMuonPF2PATPromptFinalState[tree_MC_emu.zLep2Index] == 1 ) : lep2_emu = 1
 
