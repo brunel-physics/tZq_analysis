@@ -17,12 +17,7 @@ Plots::Plots(std::vector<std::string> titles,
              std::vector<std::string> xAxisLabels,
              std::vector<int> cutStage,
              unsigned thisCutStage,
-             std::string postfixName,
-             const bool trileptonChannel)
-    :
-
-    trileptonChannel_{trileptonChannel}
-
+             std::string postfixName)
 {
     // Get the function pointer map for later custopmisation. This is gonna be
     // great, I promise.
@@ -68,24 +63,12 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap()
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2RelIso", &Plots::fillLepton2RelIso));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1Phi", &Plots::fillLepton1Phi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2Phi", &Plots::fillLepton2Phi));
-
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3Pt", &Plots::fillLepton3Pt));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3Eta", &Plots::fillLepton3Eta));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3Phi", &Plots::fillLepton3Phi));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3RelIso", &Plots::fillLepton3RelIso));
-    }
-    else if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Pt", &Plots::fillWbosonQuark1Pt));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Eta", &Plots::fillWbosonQuark1Eta));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Phi", &Plots::fillWbosonQuark1Phi));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Pt", &Plots::fillWbosonQuark2Pt));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Eta", &Plots::fillWbosonQuark2Eta));
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Phi", &Plots::fillWbosonQuark2Phi));
-    }
-
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Pt", &Plots::fillWbosonQuark1Pt));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Eta", &Plots::fillWbosonQuark1Eta));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Phi", &Plots::fillWbosonQuark1Phi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Pt", &Plots::fillWbosonQuark2Pt));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Eta", &Plots::fillWbosonQuark2Eta));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Phi", &Plots::fillWbosonQuark2Phi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("met", &Plots::fillMetPlot));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("numbJets", &Plots::getNumberOfJets));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totalJetMass", &Plots::fillTotalJetMass));
@@ -114,105 +97,33 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap()
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1Eta", &Plots::fillZLep1Eta));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Pt", &Plots::fillZLep2Pt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Eta", &Plots::fillZLep2Eta));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wLeptonPt", &Plots::fillWLepPt));
-    }
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wLeptonEta", &Plots::fillWLepEta));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1RelIso", &Plots::fillZLep1RelIso));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2RelIso", &Plots::fillZLep2RelIso));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wLeptonRelIso", &Plots::fillWLepRelIso));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1Phi", &Plots::fillZLep1Phi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Phi", &Plots::fillZLep2Phi));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wLeptonPhi", &Plots::fillWLepPhi));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairMass", &Plots::fillZPairMass));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPt", &Plots::fillZPairPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairEta", &Plots::fillZPairEta));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPhi", &Plots::fillZPairPhi));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPair1Mass", &Plots::fillWPair1Mass));
-    }
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPair2Mass", &Plots::fillWPair2Mass));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairMass", &Plots::fillWPairMass));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairPt", &Plots::fillWPairPt));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairEta", &Plots::fillWPairEta));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairPhi", &Plots::fillWPairPhi));
-    }
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lepMass", &Plots::fillLeptonMass));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topMass", &Plots::fillTopMass));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topPt", &Plots::fillTopPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topEta", &Plots::fillTopEta));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topPhi", &Plots::fillTopPhi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1D0", &Plots::fillLepton1D0));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2D0", &Plots::fillLepton2D0));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3D0", &Plots::fillLepton3D0));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1DBD0", &Plots::fillLepton1DBD0));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2DBD0", &Plots::fillLepton2DBD0));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3DBD0", &Plots::fillLepton3DBD0));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1BeamSpotCorrectedD0", &Plots::fillLepton1BeamSpotCorrectedD0));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2BeamSpotCorrectedD0", &Plots::fillLepton2BeamSpotCorrectedD0));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3BeamSpotCorrectedD0", &Plots::fillLepton3BeamSpotCorrectedD0));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1InnerTrackD0", &Plots::fillLepton1InnerTrackD0));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2InnerTrackD0", &Plots::fillLepton2InnerTrackD0));
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep3InnerTrackD0", &Plots::fillLepton3InnerTrackD0));
-    }
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wTransverseMass", &Plots::fillwTransverseMass));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jjDelR", &Plots::filljjDelR));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jjDelPhi", &Plots::filljjDelPhi));
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelR", &Plots::fillwwDelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelPhi", &Plots::fillwwDelPhi));
-    }
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelR", &Plots::filllbDelR));
-    }
-    if (trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelPhi", &Plots::filllbDelPhi));
-    }
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelR", &Plots::fillwwDelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelPhi", &Plots::fillwwDelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelR", &Plots::filllbDelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelPhi", &Plots::filllbDelPhi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepDelR", &Plots::fillZLepDelR));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepDelPhi", &Plots::fillZLepDelPhi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1Quark1DelR", &Plots::fillZLep1Quark1DelR));
@@ -228,65 +139,25 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap()
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2BjetDelR", &Plots::fillZLep2BjetDelR));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2BjetDelPhi", &Plots::fillZLep2BjetDelPhi));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lepHt", &Plots::fillLepHt));
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuarkHt", &Plots::fillWquarkHt));
-    }
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuarkHt", &Plots::fillWquarkHt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jetHt", &Plots::fillJetHt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totHt", &Plots::fillTotHt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totHtOverPt", &Plots::fillTotHtOverPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totPt", &Plots::fillTotPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totEta", &Plots::fillTotEta));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totM", &Plots::fillTotM));
-
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelR", &Plots::fillWZdelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelPhi", &Plots::fillWZdelPhi));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelR", &Plots::fillZquark1DelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelPhi", &Plots::fillZquark1DelPhi));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelR", &Plots::fillZquark2DelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelPhi", &Plots::fillZquark2DelPhi));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelR", &Plots::fillZtopDelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelPhi", &Plots::fillZtopDelPhi));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelR", &Plots::fillZLep1TopDelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelPhi", &Plots::fillZLep1TopDelPhi));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelR", &Plots::fillZLep2TopDelR));
-    }
-    if (!trileptonChannel_)
-    {
-        functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelPhi", &Plots::fillZLep2TopDelPhi));
-    }
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelR", &Plots::fillWZdelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelPhi", &Plots::fillWZdelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelR", &Plots::fillZquark1DelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelPhi", &Plots::fillZquark1DelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelR", &Plots::fillZquark2DelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelPhi", &Plots::fillZquark2DelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelR", &Plots::fillZtopDelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelPhi", &Plots::fillZtopDelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelR", &Plots::fillZLep1TopDelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelPhi", &Plots::fillZLep1TopDelPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelR", &Plots::fillZLep2TopDelR));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelPhi", &Plots::fillZLep2TopDelPhi));
 
     return functionPointerMap;
 }
@@ -1074,21 +945,7 @@ float Plots::fillLeptonMass(AnalysisEvent* event)
 
 float Plots::fillTopMass(AnalysisEvent* event)
 {
-    if (trileptonChannel_ && event->bTagIndex.size() > 0)
-    {
-        TLorentzVector tempMet, tempBjet;
-        float smearValue = event->jetSmearValue[event->bTagIndex[0]];
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        tempBjet.SetPtEtaPhiE(
-            event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-        tempBjet *= smearValue;
-        return (tempMet + tempBjet + event->wLepton).M();
-    }
-    else if (!trileptonChannel_ && event->bTagIndex.size() > 0)
+    if (event->bTagIndex.size() > 0)
     {
         TLorentzVector tempBjet;
         float smearValue = event->jetSmearValue[event->bTagIndex[0]];
@@ -1109,21 +966,7 @@ float Plots::fillTopMass(AnalysisEvent* event)
 
 float Plots::fillTopPt(AnalysisEvent* event)
 {
-    if (trileptonChannel_ && event->bTagIndex.size() > 0)
-    {
-        TLorentzVector tempMet, tempBjet;
-        float smearValue = event->jetSmearValue[event->bTagIndex[0]];
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        tempBjet.SetPtEtaPhiE(
-            event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-        tempBjet *= smearValue;
-        return (tempMet + tempBjet + event->wLepton).Pt();
-    }
-    else if (!trileptonChannel_ && event->bTagIndex.size() > 0)
+    if (event->bTagIndex.size() > 0)
     {
         TLorentzVector tempBjet;
         float smearValue = event->jetSmearValue[event->bTagIndex[0]];
@@ -1144,21 +987,7 @@ float Plots::fillTopPt(AnalysisEvent* event)
 
 float Plots::fillTopEta(AnalysisEvent* event)
 {
-    if (trileptonChannel_ && event->bTagIndex.size() > 0)
-    {
-        TLorentzVector tempMet, tempBjet;
-        float smearValue = event->jetSmearValue[event->bTagIndex[0]];
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        tempBjet.SetPtEtaPhiE(
-            event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-        tempBjet *= smearValue;
-        return std::abs((tempMet + tempBjet + event->wLepton).Eta());
-    }
-    else if (!trileptonChannel_ && event->bTagIndex.size() > 0)
+    if (event->bTagIndex.size() > 0)
     {
         TLorentzVector tempBjet;
         float smearValue = event->jetSmearValue[event->bTagIndex[0]];
@@ -1180,21 +1009,7 @@ float Plots::fillTopEta(AnalysisEvent* event)
 
 float Plots::fillTopPhi(AnalysisEvent* event)
 {
-    if (trileptonChannel_ && event->bTagIndex.size() > 0)
-    {
-        TLorentzVector tempMet, tempBjet;
-        float smearValue = event->jetSmearValue[event->bTagIndex[0]];
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        tempBjet.SetPtEtaPhiE(
-            event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATEta[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPhi[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-        tempBjet *= smearValue;
-        return (tempMet + tempBjet + event->wLepton).Phi();
-    }
-    else if (!trileptonChannel_ && event->bTagIndex.size() > 0)
+    if (event->bTagIndex.size() > 0)
     {
         TLorentzVector tempBjet;
         float smearValue = event->jetSmearValue[event->bTagIndex[0]];
@@ -1398,27 +1213,11 @@ float Plots::fillLepton3InnerTrackD0(AnalysisEvent* event)
 
 float Plots::fillwTransverseMass(AnalysisEvent* event)
 {
-    if (trileptonChannel_)
-    {
-        TLorentzVector tempMet;
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        return std::sqrt(
-            2 * event->metPF2PATPt * event->wLepton.Pt()
-            * (1 - std::cos(event->metPF2PATPhi - event->wLepton.Phi())));
-    }
-    else if (!trileptonChannel_)
-    {
-        return std::sqrt(2 * event->wPairQuarks.first.Pt()
-                         * event->wPairQuarks.second.Pt()
-                         * (1
-                            - std::cos(event->wPairQuarks.first.Phi()
-                                       - event->wPairQuarks.second.Phi())));
-    }
-    else
-    {
-        return -10;
-    }
+    return std::sqrt(2 * event->wPairQuarks.first.Pt()
+                     * event->wPairQuarks.second.Pt()
+                     * (1
+                        - std::cos(event->wPairQuarks.first.Phi()
+                                   - event->wPairQuarks.second.Phi())));
 }
 
 float Plots::filljjDelR(AnalysisEvent* event)
@@ -1645,20 +1444,7 @@ float Plots::fillZLep2BjetDelPhi(AnalysisEvent* event)
 
 float Plots::fillLepHt(AnalysisEvent* event)
 {
-    if (trileptonChannel_)
-    {
-        return (event->zPairLeptons.first + event->zPairLeptons.second
-                + event->wLepton)
-            .Pt();
-    }
-    else if (!trileptonChannel_)
-    {
-        return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
-    }
-    else
-    {
-        return -10;
-    }
+    return (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
 }
 
 float Plots::fillWquarkHt(AnalysisEvent* event)
@@ -1692,10 +1478,6 @@ float Plots::fillTotHt(AnalysisEvent* event)
 {
     float totHt(0.0);
     totHt += (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
-    if (trileptonChannel_)
-    {
-        totHt += (event->wLepton).Pt();
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();
@@ -1719,10 +1501,6 @@ float Plots::fillTotHtOverPt(AnalysisEvent* event)
 {
     float totHt(0.0);
     totHt += (event->zPairLeptons.first + event->zPairLeptons.second).Pt();
-    if (trileptonChannel_)
-    {
-        totHt += (event->wLepton).Pt();
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();
@@ -1742,14 +1520,6 @@ float Plots::fillTotHtOverPt(AnalysisEvent* event)
     float totPx(0.0), totPy(0.0);
     totPx += (event->zPairLeptons.first + event->zPairLeptons.second).Px();
     totPy += (event->zPairLeptons.first + event->zPairLeptons.second).Py();
-    if (trileptonChannel_)
-    {
-        TLorentzVector tempMet;
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        totPx += (event->wLepton + tempMet).Px();
-        totPy += (event->wLepton + tempMet).Py();
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();
@@ -1776,14 +1546,6 @@ float Plots::fillTotPt(AnalysisEvent* event)
     float totPx(0.0), totPy(0.0);
     totPx += (event->zPairLeptons.first + event->zPairLeptons.second).Px();
     totPy += (event->zPairLeptons.first + event->zPairLeptons.second).Py();
-    if (trileptonChannel_)
-    {
-        TLorentzVector tempMet;
-        tempMet.SetPtEtaPhiE(
-            event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
-        totPx += (event->wLepton + tempMet).Px();
-        totPy += (event->wLepton + tempMet).Py();
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();
@@ -1808,10 +1570,6 @@ float Plots::fillTotEta(AnalysisEvent* event)
 {
     TLorentzVector totVec;
     totVec = event->zPairLeptons.first + event->zPairLeptons.second;
-    if (trileptonChannel_)
-    {
-        totVec += event->wLepton;
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();
@@ -1834,10 +1592,6 @@ float Plots::fillTotM(AnalysisEvent* event)
 {
     TLorentzVector totVec;
     totVec = event->zPairLeptons.first + event->zPairLeptons.second;
-    if (trileptonChannel_)
-    {
-        totVec += event->wLepton;
-    }
     if (event->jetIndex.size() > 0)
     {
         for (auto jetIt = event->jetIndex.begin();

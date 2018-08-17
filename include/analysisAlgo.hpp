@@ -20,7 +20,6 @@ class AnalysisAlgo
     AnalysisAlgo();
     ~AnalysisAlgo();
 
-    double zptSF(std::string channel, float zpt);
     void setBranchStatusAll(TTree* chain, bool isMC, std::string triggerFlag);
     void show_usage(std::string name);
 
@@ -67,10 +66,8 @@ class AnalysisAlgo
     std::string mvaDir;
     bool customJetRegion;
     float metCut;
-    float mtwCut;
     float mzCut;
     float mwCut;
-    bool trileptonChannel_;
     bool is2016_;
     bool isFCNC_;
     bool isCtag_;

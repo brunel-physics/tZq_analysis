@@ -145,8 +145,6 @@ class Plots
     float fillZLep2TopDelR(AnalysisEvent*);
     float fillZLep2TopDelPhi(AnalysisEvent*);
 
-    const bool trileptonChannel_;
-
     public:
     Plots(std::vector<std::string>,
           std::vector<std::string>,
@@ -157,8 +155,7 @@ class Plots
           std::vector<std::string>,
           std::vector<int>,
           unsigned,
-          std::string postfixName = "",
-          const bool trileptonChannel = true);
+          std::string postfixName = "");
     ~Plots();
     void fillAllPlots(AnalysisEvent*, float);
     void saveAllPlots();

@@ -30,7 +30,6 @@ AnalysisAlgo::AnalysisAlgo()
     , plotConfName{new std::string{}}
     , readEventList{false}
     , customJetRegion{false}
-    , trileptonChannel_{true}
     , is2016_{false}
     , isFCNC_{false}
     , isCtag_{false}
@@ -41,92 +40,6 @@ AnalysisAlgo::AnalysisAlgo()
 
 AnalysisAlgo::~AnalysisAlgo()
 {
-}
-
-double AnalysisAlgo::zptSF(std::string chan, float zpt)
-{
-    double param1{0};
-    double param2{0};
-    double param3{0};
-
-    if (chan == "mumumu")
-    {
-        // mumumu
-        // 1  p0           1.64891e+00   9.46744e-02   8.94955e-05 5.38436e-04
-        // 2  p1          -3.18363e-02   1.83020e-03   1.43202e-06 2.28732e-02
-        // 3  p2           1.96813e-01   1.80560e-02   2.59898e-05 7.20918e-03
-
-        // 1  p0           9.12190e-01   6.16931e-02   8.40864e-05 3.40620e-05
-        // 2  p1          -2.12648e-02   1.47982e-03   1.38426e-06 2.38949e-01
-        // 3  p2           2.32868e-01   2.61906e-02   3.56068e-05 8.38502e-03
-
-        param1 = 9.12190e-01;
-        param2 = -2.12648e-02;
-        param3 = 2.32868e-01;
-    }
-
-    if (chan == "emumu")
-    {
-        // mumue
-        // 1  p0           1.08009e+00   2.20412e-01   1.81954e-04 -2.77029e-04
-        // 2  p1          -1.83319e-02   2.98128e-03   1.46500e-06 -2.16667e-02
-        // 3  p2          -3.79236e-03   2.77700e-02   1.94305e-05 -8.63841e-05
-
-        // 1  p0           5.88293e-01   5.43378e-02   6.56657e-05 -2.55726e-03
-        // 2  p1          -9.58817e-03   1.49703e-03   6.91871e-07 1.64841e-01
-        // 3  p2          -3.15588e-02   7.50287e-02   3.63099e-05 1.24242e-03
-
-        param1 = 5.88293e-01;
-        param2 = -9.58817e-03;
-        param3 = -3.15588e-02;
-    }
-
-    if (channel == "eemu")
-    {
-        // eemu
-        // 1  p0           1.81997e+00   1.09691e-01   1.27075e-04 2.67625e-03
-        // 2  p1          -3.53330e-02   2.11348e-03   2.01050e-06 2.95414e-01
-        // 3  p2           2.00004e-01   1.93575e-02   3.33897e-05 1.34863e-02
-
-        // 1  p0           1.03732e+00   6.79924e-02   1.10651e-04 -4.52533e-02
-        // 2  p1          -2.11550e-02   1.34032e-03   1.62803e-06 -2.88549e+00
-        // 3  p2           1.52830e-01   2.17467e-02   4.20291e-05 -5.57304e-02
-
-        param1 = 1.03732e+00;
-        param2 = -2.11550e-02;
-        param3 = 1.52830e-01;
-    }
-
-    if (chan == "eee")
-    {
-        // eee
-        // 1  p0           1.66655e+00   2.04856e-01   1.22417e-04 -8.87600e-06
-        // 2  p1          -2.90064e-02   3.37196e-03   1.67677e-06 1.94266e-05
-        // 3  p2           1.12276e-01   2.87604e-02   2.89272e-05 -1.94049e-07
-
-        // 1  p0           8.23251e-01   8.60477e-02   6.95364e-05 3.23597e-03
-        // 2  p1          -1.74036e-02   2.04299e-03   1.02005e-06 2.12854e-01
-        // 3  p2           1.64031e-01   4.57851e-02   3.12269e-05 7.55832e-03
-        param1 = 8.23251e-01;
-        param2 = -1.74036e-02;
-        param3 = 1.64031e-01;
-    }
-
-    // placeholder dilepton values
-    if (chan == "mumu")
-    {
-        param1 = 9.12190e-01;
-        param2 = -2.12648e-02;
-        param3 = 2.32868e-01;
-    }
-    if (chan == "ee")
-    {
-        param1 = 8.23251e-01;
-        param2 = -1.74036e-02;
-        param3 = 1.64031e-01;
-    }
-
-    return (std::exp(param1 + param2 * zpt) + param3);
 }
 
 void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
@@ -145,18 +58,15 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "config,c",
         po::value<std::string>(&config)->required(),
         "The configuration file to be used.")(
-        "dilepton",
-        po::bool_switch(&trileptonChannel_),
-        "Look for dilepton rather than trilepton final states.")(
         "2016",
         po::bool_switch(&is2016_),
         "Use 2016 conditions (SFs, et al.).")(
         "FCNC",
         po::bool_switch(&isFCNC_),
-        "Look for FCNC dilepton rather than trilepton final states.")(
+        "Look for FCNC dilepton final states.")(
         "cTag",
         po::bool_switch(&isCtag_),
-        "Look for FCNC dilepton rather than trilepton final states using "
+        "Look for FCNC dilepton final states using "
         "cTagging.")(",n",
                      po::value<long>(&nEvents)->default_value(0),
                      "The number of events to be run over. All if set to 0.")(
@@ -189,11 +99,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "plotConf",
         po::value<std::string>(plotConfName),
         "Override the plot configuration given in the config file. Sets "
-        "--allPlots.")(
-        "invert,i",
-        po::bool_switch(&invertLepCut),
-        "Invert the isolation cut of the third lepton for trilepton searches. "
-        "Inverts the different charge cut for leptons for dilepton searches.")(
+        "--allPlots.")("invert,i",
+                       po::bool_switch(&invertLepCut),
+                       "Inverts the different charge cut for leptons.")(
         "synch,a",
         po::bool_switch(&synchCutFlow),
         "Make lepton selection cutflows for synchronisation exercises.")(
@@ -235,17 +143,14 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "Mask for systematics to be run. 65535 enables all systematics.")(
         "channels,k",
         po::value<int>(&channelsToRun)->default_value(0),
-        "Mask describing the channels to be run over in trilepton mode. The "
-        "mask "
+        "Mask describing the channels to be run over. The mask "
         "is the sum of each channel's mask, which are:\n"
-        "    eee        - 1\n"
-        "    eemu       - 2\n"
-        "    emumu      - 4\n"
-        "    mumumu     - 8\n"
-        "    eee inv    - 16\n"
-        "    eemu inv   - 32\n"
-        "    emumu inv  - 64\n"
-        "    mumumu inv - 128\n"
+        "    ee        - 1\n"
+        "    mumu      - 2\n"
+        "    ee ss     - 4\n"
+        "    mumu ss   - 8\n"
+        "    emu       - 16\n"
+        "    emu ss    - 32\n"
         "0 runs the channels specified in the config file")(
         "skipTrig", po::bool_switch(&skipTrig), "Skip running triggers.")(
         "mvaDir",
@@ -256,10 +161,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "Set a sustom jet region in the format NJETS NBJETS MAXJETS MAXBJETS.")(
         "metCut",
         po::value<float>(&metCut)->default_value(0),
-        "Apply an MET cut. Trilepton SR only and Dilepton Z+jets CR.")(
-        "mtwCut",
-        po::value<float>(&mtwCut)->default_value(0),
-        "Apply an mTW cut. Trilepton only.")(
+        "Apply an MET cut. Dilepton Z+jets CR.")(
         "mzCut",
         po::value<float>(&mzCut)->default_value(20.),
         "Apply an mZ cut. Dilepton only.")(
@@ -280,7 +182,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
         po::notify(vm);
 
-        trileptonChannel_ = !trileptonChannel_;
         if (vm.count("channels") && !vm.count("config"))
         {
             throw std::logic_error(
@@ -305,24 +206,11 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
                 "Currently bTag weights can only be retrieved "
                 "from post lepton selection trees. Please set -u.");
         }
-        if (trileptonChannel_ && isFCNC_)
-        {
-            throw std::logic_error(
-                "Code has not been setup to do a trilepton FCNC "
-                "search, only a dilepton one. Please use --dilepton argument.");
-        }
         if (!isFCNC_ && isCtag_)
         {
             throw std::logic_error(
                 "C-tagging is only used during an FCNC search. "
                 "Set --FCNC & --dilepton arguements.");
-        }
-        if (doZplusCR_ && trileptonChannel_)
-        {
-            throw std::logic_error(
-                "Z+jets CR is only setup for the dilepton channel. "
-                "Set --dilepton arguement and --mwCut and --metCut to define "
-                "CR region.");
         }
     }
     catch (const std::logic_error& e)
@@ -373,43 +261,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         exit(0);
     }
 
-    if (channelsToRun && trileptonChannel_)
-    {
-        std::cout << "Running over the channels: " << std::endl;
-        for (unsigned channelInd = 1; channelInd != 256;
-             channelInd = channelInd << 1)
-        {
-            if (!(channelInd & channelsToRun) && channelsToRun)
-            {
-                continue;
-            }
-            if (channelInd & 17)
-            {
-                std::cout << "eee ";
-            }
-            if (channelInd & 34)
-            { // eemu channels
-                std::cout << "eemu ";
-            }
-            if (channelInd & 68)
-            { // emumu channels
-                std::cout << "emumu ";
-            }
-            if (channelInd & 136)
-            { // mumumu channels
-                std::cout << "mumumu ";
-            }
-            if (channelInd & 15)
-            { // nominal samples
-                std::cout << "nominal" << std::endl;
-            }
-            if (channelInd & 240)
-            { // inv iso samples
-                std::cout << "inverted" << std::endl;
-            }
-        }
-    }
-    else if (channelsToRun && !trileptonChannel_)
+    if (channelsToRun)
     {
         std::cout << "Running over the channels: " << std::endl;
         for (unsigned channelInd = 1; channelInd != 32;
@@ -536,7 +388,6 @@ void AnalysisAlgo::setupCuts()
                       invertLepCut,
                       synchCutFlow,
                       dumpEventNumbers,
-                      trileptonChannel_,
                       is2016_,
                       isFCNC_,
                       isCtag_};
@@ -554,7 +405,6 @@ void AnalysisAlgo::setupCuts()
             jetRegVars[0], jetRegVars[1], jetRegVars[2], jetRegVars[3]);
     }
     cutObj->setMetCut(metCut);
-    cutObj->setMTWCut(mtwCut);
     cutObj->setMWCut(mwCut);
     cutObj->setMZCut(mzCut);
     if (doZplusCR_)
@@ -571,13 +421,13 @@ void AnalysisAlgo::setupPlots()
     stageNames.emplace_back(std::make_pair("zMass", "Z Mass Cuts"));
     stageNames.emplace_back(std::make_pair("jetSel", "Jet Cuts"));
     stageNames.emplace_back(std::make_pair("bTag", "b-tag Cuts"));
-    if (!trileptonChannel_ && !isFCNC_)
+    if (!isFCNC_)
     {
         stageNames.emplace_back(std::make_pair("wMass", "W Mass Cuts"));
     }
     //  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) )
     //  {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
-    if (!trileptonChannel_ && isFCNC_ && isCtag_)
+    if (isFCNC_ && isCtag_)
     {
         stageNames.emplace_back(std::make_pair("cTag", "c-tag Cuts"));
     }
@@ -606,10 +456,7 @@ void AnalysisAlgo::runMainAnalysis()
         TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
         unsigned channelIndMax{256};
 
-        if (!trileptonChannel_)
-        {
-            channelIndMax = 64;
-        }
+        channelIndMax = 64;
         for (unsigned channelInd{1}; channelInd != channelIndMax;
              channelInd = channelInd << 1)
         {
@@ -704,8 +551,7 @@ void AnalysisAlgo::runMainAnalysis()
                                                       histoName + "_"
                                                           + stageNames[j].first
                                                           + systNames[systInd]
-                                                          + "_" + channel,
-                                                      trileptonChannel_};
+                                                          + "_" + channel};
                             }
                         }
                     } // end cutFlow find loop
@@ -748,17 +594,9 @@ void AnalysisAlgo::runMainAnalysis()
                 inputPostfix += postfix;
                 if (invertLepCut)
                 {
-                    if (trileptonChannel_)
-                    {
-                        inputPostfix += "invIso";
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        inputPostfix += "invLep";
-                    }
+                    inputPostfix += "invLep";
                 }
-                if (doNPLs_ && dataset->getPlotLabel() == "NPL"
-                    && !trileptonChannel_)
+                if (doNPLs_ && dataset->getPlotLabel() == "NPL")
                 {
                     inputPostfix +=
                         "invLep"; // If plotting non-prompt leptons for this
@@ -772,8 +610,7 @@ void AnalysisAlgo::runMainAnalysis()
                     cutObj->setNplFlag(true);
                     cutObj->setInvLepCut(true);
                 }
-                else if (doNPLs_ && dataset->getPlotLabel() != "NPL"
-                         && !trileptonChannel_)
+                else if (doNPLs_ && dataset->getPlotLabel() != "NPL")
                 {
                     cutObj->setNplFlag(false);
                     cutObj->setInvLepCut(false);
@@ -832,8 +669,7 @@ void AnalysisAlgo::runMainAnalysis()
                 // post-lep sel trees I guess.
                 std::string inputPostfix{};
                 inputPostfix += postfix;
-                if (doNPLs_ && dataset->getPlotLabel() == "NPL"
-                    && !trileptonChannel_)
+                if (doNPLs_ && dataset->getPlotLabel() == "NPL")
                 {
                     inputPostfix +=
                         "invLep"; // If plotting non-prompt leptons for this
@@ -842,14 +678,7 @@ void AnalysisAlgo::runMainAnalysis()
                 }
                 if (invertLepCut)
                 {
-                    if (trileptonChannel_)
-                    {
-                        inputPostfix += "invIso";
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        inputPostfix += "invLep";
-                    }
+                    inputPostfix += "invLep";
                 }
                 TFile* datasetFileForHists;
                 datasetFileForHists =
@@ -887,17 +716,9 @@ void AnalysisAlgo::runMainAnalysis()
                     inputPostfix += postfix;
                     if (invertLepCut)
                     {
-                        if (trileptonChannel_)
-                        {
-                            inputPostfix += "invIso";
-                        }
-                        else if (!trileptonChannel_)
-                        {
-                            inputPostfix += "invLep";
-                        }
+                        inputPostfix += "invLep";
                     }
-                    if (doNPLs_ && dataset->getPlotLabel() == "NPL"
-                        && !trileptonChannel_)
+                    if (doNPLs_ && dataset->getPlotLabel() == "NPL")
                     {
                         inputPostfix +=
                             "invLep"; // If plotting non-prompt leptons for this
@@ -958,14 +779,7 @@ void AnalysisAlgo::runMainAnalysis()
                 std::string invPostFix;
                 if (invertLepCut)
                 {
-                    if (trileptonChannel_)
-                    {
-                        invPostFix = "invIso";
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        invPostFix = "invLep";
-                    }
+                    invPostFix = "invLep";
                 }
 
                 outFile1 = new TFile{(postLepSelSkimDir + dataset->name()
@@ -1003,14 +817,7 @@ void AnalysisAlgo::runMainAnalysis()
                 std::string invPostFix{};
                 if (invertLepCut)
                 {
-                    if (trileptonChannel_)
-                    {
-                        invPostFix = "invIso";
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        invPostFix = "invLep";
-                    }
+                    invPostFix = "invLep";
                 }
                 mvaOutFile = new TFile{(mvaDir + dataset->name() + postfix
                                         + (invertLepCut ? invPostFix : "")
@@ -1046,18 +853,10 @@ void AnalysisAlgo::runMainAnalysis()
                         "zLep1Index", &zLep1Index, "zLep1Index/I");
                     mvaTree[systIn]->Branch(
                         "zLep2Index", &zLep2Index, "zLep2Index/I");
-                    if (trileptonChannel_)
-                    {
-                        mvaTree[systIn]->Branch(
-                            "wLepIndex", &wLepIndex, "wLepIndex/I");
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        mvaTree[systIn]->Branch(
-                            "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
-                        mvaTree[systIn]->Branch(
-                            "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
-                    }
+                    mvaTree[systIn]->Branch(
+                        "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
+                    mvaTree[systIn]->Branch(
+                        "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
                     mvaTree[systIn]->Branch("jetInd", &jetInd, "jetInd[15]/I");
                     mvaTree[systIn]->Branch("muonMomentumSF",
                                             &muonMomentumSF,
@@ -1245,8 +1044,7 @@ void AnalysisAlgo::runMainAnalysis()
 
                     // apply negative weighting for SameSign MC lepton samples
                     // so that further downstream
-                    if (dataset->isMC() && !trileptonChannel_ && invertLepCut
-                        && !plots)
+                    if (dataset->isMC() && invertLepCut && !plots)
                     {
                         eventWeight *=
                             -1.0; // Should NOT be done when plotting
@@ -1416,7 +1214,6 @@ void AnalysisAlgo::runMainAnalysis()
                             {
                                 eventWeight *= event->weight_pdfMin; // Min
                             }
-
                         }
                     }
                     if (systMask == 16384 || systMask == 32768)
@@ -1439,29 +1236,14 @@ void AnalysisAlgo::runMainAnalysis()
                     //<< " " << event->eventLumiblock << " " << std::endl;
                     //}
                     // Do the Zpt reweighting here
-                    if (invertLepCut && trileptonChannel_)
-                    {
-                        double zPT{(event->zPairLeptons.first
-                                    + event->zPairLeptons.second)
-                                       .Pt()};
-                        eventWeight *= zptSF(channel, zPT);
-                    }
                     if (makeMVATree)
                     {
                         zLep1Index = event->zPairIndex.first;
                         zLep2Index = event->zPairIndex.second;
                         muonMomentumSF[0] = event->muonMomentumSF[0];
                         muonMomentumSF[1] = event->muonMomentumSF[1];
-                        if (trileptonChannel_)
-                        {
-                            wLepIndex = event->wLepIndex;
-                            muonMomentumSF[2] = event->muonMomentumSF[2];
-                        }
-                        else if (!trileptonChannel_)
-                        {
-                            wQuark1Index = event->wPairIndex.first;
-                            wQuark2Index = event->wPairIndex.second;
-                        }
+                        wQuark1Index = event->wPairIndex.first;
+                        wQuark2Index = event->wPairIndex.second;
                         for (unsigned jetIndexIt{0}; jetIndexIt < 15;
                              jetIndexIt++)
                         {
@@ -1534,14 +1316,7 @@ void AnalysisAlgo::runMainAnalysis()
                 std::string invPostFix{};
                 if (invertLepCut)
                 {
-                    if (trileptonChannel_)
-                    {
-                        invPostFix = "invIso";
-                    }
-                    else if (!trileptonChannel_)
-                    {
-                        invPostFix = "invLep";
-                    }
+                    invPostFix = "invLep";
                 }
 
                 std::cout << (mvaDir + dataset->name() + postfix
@@ -1731,54 +1506,7 @@ std::string AnalysisAlgo::channelSetup(unsigned channelInd)
 {
     std::string chanName{};
 
-    if (channelsToRun && trileptonChannel_)
-    {
-        if (channelInd & 17)
-        { // eee channels
-            cutObj->setNumLeps(0, 0, 3, 3);
-            cutObj->setCutConfTrigLabel("e");
-            channel = "eee";
-            postfix = "eee";
-            chanName += "eee";
-        }
-        if (channelInd & 34)
-        { // eemu channels
-            cutObj->setNumLeps(1, 1, 2, 2);
-            cutObj->setCutConfTrigLabel("d1");
-            channel = "eemu";
-            postfix = "eemu";
-            chanName += "eemu";
-        }
-        if (channelInd & 68)
-        { // emumu channels
-            cutObj->setNumLeps(2, 2, 1, 1);
-            cutObj->setCutConfTrigLabel("d2");
-            channel = "emumu";
-            postfix = "emumu";
-            chanName += "emumu";
-        }
-        if (channelInd & 136)
-        { // mumumu channels
-            cutObj->setNumLeps(3, 3, 0, 0);
-            cutObj->setCutConfTrigLabel("m");
-            channel = "mumumu";
-            postfix = "mumumu";
-            chanName += "mumumu";
-        }
-        if (channelInd & 15)
-        { // nominal samples
-            cutObj->setInvLepCut(false);
-            invertLepCut = false;
-            chanName += "nom";
-        }
-        if (channelInd & 240)
-        { // inv iso samples
-            cutObj->setInvLepCut(true);
-            invertLepCut = true;
-            chanName += "inv";
-        }
-    }
-    if (channelsToRun && !trileptonChannel_)
+    if (channelsToRun)
     {
         if (channelInd & 5)
         { // ee channels

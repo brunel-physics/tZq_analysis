@@ -21,7 +21,6 @@ Cuts::Cuts(bool doPlots,
            bool invertLepCut,
            bool lepCutFlow,
            bool dumpEventNumber,
-           const bool trileptonChannel,
            const bool is2016,
            const bool isFCNC,
            const bool isCtag)
@@ -40,7 +39,6 @@ Cuts::Cuts(bool doPlots,
     // Synchronisation cut flow.
     singleEventInfoDump_{false}
     , makeEventDump_{dumpEventNumber}
-    , trileptonChannel_{trileptonChannel}
     , isFCNC_{isFCNC}
     , isCtag_{isCtag}
     , is2016_{is2016}
@@ -161,7 +159,6 @@ Cuts::Cuts(bool doPlots,
     // MET and mTW cuts go here.
     metCut_{0.0}
     , metDileptonCut_{50.0}
-    , mTWCut_{20.0}
     , mTWCutSynch_{20.0}
     , TopMassCutLower_{95.}
     , TopMassCutUpper_{200.}
@@ -498,7 +495,7 @@ bool Cuts::makeCuts(AnalysisEvent* event,
 
     // If emu and dilepton - doing ttbar background estimation
 
-    if (!trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos)
+    if (cutConfTrigLabel_.find("d") != std::string::npos)
     {
         return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);
     }
@@ -517,19 +514,9 @@ bool Cuts::makeCuts(AnalysisEvent* event,
     }
 
     // Make lepton cuts. Does the inverted iso cuts if necessary.
-    if (invertLepCut_ && trileptonChannel_)
+    if (!makeLeptonCuts(event, eventWeight, plotMap, cutFlow, systToRun))
     {
-        if (!invertIsoCut(event, eventWeight, plotMap, cutFlow))
-        {
-            return false;
-        }
-    }
-    else
-    {
-        if (!makeLeptonCuts(event, eventWeight, plotMap, cutFlow, systToRun))
-        {
-            return false;
-        }
+        return false;
     }
 
     std::pair<std::vector<int>, std::vector<float>> jetInfo;
@@ -574,7 +561,7 @@ bool Cuts::makeCuts(AnalysisEvent* event,
         cutFlow->Fill(3.5, *eventWeight);
     }
 
-    if (!trileptonChannel_ && !isFCNC_)
+    if (!isFCNC_)
     { // Do wMass stuff
         float invWmass{0.};
         invWmass = getWbosonQuarksCand(event, event->jetIndex, systToRun);
@@ -620,7 +607,7 @@ bool Cuts::makeCuts(AnalysisEvent* event,
         }
     }
 
-    if (!trileptonChannel_ && isFCNC_) // Do FCNC stuff
+    if (isFCNC_) // Do FCNC stuff
     {
         // Leading jet cannot be b-tagged
         if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[0]
@@ -650,24 +637,12 @@ bool Cuts::makeCuts(AnalysisEvent* event,
         }
     }
 
-    // Apply met and mtw cuts here. By default these are 0, so don't do
-    // anything.
-    if (trileptonChannel_ && !isFCNC_ && event->metPF2PATPt < metCut_)
-    {
-        return false;
-    }
-    //  if (!trileptonChannel_ && !isFCNC_ && event->metPF2PATPt >
-    //  metDileptonCut_) return false;
     TLorentzVector tempMet;
     tempMet.SetPtEtaPhiE(
         event->metPF2PATPt, 0, event->metPF2PATPhi, event->metPF2PATEt);
     double mtw{std::sqrt(
         2 * event->metPF2PATPt * event->wLepton.Pt()
         * (1 - std::cos(event->metPF2PATPhi - event->wLepton.Phi())))};
-    if (trileptonChannel_ && !isFCNC_ && mtw < mTWCut_)
-    {
-        return false;
-    }
     return true;
 }
 
@@ -797,18 +772,10 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
 
     // Should I make it return which leptons are the zMass candidate? Probably.
     float invZmass{9999.};
-    if (trileptonChannel_ == true)
+    if (!getDileptonZCand(
+            event, event->electronIndexTight, event->muonIndexTight))
     {
-        invZmass = getTrileptonZCand(
-            event, event->electronIndexTight, event->muonIndexTight);
-    }
-    else if (trileptonChannel_ == false)
-    { // Control doesn't need Z plots
-        if (!getDileptonZCand(
-                event, event->electronIndexTight, event->muonIndexTight))
-        {
-            return false;
-        }
+        return false;
     }
 
     *eventWeight *= getLeptonWeight(event, syst);
@@ -1792,15 +1759,7 @@ float Cuts::getTopMass(AnalysisEvent* event)
         event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],
         event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
     float topMass{-1.0};
-    if (trileptonChannel_)
-    {
-        topMass = (event->wLepton + bVec + metVec).M();
-    }
-    else
-    {
-        topMass =
-            (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
-    }
+    topMass = (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
     return topMass;
 }
 
@@ -1958,18 +1917,6 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
                               jetVec.Phi());
         }
 
-        if (trileptonChannel_ == true
-            && deltaLep > deltaR(event->wLepton.Eta(),
-                                 event->wLepton.Phi(),
-                                 jetVec.Eta(),
-                                 jetVec.Phi()))
-        {
-            deltaLep = deltaR(event->wLepton.Eta(),
-                              event->wLepton.Phi(),
-                              jetVec.Eta(),
-                              jetVec.Phi());
-        }
-
         // std::cout << event->jetPF2PATPtRaw[i] << " " << deltaLep <<
         // std::endl;
         if (deltaLep < 0.4 && isProper)
@@ -2030,8 +1977,7 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
         tempSmearValue_ = 1.0; // Reset temporary smear value. Need a cleaner
                                // solution than this!
 
-        if (getBTagWeight_
-            && (!synchCutFlow_ || (synchCutFlow_ && !trileptonChannel_)))
+        if (getBTagWeight_)
         {
             getBWeight(event,
                        jetVec,
@@ -2088,13 +2034,6 @@ std::vector<int>
                 << event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
                        [jets[i]]
                 << std::endl;
-        }
-        if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                    [jets[i]]
-                <= bDiscSynchCut_
-            && (synchCutFlow_ && trileptonChannel_))
-        {
-            continue;
         }
         if (event
                 ->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]]
@@ -2338,35 +2277,17 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
     std::string channel = "";
 
     // Dilepton channels
-    if (!trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos)
+    if (cutConfTrigLabel_.find("e") != std::string::npos)
     {
         channel = "ee";
     }
-    if (!trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos)
+    if (cutConfTrigLabel_.find("d") != std::string::npos)
     {
         channel = "emu";
     }
-    if (!trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos)
+    if (cutConfTrigLabel_.find("m") != std::string::npos)
     {
         channel = "mumu";
-    }
-
-    // Trilepton channels
-    if (trileptonChannel_ && cutConfTrigLabel_.find("e") != std::string::npos)
-    {
-        channel = "eee";
-    }
-    if (trileptonChannel_ && cutConfTrigLabel_.find("d1") != std::string::npos)
-    {
-        channel = "eemu";
-    }
-    if (trileptonChannel_ && cutConfTrigLabel_.find("d2") != std::string::npos)
-    {
-        channel = "emumu";
-    }
-    if (trileptonChannel_ && cutConfTrigLabel_.find("m") != std::string::npos)
-    {
-        channel = "mumumu";
     }
 
     float twgt{1.0};
@@ -2410,56 +2331,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
                 {
                     twgt -= 0.01;
                 }
-            }
-        }
-
-        // Trilepton channels
-        else if (channel == "eee")
-        {
-            twgt = 1.;
-            if (syst == 1)
-            {
-                twgt += 0.01;
-            }
-            else if (syst == 2)
-            {
-                twgt -= 0.01;
-            }
-        }
-        else if (channel == "eemu")
-        {
-            twgt = 1.;
-            if (syst == 1)
-            {
-                twgt += 0.01;
-            }
-            else if (syst == 2)
-            {
-                twgt -= 0.01;
-            }
-        }
-        else if (channel == "emumu")
-        {
-            twgt = 1.;
-            if (syst == 1)
-            {
-                twgt += 0.01;
-            }
-            else if (syst == 2)
-            {
-                twgt -= 0.01;
-            }
-        }
-        else if (channel == "mumumu")
-        {
-            twgt = 1.;
-            if (syst == 1)
-            {
-                twgt += 0.01;
-            }
-            else if (syst == 2)
-            {
-                twgt -= 0.01;
             }
         }
         else
@@ -2531,56 +2402,6 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
                 }
             }
         }
-
-        // Trilepton channels
-        else if (channel == "eee")
-        {
-            twgt = 0.894;
-            if (syst == 1)
-            {
-                twgt += 0.003;
-            }
-            if (syst == 2)
-            {
-                twgt -= 0.003;
-            }
-        }
-        else if (channel == "eemu")
-        {
-            twgt = 0.987;
-            if (syst == 1)
-            {
-                twgt += 0.035;
-            }
-            if (syst == 2)
-            {
-                twgt -= 0.035;
-            }
-        }
-        else if (channel == "emumu")
-        {
-            twgt = 0.886;
-            if (syst == 1)
-            {
-                twgt += 0.042;
-            }
-            if (syst == 2)
-            {
-                twgt -= 0.042;
-            }
-        }
-        else if (channel == "mumumu")
-        {
-            twgt = 0.9871;
-            if (syst == 1)
-            {
-                twgt += 0.0242;
-            }
-            if (syst == 2)
-            {
-                twgt -= 0.0212;
-            }
-        }
         else
         {
             std::cout << "Trigger not found!" << std::endl;
@@ -2591,8 +2412,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
     // Check which trigger fired and if it correctly corresponds to the
     // channel being scanned over.
 
-    // Is emu, eemu or emumu?
-    if (channel == "eemu" || channel == "emumu" || channel == "emu")
+    if (channel == "emu")
     {
         if (muEGTrig)
         {
@@ -2606,8 +2426,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         }
     }
 
-    // Is ee or eee?
-    if (channel == "ee" || channel == "eee")
+    if (channel == "ee")
     {
         //    if ( eeTrig && !(muEGTrig || mumuTrig) ) { // Original trigger
         //    logic, for double triggers only
@@ -2623,8 +2442,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         }
     }
 
-    // Is mumu or mumumu?
-    if (channel == "mumu" || channel == "mumumu")
+    if (channel == "mumu")
     {
         //    if ( mumuTrig && !(eeTrig || muEGTrig) ) // Original trigger
         //    logic, for double triggers only
@@ -2715,441 +2533,126 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
         dumpToFile(event, 9);
     }
 
-    if (!trileptonChannel_)
+    // 2016 tZq dilepton synch
+
+    synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+    //    std::cout << std::setprecision(6) << std::fixed;
+
+    if (!triggerCuts(event, eventWeight, 0))
     {
-        // 2016 tZq dilepton synch
-
-        synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-        //    std::cout << std::setprecision(6) << std::fixed;
-
-        if (!triggerCuts(event, eventWeight, 0))
-        {
-            return false;
-        }
-        if (!metFilters(event))
-        {
-            return false;
-        }
-
-        synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
-        event->electronIndexTight = getTightEles(event);
-        event->muonIndexTight = getTightMuons(event);
-        synchNumEles_->Fill(event->electronIndexTight.size());
-        synchNumMus_->Fill(event->muonIndexTight.size());
-
-        if (event->electronIndexTight.size() != numTightEle_)
-        {
-            return false;
-        }
-        if (event->muonIndexTight.size() != numTightMu_)
-        {
-            return false;
-        }
-        if ((event->electronIndexTight.size() + event->muonIndexTight.size())
-            != 2)
-        {
-            return false;
-        }
-
-        synchCutFlowHist_->Fill(2.5, *eventWeight); // 2 Tight Leptons - step 1
-        if ((event->electronIndexTight.size() != getLooseEles(event).size())
-            || (event->muonIndexTight.size() != getLooseMuons(event).size()))
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
-
-        if (!getDileptonZCand(
-                event, event->electronIndexTight, event->muonIndexTight))
-        {
-            return false;
-        }
-
-        if (((event->zPairLeptons.first + event->zPairLeptons.second).M()
-             - 91.1)
-            > invZMassCut_)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
-
-        *eventWeight *= getLeptonWeight(event, 0);
-
-        std::pair<std::vector<int>, std::vector<float>> jetInfo;
-        jetInfo = makeJetCuts(event, 0, eventWeight);
-        event->jetIndex = jetInfo.first;
-        event->jetSmearValue = jetInfo.second;
-
-        if (event->jetIndex.size() < numJets_)
-        {
-            return false;
-        }
-        if (event->jetIndex.size() > maxJets_)
-        {
-            return false;
-        }
-
-        event->bTagIndex = makeBCuts(event, event->jetIndex, 0);
-        synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
-
-        if (event->bTagIndex.size() < numbJets_)
-        {
-            return false;
-        }
-        if (event->bTagIndex.size() > maxbJets_)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
-
-        synchCutFlowHist_->Fill(7.5, *eventWeight); // no Met cut applied
-
-        double wMass = getWbosonQuarksCand(event, event->jetIndex, 0);
-
-        if (std::abs(wMass) > invWMassCut_)
-        {
-            return false;
-        }
-
-        TLorentzVector bVec(
-            event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],
-            event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
-
-        double topMass =
-            (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
-        //    double topMass = getTopMass(event);
-        //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
-
-        if (topMass > 130)
-        {
-            if (std::abs(
-                    event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]])
-                == 5)
-            {
-                std::cout
-                    << "jet PID/b mass/w Mass/leading b pT: "
-                    << event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]]
-                    << " / " << bVec.M() << " / "
-                    << (event->wPairQuarks.first + event->wPairQuarks.second)
-                           .M()
-                    << " / "
-                    << event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]]
-                    << "\t " << std::endl;
-            }
-        }
-
-        return true;
-
-        /*
-          // tW synch
-          // Total events
-          synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-
-          if (!metFilters(event)) return false;
-
-          // >= 1 pair of opposite charge leptons with mll>20 (leading lepton pT
-         > 25 GeV) std::vector<int> electrons = getSynchEles(event);
-          std::vector<int>  muons = getSynchMus(event);
-
-          // Dilepton mass calculation
-
-          unsigned passedPairs {0};
-          std::vector< std::pair<int, int> > dileptonCands =
-         getSynchDileptonCandidates(event, electrons, muons);
-
-          for ( auto it = dileptonCands.begin(); it != dileptonCands.end(); it++
-         ) {
-
-            if ( numTightEle_ == 2 ) { // If dielectron channel
-              // dilepton mass must be greater than 20 GeV
-              TLorentzVector
-         lepton1{event->elePF2PATPX[it->first],event->elePF2PATPY[it->first],event->elePF2PATPZ[it->first],event->elePF2PATE[it->first]};
-              TLorentzVector
-         lepton2{event->elePF2PATPX[it->second],event->elePF2PATPY[it->second],event->elePF2PATPZ[it->second],event->elePF2PATE[it->second]};
-              if ( (lepton1+lepton2).M() < 20. ) continue;
-              //leading lepton pT must be greater than 25 GeV
-              if ( lepton1.Pt() < 25. ) continue;
-              passedPairs++;
-            }
-
-            if ( numTightMu_ == 2 ) { // If dimuon channel
-              // dilepton mass must be greater than 20 GeV
-              TLorentzVector
-         lepton1{event->muonPF2PATPX[it->first],event->muonPF2PATPY[it->first],event->muonPF2PATPZ[it->first],event->muonPF2PATE[it->first]};
-              TLorentzVector
-         lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
-              if ( (lepton1+lepton2).M() < 20. ) continue;
-              //leading lepton pT must be greater than 25 GeV
-              if ( lepton1.Pt() < 25. ) continue;
-              passedPairs++;
-           }
-
-           if ( numTightEle_ == 1 && numTightMu_ == 2 ) { // If emu channel
-              // dilepton mass must be greater than 20 GeV
-              TLorentzVector
-         lepton1{event->elePF2PATPX[it->first],event->elePF2PATPY[it->first],event->elePF2PATPZ[it->first],event->elePF2PATE[it->first]};
-              TLorentzVector
-         lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
-              if ( (lepton1+lepton2).M() < 20. ) continue;
-              //leading lepton pT must be greater than 25 GeV
-              double leadingPt = lepton1.Pt() > lepton2.Pt() ?
-         lepton1.Pt():lepton2.Pt(); if ( leadingPt < 25. ) continue;
-              passedPairs++;
-           }
-
-         }
-
-          if ( passedPairs < 1 ) return false;
-          synchCutFlowHist_->Fill(1.5, *eventWeight);
-          // Dilepton mass not in 76-106 GeV range (only for ee and mumu
-         channels) - id est no Z bosons! bool notZ {false}; if ( numTightEle_ ==
-         2 ) { for ( auto it = dileptonCands.begin(); it != dileptonCands.end();
-         it++ ) { TLorentzVector
-         lepton1{event->elePF2PATPX[it->first],event->elePF2PATPY[it->first],event->elePF2PATPZ[it->first],event->elePF2PATE[it->first]};
-              TLorentzVector
-         lepton2{event->elePF2PATPX[it->second],event->elePF2PATPY[it->second],event->elePF2PATPZ[it->second],event->elePF2PATE[it->second]};
-              double invMass = (lepton1+lepton2).M();
-              if ( invMass > 106. || invMass < 76. ) { notZ=true; // Found at
-         least one pair which is not Z event->zPairLeptons.first = lepton1;
-                event->zPairLeptons.second = lepton2;
-              }
-            }
-          }
-          if ( numTightMu_ == 2 ) {
-            for ( auto it = dileptonCands.begin(); it != dileptonCands.end();
-         it++ ) { TLorentzVector
-         lepton1{event->muonPF2PATPX[it->first],event->muonPF2PATPY[it->first],event->muonPF2PATPZ[it->first],event->muonPF2PATE[it->first]};
-              TLorentzVector
-         lepton2{event->muonPF2PATPX[it->second],event->muonPF2PATPY[it->second],event->muonPF2PATPZ[it->second],event->muonPF2PATE[it->second]};
-              double invMass = (lepton1+lepton2).M();
-              if ( invMass > 106. || invMass < 76. ) { notZ=true; // Found at
-         least one pair which is not Z event->zPairLeptons.first = lepton1;
-                event->zPairLeptons.second = lepton2;
-              }
-            }
-          }
-
-          if ( !notZ ) return false;
-          synchCutFlowHist_->Fill(2.5, *eventWeight);
-
-          // MET > 40 (only for ee and mumu channels)
-          if (event->metPF2PATPt < 40 && (numTightEle_ == 2 || numTightMu_ ==
-         2)) return false; // Continue if MET is > 40 and ee or mumu channel
-          synchCutFlowHist_->Fill(3.5, *eventWeight);
-
-          //Setup selected lepton pair used for jet-lepton cleaning
-          // nJets >= 2
-          std::pair< std::vector<int>, std::vector<float> > jetInfo;
-          jetInfo = makeJetCuts(event, 0, eventWeight);
-          event->jetIndex = jetInfo.first;
-          event->jetSmearValue = jetInfo.second;
-
-          event->bTagIndex = makeBCuts(event,event->jetIndex, 0);
-
-          if (event->jetIndex.size() >= 2) synchCutFlowHist_->Fill(4.5,
-         *eventWeight);
-
-          // nBjets >= 1
-          if (event->jetIndex.size() >= 2 && event->bTagIndex.size() >= 1)
-         synchCutFlowHist_->Fill(5.5, *eventWeight);
-
-          // nJets == 1
-          if (event->jetIndex.size() == 1) synchCutFlowHist_->Fill(6.5,
-         *eventWeight);
-
-          // nBjets == 1
-          if (event->jetIndex.size() == 1 && event->bTagIndex.size() == 1)
-         synchCutFlowHist_->Fill(7.5, *eventWeight);
-      */
+        return false;
+    }
+    if (!metFilters(event))
+    {
+        return false;
     }
 
-    // 2016 tZq trilepton synch
-    else
+    synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
+    event->electronIndexTight = getTightEles(event);
+    event->muonIndexTight = getTightMuons(event);
+    synchNumEles_->Fill(event->electronIndexTight.size());
+    synchNumMus_->Fill(event->muonIndexTight.size());
+
+    if (event->electronIndexTight.size() != numTightEle_)
     {
-        synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
-        //  std::cout << std::setprecision(6) << std::fixed;
-
-        if (makeEventDump_)
-        {
-            dumpToFile(event, 0);
-        }
-
-        if (!triggerCuts(event, eventWeight, 0))
-        {
-            return false;
-        }
-
-        synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
-
-        // Check number of leptons is correct
-        if (singleEventInfoDump_)
-        {
-            std::cout << "Correct number of leptons and loose: "
-                      << getLooseEles(event).size() << " "
-                      << getLooseMuons(event).size() << std::endl;
-        }
-
-        event->electronIndexTight = getTightEles(event);
-        event->muonIndexTight = getTightMuons(event);
-
-        // Check at exactly three tight leptons
-        synchNumEles_->Fill(event->electronIndexTight.size());
-        synchNumMus_->Fill(event->muonIndexTight.size());
-        if (event->electronIndexTight.size() != numTightEle_)
-        {
-            return false;
-        }
-        if (event->muonIndexTight.size() != numTightMu_)
-        {
-            return false;
-        }
-        if ((event->electronIndexTight.size() + event->muonIndexTight.size())
-            != 3)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(2.5, *eventWeight); // 3 Tight Leptons - step 1
-
-        //  for ( int i = 0; i != event->numMuonPF2PAT; i++ ) {
-        //    topMassEventDump_ << "EvtNb="<< event->eventNum << "mu_pt=" <<
-        //    event->muonPF2PATPt[i] <<" mu_eta=" << event->muonPF2PATEta[i] <<
-        //    " mu_phi=" << event->muonPF2PATPhi[i] << " mu_iso=" <<
-        //    event->muonPF2PATComRelIsodBeta[i] << std::endl;
-        //  }
-
-        // loose lepton veto
-        //  int looseLeps = getLooseLepsNum(event);
-        //  if (isMC_ && looseLeps < 2) return false;
-        //  if (!isMC_ && looseLeps < 3) return false;
-
-        if ((event->electronIndexTight.size() != getLooseEles(event).size())
-            || (event->muonIndexTight.size() != getLooseMuons(event).size()))
-        {
-            return false;
-        }
-        if (singleEventInfoDump_)
-        {
-            std::cout << " and passes veto too." << std::endl;
-        }
-        if (makeEventDump_)
-        {
-            dumpToFile(event, 2);
-        }
-        synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
-
-        // Z selection
-        if (singleEventInfoDump_)
-        {
-            std::cout << "Z mass: "
-                      << getTrileptonZCand(event,
-                                           event->electronIndexTight,
-                                           event->muonIndexTight)
-                      << std::endl;
-        }
-        if (std::abs(getTrileptonZCand(
-                event, event->electronIndexTight, event->muonIndexTight))
-            > invZMassCut_)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
-
-        //  *eventWeight *= getLeptonWeight(event,0);
-
-        // Add in extra steps here.
-
-        // Jet selection
-        std::pair<std::vector<int>, std::vector<float>> jetInfo;
-        jetInfo = makeJetCuts(event, 0, eventWeight);
-        event->jetIndex = jetInfo.first;
-        event->jetSmearValue = jetInfo.second;
-        if (singleEventInfoDump_)
-        {
-            std::cout << "Number of jets: " << event->jetIndex.size()
-                      << std::endl;
-        }
-        if (event->jetIndex.size() < 1)
-        {
-            return false;
-        }
-        if (makeEventDump_)
-        {
-            dumpToFile(event, 4);
-        }
-        //  std::cout << event->jetIndex.size() << std::endl;
-        synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
-
-        // bTag selection
-        event->bTagIndex = makeBCuts(event, event->jetIndex, 0);
-        //  synchCutTopMassHist_->Fill(getTopMass(event)); // Plot top mass
-        //  distribution for all top candidates - all sanity checks done, Z mass
-        //  exists, got b jets too.
-        if (singleEventInfoDump_)
-        {
-            std::cout << "One bJet: " << event->bTagIndex.size() << std::endl;
-        }
-        if (event->bTagIndex.size() != 1)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
-
-        // MET cut
-        if (singleEventInfoDump_)
-        {
-            std::cout << "MET: " << event->metPF2PATPt << std::endl;
-        }
-        //  if (event->metPF2PATPt < metCut_) return false; // MET Cut not
-        //  currently applied
-        synchCutFlowHist_->Fill(7.5, *eventWeight);
-
-        // mTW cut
-        if (singleEventInfoDump_)
-        {
-            std::cout << "mTW: " << event->metPF2PATPt << std::endl;
-        }
-        double mtW{
-            std::sqrt(2 * event->metPF2PATPt * event->wLepton.Pt()
-                      * (1 - cos(event->metPF2PATPhi - event->wLepton.Phi())))};
-        if (mtW < mTWCutSynch_)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(8.5, *eventWeight); // mWT cut - step 6
-
-        // Top Mass cut
-        if (singleEventInfoDump_)
-        {
-            std::cout << "top mass cut: " << getTopMass(event) << std::endl;
-        }
-        double topMass(getTopMass(event));
-
-        if (topMass > TopMassCutUpper_ || topMass < TopMassCutLower_)
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(9.5, *eventWeight); // top mass cut - step 7
-
-        if (!metFilters(event))
-        {
-            return false;
-        }
-        synchCutFlowHist_->Fill(10.5, *eventWeight);
-
-        if (singleEventInfoDump_)
-        {
-            std::cout << "Passes all cuts! Yay!" << std::endl;
-        }
-        if (makeEventDump_)
-        {
-            dumpToFile(event, 6);
-        }
-        //  if (singleEventInfoDump_) std::cout << std::setprecision(1) <<
-        //  std::fixed;
-        return true;
+        return false;
     }
+    if (event->muonIndexTight.size() != numTightMu_)
+    {
+        return false;
+    }
+    if ((event->electronIndexTight.size() + event->muonIndexTight.size()) != 2)
+    {
+        return false;
+    }
+
+    synchCutFlowHist_->Fill(2.5, *eventWeight); // 2 Tight Leptons - step 1
+    if ((event->electronIndexTight.size() != getLooseEles(event).size())
+        || (event->muonIndexTight.size() != getLooseMuons(event).size()))
+    {
+        return false;
+    }
+    synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
+
+    if (!getDileptonZCand(
+            event, event->electronIndexTight, event->muonIndexTight))
+    {
+        return false;
+    }
+
+    if (((event->zPairLeptons.first + event->zPairLeptons.second).M() - 91.1)
+        > invZMassCut_)
+    {
+        return false;
+    }
+    synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
+
+    *eventWeight *= getLeptonWeight(event, 0);
+
+    std::pair<std::vector<int>, std::vector<float>> jetInfo;
+    jetInfo = makeJetCuts(event, 0, eventWeight);
+    event->jetIndex = jetInfo.first;
+    event->jetSmearValue = jetInfo.second;
+
+    if (event->jetIndex.size() < numJets_)
+    {
+        return false;
+    }
+    if (event->jetIndex.size() > maxJets_)
+    {
+        return false;
+    }
+
+    event->bTagIndex = makeBCuts(event, event->jetIndex, 0);
+    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+
+    if (event->bTagIndex.size() < numbJets_)
+    {
+        return false;
+    }
+    if (event->bTagIndex.size() > maxbJets_)
+    {
+        return false;
+    }
+    synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
+
+    synchCutFlowHist_->Fill(7.5, *eventWeight); // no Met cut applied
+
+    double wMass = getWbosonQuarksCand(event, event->jetIndex, 0);
+
+    if (std::abs(wMass) > invWMassCut_)
+    {
+        return false;
+    }
+
+    TLorentzVector bVec(
+        event->jetPF2PATPx[event->jetIndex[event->bTagIndex[0]]],
+        event->jetPF2PATPy[event->jetIndex[event->bTagIndex[0]]],
+        event->jetPF2PATPz[event->jetIndex[event->bTagIndex[0]]],
+        event->jetPF2PATE[event->jetIndex[event->bTagIndex[0]]]);
+
+    double topMass =
+        (bVec + event->wPairQuarks.first + event->wPairQuarks.second).M();
+    //    double topMass = getTopMass(event);
+    //    std::cout << topMass << " / " << getTopMass(event) << std::endl;
+
+    if (topMass > 130)
+    {
+        if (std::abs(event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]])
+            == 5)
+        {
+            std::cout
+                << "jet PID/b mass/w Mass/leading b pT: "
+                << event->jetPF2PATPID[event->jetIndex[event->bTagIndex[0]]]
+                << " / " << bVec.M() << " / "
+                << (event->wPairQuarks.first + event->wPairQuarks.second).M()
+                << " / "
+                << event->jetPF2PATPt[event->jetIndex[event->bTagIndex[0]]]
+                << "\t " << std::endl;
+        }
+    }
+
+    return true;
 }
 
 TH1F* Cuts::getSynchCutFlow()
@@ -3375,12 +2878,9 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,
                         std::map<std::string, Plots*> plotMap,
                         TH1F* cutFlow)
 {
-    if (trileptonChannel_ == false)
-    {
-        std::cout << "Invert Iso Cut is not avaliable for the dilepton channel."
-                  << std::endl;
-        return false;
-    }
+    std::cout << "Invert Iso Cut is not avaliable for the dilepton channel."
+              << std::endl;
+    return false;
     // Check there are exactly 2 tight leptons with the correct isolation cut.
     event->electronIndexTight = getTightEles(event);
     event->muonIndexTight = getTightMuons(event);
@@ -4105,73 +3605,6 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step)
         }
     }
 
-    if (step > 2 && trileptonChannel_ == true)
-    {
-        if (event->zPairLeptons.first.Pt() < event->wLepton.Pt())
-        {
-            tempLepVec.emplace_back(event->wLepton);
-            tempLepVec.emplace_back(event->zPairLeptons.first);
-            tempLepVec.emplace_back(event->zPairLeptons.second);
-        }
-        else if (event->wLepton.Pt() > event->zPairLeptons.second.Pt())
-        {
-            tempLepVec.emplace_back(event->zPairLeptons.first);
-            tempLepVec.emplace_back(event->wLepton);
-            tempLepVec.emplace_back(event->zPairLeptons.second);
-        }
-        else
-        {
-            tempLepVec.emplace_back(event->zPairLeptons.first);
-            tempLepVec.emplace_back(event->zPairLeptons.second);
-            tempLepVec.emplace_back(event->wLepton);
-        }
-    }
-    if (step == 2 && trileptonChannel_ == true)
-    {
-        int muUsed{0};
-        for (int i{0}; i < event->numElePF2PAT; i++)
-        {
-            TLorentzVector tempVec{event->elePF2PATPX[i],
-                                   event->elePF2PATPY[i],
-                                   event->elePF2PATPZ[i],
-                                   event->elePF2PATE[i]};
-            for (int j{muUsed}; j < event->numMuonPF2PAT; j++)
-            {
-                if (tempVec.Pt() > event->muonPF2PATPt[i])
-                {
-                    tempLepVec.emplace_back(tempVec);
-                    break;
-                }
-                else
-                {
-                    tempLepVec.emplace_back(event->muonPF2PATPX[j],
-                                            event->muonPF2PATPY[j],
-                                            event->muonPF2PATPZ[j],
-                                            event->muonPF2PATE[j]);
-                    muUsed++;
-                    if (tempLepVec.size() > 2)
-                    {
-                        break;
-                    }
-                }
-                if (tempLepVec.size() > 2)
-                {
-                    break;
-                }
-            }
-        }
-        if (tempLepVec.size() < 3)
-        {
-            for (int j{0}; j < 3; j++)
-            {
-                tempLepVec.emplace_back(event->muonPF2PATPX[j],
-                                        event->muonPF2PATPY[j],
-                                        event->muonPF2PATPZ[j],
-                                        event->muonPF2PATE[j]);
-            }
-        }
-    }
-
     switch (step)
     {
         case 0:
@@ -4448,110 +3881,61 @@ float Cuts::getLeptonWeight(AnalysisEvent* event, int syst)
     {
         return 1.;
     }
+
     float leptonWeight{1.};
-    if (trileptonChannel_ == true)
-    { // Trilepton channel
-        if (numTightEle_ > 1)
-        {
-            leptonWeight *=
-                eleSF(event->zPairLeptons.first.Pt(),
-                      event->elePF2PATSCEta[event->zPairIndex.first],
-                      syst);
-            leptonWeight *=
-                eleSF(event->zPairLeptons.second.Pt(),
-                      event->elePF2PATSCEta[event->zPairIndex.second],
-                      syst);
-        }
-        else
-        {
-            leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),
-                                   event->zPairLeptons.first.Eta(),
-                                   syst);
-            leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),
-                                   event->zPairLeptons.second.Eta(),
-                                   syst);
-        }
-        if (numTightEle_ == 3 || numTightEle_ == 1)
-        {
-            leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],
-                                  event->elePF2PATSCEta[event->wLepIndex],
-                                  syst);
-        }
-        else
-        {
-            leptonWeight *= eleSF(event->elePF2PATPT[event->wLepIndex],
-                                  event->elePF2PATSCEta[event->wLepIndex],
-                                  syst);
-        }
-    }
-    else if (trileptonChannel_ == false)
-    { // Dilepton channel
-        if (numTightEle_ == 2)
-        {
-            leptonWeight *=
-                eleSF(event->zPairLeptons.first.Pt(),
-                      event->elePF2PATSCEta[event->zPairIndex.first],
-                      syst);
-            leptonWeight *=
-                eleSF(event->zPairLeptons.second.Pt(),
-                      event->elePF2PATSCEta[event->zPairIndex.second],
-                      syst);
 
-            // DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-            //      leptonWeight *=
-            //      singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
-            //      leptonWeight *=
-            //      singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
-
-            // Double + Single trigger SFs
-            /*
-                // Leading lepton is always above 25 GeV, no need to do logic
-               for that if ( event->zPairLeptons.second.Pt() < 20 ) leptonWeight
-               *= 0.97869; else leptonWeight *= 0.98845;
-            */
-        }
-
-        else if (numTightMu_ == 2)
-        {
-            leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),
-                                   event->zPairLeptons.first.Eta(),
-                                   syst);
-            leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),
-                                   event->zPairLeptons.second.Eta(),
-                                   syst);
-
-            // DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
-            //      leptonWeight *=
-            //      singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
-            //      leptonWeight *=
-            //      singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
-            //      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(),
-            //      event->zPairLeptons.second.Pt(),
-            //      event->zPairLeptons.first.Eta(),
-            //      event->zPairLeptons.second.Eta(), syst);
-        }
-        else if (numTightEle_ == 1 && numTightMu_ == 1)
-        {
-            leptonWeight *=
-                eleSF(event->elePF2PATPT[event->electronIndexTight[0]],
-                      event->elePF2PATSCEta[event->electronIndexTight[0]],
-                      syst);
-            leptonWeight *=
-                muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],
-                       event->muonPF2PATEta[event->muonIndexTight[0]],
-                       syst);
-        }
-    }
-
-    else
+    if (numTightEle_ == 2)
     {
-        std::cout << "You've somehow managed to set the trilepton/dilepton "
-                     "bool flag to a value other than these two!"
-                  << std::endl;
-        std::cout << "HOW?! Well done for breaking this ..." << std::endl;
-        exit(0);
+        leptonWeight *= eleSF(event->zPairLeptons.first.Pt(),
+                              event->elePF2PATSCEta[event->zPairIndex.first],
+                              syst);
+        leptonWeight *= eleSF(event->zPairLeptons.second.Pt(),
+                              event->elePF2PATSCEta[event->zPairIndex.second],
+                              syst);
+
+        // DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
+        //      leptonWeight *=
+        //      singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[0]],event->elePF2PATSCEta[event->electronIndexTight[0]],syst);
+        //      leptonWeight *=
+        //      singleElectronTriggerSF(event->elePF2PATPT[event->electronIndexTight[1]],event->elePF2PATSCEta[event->electronIndexTight[1]],syst);
+
+        // Double + Single trigger SFs
+        /*
+            // Leading lepton is always above 25 GeV, no need to do logic
+           for that if ( event->zPairLeptons.second.Pt() < 20 ) leptonWeight
+           *= 0.97869; else leptonWeight *= 0.98845;
+        */
     }
 
+    else if (numTightMu_ == 2)
+    {
+        leptonWeight *= muonSF(event->zPairLeptons.first.Pt(),
+                               event->zPairLeptons.first.Eta(),
+                               syst);
+        leptonWeight *= muonSF(event->zPairLeptons.second.Pt(),
+                               event->zPairLeptons.second.Eta(),
+                               syst);
+
+        // DO NOT USE - ONLY PRESENT FOR DEBUGGING AND TEST PURPOSES
+        //      leptonWeight *=
+        //      singleMuonTriggerSF(event->zPairLeptons.first.Pt(),event->zPairLeptons.first.Eta(),syst);
+        //      leptonWeight *=
+        //      singleMuonTriggerSF(event->zPairLeptons.second.Pt(),event->zPairLeptons.second.Eta(),syst);
+        //      leptonWeight *=muonTriggerSF(event->zPairLeptons.first.Pt(),
+        //      event->zPairLeptons.second.Pt(),
+        //      event->zPairLeptons.first.Eta(),
+        //      event->zPairLeptons.second.Eta(), syst);
+    }
+    else if (numTightEle_ == 1 && numTightMu_ == 1)
+    {
+        leptonWeight *=
+            eleSF(event->elePF2PATPT[event->electronIndexTight[0]],
+                  event->elePF2PATSCEta[event->electronIndexTight[0]],
+                  syst);
+        leptonWeight *= muonSF(event->muonPF2PATPt[event->muonIndexTight[0]],
+                               event->muonPF2PATEta[event->muonIndexTight[0]],
+                               syst);
+    }
     return leptonWeight;
 }
 
@@ -5503,15 +4887,6 @@ TLorentzVector
                 getJECUncertainty(returnJet.Pt(), returnJet.Eta(), syst)};
             returnJet *= 1 + jerUncer;
         }
-        return returnJet;
-    }
-
-    if (synchCutFlow_ && trileptonChannel_)
-    {
-        returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                             event->jetPF2PATPy[index],
-                             event->jetPF2PATPz[index],
-                             event->jetPF2PATE[index]);
         return returnJet;
     }
 

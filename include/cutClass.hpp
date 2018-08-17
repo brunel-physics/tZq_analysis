@@ -94,7 +94,6 @@ class Cuts
     bool synchCutFlow_; // For synch
     bool singleEventInfoDump_; // For dropping info on event for synching.
     bool makeEventDump_;
-    const bool trileptonChannel_;
     const bool isFCNC_;
     const bool isCtag_;
     const bool is2016_;
@@ -256,7 +255,6 @@ class Cuts
     // met and mtw cut values
     float metCut_;
     float metDileptonCut_;
-    float mTWCut_;
     float mTWCutSynch_;
 
     // top mass cut values
@@ -288,7 +286,6 @@ class Cuts
 
     public:
     Cuts(bool,
-         bool,
          bool,
          bool,
          bool,
@@ -341,10 +338,6 @@ class Cuts
     {
         metCut_ = cut;
         metDileptonCut_ = cut;
-    }
-    void setMTWCut(float cut)
-    {
-        mTWCut_ = cut;
     }
     void setMWCut(float cut)
     {
