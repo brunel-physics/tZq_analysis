@@ -860,72 +860,12 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
 std::vector<int> Cuts::getTightEles(AnalysisEvent* event)
 {
     std::vector<int> electrons;
-
     for (int i{0}; i < event->numElePF2PAT; i++)
     {
-        if (!event->elePF2PATIsGsf[i])
+        if (event->elePF2PATCutIdTight[i])
         {
-            continue;
+            electrons.emplace_back(i);
         }
-        TLorentzVector tempVec{event->elePF2PATPX[i],
-                               event->elePF2PATPY[i],
-                               event->elePF2PATPZ[i],
-                               event->elePF2PATE[i]};
-
-        if (electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_)
-        {
-            continue;
-        }
-        else if (electrons.size() >= 1 && tempVec.Pt() <= tightElePt_)
-        {
-            continue;
-        }
-
-        if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)
-        {
-            continue;
-        }
-
-        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
-        // range
-        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
-             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
-            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
-        {
-            continue;
-        }
-
-        // VID cut
-        if (event->elePF2PATCutIdTight[i] < 1)
-        {
-            continue;
-        }
-
-        // Cuts not part of the tuned ID
-        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
-        {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
-            {
-                continue;
-            }
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
-            {
-                continue;
-            }
-        }
-        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
-                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
-        {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
-            {
-                continue;
-            }
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
-            {
-                continue;
-            }
-        }
-        electrons.emplace_back(i);
     }
     return electrons;
 }
@@ -935,65 +875,10 @@ std::vector<int> Cuts::getLooseEles(AnalysisEvent* event)
     std::vector<int> electrons;
     for (int i{0}; i < event->numElePF2PAT; i++)
     {
-        TLorentzVector tempVec{event->elePF2PATPX[i],
-                               event->elePF2PATPY[i],
-                               event->elePF2PATPZ[i],
-                               event->elePF2PATE[i]};
-
-        if (electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_)
+        if (event->elePF2PATCutIdLoose[i])
         {
-            continue;
+            electrons.emplace_back(i);
         }
-        else if (electrons.size() >= 1 && tempVec.Pt() <= looseElePt_)
-        {
-            continue;
-        }
-
-        if (std::abs(event->elePF2PATSCEta[i]) > tightEleEta_)
-        {
-            continue;
-        }
-
-        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
-        // range
-        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
-             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
-            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
-        {
-            continue;
-        }
-
-        // VID cut
-        if (event->elePF2PATCutIdVeto[i] < 1)
-        {
-            continue;
-        }
-
-        // Cuts not part of the tuned ID
-        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
-        {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
-            {
-                continue;
-            }
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
-            {
-                continue;
-            }
-        }
-        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
-                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
-        {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
-            {
-                continue;
-            }
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
-            {
-                continue;
-            }
-        }
-        electrons.emplace_back(i);
     }
     return electrons;
 }
@@ -1003,89 +888,10 @@ std::vector<int> Cuts::getTightMuons(AnalysisEvent* event)
     std::vector<int> muons;
     for (int i{0}; i < event->numMuonPF2PAT; i++)
     {
-        // if (i == 0) std::cout << "Starts doing first..." <<
-        // event->muonPF2PATIsPFMuon[i]; if (i > 0) std::cout << "   " <<
-        // event->muonPF2PATIsPFMuon[i];
-        //    std::cout << i << "\t" << event->muonPF2PATPt[i] << "\t" <<
-        //    event->muonPF2PATEta[i] << "\t" <<
-        //    event->muonPF2PATComRelIsodBeta[i] << "\t" <<
-        //    event->muonPF2PATChi2[i]/event->muonPF2PATNDOF[i] << "\t" <<
-        //    event->muonPF2PATGlobalID[i] << "\t" <<
-        //    event->muonPF2PATIsPFMuon[i] << "\t" <<
-        //    event->muonPF2PATTrackID[i] << "\t" <<
-        //    event->muonPF2PATTkLysWithMeasurements[i] << "\t" <<
-        //    event->muonPF2PATDBPV[i] << "\t" << event->muonPF2PATTrackNHits[i]
-        //    << "\t" << event->muonPF2PATMuonNHits[i] << "\t" <<
-        //    event->muonPF2PATVldPixHits[i] << "\t" <<
-        //    event->muonPF2PATMatchedStations[i] << "\t" << std::abs(event->pvZ
-        //    - event->muonPF2PATVertZ[i]) << std::endl;
-
-        if (!event->muonPF2PATIsPFMuon[i])
+        if (event->muonPF2PATTightCutId[i])
         {
-            continue;
+            muons.emplace_back(i);
         }
-
-        if (muons.size() < 1 && event->muonPF2PATPt[i] <= tightMuonPtLeading_)
-        {
-            continue;
-        }
-        else if (muons.size() >= 1 && event->muonPF2PATPt[i] <= tightMuonPt_)
-        {
-            continue;
-        }
-
-        if (std::abs(event->muonPF2PATEta[i]) >= tightMuonEta_)
-        {
-            continue;
-        }
-        if (event->muonPF2PATComRelIsodBeta[i] >= tightMuonRelIso_)
-        {
-            continue;
-        }
-
-        // Tight ID Cut
-        if (!event->muonPF2PATTrackID[i])
-        {
-            continue;
-        }
-        if (!event->muonPF2PATGlobalID[i])
-        {
-            continue;
-        }
-
-        //      if (!event->muonPF2PATTrackID[i] &&
-        //      !event->muonPF2PATGlobalID[i]) continue; //
-
-        if (event->muonPF2PATGlbTkNormChi2[i] >= 10.)
-        {
-            continue;
-        }
-        if (event->muonPF2PATMatchedStations[i] < 2)
-        {
-            continue;
-        }
-        if (std::abs(event->muonPF2PATDBPV[i]) >= 0.2)
-        {
-            continue;
-        }
-        if (std::abs(event->muonPF2PATDZPV[i]) >= 0.5)
-        {
-            continue;
-        }
-        if (event->muonPF2PATMuonNHits[i] < 1)
-        {
-            continue;
-        }
-        if (event->muonPF2PATVldPixHits[i] < 1)
-        {
-            continue;
-        }
-        if (event->muonPF2PATTkLysWithMeasurements[i] <= 5)
-        {
-            continue;
-        }
-
-        muons.emplace_back(i);
     }
     return muons;
 }
@@ -1095,35 +901,9 @@ std::vector<int> Cuts::getLooseMuons(AnalysisEvent* event)
     std::vector<int> muons;
     for (int i{0}; i < event->numMuonPF2PAT; i++)
     {
-        if (!event->muonPF2PATIsPFMuon[i])
-        {
-            continue;
-        }
-
-        if (muons.size() < 1 && event->muonPF2PATPt[i] <= looseMuonPtLeading_)
-        {
-            continue;
-        }
-        else if (muons.size() >= 1 && event->muonPF2PATPt[i] <= looseMuonPt_)
-        {
-            continue;
-        }
-
-        if (std::abs(event->muonPF2PATEta[i]) >= looseMuonEta_)
-        {
-            continue;
-        }
-        if (event->muonPF2PATComRelIsodBeta[i] >= looseMuonRelIso_)
-        {
-            continue;
-        }
-        if (event->muonPF2PATGlobalID[i] || event->muonPF2PATTrackID[i])
+        if (event->muonPF2PATLooseCutId[i])
         {
             muons.emplace_back(i);
-        }
-        else
-        {
-            continue;
         }
     }
     return muons;
