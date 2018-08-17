@@ -44,11 +44,10 @@ class MakeMvaInputs
                             std::vector<TLorentzVector> jetVecs,
                             uint syst);
 
-    std::map<std::string, std::vector<float>> setupInputVars();
-    void setupBranches(TTree*, std::map<std::string, std::vector<float>>);
+    std::map<std::string, float> setupInputVars();
+    void setupBranches(TTree*, std::map<std::string, float>);
     void fillTree(TTree* outTreeSig,
                   TTree* outTreeSdBnd,
-                  std::map<std::string, std::vector<float>> varMap,
                   MvaEvent* tree,
                   std::string label,
                   std::string channel,
@@ -58,7 +57,7 @@ class MakeMvaInputs
 
     JetCorrectionUncertainty jetUnc;
 
-    std::map<std::string, std::vector<float>> inputVars;
+    std::map<std::string, float> inputVars;
 
     bool ttbarControlRegion;
     bool useSidebandRegion;
