@@ -83,10 +83,6 @@ class Cuts
     float eleSF(double, double, int syst = 0);
     float muonSF(double, double, int syst = 0);
 
-    float singleElectronTriggerSF(double, double, int syst = 0);
-    float singleMuonTriggerSF(double, double, int syst = 0);
-    float muonTriggerSF(double, double, double, double, int syst = 0);
-
     // set to true to fill in histograms/spit out other info
     bool doPlots_;
     bool fillCutFlow_; // Fill cut flows
