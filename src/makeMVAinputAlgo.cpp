@@ -6,6 +6,8 @@
 #include "TTree.h"
 #include "config_parser.hpp"
 
+#include <limits>
+
 #include <boost/filesystem.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
@@ -574,6 +576,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                              const bool SameSignMC)
 {
     unsigned syst{0};
+    const double NaN{std::numeric_limits<double>::quiet_NaN()};
 
     if (label.find("__met__plus") != std::string::npos)
     {
@@ -746,18 +749,18 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("met") = tree->metPF2PATEt;
     inputVars.at("bTagDisc") = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars.at("leadJetbTag") = tree->jetPF2PATBDiscriminator[jets[0]];
-    inputVars.at("secJetbTag") = -1.;
-    inputVars.at("secJetPt") = -1.;
-    inputVars.at("secJetEta") = -500.;
-    inputVars.at("secJetPhi") = -500.;
-    inputVars.at("thirdJetbTag") = -1.;
-    inputVars.at("thirdJetPt") = -1.;
-    inputVars.at("thirdJetEta") = -500.;
-    inputVars.at("thirdJetPhi") = -500.;
-    inputVars.at("fourthJetbTag") = -1.;
-    inputVars.at("fourthJetPt") = -1.;
-    inputVars.at("fourthJetEta") = -500.;
-    inputVars.at("fourthJetPhi") = -500.;
+    inputVars.at("secJetbTag") = NaN;
+    inputVars.at("secJetPt") = NaN;
+    inputVars.at("secJetEta") = NaN;
+    inputVars.at("secJetPhi") =  NaN;
+    inputVars.at("thirdJetbTag") = NaN;
+    inputVars.at("thirdJetPt") = NaN;
+    inputVars.at("thirdJetEta") = NaN;
+    inputVars.at("thirdJetPhi") = NaN;
+    inputVars.at("fourthJetbTag") = NaN;
+    inputVars.at("fourthJetPt") = NaN;
+    inputVars.at("fourthJetEta") = NaN;
+    inputVars.at("fourthJetPhi") = NaN;
 
     if (jetVecs.size() > 1)
     {
@@ -824,8 +827,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("w2TopDelPhi") =
         (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
 
-    inputVars.at("j1j2delR") = -1.;
-    inputVars.at("j1j2delPhi") = -10.;
+    inputVars.at("j1j2delR") = NaN;
+    inputVars.at("j1j2delPhi") = NaN;
 
     if (jetVecs.size() > 1)
     {
