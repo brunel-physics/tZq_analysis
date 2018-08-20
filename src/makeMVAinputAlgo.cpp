@@ -715,7 +715,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     }
     inputVars["totPt2Jet"] = std::sqrt(totPx * totPx + totPy * totPy);
 
-    for (uint i = 2; i != jetVecs.size(); i++)
+    for (unsigned i{2}; i != jetVecs.size(); i++)
     {
         totPx += jetVecs[i].Px();
         totPy += jetVecs[i].Py();
