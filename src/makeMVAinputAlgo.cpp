@@ -193,7 +193,6 @@ void MakeMvaInputs::runMainAnalysis()
                     boost::numeric_cast<int>(numberOfEvents),
                     "Running over dataset ...",
                     false};
-                lEventTimer.DrawProgressBar(0);
 
                 // loop over events
                 for (long long i{0}; i < numberOfEvents; i++)
