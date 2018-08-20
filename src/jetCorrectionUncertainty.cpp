@@ -21,7 +21,6 @@ JetCorrectionUncertainty::JetCorrectionUncertainty(std::string dataFile)
     //    "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt",
     //    std::ifstream::in );
     std::string line;
-    bool first{true};
 
     if (!jecFile.is_open())
     {
@@ -29,6 +28,7 @@ JetCorrectionUncertainty::JetCorrectionUncertainty(std::string dataFile)
         exit(0);
     }
 
+    bool first{true};
     while (getline(jecFile, line))
     {
         std::vector<std::string> tempVec;
@@ -45,7 +45,7 @@ JetCorrectionUncertainty::JetCorrectionUncertainty(std::string dataFile)
         etaMaxJEC_.emplace_back(std::stof(tempVec[1]));
         for (unsigned i{1}; i < tempVec.size() / 3; i++)
         {
-            unsigned ind{i * 3};
+            const unsigned ind{i * 3};
             if (first)
             {
                 ptMinJEC_.emplace_back(std::stof(tempVec[ind]));
@@ -66,17 +66,19 @@ JetCorrectionUncertainty::~JetCorrectionUncertainty()
 {
 }
 
-double
-    JetCorrectionUncertainty::getUncertainty(double pt, double eta, int jesUD)
+double JetCorrectionUncertainty::getUncertainty(const double pt,
+                                                const double eta,
+                                                const int jesUD) const
 {
     if (jesUD == 0)
     {
         return 1.0;
     }
 
-    uint ptBin{0}, etaBin{0};
+    unsigned ptBin{0};
+    unsigned etaBin{0};
 
-    for (uint i = 0; i != ptMinJEC_.size(); i++)
+    for (size_t i{0}; i != ptMinJEC_.size(); i++)
     {
         if (pt > ptMinJEC_[i] && pt <= ptMaxJEC_[i])
         {
@@ -85,7 +87,7 @@ double
         }
     }
 
-    for (uint i = 0; i != etaMinJEC_.size(); i++)
+    for (size_t i{0}; i != etaMinJEC_.size(); i++)
     {
         if (eta > etaMinJEC_[i] && eta <= etaMaxJEC_[i])
         {
@@ -94,7 +96,8 @@ double
         }
     }
 
-    double lowFact{0.}, highFact{0.};
+    double lowFact{0.};
+    double highFact{0.};
 
     if (jesUD == 1)
     {
@@ -107,23 +110,27 @@ double
         highFact = jecSFDown_[etaBin][ptBin + 1];
     }
 
-    double a = (highFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin]);
-    double b = (lowFact * ptMaxJEC_[ptBin] - highFact * ptMinJEC_[ptBin])
-               / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin]);
+    const double a{(highFact - lowFact)
+                   / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
+    const double b{(lowFact * ptMaxJEC_[ptBin] - highFact * ptMinJEC_[ptBin])
+                   / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
 
     return a * pt + b;
 }
 
-std::pair<double, double> JetCorrectionUncertainty::getMetAfterJESUnc(
-    double metPx, double metPy, MvaEvent tree, int jesUD)
+std::pair<double, double>
+    JetCorrectionUncertainty::getMetAfterJESUnc(double metPx,
+                                                double metPy,
+                                                const MvaEvent& tree,
+                                                const int jesUD) const
 {
-    for (int i = 0; i != tree.numJetPF2PAT; i++)
+    for (int i{0}; i != tree.numJetPF2PAT; i++)
     {
         metPx += tree.jetPF2PATPx[i];
         metPy += tree.jetPF2PATPy[i];
 
-        double uncertainty =
-            getUncertainty(tree.jetPF2PATPt[i], tree.jetPF2PATEta[i], jesUD);
+        const double uncertainty{
+            getUncertainty(tree.jetPF2PATPt[i], tree.jetPF2PATEta[i], jesUD)};
 
         if (jesUD == 1)
         {
@@ -136,5 +143,5 @@ std::pair<double, double> JetCorrectionUncertainty::getMetAfterJESUnc(
             metPy -= (1 - uncertainty) * tree.jetPF2PATPy[i];
         }
     }
-    return std::make_pair(metPx, metPy);
+    return {metPx, metPy};
 }

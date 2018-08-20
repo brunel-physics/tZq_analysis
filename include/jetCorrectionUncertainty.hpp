@@ -16,9 +16,13 @@ class JetCorrectionUncertainty
     JetCorrectionUncertainty(std::string dataFile);
     ~JetCorrectionUncertainty();
 
-    double getUncertainty(double pt, double eta, int jesUD);
-    std::pair<double, double>
-        getMetAfterJESUnc(double metPx, double metPy, MvaEvent tree, int jesUD);
+    double getUncertainty(const double pt,
+                          const double eta,
+                          const int jesUD) const;
+    std::pair<double, double> getMetAfterJESUnc(double metPx,
+                                                double metPy,
+                                                const MvaEvent& tree,
+                                                const int jesUD) const;
 
     private:
     std::vector<double> ptMinJEC_;

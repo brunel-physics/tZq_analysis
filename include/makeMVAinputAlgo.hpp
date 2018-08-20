@@ -24,33 +24,39 @@ class MakeMvaInputs
     // functions
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
-    double deltaR(float, float, float, float);
+    double deltaR(const float eta1,
+                  const float phi1,
+                  const float eta2,
+                  const float phi2) const;
     std::pair<TLorentzVector, TLorentzVector>
-        sortOutLeptons(MvaEvent* tree, std::string channel);
-    std::pair<TLorentzVector, TLorentzVector> sortOutHadronicW(MvaEvent* tree);
+        sortOutLeptons(const MvaEvent* tree, const std::string& channel) const;
+    std::pair<TLorentzVector, TLorentzVector>
+        sortOutHadronicW(const MvaEvent* tree) const;
     std::pair<std::vector<int>, std::vector<TLorentzVector>>
-        getJets(MvaEvent* tree, int syst, TLorentzVector met);
-    std::pair<std::vector<int>, std::vector<TLorentzVector>> getBjets(
-        MvaEvent* tree, int syst, TLorentzVector met, std::vector<int> jets);
-    TLorentzVector getJetVec(MvaEvent* tree,
-                             int index,
-                             float smearValue,
+        getJets(const MvaEvent* tree, const int syst, TLorentzVector met) const;
+    std::pair<std::vector<int>, std::vector<TLorentzVector>>
+        getBjets(const MvaEvent* tree,
+                 const int syst,
+                 TLorentzVector met,
+                 const std::vector<int>& jets) const;
+    TLorentzVector getJetVec(const MvaEvent* tree,
+                             const int index,
+                             const float smearValue,
                              TLorentzVector metVec,
-                             int syst,
-                             bool doMetSmear);
+                             const int syst,
+                             const bool doMetSmear) const;
     TLorentzVector doUncMet(TLorentzVector met,
-                            TLorentzVector zLep1,
-                            TLorentzVector zLep2,
-                            std::vector<TLorentzVector> jetVecs,
-                            uint syst);
-
-    void setupBranches(TTree*, std::map<std::string, float>);
+                            const TLorentzVector& zLep1,
+                            const TLorentzVector& zLep2,
+                            const std::vector<TLorentzVector>& jetVecs,
+                            const unsigned syst) const;
+    void setupBranches(TTree* tree);
     void fillTree(TTree* outTreeSig,
                   TTree* outTreeSdBnd,
                   MvaEvent* tree,
-                  std::string label,
-                  std::string channel,
-                  bool SameSignMC = false);
+                  const std::string& label,
+                  const std::string& channel,
+                  const bool SameSignMC = false);
 
     // variables?
 

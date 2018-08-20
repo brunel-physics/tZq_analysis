@@ -25,7 +25,7 @@ MakeMvaInputs::~MakeMvaInputs()
 {
 }
 
-void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
+void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
 {
     namespace po = boost::program_options;
     po::options_description desc("Options");
@@ -82,45 +82,45 @@ void MakeMvaInputs::runMainAnalysis()
     //  {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
     //  std::map< std::string, std::string > listOfMCs =
     //  {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
-    std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
+    const std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
     //  std::map< std::string, std::string > listOfMCs = {};
 
-    std::map<std::string, std::string> channelToDataset{
+    const std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
 
-    std::vector<std::string> channels;
-    if (!ttbarControlRegion)
-    {
-        channels = {"ee", "mumu"};
-    }
-    else
-    {
-        channels = {"emu"};
-    }
+    const std::vector<std::string> channels{[=]() -> std::vector<std::string> {
+        if (ttbarControlRegion)
+        {
+            return {"emu"};
+        }
+        else
+        {
+            return {"ee", "mumu"};
+        }
+    }()};
 
-    std::vector<std::string> systs = {"",
-                                      "__trig__plus",
-                                      "__trig__minus",
-                                      "__jer__plus",
-                                      "__jer__minus",
-                                      "__jes__plus",
-                                      "__jes__minus",
-                                      "__pileup__plus",
-                                      "__pileup__minus",
-                                      "__bTag__plus",
-                                      "__bTag__minus",
-                                      "__met__plus",
-                                      "__met__minus",
-                                      "__pdf__plus",
-                                      "__pdf__minus",
-                                      "__ME_PS__plus",
-                                      "__ME_PS__minus",
-                                      "__alphaS__plus",
-                                      "__alphaS__minus"};
+    const std::vector<std::string> systs = {"",
+                                            "__trig__plus",
+                                            "__trig__minus",
+                                            "__jer__plus",
+                                            "__jer__minus",
+                                            "__jes__plus",
+                                            "__jes__minus",
+                                            "__pileup__plus",
+                                            "__pileup__minus",
+                                            "__bTag__plus",
+                                            "__bTag__minus",
+                                            "__met__plus",
+                                            "__met__minus",
+                                            "__pdf__plus",
+                                            "__pdf__minus",
+                                            "__ME_PS__plus",
+                                            "__ME_PS__minus",
+                                            "__alphaS__plus",
+                                            "__alphaS__minus"};
 
-    std::map<std::string, float> mvaMap{};
-
-    std::string treeNamePostfixSig{""}, treeNamePostfixSB{""};
+    std::string treeNamePostfixSig{""};
+    std::string treeNamePostfixSB{""};
     if (useSidebandRegion)
     {
         std::cout << "Using control region stuff" << std::endl;
@@ -132,25 +132,25 @@ void MakeMvaInputs::runMainAnalysis()
     for (auto sampleIt{listOfMCs.begin()}; sampleIt != listOfMCs.end();
          ++sampleIt)
     {
-        std::string sample = sampleIt->first;
-        std::string outSample = sampleIt->second;
+        const std::string sample{sampleIt->first};
+        const std::string outSample{sampleIt->second};
 
         std::cout << "Doing " << sample << " : " << std::endl;
 
         auto outFile{new TFile{
-            (outputDir + "histofile_" + listOfMCs[sample] + ".root").c_str(),
+            (outputDir + "histofile_" + listOfMCs.at(sample) + ".root").c_str(),
             "RECREATE"}};
 
         // loop over systematics
         for (auto syst{systs.begin()}; syst != systs.end(); ++syst)
         {
-            std::string systName{*syst};
+            const std::string systName{*syst};
             auto outTreeSig{new TTree{
                 ("Ttree_" + treeNamePostfixSig + outSample + systName).c_str(),
                 ("Ttree_" + treeNamePostfixSig + outSample + systName)
                     .c_str()}};
             TTree* outTreeSdBnd{};
-            setupBranches(outTreeSig, mvaMap);
+            setupBranches(outTreeSig);
 
             if (useSidebandRegion)
             {
@@ -159,7 +159,7 @@ void MakeMvaInputs::runMainAnalysis()
                         .c_str(),
                     ("Ttree_" + treeNamePostfixSB + outSample + systName)
                         .c_str()};
-                setupBranches(outTreeSdBnd, mvaMap);
+                setupBranches(outTreeSdBnd);
             }
 
             // loop over channels
@@ -182,15 +182,15 @@ void MakeMvaInputs::runMainAnalysis()
 
                 //        TChain* tree;
                 //        if ( systName == "__met__plus" || systName ==
-                //        "__met__minus" ) tree = new TChain("tree"); else tree
-                //        = new TChain(("tree"+systName).c_str());
+                //        "__met__minus" ) tree = new TChain("tree"); else
+                //        tree = new TChain(("tree"+systName).c_str());
                 //        tree->Add((inputDir+sample+(*channel)+"mvaOut.root").c_str());
 
                 std::cout << systName << " : " << tree->GetEntries()
                           << std::endl;
                 auto event{new MvaEvent{true, "", tree, true}};
 
-                long long numberOfEvents{tree->GetEntries()};
+                const long long numberOfEvents{tree->GetEntries()};
                 TMVA::Timer lEventTimer{
                     boost::numeric_cast<int>(numberOfEvents),
                     "Running over dataset ...",
@@ -203,7 +203,7 @@ void MakeMvaInputs::runMainAnalysis()
                     lEventTimer.DrawProgressBar(i);
                     event->GetEntry(i);
 
-                    bool SameSignMC{false};
+                    const bool SameSignMC{false};
                     if (SameSignMC == true && *channel == "ee"
                         && (event->genElePF2PATPromptFinalState[0] == 0
                             || event->genElePF2PATPromptFinalState[1] == 0))
@@ -239,9 +239,12 @@ void MakeMvaInputs::runMainAnalysis()
     } // end sample loop
 }
 
-double MakeMvaInputs::deltaR(float eta1, float phi1, float eta2, float phi2)
+double MakeMvaInputs::deltaR(const float eta1,
+                             const float phi1,
+                             const float eta2,
+                             const float phi2) const
 {
-    double dEta{eta1 - eta2};
+    const double dEta{eta1 - eta2};
     double dPhi{phi1 - phi2};
     while (std::abs(dPhi) > TMath::Pi())
     {
@@ -251,13 +254,14 @@ double MakeMvaInputs::deltaR(float eta1, float phi1, float eta2, float phi2)
 }
 
 std::pair<TLorentzVector, TLorentzVector>
-    MakeMvaInputs::sortOutLeptons(MvaEvent* tree, std::string channel)
+    MakeMvaInputs::sortOutLeptons(const MvaEvent* tree,
+                                  const std::string& channel) const
 {
     TLorentzVector zLep1;
     TLorentzVector zLep2;
 
-    int zlep1Index{tree->zLep1Index};
-    int zlep2Index{tree->zLep2Index};
+    const int zlep1Index{tree->zLep1Index};
+    const int zlep2Index{tree->zLep2Index};
 
     if (channel == "ee")
     {
@@ -297,7 +301,7 @@ std::pair<TLorentzVector, TLorentzVector>
 }
 
 std::pair<TLorentzVector, TLorentzVector>
-    MakeMvaInputs::sortOutHadronicW(MvaEvent* tree)
+    MakeMvaInputs::sortOutHadronicW(const MvaEvent* tree) const
 {
     TLorentzVector wQuark1;
     TLorentzVector wQuark2;
@@ -313,8 +317,8 @@ std::pair<TLorentzVector, TLorentzVector>
     return {wQuark1, wQuark2};
 }
 
-std::pair<std::vector<int>, std::vector<TLorentzVector>>
-    MakeMvaInputs::getJets(MvaEvent* tree, int syst, TLorentzVector met)
+std::pair<std::vector<int>, std::vector<TLorentzVector>> MakeMvaInputs::getJets(
+    const MvaEvent* tree, const int syst, TLorentzVector met) const
 {
     std::vector<int> jetList{};
     std::vector<TLorentzVector> jetVecList{};
@@ -339,10 +343,10 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
 }
 
 std::pair<std::vector<int>, std::vector<TLorentzVector>>
-    MakeMvaInputs::getBjets(MvaEvent* tree,
-                            int syst,
+    MakeMvaInputs::getBjets(const MvaEvent* tree,
+                            const int syst,
                             TLorentzVector met,
-                            std::vector<int> jets)
+                            const std::vector<int>& jets) const
 {
     std::vector<int> bJetList{};
     std::vector<TLorentzVector> bJetVecList{};
@@ -367,12 +371,12 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
     return {bJetList, bJetVecList};
 }
 
-TLorentzVector MakeMvaInputs::getJetVec(MvaEvent* tree,
-                                        int index,
-                                        float smearValue,
+TLorentzVector MakeMvaInputs::getJetVec(const MvaEvent* tree,
+                                        const int index,
+                                        const float smearValue,
                                         TLorentzVector metVec,
-                                        int syst,
-                                        bool doMetSmear)
+                                        const int syst,
+                                        const bool doMetSmear) const
 {
     TLorentzVector returnJet;
     returnJet.SetPxPyPzE(tree->jetPF2PATPx[index],
@@ -404,11 +408,12 @@ TLorentzVector MakeMvaInputs::getJetVec(MvaEvent* tree,
     return returnJet;
 }
 
-TLorentzVector MakeMvaInputs::doUncMet(TLorentzVector met,
-                                       TLorentzVector zLep1,
-                                       TLorentzVector zLep2,
-                                       std::vector<TLorentzVector> jetVecs,
-                                       uint syst)
+TLorentzVector
+    MakeMvaInputs::doUncMet(TLorentzVector met,
+                            const TLorentzVector& zLep1,
+                            const TLorentzVector& zLep2,
+                            const std::vector<TLorentzVector>& jetVecs,
+                            const unsigned syst) const
 {
     double uncMetX{met.Px() + zLep1.Px() + zLep2.Px()};
     double uncMetY{met.Py() + zLep1.Py() + zLep2.Py()};
@@ -434,7 +439,7 @@ TLorentzVector MakeMvaInputs::doUncMet(TLorentzVector met,
     return met;
 }
 
-void MakeMvaInputs::setupBranches(TTree* tree, std::map<std::string, float>)
+void MakeMvaInputs::setupBranches(TTree* tree)
 {
     tree->Branch("EvtWeight", &inputVars["eventWeight"], "EvtWeight/F");
     tree->Branch("EvtNumber", &inputVars["eventNumber"], "EvtNumber/F");
@@ -563,9 +568,9 @@ void MakeMvaInputs::setupBranches(TTree* tree, std::map<std::string, float>)
 void MakeMvaInputs::fillTree(TTree* outTreeSig,
                              TTree* outTreeSdBnd,
                              MvaEvent* tree,
-                             std::string label,
-                             std::string channel,
-                             bool SameSignMC)
+                             const std::string& label,
+                             const std::string& channel,
+                             const bool SameSignMC)
 {
     unsigned syst{0};
 
@@ -593,28 +598,28 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     inputVars["eventNumber"] = tree->eventNum;
 
-    std::pair<TLorentzVector, TLorentzVector> zPairLeptons{
+    const std::pair<TLorentzVector, TLorentzVector> zPairLeptons{
         sortOutLeptons(tree, channel)};
-    TLorentzVector zLep1{zPairLeptons.first};
-    TLorentzVector zLep2{zPairLeptons.second};
+    const TLorentzVector zLep1{zPairLeptons.first};
+    const TLorentzVector zLep2{zPairLeptons.second};
 
     TLorentzVector metVec{
         tree->metPF2PATPx, tree->metPF2PATPy, 0, tree->metPF2PATEt};
 
-    std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair{
+    const std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair{
         getJets(tree, syst, metVec)};
-    std::vector<int> jets{jetPair.first};
-    std::vector<TLorentzVector> jetVecs{jetPair.second};
+    const std::vector<int> jets{jetPair.first};
+    const std::vector<TLorentzVector> jetVecs{jetPair.second};
 
-    std::pair<std::vector<int>, std::vector<TLorentzVector>> bJetPair{
+    const std::pair<std::vector<int>, std::vector<TLorentzVector>> bJetPair{
         getBjets(tree, syst, metVec, jets)};
-    std::vector<int> bJets{bJetPair.first};
-    std::vector<TLorentzVector> bJetVecs{bJetPair.second};
+    const std::vector<int> bJets{bJetPair.first};
+    const std::vector<TLorentzVector> bJetVecs{bJetPair.second};
 
-    std::pair<TLorentzVector, TLorentzVector> wQuarkPair{
+    const std::pair<TLorentzVector, TLorentzVector> wQuarkPair{
         sortOutHadronicW(tree)};
-    TLorentzVector wQuark1{wQuarkPair.first};
-    TLorentzVector wQuark2{wQuarkPair.second};
+    const TLorentzVector wQuark1{wQuarkPair.first};
+    const TLorentzVector wQuark2{wQuarkPair.second};
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
@@ -693,7 +698,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["wQuark2Eta"] = wQuark2.Eta();
     inputVars["wQuark2Phi"] = wQuark2.Phi();
 
-    float wPairMass{(wQuark1 + wQuark2).M()};
+    const float wPairMass{(wQuark1 + wQuark2).M()};
     inputVars["wPairMass"] = wPairMass;
     inputVars["wPairPt"] = (wQuark1 + wQuark2).Pt();
     inputVars["wPairEta"] = (wQuark1 + wQuark2).Eta();
@@ -774,7 +779,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars["fourthJetbTag"] = tree->jetPF2PATBDiscriminator[jets[3]];
     }
 
-    float topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
+    const float topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
     inputVars["topMass"] = topMass;
     inputVars["topPt"] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
     inputVars["topEta"] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
@@ -855,7 +860,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zlb2DelR"] = zLep2.DeltaR(bJetVecs[0]);
     inputVars["zlb2DelPhi"] = zLep2.DeltaPhi(bJetVecs[0]);
 
-    float ht{zLep1.Pt() + zLep2.Pt()};
+    const float ht{zLep1.Pt() + zLep2.Pt() + jetHt};
 
     inputVars["lepHt"] = ht;
     inputVars["jetHt"] = jetHt;
@@ -875,7 +880,6 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     inputVars["wQuarkHt"] = wQuark1.Pt() + wQuark2.Pt();
 
-    ht += jetHt;
     inputVars["totHt"] = ht;
     inputVars["totHtOverPt"] = ht / std::sqrt(totPx * totPx + totPy * totPy);
     inputVars["zMass"] = (zLep1 + zLep2).M();
@@ -883,8 +887,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zEta"] = (zLep2 + zLep1).Eta();
     inputVars["zPhi"] = (zLep2 + zLep1).Phi();
 
-    float wChi2Term{(wPairMass - 80.3585) / 8.0};
-    float topChi2Term{(topMass - 173.21) / 30.0};
+    const float wChi2Term{(wPairMass - 80.3585) / 8.0};
+    const float topChi2Term{(topMass - 173.21) / 30.0};
     inputVars["chi2"] = wChi2Term * wChi2Term + topChi2Term * topChi2Term;
 
     if (useSidebandRegion)
