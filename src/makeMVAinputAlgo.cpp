@@ -88,7 +88,7 @@ void MakeMvaInputs::runMainAnalysis()
     const std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
 
-    const std::vector<std::string> channels{[=]() -> std::vector<std::string> {
+    const auto channels{[=]() -> std::vector<std::string> {
         if (ttbarControlRegion)
         {
             return {"emu"};
