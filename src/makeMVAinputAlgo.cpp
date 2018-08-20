@@ -118,7 +118,7 @@ void MakeMvaInputs::runMainAnalysis()
                                       "__alphaS__plus",
                                       "__alphaS__minus"};
 
-    std::map<std::string, float> mvaMap = setupInputVars();
+    std::map<std::string, float> mvaMap{};
 
     std::string treeNamePostfixSig{""}, treeNamePostfixSB{""};
     if (useSidebandRegion)
@@ -431,122 +431,6 @@ TLorentzVector MakeMvaInputs::doUncMet(TLorentzVector met,
     return met;
 }
 
-std::map<std::string, float> MakeMvaInputs::setupInputVars()
-{
-    inputVars["eventWeight"] = {0.0};
-    inputVars["eventNumber"] = {0.0};
-    inputVars["mTW"] = {0.0};
-    inputVars["wQuark1Pt"] = {0.0};
-    inputVars["wQuark1Eta"] = {0.0};
-    inputVars["wQuark1Phi"] = {0.0};
-    inputVars["wQuark2Pt"] = {0.0};
-    inputVars["wQuark2Eta"] = {0.0};
-    inputVars["wQuark2Phi"] = {0.0};
-    inputVars["wPairMass"] = {0.0};
-    inputVars["wPairPt"] = {0.0};
-    inputVars["wPairEta"] = {0.0};
-    inputVars["wPairPhi"] = {0.0};
-    inputVars["met"] = {0.0};
-    inputVars["nJets"] = {0.0};
-    inputVars["leadJetPt"] = {0.0};
-    inputVars["leadJetPhi"] = {0.0};
-    inputVars["leadJetEta"] = {0.0};
-    inputVars["leadJetbTag"] = {0.0};
-    inputVars["secJetPt"] = {0.0};
-    inputVars["secJetPhi"] = {0.0};
-    inputVars["secJetEta"] = {0.0};
-    inputVars["secJetbTag"] = {0.0};
-    inputVars["thirdJetPt"] = {0.0};
-    inputVars["thirdJetPhi"] = {0.0};
-    inputVars["thirdJetEta"] = {0.0};
-    inputVars["thirdJetbTag"] = {0.0};
-    inputVars["fourthJetPt"] = {0.0};
-    inputVars["fourthJetPhi"] = {0.0};
-    inputVars["fourthJetEta"] = {0.0};
-    inputVars["fourthJetbTag"] = {0.0};
-    inputVars["nBjets"] = {0.0};
-    inputVars["bTagDisc"] = {0.0};
-    inputVars["lep1Pt"] = {0.0};
-    inputVars["lep1Eta"] = {0.0};
-    inputVars["lep1Phi"] = {0.0};
-    inputVars["lep1RelIso"] = {0.0};
-    inputVars["lep1D0"] = {0.0};
-    inputVars["lep2Pt"] = {0.0};
-    inputVars["lep2Eta"] = {0.0};
-    inputVars["lep2Phi"] = {0.0};
-    inputVars["lep2RelIso"] = {0.0};
-    inputVars["lep2D0"] = {0.0};
-    inputVars["lepMass"] = {0.0};
-    inputVars["lepPt"] = {0.0};
-    inputVars["lepEta"] = {0.0};
-    inputVars["lepPhi"] = {0.0};
-    inputVars["zMass"] = {0.0};
-    inputVars["zPt"] = {0.0};
-    inputVars["zEta"] = {0.0};
-    inputVars["zPhi"] = {0.0};
-    inputVars["topMass"] = {0.0};
-    inputVars["topPt"] = {0.0};
-    inputVars["topEta"] = {0.0};
-    inputVars["topPhi"] = {0.0};
-    inputVars["j1j2delR"] = {0.0};
-    inputVars["j1j2delPhi"] = {0.0};
-    inputVars["w1w2delR"] = {0.0};
-    inputVars["w1w2delPhi"] = {0.0};
-    inputVars["zLepdelR"] = {0.0};
-    inputVars["zLepdelPhi"] = {0.0};
-    inputVars["zl1Quark1DelR"] = {0.0};
-    inputVars["zl1Quark1DelPhi"] = {0.0};
-    inputVars["zl1Quark2DelR"] = {0.0};
-    inputVars["zl1Quark2DelPhi"] = {0.0};
-    inputVars["zl2Quark1DelR"] = {0.0};
-    inputVars["zl2Quark1DelPhi"] = {0.0};
-    inputVars["zl2Quark2DelR"] = {0.0};
-    inputVars["zl2Quark2DelPhi"] = {0.0};
-    inputVars["zlb1DelR"] = {0.0};
-    inputVars["zlb1DelPhi"] = {0.0};
-    inputVars["zlb2DelR"] = {0.0};
-    inputVars["zlb2DelPhi"] = {0.0};
-    inputVars["lepHt"] = {0.0};
-    inputVars["wQuarkHt"] = {0.0};
-    inputVars["totPt"] = {0.0};
-    inputVars["totEta"] = {0.0};
-    inputVars["totPhi"] = {0.0};
-    inputVars["totPtVec"] = {0.0};
-    inputVars["totVecM"] = {0.0};
-    inputVars["chan"] = {0.0};
-    inputVars["totPt2Jet"] = {0.0};
-    inputVars["wZdelR"] = {0.0};
-    inputVars["wZdelPhi"] = {0.0};
-    inputVars["zQuark1DelR"] = {0.0};
-    inputVars["zQuark1DelPhi"] = {0.0};
-    inputVars["zQuark2DelR"] = {0.0};
-    inputVars["zQuark2DelPhi"] = {0.0};
-    inputVars["zTopDelR"] = {0.0};
-    inputVars["zTopDelPhi"] = {0.0};
-    inputVars["zl1TopDelR"] = {0.0};
-    inputVars["zl1TopDelPhi"] = {0.0};
-    inputVars["zl2TopDelR"] = {0.0};
-    inputVars["zl2TopDelPhi"] = {0.0};
-    inputVars["wTopDelR"] = {0.0};
-    inputVars["wTopDelPhi"] = {0.0};
-    inputVars["w1TopDelR"] = {0.0};
-    inputVars["w1TopDelPhi"] = {0.0};
-    inputVars["w2TopDelR"] = {0.0};
-    inputVars["w2TopDelPhi"] = {0.0};
-    inputVars["minZJetR"] = {0.0};
-    inputVars["minZJetPhi"] = {0.0};
-    inputVars["totHt"] = {0.0};
-    inputVars["jetHt"] = {0.0};
-    inputVars["jetMass"] = {0.0};
-    inputVars["jetPt"] = {0.0};
-    inputVars["jetEta"] = {0.0};
-    inputVars["jetPhi"] = {0.0};
-    inputVars["jetMass3"] = {0.0};
-    inputVars["totHtOverPt"] = {0.0};
-    inputVars["chi2"] = {0.0};
-
-    return inputVars;
-}
 
 void MakeMvaInputs::setupBranches(TTree* tree, std::map<std::string, float>)
 {

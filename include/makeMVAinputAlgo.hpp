@@ -44,7 +44,6 @@ class MakeMvaInputs
                             std::vector<TLorentzVector> jetVecs,
                             uint syst);
 
-    std::map<std::string, float> setupInputVars();
     void setupBranches(TTree*, std::map<std::string, float>);
     void fillTree(TTree* outTreeSig,
                   TTree* outTreeSdBnd,
