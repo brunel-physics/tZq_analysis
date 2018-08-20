@@ -10,6 +10,7 @@
 #include <map>
 
 class TH1F;
+class TH1D;
 class TFile;
 class TChain;
 class TTree;
@@ -86,7 +87,7 @@ class AnalysisAlgo{
 
 	// Plotting stuff
 	std::map<std::string, std::map<std::string, std::map<std::string, Plots*> > > plotsMap;
-	std::map<std::string, TH1F*> cutFlowMap;
+	std::map<std::string, TH1D*> cutFlowMap;
 
 	std::vector< std::pair<std::string,std::string> > stageNames;
 

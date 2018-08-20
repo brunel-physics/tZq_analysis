@@ -2,6 +2,7 @@
 #include "TMVA/Timer.h"
 #include "TCanvas.h"
 #include "TPad.h"
+#include "TH1D.h"
 #include "TH1F.h"
 #include "TH1I.h"
 #include "TH2D.h"
@@ -606,8 +607,8 @@ void AnalysisAlgo::setupSystematics()
   systNames.emplace_back("__bTag__minus");
   systNames.emplace_back("__pdf__plus");
   systNames.emplace_back("__pdf__minus");
-  systNames.emplace_back("__ME_PS__plus");
-  systNames.emplace_back("__ME_PS__minus");
+  systNames.emplace_back("__ME__plus");
+  systNames.emplace_back("__ME__minus");
   systNames.emplace_back("__alphaS__plus");
   systNames.emplace_back("__alphaS__minus");
 
@@ -740,7 +741,7 @@ void AnalysisAlgo::runMainAnalysis(){
 	  }
 	  if (cutFlowMap.find( histoName + systNames[systInd] ) == cutFlowMap.end()){
 	    const size_t numCutFlowBins{stageNames.size()};
-	    cutFlowMap[ histoName ] = new TH1F{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
+	    cutFlowMap[ histoName ] = new TH1D{( histoName + systNames[systInd] + "cutFlow" ).c_str(),( histoName + systNames[systInd] + "cutFlow" ).c_str(),boost::numeric_cast<int>(numCutFlowBins),0,boost::numeric_cast<double>(numCutFlowBins)}; //Hopefully make this configurable later on. Same deal as the rest of the plots I guess, work out libconfig.
 	    if (systInd == 0 && datasetInfos.find( histoName ) == datasetInfos.end()){
 	      legOrder.emplace_back( histoName );
 	      plotOrder.emplace_back( histoName );

@@ -8,7 +8,7 @@
 
 typedef struct plot plot;
 
-class TH1F;
+class TH1D;
 
 class Plots{
 
@@ -162,7 +162,7 @@ class Plots{
 struct plot{
   std::string name;
   std::string title;
-  TH1F* plotHist;
+  TH1D* plotHist;
   float (Plots::*fillExp)(AnalysisEvent*);
   std::string xAxisLabel;
   bool fillPlot;

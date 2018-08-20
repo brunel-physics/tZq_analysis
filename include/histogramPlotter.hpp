@@ -8,7 +8,7 @@
 
 #include "plots.hpp"
 
-class TH1F;
+class TH1D;
 class TPad;
 
 typedef struct datasetInfo datasetInfo;
@@ -34,7 +34,7 @@ class HistogramPlotter{
   TPaveText * labelTwo_;
   TPaveText * labelThree_;
 
-  TH1F* ratioHisto;
+  TH1D* ratioHisto;
   TPad* canvy_1;
   TPad* canvy_2;
 
@@ -59,14 +59,14 @@ class HistogramPlotter{
   //Actual plotting commands
   void plotHistos(std::map<std::string, std::map<std::string, Plots*> >);
   void loadHistos() {loadHistos_ = true;}
-  std::map<std::string, TH1F*> loadCutFlowMap( std::string, std::string );
-  void saveHistos(std::map<std::string, TH1F*>, std::string, std::string);
+  std::map<std::string, TH1D*> loadCutFlowMap( std::string, std::string );
+  void saveHistos(std::map<std::string, TH1D*>, std::string, std::string);
   void saveHistos(std::map<std::string, std::map<std::string, Plots*> >);
-  void plotCutFlows(std::map<std::string, TH1F*>);
-  void makePlot(std::map<std::string, TH1F*>,std::string,std::string);
-  void makePlot(std::map<std::string, TH1F*>,std::string,std::string,std::string); //Adds a subLabel to the plot.
-  void makePlot(std::map<std::string, TH1F*>,std::string,std::string,std::vector<std::string>); //Adds x-axis bin labels to the plot.
-  void makePlot(std::map<std::string, TH1F*>,std::string,std::string,std::string,std::vector<std::string>); //Adds a subLabel AND bin labels to the plot. Might get confusing later. May come up with another name.
+  void plotCutFlows(std::map<std::string, TH1D*>);
+  void makePlot(std::map<std::string, TH1D*>,std::string,std::string);
+  void makePlot(std::map<std::string, TH1D*>,std::string,std::string,std::string); //Adds a subLabel to the plot.
+  void makePlot(std::map<std::string, TH1D*>,std::string,std::string,std::vector<std::string>); //Adds x-axis bin labels to the plot.
+  void makePlot(std::map<std::string, TH1D*>,std::string,std::string,std::string,std::vector<std::string>); //Adds a subLabel AND bin labels to the plot. Might get confusing later. May come up with another name.
 };
 
 struct datasetInfo{

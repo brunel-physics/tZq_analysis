@@ -136,7 +136,7 @@ Cuts::Cuts( bool doPlots, bool fillCutFlows,bool invertLepCut, bool lepCutFlow, 
 
   //If doing synchronisation., initialise that here.
   if (synchCutFlow_){
-    synchCutFlowHist_ = new TH1F{"synchCutFlow","synchCutFlow",11,0,11};
+    synchCutFlowHist_ = new TH1D{"synchCutFlow","synchCutFlow",11,0,11};
     synchNumEles_ = new TH1I{"synchNumEles","synchNumEles",11,0,11};
     synchNumMus_ = new TH1I{"synchNumMuos","synchNumMuos",11,0,11};
     synchMuonCutFlow_ = new TH1I{"synchMuonCutFlow","synchMuonCutFlow",11,0,11};
@@ -337,7 +337,7 @@ bool Cuts::parse_config(std::string confName){
   return true;
 }
 
-bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
+bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1D* cutFlow, int systToRun){
 
   //If we're doing synchronisation, do this function.
   if (synchCutFlow_){
@@ -453,7 +453,7 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 }
 
 //Make lepton cuts. Will become customisable in a config later on.
-bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int syst, bool isControl){
+bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std::string,Plots*> plotMap, TH1D* cutFlow, int syst, bool isControl){
 
   ////Do lepton selection.
 
@@ -1563,6 +1563,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
         //SF pre-HIP fix 0.98868 +/- 0.00013 and 0.99868 +/- 0.00017  for post-HIP fix
 
         twgt = ( 0.98868 * lumiRunsBCDEF_ + 0.99868 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 ); 
+//        twgt = 0.98868;
 
         if (syst == 1) twgt += 0.01;
         if (syst == 2) twgt -= 0.01;
@@ -1938,7 +1939,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float *eventWeight){
   }
 }
 
-TH1F* Cuts::getSynchCutFlow(){
+TH1D* Cuts::getSynchCutFlow(){
   
   std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_ << std::endl;
   char const *names[] {"Total Events","Trigger","3 Leptons", "Lepton Veto", "zMass","1 jet","1 b-tag","MET","mTW", "topMass", "metFilters"};
@@ -2038,7 +2039,7 @@ std::vector<int> Cuts::getSynchMus(AnalysisEvent* event){
 }
 
 //First tentative attempt at doing the background isolation.
-bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::string,Plots*> plotMap, TH1F* cutFlow){
+bool Cuts::invertIsoCut(AnalysisEvent* event,float *eventWeight,std::map<std::string,Plots*> plotMap, TH1D* cutFlow){
 
   if (trileptonChannel_ == false){
     std::cout << "Invert Iso Cut is not avaliable for the dilepton channel." << std::endl;
@@ -2159,7 +2160,7 @@ double Cuts::getChiSquared( double wMass, double topMass ){
   return std::sqrt( topMassTerm*topMassTerm + wMassTerm*wMassTerm );
 }
 
-bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1F* cutFlow, int systToRun){
+bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1D* cutFlow, int systToRun){
 
   if( !skipTrigger_ ) {
     if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
