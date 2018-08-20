@@ -172,11 +172,12 @@ void MakeMvaInputs::runMainAnalysis()
                 TTree* tree;
                 if (systName == "__met__plus" || systName == "__met__minus")
                 {
-                    tree = (TTree*)inFile->Get("tree");
+                    tree = dynamic_cast<TTree*>(inFile->Get("tree"));
                 }
                 else
                 {
-                    tree = (TTree*)inFile->Get(("tree" + systName).c_str());
+                    tree = dynamic_cast<TTree*>(
+                        inFile->Get(("tree" + systName).c_str()));
                 }
 
                 //        TChain* tree;
