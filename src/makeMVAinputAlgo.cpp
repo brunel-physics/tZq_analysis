@@ -129,11 +129,10 @@ void MakeMvaInputs::runMainAnalysis()
     }
 
     // loop over nominal samples
-    for (auto sampleIt{listOfMCs.begin()}; sampleIt != listOfMCs.end();
-         ++sampleIt)
+    for (const auto& mc : listOfMCs)
     {
-        const std::string sample{sampleIt->first};
-        const std::string outSample{sampleIt->second};
+        const std::string sample{mc.first};
+        const std::string outSample{mc.second};
 
         std::cout << "Doing " << sample << " : " << std::endl;
 
@@ -142,9 +141,9 @@ void MakeMvaInputs::runMainAnalysis()
             "RECREATE"}};
 
         // loop over systematics
-        for (auto syst{systs.begin()}; syst != systs.end(); ++syst)
+        for (const auto& syst : systs)
         {
-            const std::string systName{*syst};
+            const std::string systName{syst};
             auto outTreeSig{new TTree{
                 ("Ttree_" + treeNamePostfixSig + outSample + systName).c_str(),
                 ("Ttree_" + treeNamePostfixSig + outSample + systName)
@@ -163,11 +162,10 @@ void MakeMvaInputs::runMainAnalysis()
             }
 
             // loop over channels
-            for (auto channel{channels.begin()}; channel != channels.end();
-                 channel++)
+            for (const auto& channel : channels)
             {
                 auto inFile{new TFile{
-                    (inputDir + sample + (*channel) + "mvaOut.root").c_str(),
+                    (inputDir + sample + channel + "mvaOut.root").c_str(),
                     "READ"}};
                 TTree* tree;
                 if (systName == "__met__plus" || systName == "__met__minus")
@@ -184,7 +182,7 @@ void MakeMvaInputs::runMainAnalysis()
                 //        if ( systName == "__met__plus" || systName ==
                 //        "__met__minus" ) tree = new TChain("tree"); else
                 //        tree = new TChain(("tree"+systName).c_str());
-                //        tree->Add((inputDir+sample+(*channel)+"mvaOut.root").c_str());
+                //        tree->Add((inputDir+sample+channel+"mvaOut.root").c_str());
 
                 std::cout << systName << " : " << tree->GetEntries()
                           << std::endl;
@@ -204,13 +202,13 @@ void MakeMvaInputs::runMainAnalysis()
                     event->GetEntry(i);
 
                     const bool SameSignMC{false};
-                    if (SameSignMC == true && *channel == "ee"
+                    if (SameSignMC == true && channel == "ee"
                         && (event->genElePF2PATPromptFinalState[0] == 0
                             || event->genElePF2PATPromptFinalState[1] == 0))
                     {
                         continue;
                     }
-                    if (SameSignMC == true && *channel == "mumu"
+                    if (SameSignMC == true && channel == "mumu"
                         && (event->genMuonPF2PATPromptFinalState[0] == 0
                             || event->genMuonPF2PATPromptFinalState[1] == 0))
                     {
@@ -221,7 +219,7 @@ void MakeMvaInputs::runMainAnalysis()
                              outTreeSdBnd,
                              event,
                              outSample + systName,
-                             (*channel));
+                             channel);
                 } // end event loop
                 inFile->Close();
             } // end channel loop
@@ -422,10 +420,10 @@ TLorentzVector
     double uncMetX{met.Px() + zLep1.Px() + zLep2.Px()};
     double uncMetY{met.Py() + zLep1.Py() + zLep2.Py()};
 
-    for (size_t i{0}; i != jetVecs.size(); i++)
+    for (const auto& jetVec : jetVecs)
     {
-        uncMetX += jetVecs[i].Px();
-        uncMetY += jetVecs[i].Py();
+        uncMetX += jetVec.Px();
+        uncMetY += jetVec.Py();
     }
 
     if (syst == 1024)
@@ -726,9 +724,9 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["totPt"] = std::sqrt(totPx * totPx + totPy * totPy);
     TLorentzVector totVec{zLep1 + zLep2};
 
-    for (unsigned i{0}; i != jetVecs.size(); i++)
+    for (const auto& jetVec : jetVecs)
     {
-        totVec += jetVecs[i];
+        totVec += jetVec;
     }
 
     inputVars["totEta"] = totVec.Eta();
@@ -845,17 +843,17 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     float jetHt{0.};
     TLorentzVector jetVector;
 
-    for (uint i = 0; i != jetVecs.size(); i++)
+    for (const auto& jetVec : jetVecs)
     {
-        jetHt += jetVecs[i].Pt();
-        jetVector += jetVecs[i];
-        if (jetVecs[i].DeltaR(zLep2 + zLep1) < inputVars["minZJetR"])
+        jetHt += jetVec.Pt();
+        jetVector += jetVec;
+        if (jetVec.DeltaR(zLep2 + zLep1) < inputVars["minZJetR"])
         {
-            inputVars["minZJetR"] = jetVecs[i].DeltaR(zLep2 + zLep1);
+            inputVars["minZJetR"] = jetVec.DeltaR(zLep2 + zLep1);
         }
-        if (jetVecs[i].DeltaPhi(zLep2 + zLep1) < inputVars["minZJetR"])
+        if (jetVec.DeltaPhi(zLep2 + zLep1) < inputVars["minZJetR"])
         {
-            inputVars["minZJetPhi"] = jetVecs[i].DeltaPhi(zLep2 + zLep1);
+            inputVars["minZJetPhi"] = jetVec.DeltaPhi(zLep2 + zLep1);
         }
     }
 
