@@ -129,7 +129,7 @@ void MakeMvaInputs::runMainAnalysis()
     }
 
     // loop over nominal samples
-    for (auto sampleIt = listOfMCs.begin(); sampleIt != listOfMCs.end();
+    for (auto sampleIt{listOfMCs.begin()}; sampleIt != listOfMCs.end();
          ++sampleIt)
     {
         std::string sample = sampleIt->first;
@@ -137,37 +137,38 @@ void MakeMvaInputs::runMainAnalysis()
 
         std::cout << "Doing " << sample << " : " << std::endl;
 
-        TFile* outFile = new TFile(
+        auto outFile{new TFile{
             (outputDir + "histofile_" + listOfMCs[sample] + ".root").c_str(),
-            "RECREATE");
+            "RECREATE"}};
 
         // loop over systematics
-        for (auto syst = systs.begin(); syst != systs.end(); ++syst)
+        for (auto syst{systs.begin()}; syst != systs.end(); ++syst)
         {
             std::string systName{*syst};
-            TTree* outTreeSig = new TTree(
+            auto outTreeSig{new TTree{
                 ("Ttree_" + treeNamePostfixSig + outSample + systName).c_str(),
-                ("Ttree_" + treeNamePostfixSig + outSample + systName).c_str());
+                ("Ttree_" + treeNamePostfixSig + outSample + systName)
+                    .c_str()}};
             TTree* outTreeSdBnd{};
             setupBranches(outTreeSig, mvaMap);
 
             if (useSidebandRegion)
             {
-                outTreeSdBnd = new TTree(
+                outTreeSdBnd = new TTree{
                     ("Ttree_" + treeNamePostfixSB + outSample + systName)
                         .c_str(),
                     ("Ttree_" + treeNamePostfixSB + outSample + systName)
-                        .c_str());
+                        .c_str()};
                 setupBranches(outTreeSdBnd, mvaMap);
             }
 
             // loop over channels
-            for (auto channel = channels.begin(); channel != channels.end();
+            for (auto channel{channels.begin()}; channel != channels.end();
                  channel++)
             {
-                TFile* inFile = new TFile(
+                auto inFile{new TFile{
                     (inputDir + sample + (*channel) + "mvaOut.root").c_str(),
-                    "READ");
+                    "READ"}};
                 TTree* tree;
                 if (systName == "__met__plus" || systName == "__met__minus")
                 {
@@ -186,22 +187,22 @@ void MakeMvaInputs::runMainAnalysis()
 
                 std::cout << systName << " : " << tree->GetEntries()
                           << std::endl;
-                MvaEvent* event = new MvaEvent(true, "", tree, true);
+                auto event{new MvaEvent{true, "", tree, true}};
 
                 long long numberOfEvents{tree->GetEntries()};
-                TMVA::Timer* lEventTimer{
-                    new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
-                                    "Running over dataset ...",
-                                    false}};
-                lEventTimer->DrawProgressBar(0);
+                TMVA::Timer lEventTimer{
+                    boost::numeric_cast<int>(numberOfEvents),
+                    "Running over dataset ...",
+                    false};
+                lEventTimer.DrawProgressBar(0);
 
                 // loop over events
-                for (int i{0}; i < numberOfEvents; i++)
+                for (long long i{0}; i < numberOfEvents; i++)
                 {
-                    lEventTimer->DrawProgressBar(i);
+                    lEventTimer.DrawProgressBar(i);
                     event->GetEntry(i);
 
-                    bool SameSignMC = false;
+                    bool SameSignMC{false};
                     if (SameSignMC == true && *channel == "ee"
                         && (event->genElePF2PATPromptFinalState[0] == 0
                             || event->genElePF2PATPromptFinalState[1] == 0))
@@ -254,8 +255,8 @@ std::pair<TLorentzVector, TLorentzVector>
     TLorentzVector zLep1;
     TLorentzVector zLep2;
 
-    int zlep1Index = tree->zLep1Index;
-    int zlep2Index = tree->zLep2Index;
+    int zlep1Index{tree->zLep1Index};
+    int zlep2Index{tree->zLep2Index};
 
     if (channel == "ee")
     {
@@ -297,7 +298,8 @@ std::pair<TLorentzVector, TLorentzVector>
 std::pair<TLorentzVector, TLorentzVector>
     MakeMvaInputs::sortOutHadronicW(MvaEvent* tree)
 {
-    TLorentzVector wQuark1, wQuark2;
+    TLorentzVector wQuark1;
+    TLorentzVector wQuark2;
     wQuark1.SetPxPyPzE(tree->jetPF2PATPx[tree->wQuark1Index],
                        tree->jetPF2PATPy[tree->wQuark1Index],
                        tree->jetPF2PATPz[tree->wQuark1Index],
@@ -316,7 +318,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
     std::vector<int> jetList{};
     std::vector<TLorentzVector> jetVecList{};
 
-    for (int i = 0; i != 15; i++)
+    for (int i{0}; i != 15; i++)
     {
         if (tree->jetInd[i] > -1)
         {
@@ -344,7 +346,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
     std::vector<int> bJetList{};
     std::vector<TLorentzVector> bJetVecList{};
 
-    for (int i = 0; i != 10; i++)
+    for (int i{0}; i != 10; i++)
     {
         if (tree->bJetInd[i] > -1)
         {
@@ -407,10 +409,10 @@ TLorentzVector MakeMvaInputs::doUncMet(TLorentzVector met,
                                        std::vector<TLorentzVector> jetVecs,
                                        uint syst)
 {
-    double uncMetX = met.Px() + zLep1.Px() + zLep2.Px();
-    double uncMetY = met.Py() + zLep1.Py() + zLep2.Py();
+    double uncMetX{met.Px() + zLep1.Px() + zLep2.Px()};
+    double uncMetY{met.Py() + zLep1.Py() + zLep2.Py()};
 
-    for (uint i = 0; i != jetVecs.size(); i++)
+    for (size_t i{0}; i != jetVecs.size(); i++)
     {
         uncMetX += jetVecs[i].Px();
         uncMetY += jetVecs[i].Py();
@@ -430,7 +432,6 @@ TLorentzVector MakeMvaInputs::doUncMet(TLorentzVector met,
 
     return met;
 }
-
 
 void MakeMvaInputs::setupBranches(TTree* tree, std::map<std::string, float>)
 {
@@ -565,7 +566,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                              std::string channel,
                              bool SameSignMC)
 {
-    uint syst = 0;
+    unsigned syst{0};
 
     if (label.find("__met__plus") != std::string::npos)
     {
@@ -591,28 +592,28 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     inputVars["eventNumber"] = tree->eventNum;
 
-    std::pair<TLorentzVector, TLorentzVector> zPairLeptons =
-        sortOutLeptons(tree, channel);
-    TLorentzVector zLep1 = zPairLeptons.first;
-    TLorentzVector zLep2 = zPairLeptons.second;
+    std::pair<TLorentzVector, TLorentzVector> zPairLeptons{
+        sortOutLeptons(tree, channel)};
+    TLorentzVector zLep1{zPairLeptons.first};
+    TLorentzVector zLep2{zPairLeptons.second};
 
-    TLorentzVector metVec(
-        tree->metPF2PATPx, tree->metPF2PATPy, 0, tree->metPF2PATEt);
+    TLorentzVector metVec{
+        tree->metPF2PATPx, tree->metPF2PATPy, 0, tree->metPF2PATEt};
 
-    std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair =
-        getJets(tree, syst, metVec);
-    std::vector<int> jets = jetPair.first;
-    std::vector<TLorentzVector> jetVecs = jetPair.second;
+    std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair{
+        getJets(tree, syst, metVec)};
+    std::vector<int> jets{jetPair.first};
+    std::vector<TLorentzVector> jetVecs{jetPair.second};
 
-    std::pair<std::vector<int>, std::vector<TLorentzVector>> bJetPair =
-        getBjets(tree, syst, metVec, jets);
-    std::vector<int> bJets = bJetPair.first;
-    std::vector<TLorentzVector> bJetVecs = bJetPair.second;
+    std::pair<std::vector<int>, std::vector<TLorentzVector>> bJetPair{
+        getBjets(tree, syst, metVec, jets)};
+    std::vector<int> bJets{bJetPair.first};
+    std::vector<TLorentzVector> bJetVecs{bJetPair.second};
 
-    std::pair<TLorentzVector, TLorentzVector> wQuarkPair =
-        sortOutHadronicW(tree);
-    TLorentzVector wQuark1 = wQuarkPair.first;
-    TLorentzVector wQuark2 = wQuarkPair.second;
+    std::pair<TLorentzVector, TLorentzVector> wQuarkPair{
+        sortOutHadronicW(tree)};
+    TLorentzVector wQuark1{wQuarkPair.first};
+    TLorentzVector wQuark2{wQuarkPair.second};
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
@@ -643,7 +644,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["leadJetEta"] = jetVecs[0].Eta();
     inputVars["leadJetPhi"] = jetVecs[0].Phi();
 
-    float totPx{0.0}, totPy{0.0};
+    float totPx{0.0};
+    float totPy{0.0};
 
     totPx += zLep1.Px() + zLep2.Px();
     totPy += zLep1.Py() + zLep2.Py();
@@ -690,7 +692,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["wQuark2Eta"] = wQuark2.Eta();
     inputVars["wQuark2Phi"] = wQuark2.Phi();
 
-    float wPairMass = (wQuark1 + wQuark2).M();
+    float wPairMass{(wQuark1 + wQuark2).M()};
     inputVars["wPairMass"] = wPairMass;
     inputVars["wPairPt"] = (wQuark1 + wQuark2).Pt();
     inputVars["wPairEta"] = (wQuark1 + wQuark2).Eta();
@@ -712,9 +714,9 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     }
 
     inputVars["totPt"] = std::sqrt(totPx * totPx + totPy * totPy);
-    TLorentzVector totVec = (zLep1 + zLep2);
+    TLorentzVector totVec{zLep1 + zLep2};
 
-    for (uint i = 0; i != jetVecs.size(); i++)
+    for (unsigned i{0}; i != jetVecs.size(); i++)
     {
         totVec += jetVecs[i];
     }
@@ -771,7 +773,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars["fourthJetbTag"] = tree->jetPF2PATBDiscriminator[jets[3]];
     }
 
-    float topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
+    float topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
     inputVars["topMass"] = topMass;
     inputVars["topPt"] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
     inputVars["topEta"] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
@@ -830,7 +832,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zl2Quark2DelPhi"] = (zLep2).DeltaPhi(wQuark2);
     inputVars["minZJetR"] = 3.0;
 
-    float jetHt = 0.;
+    float jetHt{0.};
     TLorentzVector jetVector;
 
     for (uint i = 0; i != jetVecs.size(); i++)
@@ -852,8 +854,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zlb2DelR"] = zLep2.DeltaR(bJetVecs[0]);
     inputVars["zlb2DelPhi"] = zLep2.DeltaPhi(bJetVecs[0]);
 
-    float ht = 0.;
-    ht += zLep1.Pt() + zLep2.Pt();
+    float ht{zLep1.Pt() + zLep2.Pt()};
 
     inputVars["lepHt"] = ht;
     inputVars["jetHt"] = jetHt;
@@ -881,8 +882,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zEta"] = (zLep2 + zLep1).Eta();
     inputVars["zPhi"] = (zLep2 + zLep1).Phi();
 
-    float wChi2Term = (wPairMass - 80.3585) / 8.0;
-    float topChi2Term = (topMass - 173.21) / 30.0;
+    float wChi2Term{(wPairMass - 80.3585) / 8.0};
+    float topChi2Term{(topMass - 173.21) / 30.0};
     inputVars["chi2"] = wChi2Term * wChi2Term + topChi2Term * topChi2Term;
 
     if (useSidebandRegion)
