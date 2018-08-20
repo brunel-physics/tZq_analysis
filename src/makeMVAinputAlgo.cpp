@@ -243,9 +243,9 @@ double MakeMvaInputs::deltaR(float eta1, float phi1, float eta2, float phi2)
 {
     double dEta{eta1 - eta2};
     double dPhi{phi1 - phi2};
-    while (std::abs(dPhi) > M_PI)
+    while (std::abs(dPhi) > TMath::Pi())
     {
-        dPhi += (dPhi > 0. ? -2 * M_PI : 2 * M_PI);
+        dPhi += (dPhi > 0. ? -2 * TMath::Pi() : 2 * TMath::Pi());
     }
     return std::sqrt((dEta * dEta) + (dPhi * dPhi));
 }
