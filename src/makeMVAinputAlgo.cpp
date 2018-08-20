@@ -336,7 +336,9 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>> MakeMvaInputs::getJets(
                                               true));
         }
         else
+        {
             continue;
+        }
     }
 
     return {jetList, jetVecList};
@@ -365,7 +367,9 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
                           false));
         }
         else
+        {
             continue;
+        }
     }
 
     return {bJetList, bJetVecList};
