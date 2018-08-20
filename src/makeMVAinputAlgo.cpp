@@ -291,7 +291,7 @@ std::pair<TLorentzVector, TLorentzVector>
                          tree->muonPF2PATE[zlep2Index]);
     }
 
-    return std::make_pair(zLep1, zLep2);
+    return {zLep1, zLep2};
 }
 
 std::pair<TLorentzVector, TLorentzVector>
@@ -307,7 +307,7 @@ std::pair<TLorentzVector, TLorentzVector>
                        tree->jetPF2PATPz[tree->wQuark2Index],
                        tree->jetPF2PATE[tree->wQuark2Index]);
 
-    return std::make_pair(wQuark1, wQuark2);
+    return {wQuark1, wQuark2};
 }
 
 std::pair<std::vector<int>, std::vector<TLorentzVector>>
@@ -332,7 +332,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
             continue;
     }
 
-    return std::make_pair(jetList, jetVecList);
+    return {jetList, jetVecList};
 }
 
 std::pair<std::vector<int>, std::vector<TLorentzVector>>
@@ -361,7 +361,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
             continue;
     }
 
-    return std::make_pair(bJetList, bJetVecList);
+    return {bJetList, bJetVecList};
 }
 
 TLorentzVector MakeMvaInputs::getJetVec(MvaEvent* tree,
