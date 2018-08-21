@@ -872,9 +872,9 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("zlb2DelR") = zLep2.DeltaR(bJetVecs[0]);
     inputVars.at("zlb2DelPhi") = zLep2.DeltaPhi(bJetVecs[0]);
 
-    const float ht{zLep1.Pt() + zLep2.Pt() + jetHt};
+    const float lepHt{zLep1.Pt() + zLep2.Pt()};
 
-    inputVars.at("lepHt") = ht;
+    inputVars.at("lepHt") = lepHt;
     inputVars.at("jetHt") = jetHt;
     inputVars.at("jetMass") = jetVector.M();
     inputVars.at("jetPt") = jetVector.Pt();
@@ -892,8 +892,9 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     inputVars.at("wQuarkHt") = wQuark1.Pt() + wQuark2.Pt();
 
-    inputVars.at("totHt") = ht;
-    inputVars.at("totHtOverPt") = ht / std::sqrt(totPx * totPx + totPy * totPy);
+    inputVars.at("totHt") = lepHt + jetHt;
+    inputVars.at("totHtOverPt") =
+        inputVars.at("totHt") / std::sqrt(totPx * totPx + totPy * totPy);
     inputVars.at("zMass") = (zLep1 + zLep2).M();
     inputVars.at("zPt") = (zLep2 + zLep1).Pt();
     inputVars.at("zEta") = (zLep2 + zLep1).Eta();
