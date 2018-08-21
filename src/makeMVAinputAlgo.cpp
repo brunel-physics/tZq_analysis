@@ -322,7 +322,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>> MakeMvaInputs::getJets(
     std::vector<int> jetList{};
     std::vector<TLorentzVector> jetVecList{};
 
-    for (int i{0}; i != 15; i++)
+    for (int i{0}; i != tree->NJETS; i++)
     {
         if (tree->jetInd.at(i) > -1)
         {
@@ -352,7 +352,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
     std::vector<int> bJetList{};
     std::vector<TLorentzVector> bJetVecList{};
 
-    for (int i{0}; i != 10; i++)
+    for (int i{0}; i != tree->NBJETS; i++)
     {
         if (tree->bJetInd[i] > -1)
         {
@@ -636,14 +636,16 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
     // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
     // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
+    constexpr double SF_EE{0.958391264995};
+    constexpr double SF_MUMU{1.02492608673};
 
     if (SameSignMC == true && channel == "ee")
     {
-        inputVars.at("eventWeight") = tree->eventWeight * 0.958391264995;
+        inputVars.at("eventWeight") = tree->eventWeight * SF_EE;
     }
     else if (SameSignMC == true && channel == "mumu")
     {
-        inputVars.at("eventWeight") = tree->eventWeight * 1.02492608673;
+        inputVars.at("eventWeight") = tree->eventWeight * SF_MUMU;
     }
     else
     {
@@ -900,17 +902,28 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("zEta") = (zLep2 + zLep1).Eta();
     inputVars.at("zPhi") = (zLep2 + zLep1).Phi();
 
-    const float wChi2Term{(wPairMass - 80.3585) / 8.0};
-    const float topChi2Term{(topMass - 173.21) / 30.0};
-    inputVars.at("chi2") = wChi2Term * wChi2Term + topChi2Term * topChi2Term;
+    constexpr double W_MASS{80.385};
+    constexpr double TOP_MASS{173.1};
+
+    // from scripts/plotMassPeaks.py
+    constexpr double W_SIGMA{8};
+    constexpr double TOP_SIGMA{30};
+
+    const float wChi2Term{(wPairMass - W_MASS) / W_SIGMA};
+    const float topChi2Term{(topMass - TOP_MASS) / TOP_SIGMA};
+    inputVars.at("chi2") = std::pow(wChi2Term, 2) + std::pow(topChi2Term, 2);
+
+    constexpr double MIN_SIDEBAND_CHI2{40};
+    constexpr double MAX_SIDEBAND_CHI2{150};
 
     if (useSidebandRegion)
     {
-        if (inputVars.at("chi2") >= 40. and inputVars.at("chi2") < 150.)
+        if (inputVars.at("chi2") >= MIN_SIDEBAND_CHI2
+            and inputVars.at("chi2") < MAX_SIDEBAND_CHI2)
         {
             outTreeSdBnd->Fill();
         }
-        if (inputVars.at("chi2") < 40.)
+        if (inputVars.at("chi2") < MIN_SIDEBAND_CHI2)
         {
             outTreeSig->Fill();
         }
