@@ -765,6 +765,7 @@ public :
    TBranch        *b_jetPF2PATNeutralEmEnergyFractionCorr;   //!
    TBranch        *b_jetPF2PATNeutralMultiplicity;   //!
    TBranch        *b_jetPF2PATChargedMultiplicity;   //!
+   TBranch        *b_metPF2PATE;   //!
    TBranch        *b_metPF2PATEt;   //!
    TBranch        *b_metPF2PATEtRaw;   //!
    TBranch        *b_metPF2PATPhi;   //!
@@ -775,6 +776,8 @@ public :
    TBranch        *b_metPF2PATScalarEt;   //!
    TBranch        *b_metPF2PATEtUncorrected;   //!
    TBranch        *b_metPF2PATPhiUncorrected;   //!
+   TBranch        *b_metPF2PATUnclusteredEnUp;   //!
+   TBranch        *b_metPF2PATUnclusteredEnDown;   //!
    TBranch        *b_genMetPF2PATEt;   //!
    TBranch        *b_genMetPF2PATPhi;   //!
    TBranch        *b_genMetPF2PATPt;   //!
@@ -1369,6 +1372,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("jetPF2PATNeutralEmEnergyFractionCorr", jetPF2PATNeutralEmEnergyFractionCorr.data(), &b_jetPF2PATNeutralEmEnergyFractionCorr);
    fChain->SetBranchAddress("jetPF2PATNeutralMultiplicity", jetPF2PATNeutralMultiplicity.data(), &b_jetPF2PATNeutralMultiplicity);
    fChain->SetBranchAddress("jetPF2PATChargedMultiplicity", jetPF2PATChargedMultiplicity.data(), &b_jetPF2PATChargedMultiplicity);
+   fChain->SetBranchAddress("metPF2PATE", &metPF2PATE, &b_metPF2PATE);
    fChain->SetBranchAddress("metPF2PATEt", &metPF2PATEt, &b_metPF2PATEt);
    fChain->SetBranchAddress("metPF2PATEtRaw", &metPF2PATEtRaw, &b_metPF2PATEtRaw);
    fChain->SetBranchAddress("metPF2PATPhi", &metPF2PATPhi, &b_metPF2PATPhi);
@@ -1379,6 +1383,8 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("metPF2PATScalarEt", &metPF2PATScalarEt, &b_metPF2PATScalarEt);
    fChain->SetBranchAddress("metPF2PATEtUncorrected", &metPF2PATEtUncorrected, &b_metPF2PATEtUncorrected);
    fChain->SetBranchAddress("metPF2PATPhiUncorrected", &metPF2PATPhiUncorrected, &b_metPF2PATPhiUncorrected);
+   fChain->SetBranchAddress("metPF2PATUnclusteredEnUp", &metPF2PATUnclusteredEnUp, &b_metPF2PATUnclusteredEnUp);
+   fChain->SetBranchAddress("metPF2PATUnclusteredEnDown", &metPF2PATUnclusteredEnDown, &b_metPF2PATUnclusteredEnDown);
    if (isMC) {
      fChain->SetBranchAddress("genMetPF2PATEt", &genMetPF2PATEt, &b_genMetPF2PATEt);
      fChain->SetBranchAddress("genMetPF2PATPhi", &genMetPF2PATPhi, &b_genMetPF2PATPhi);

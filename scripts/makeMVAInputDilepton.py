@@ -537,7 +537,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	varMap["zl2Quark1DelPhi"][0] = (zLep2).DeltaPhi(wQuark1)
 	varMap["zl2Quark2DelR"][0] = (zLep2).DeltaR(wQuark2)
 	varMap["zl2Quark2DelPhi"][0] = (zLep2).DeltaPhi(wQuark2)
-        varMap["minZJetR"][0] = 3.0
+        varMap["minZJetR"][0] = 999.0
         jetHt = 0.
         jetVector = TLorentzVector();
         for i in range(len(jetVecs)):
@@ -559,8 +559,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["jetPt"][0] = jetVector.Pt()
         varMap["jetEta"][0] = jetVector.Eta()
         varMap["jetPhi"][0] = jetVector.Phi()
-        if channel !=  "emu": varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
-        else : varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1]).M()
+        varMap["jetMass3"][0] = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M()
 	varMap["wQuarkHt"][0] = wQuark1.Pt()+wQuark2.Pt()
         ht += jetHt
         varMap["totHt"][0] = ht
@@ -593,12 +592,12 @@ def main():
 #    listOfMCs = {"DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"ttbarInclusivePowerheg_hdampUP":"TT__hdampUp","ttbarInclusivePowerheg_hdampDown":"TT__hdampDown","ttbarInclusivePowerheg_fsrup":"TT__fsrUp","ttbarInclusivePowerheg_fsrdown":"TT__fsrDown","ttbarInclusivePowerheg_isrup":"TT__isrUp","ttbarInclusivePowerheg_isrdown":"TT__isrDown"}
 #    listOfMCs = {"tChannel_scaleup":"TtChan__scaleUp","tChannel_scaledown":"TtChan__scaleDown","tChannel_hdampup":"TtChan__hdampUp","tChannel_hdampdown":"TtChan__hdampDown","tbarChannel_scaleup":"TbartChan__scaleUp","tbarChannel_scaledown":"TbartChan__scaleDown","tbarChannel_hdampup":"TbartChan__hdampUp","tbarChannel_hdampdown":"TbartChan__hdampDown"}
-#    listOfMCs = {"tWInclusive_scaleup":"TtW__scaleUp","tWInclusive_scaledown":"TtW__scaleDown","tbarWInclusive_scaleup":"TbartW__scaleUp","tbarWInclusive_scaledown":"TbartW__scaleDown"}
+    listOfMCs = {"tWInclusive_scaleup":"TtW__scaleUp","tWInclusive_scaledown":"TtW__scaleDown","tbarWInclusive_scaleup":"TbartW__scaleUp","tbarWInclusive_scaledown":"TbartW__scaleDown"}
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
 #    listOfMCs = {"ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ"}
 #    listOfMCs = {"ttZ2l2nu":"TTZ"}
-    listOfMCs = {}
+#    listOfMCs = {"ttHTobb": "ttH"}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
@@ -608,7 +607,7 @@ def main():
     channelToDataset = {"ee":"DataEG","mumu":"DataMu","emu":"MuonEG"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME__plus","__ME__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])

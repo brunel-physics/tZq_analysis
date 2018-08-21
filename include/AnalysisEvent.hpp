@@ -252,6 +252,7 @@ public :
    std::array<Float_t,  NJETSMAX> jetPF2PATNeutralEmEnergyFractionCorr;
    std::array<Int_t,    NJETSMAX> jetPF2PATNeutralMultiplicity;
    std::array<Int_t,    NJETSMAX> jetPF2PATChargedMultiplicity;
+   Double_t metPF2PATE;
    Double_t metPF2PATEt;
    Double_t metPF2PATEtRaw;
    Double_t metPF2PATPhi;
@@ -745,6 +746,7 @@ public :
    TBranch        *b_jetPF2PATNeutralEmEnergyFractionCorr;   //!
    TBranch        *b_jetPF2PATNeutralMultiplicity;   //!
    TBranch        *b_jetPF2PATChargedMultiplicity;   //!
+   TBranch        *b_metPF2PATE;   //!
    TBranch        *b_metPF2PATEt;   //!
    TBranch        *b_metPF2PATEtRaw;   //!
    TBranch        *b_metPF2PATPhi;   //!
@@ -1345,6 +1347,7 @@ void AnalysisEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool i
    fChain->SetBranchAddress("jetPF2PATNeutralEmEnergyFractionCorr", jetPF2PATNeutralEmEnergyFractionCorr.data(), &b_jetPF2PATNeutralEmEnergyFractionCorr);
    fChain->SetBranchAddress("jetPF2PATNeutralMultiplicity", jetPF2PATNeutralMultiplicity.data(), &b_jetPF2PATNeutralMultiplicity);
    fChain->SetBranchAddress("jetPF2PATChargedMultiplicity", jetPF2PATChargedMultiplicity.data(), &b_jetPF2PATChargedMultiplicity);
+   fChain->SetBranchAddress("metPF2PATE", &metPF2PATE, &b_metPF2PATE);
    fChain->SetBranchAddress("metPF2PATEt", &metPF2PATEt, &b_metPF2PATEt);
    fChain->SetBranchAddress("metPF2PATEtRaw", &metPF2PATEtRaw, &b_metPF2PATEtRaw);
    fChain->SetBranchAddress("metPF2PATPhi", &metPF2PATPhi, &b_metPF2PATPhi);
