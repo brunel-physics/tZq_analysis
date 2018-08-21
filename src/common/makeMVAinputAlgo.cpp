@@ -82,7 +82,8 @@ void MakeMvaInputs::runMainAnalysis()
     //  {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
     //  std::map< std::string, std::string > listOfMCs =
     //  {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
-    std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
+    std::map< std::string, std::string > listOfMCs = {{"ttbarInclusivePowerheg","TT"}};
+    //std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
     //  std::map< std::string, std::string > listOfMCs = {};
 
     std::map<std::string, std::string> channelToDataset{
@@ -113,10 +114,8 @@ void MakeMvaInputs::runMainAnalysis()
                                       "__met__minus",
                                       "__pdf__plus",
                                       "__pdf__minus",
-                                      "__ME_PS__plus",
-                                      "__ME_PS__minus",
-                                      "__alphaS__plus",
-                                      "__alphaS__minus"};
+                                      "__ME__plus",
+                                      "__ME__minus"};
 
     std::map<std::string, float> mvaMap = setupInputVars();
 
@@ -714,8 +713,10 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     TLorentzVector zLep1 = zPairLeptons.first;
     TLorentzVector zLep2 = zPairLeptons.second;
 
-    TLorentzVector metVec(
-        tree->metPF2PATPx, tree->metPF2PATPy, 0, tree->metPF2PATEt);
+    TLorentzVector metVec;
+    if ( syst == 1024 ) metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnUp);
+    else if ( syst == 2048 ) metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnDown);
+    else metVec.SetPtEtaPhiE(tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);    
 
     std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair =
         getJets(tree, syst, metVec);
@@ -734,10 +735,6 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
-    if (syst == 1024 || syst == 2048)
-    {
-        metVec = doUncMet(metVec, zLep1, zLep2, jetVecs, syst);
-    }
 
     // SFs for NPL lepton estimation normilisation
     // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
@@ -849,7 +846,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                            - tree->jetPF2PATPhi[tree->wQuark2Index])));
     inputVars["nJets"] = float(jets.size());
     inputVars["nBjets"] = float(bJets.size());
-    inputVars["met"] = tree->metPF2PATEt;
+    inputVars["met"] = metVec.Pt();
     inputVars["bTagDisc"] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars["leadJetbTag"] = tree->jetPF2PATBDiscriminator[jets[0]];
     inputVars["secJetbTag"] = -1.;
@@ -946,7 +943,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zl2Quark1DelPhi"] = (zLep2).DeltaPhi(wQuark1);
     inputVars["zl2Quark2DelR"] = (zLep2).DeltaR(wQuark2);
     inputVars["zl2Quark2DelPhi"] = (zLep2).DeltaPhi(wQuark2);
-    inputVars["minZJetR"] = 3.0;
+    inputVars["minZJetR"] = 999.0;
 
     float jetHt = 0.;
     TLorentzVector jetVector;
