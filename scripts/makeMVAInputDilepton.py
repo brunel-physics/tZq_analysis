@@ -374,7 +374,11 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	
 	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
-        metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
+        TLorentzVector metVec;
+        if ( syst == 1024 ) : metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnUp);
+        elif ( syst == 2048 ) : metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnDown);
+        else metVec.SetPtEtaPhiE(tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);  
+
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
@@ -447,20 +451,7 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         varMap["mTW"][0] = math.sqrt(2*tree.jetPF2PATPt[tree.wQuark1Index]*tree.jetPF2PATPt[tree.wQuark2Index] * (1-math.cos(tree.jetPF2PATPhi[tree.wQuark1Index] - tree.jetPF2PATPhi[tree.wQuark2Index])))
         varMap["nJets"][0] = float(len(jets))
         varMap["nBjets"][0] = float(len(bJets))
-
-        #Do unclustered met stuff here now that we have all of the objects, all corrected for their various SFs etc.
-
-        ## Old Run 1 style
-#        if syst == 1024 or syst == 2048:
-#            metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
-        ## New Run 2 style
-        if syst == 1024:
-             varMap["met"][0] = tree.metPF2PATUnclusteredEnUp
-        elif syst == 2048:
-             varMap["met"][0] =tree.metPF2PATUnclusteredEnDown
-        else: 
-             varMap["met"][0] = metVec.Pt()
-
+        varMap["met"][0] = metVec.Pt()	
         varMap["bTagDisc"][0] = tree.jetPF2PATBDiscriminator[jets[bJets[0]]]
         varMap["leadJetbTag"][0] = tree.jetPF2PATBDiscriminator[jets[0]]
         varMap["secJetbTag"][0] = -1.
