@@ -850,10 +850,10 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("zl2Quark1DelPhi") = (zLep2).DeltaPhi(wQuark1);
     inputVars.at("zl2Quark2DelR") = (zLep2).DeltaR(wQuark2);
     inputVars.at("zl2Quark2DelPhi") = (zLep2).DeltaPhi(wQuark2);
-    inputVars.at("minZJetR") = 3.0;
 
     float jetHt{0.};
     TLorentzVector jetVector;
+    inputVars.at("minZJetR") = std::numeric_limits::infinity<double>();
 
     for (const auto& jetVec : jetVecs)
     {
