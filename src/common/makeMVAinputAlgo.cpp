@@ -14,6 +14,7 @@ MakeMvaInputs::MakeMvaInputs()
     : jetUnc(JetCorrectionUncertainty(
           "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt"))
     , inputVars{}
+    , oldMetFlag{false}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
     , inputDir{"mvaTest/"}
@@ -30,6 +31,7 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
     namespace po = boost::program_options;
     po::options_description desc("Options");
     desc.add_options()("help,h", "Print this message.")(
+        "met,m", po::bool_switch(&oldMetFlag), "Use old MET uncerts recipe")(
         "ttbar", po::bool_switch(&ttbarControlRegion), "Make ttbar CR stuff")(
         "inputDir,i",
         po::value<std::string>(&inputDir),
@@ -718,6 +720,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     else if ( syst == 2048 ) metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnDown);
     else metVec.SetPtEtaPhiE(tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);    
 
+    if ( oldMetFlag ) metVec.SetPtEtaPhiE(tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);
+  
     std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair =
         getJets(tree, syst, metVec);
     std::vector<int> jets = jetPair.first;
@@ -732,6 +736,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         sortOutHadronicW(tree);
     TLorentzVector wQuark1 = wQuarkPair.first;
     TLorentzVector wQuark2 = wQuarkPair.second;
+
+    if ( oldMetFlag && ( syst == 1024 || syst == 2048 ) ) metVec = doUncMet(metVec,zLep1,zLep2,jetVecs,syst);
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
