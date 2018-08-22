@@ -18,6 +18,7 @@ MakeMvaInputs::MakeMvaInputs()
     , inputVars{}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
+    , sameSignMC{false}
     , inputDir{"mvaTest/"}
     , outputDir{"mvaInputs/"}
 {
@@ -40,7 +41,9 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
                                      "Mva inputs output directory")(
         "sideband,s",
         po::bool_switch(&useSidebandRegion),
-        "Make side band CR plots");
+        "Make side band CR plots")("samesign,S",
+                                   po::bool_switch(&sameSignMC),
+                                   "Run the same sign fake analysis mode");
 
     po::variables_map vm;
 
@@ -67,60 +70,88 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-    //  std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-    //  {"WWZ","WWZ"}, {"WZZ","WZZ"},
-    //  {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
-    //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
-    //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
-    //  "WW1l1nu2q","WW",
-    //  "WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tChannel_scaleup","TtChan__scaleUp"},{"tChannel_scaledown","TtChan__scaleDown"},{"tChannel_hdampup","TtChan__hdampUp"},{"tChannel_hdampdown","TtChan__hdampDown"},{"tbarChannel_scaleup","TbartChan__scaleUp"},{"tbarChannel_scaledown","TbartChan__scaleDown"},{"tbarChannel_hdampup","TbartChan__hdampUp"},{"tbarChannel_hdampdown","TbartChan__hdampDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
-    const std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
-    //  std::map< std::string, std::string > listOfMCs = {};
+     std::map<std::string, std::string> listOfMCs = {
+         {"ttHTobb", "ttH"},
+         {"ttHToNonbb", "ttH"},
+         {"WWW", "WWW"},
+         {"WWZ", "WWZ"},
+         {"WZZ", "WZZ"},
+         {"ZZZ", "ZZZ"},
+         {"WW1l1nu2q", "WW"},
+         {"WW2l2nu", "WW"},
+         {"ZZ4l", "ZZ"},
+         {"ZZ2l2nu", "ZZ"},
+         {"ZZ2l2q", "ZZ"},
+         {"WZjets", "WZ"},
+         {"WZ2l2q", "WZ"},
+         {"WZ1l1nu2q", "WZ"},
+         {"sChannel", "TsChan"},
+         {"tChannel", "TtChan"},
+         {"tbarChannel", "TbartChan"},
+         {"tWInclusive", "TtW"},
+         {"tbarWInclusive", "TbartW"},
+         {"tZq", "tZq"},
+         {"tHq", "THQ"},
+         {"ttWlnu", "TTW"},
+         {"ttW2q", "TTW"},
+         {"ttZ2l2nu", "TTZ"},
+         {"ttZ2q", "TTZ"},
+         {"ttbarInclusivePowerheg", "TT"},
+         {"tWZ", "TWZ"},
+         {"wPlusJets", "Wjets"},
+         {"DYJetsToLL_M-50", "DYToLL_M50"},
+         {"DYJetsToLL_M-10To50", "DYToLL_M10To50"}};
 
-    const std::map<std::string, std::string> channelToDataset{
-        {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
+     const std::map<std::string, std::string> channelToDataset{
+         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
 
-    const auto channels{[=]() -> std::vector<std::string> {
-        if (ttbarControlRegion)
-        {
-            return {"emu"};
-        }
-        else
-        {
-            return {"ee", "mumu"};
-        }
-    }()};
+     const auto channels{[=]() -> std::vector<std::string> {
+         if (ttbarControlRegion)
+         {
+             return {"emu"};
+         }
+         else
+         {
+             return {"ee", "mumu"};
+         }
+     }()};
 
-    const std::vector<std::string> systs = {"",
-                                            "__trig__plus",
-                                            "__trig__minus",
-                                            "__jer__plus",
-                                            "__jer__minus",
-                                            "__jes__plus",
-                                            "__jes__minus",
-                                            "__pileup__plus",
-                                            "__pileup__minus",
-                                            "__bTag__plus",
-                                            "__bTag__minus",
-                                            "__met__plus",
-                                            "__met__minus",
-                                            "__pdf__plus",
-                                            "__pdf__minus",
-                                            "__ME_PS__plus",
-                                            "__ME_PS__minus",
-                                            "__alphaS__plus",
-                                            "__alphaS__minus"};
+     const std::vector<std::string> systs = {"",
+                                             "__trig__plus",
+                                             "__trig__minus",
+                                             "__jer__plus",
+                                             "__jer__minus",
+                                             "__jes__plus",
+                                             "__jes__minus",
+                                             "__pileup__plus",
+                                             "__pileup__minus",
+                                             "__bTag__plus",
+                                             "__bTag__minus",
+                                             "__met__plus",
+                                             "__met__minus",
+                                             "__pdf__plus",
+                                             "__pdf__minus",
+                                             "__ME_PS__plus",
+                                             "__ME_PS__minus",
+                                             "__alphaS__plus",
+                                             "__alphaS__minus"};
 
+     if (sameSignMC)
+     {
+         sameSignAnalysis(listOfMCs, channels, useSidebandRegion);
+     }
+     else
+     {
+         standardAnalysis(listOfMCs, systs, channels, useSidebandRegion);
+     }
+}
+
+void MakeMvaInputs::standardAnalysis(
+    const std::map<std::string, std::string>& listOfMCs,
+    const std::vector<std::string>& systs,
+    const std::vector<std::string>& channels,
+    const bool useSidebandRegion)
+{
     std::string treeNamePostfixSig{""};
     std::string treeNamePostfixSB{""};
     if (useSidebandRegion)
@@ -202,25 +233,12 @@ void MakeMvaInputs::runMainAnalysis()
                     lEventTimer.DrawProgressBar(i);
                     event->GetEntry(i);
 
-                    const bool SameSignMC{false};
-                    if (SameSignMC == true && channel == "ee"
-                        && (event->genElePF2PATPromptFinalState[0] == 0
-                            || event->genElePF2PATPromptFinalState[1] == 0))
-                    {
-                        continue;
-                    }
-                    if (SameSignMC == true && channel == "mumu"
-                        && (event->genMuonPF2PATPromptFinalState[0] == 0
-                            || event->genMuonPF2PATPromptFinalState[1] == 0))
-                    {
-                        continue;
-                    }
-
                     fillTree(outTreeSig,
                              outTreeSdBnd,
                              event,
                              outSample + systName,
-                             channel);
+                             channel,
+                             false);
                 } // end event loop
                 inFile->Close();
             } // end channel loop
@@ -236,6 +254,100 @@ void MakeMvaInputs::runMainAnalysis()
         outFile->Write();
         outFile->Close();
     } // end sample loop
+}
+
+void MakeMvaInputs::sameSignAnalysis(
+    const std::map<std::string, std::string>& listOfMCs,
+    const std::vector<std::string>& channels,
+    const bool useSidebandRegion)
+{
+    std::vector<std::string> outFakeChannels{"FakeEG", "FakeMu"};
+    std::map<std::string, std::string> outFakeChanToData{{"FakeEG", "ee"},
+                                                         {"FakeMu", "mumu"}};
+    std::map<std::string, std::string> chanMap{{"ee", "eeRun2016"},
+                                               {"mumu", "mumuRun2016"}};
+
+    std::string treeNamePostfixSig;
+    std::string treeNamePostfixSB;
+    if (useSidebandRegion)
+    {
+        std::cout << "Using control region stuff" << std::endl;
+        treeNamePostfixSig = "sig_";
+        treeNamePostfixSB = "ctrl_";
+    }
+
+    for (const auto& outChan : outFakeChannels)
+    {
+        auto outTreeSig{
+            new TTree{("Ttree_" + treeNamePostfixSig + outChan).c_str(),
+                      ("Ttree_" + treeNamePostfixSig + outChan).c_str()}};
+        setupBranches(outTreeSig);
+        TTree* outTreeSdBnd;
+        if (useSidebandRegion)
+        {
+            outTreeSdBnd =
+                new TTree{("Ttree_" + treeNamePostfixSB + outChan).c_str(),
+                          ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
+            setupBranches(outTreeSdBnd);
+        }
+        auto outFile{
+            new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
+                      "RECREATE"}};
+
+        // Get same sign data
+        const std::string chan{outFakeChanToData.at(outChan)};
+        auto dataChain{new TChain{"tree"}};
+        dataChain->Add(
+            (inputDir + chanMap.at(chan) + chan + "invLepmvaOut.root").c_str());
+
+        // Get expected real SS events from MC
+        for (const auto& mc : listOfMCs)
+        {
+            const std::string sample{mc.first};
+
+            std::cout << "Doing SS fakes " << sample << std::endl;
+            dataChain->Add(
+                (inputDir + sample + chan + "invLepmvaOut.root").c_str());
+        }
+
+        auto event{new MvaEvent{true, "", dataChain, true}};
+        const long long numberOfEvents{dataChain->GetEntries()};
+        TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
+                                "Running over dataset ...",
+                                false};
+        for (long long i{0}; i < numberOfEvents; i++)
+        {
+            lEventTimer.DrawProgressBar(i);
+            event->GetEntry(i);
+
+            if (chan == "ee"
+                && (event->genElePF2PATPromptFinalState[event->zLep1Index] == 0
+                    || event->genElePF2PATPromptFinalState[event->zLep2Index]
+                           == 0))
+            {
+                continue;
+            }
+            if (chan == "mumu"
+                && (event->genMuonPF2PATPromptFinalState[event->zLep1Index] == 0
+                    || event->genMuonPF2PATPromptFinalState[event->zLep2Index]
+                           == 0))
+            {
+                continue;
+            }
+
+            fillTree(
+                outTreeSig, outTreeSdBnd, event, outChan, chan, true);
+        } // end event loop
+
+        outFile->cd();
+        outFile->Write();
+        outTreeSig->Write();
+        if (useSidebandRegion)
+        {
+            outTreeSdBnd->Write();
+        }
+        outFile->Close();
+    }
 }
 
 double MakeMvaInputs::deltaR(const float eta1,
