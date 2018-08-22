@@ -858,8 +858,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                   * (1
                      - cos(tree->jetPF2PATPhi[tree->wQuark1Index]
                            - tree->jetPF2PATPhi[tree->wQuark2Index])));
-    inputVars.at("nJets") = float(jets.size());
-    inputVars.at("nBjets") = float(bJets.size());
+    inputVars.at("nJets") = boost::numeric_cast<float>(jets.size());
+    inputVars.at("nBjets") = boost::numeric_cast<float>(bJets.size());
     inputVars.at("met") = tree->metPF2PATEt;
     inputVars.at("bTagDisc") = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars.at("leadJetbTag") = tree->jetPF2PATBDiscriminator[jets[0]];
