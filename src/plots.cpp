@@ -1,6 +1,6 @@
 #include "plots.hpp"
 
-#include "TH1F.h"
+#include "TH1D.h"
 #include "TLorentzVector.h"
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -33,7 +33,7 @@ Plots::Plots(std::vector<std::string> titles,
         plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
         plotPoint[i].xAxisLabel = xAxisLabels[i];
         plotPoint[i].plotHist =
-            new TH1F{plotName.c_str(),
+            new TH1D{plotName.c_str(),
                      (plotName + ";" + plotPoint[i].xAxisLabel).c_str(),
                      nBins[i],
                      xMins[i],

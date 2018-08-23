@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 
-class TH1F;
+class TH1D;
 class TH2F;
 class TH2D;
 class TH3D;
@@ -23,13 +23,13 @@ class Cuts
     bool makeLeptonCuts(AnalysisEvent*,
                         float*,
                         std::map<std::string, Plots*>,
-                        TH1F*,
+                        TH1D*,
                         int syst = 0,
                         bool isControl = false);
     bool invertIsoCut(AnalysisEvent*,
                       float*,
                       std::map<std::string, Plots*>,
-                      TH1F*);
+                      TH1D*);
     std::pair<std::vector<int>, std::vector<float>>
         makeJetCuts(AnalysisEvent*, int, float*, bool isProper = true);
     std::vector<int> makeMetCuts(AnalysisEvent*);
@@ -70,7 +70,7 @@ class Cuts
     bool ttbarCuts(AnalysisEvent* event,
                    float*,
                    std::map<std::string, Plots*>,
-                   TH1F*,
+                   TH1D*,
                    int);
 
     // Simple deltaR function, because the reco namespace doesn't work or
@@ -182,7 +182,7 @@ class Cuts
     std::pair<double, double> jet2017SFs(const double eta) const;
 
     // Histogram to be used in synchronisation.
-    TH1F* synchCutFlowHist_;
+    TH1D* synchCutFlowHist_;
     TH1I* synchNumEles_;
     TH1I* synchNumMus_;
     TH1I* synchMuonCutFlow_;
@@ -291,7 +291,7 @@ class Cuts
          const bool);
     ~Cuts();
     bool makeCuts(
-        AnalysisEvent*, float*, std::map<std::string, Plots*>, TH1F*, int);
+        AnalysisEvent*, float*, std::map<std::string, Plots*>, TH1D*, int);
     void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
     void setMC(bool isMC)
     {
@@ -353,7 +353,7 @@ class Cuts
     bool parse_config(std::string);
     void dumpLeptonInfo(AnalysisEvent*);
     void dumpLooseLepInfo(AnalysisEvent*);
-    TH1F* getSynchCutFlow();
+    TH1D* getSynchCutFlow();
     int numFound()
     {
         return synchCutFlowHist_->GetBinContent(4);

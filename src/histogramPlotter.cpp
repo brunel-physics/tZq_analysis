@@ -2,7 +2,7 @@
 
 #include "TCanvas.h"
 #include "TColor.h"
-#include "TH1F.h"
+#include "TH1D.h"
 #include "THStack.h"
 #include "TLegend.h"
 #include "TMath.h"
@@ -103,7 +103,7 @@ void HistogramPlotter::plotHistos(
         for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end();
              stageIt++)
         {
-            std::map<std::string, TH1F*> tempPlotMap;
+            std::map<std::string, TH1D*> tempPlotMap;
             for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++)
             {
                 if (loadHistos_)
@@ -114,8 +114,8 @@ void HistogramPlotter::plotHistos(
                          + "_Histo.root")
                             .c_str(),
                         "READ"};
-                    TH1F* tempHist =
-                        dynamic_cast<TH1F*>(inputFile
+                    TH1D* tempHist =
+                        dynamic_cast<TH1D*>(inputFile
                                                 ->Get((firstIt->second[*stageIt]
                                                            ->getPlotPoint()[i]
                                                            .name)
@@ -142,10 +142,10 @@ void HistogramPlotter::plotHistos(
     }
 }
 
-std::map<std::string, TH1F*>
+std::map<std::string, TH1D*>
     HistogramPlotter::loadCutFlowMap(std::string plotName, std::string channel)
 {
-    std::map<std::string, TH1F*> cutFlowMap;
+    std::map<std::string, TH1D*> cutFlowMap;
 
     for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend();
          plot_iter++)
@@ -157,13 +157,13 @@ std::map<std::string, TH1F*>
                       "READ"};
         cutFlowMap.emplace(
             *plot_iter,
-            dynamic_cast<TH1F*>(
+            dynamic_cast<TH1D*>(
                 inputFile->Get((*plot_iter + "cutFlow").c_str())->Clone()));
     }
     return cutFlowMap;
 }
 
-void HistogramPlotter::saveHistos(std::map<std::string, TH1F*> cutFlowMap,
+void HistogramPlotter::saveHistos(std::map<std::string, TH1D*> cutFlowMap,
                                   std::string plotName,
                                   std::string channel)
 {
@@ -204,7 +204,7 @@ void HistogramPlotter::saveHistos(
         for (auto stageIt = stageNameVec.begin(); stageIt != stageNameVec.end();
              stageIt++)
         {
-            std::map<std::string, TH1F*> tempPlotMap;
+            std::map<std::string, TH1D*> tempPlotMap;
             for (auto mapIt = plotMap.begin(); mapIt != plotMap.end(); mapIt++)
             {
                 tempPlotMap[mapIt->first] =
@@ -233,7 +233,7 @@ void HistogramPlotter::saveHistos(
     }
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
+void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap,
                                 std::string plotTitle,
                                 std::string plotName)
 {
@@ -241,7 +241,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
     makePlot(plotMap, plotTitle, plotName, "", blankLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
+void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap,
                                 std::string plotTitle,
                                 std::string plotName,
                                 std::vector<std::string> xAxisLabels)
@@ -249,7 +249,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
     makePlot(plotMap, plotTitle, plotName, "", xAxisLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
+void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap,
                                 std::string plotTitle,
                                 std::string plotName,
                                 std::string subLabel)
@@ -258,7 +258,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
     makePlot(plotMap, plotTitle, plotName, subLabel, blankLabels);
 }
 
-void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
+void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap,
                                 std::string plotTitle,
                                 std::string plotName,
                                 std::string subLabel,
@@ -309,10 +309,10 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1F*> plotMap,
     if (!BLIND_PLOTS)
     {
         // Initialise ratio plots
-        ratioHisto = dynamic_cast<TH1F*>(plotMap["data"]->Clone());
+        ratioHisto = dynamic_cast<TH1D*>(plotMap["data"]->Clone());
         ratioHisto->Sumw2();
         ratioHisto->Divide(
-            ratioHisto, dynamic_cast<TH1F*>(mcStack->GetStack()->Last()), 1, 1);
+            ratioHisto, dynamic_cast<TH1D*>(mcStack->GetStack()->Last()), 1, 1);
 
         ratioHisto->SetMarkerStyle(20);
         ratioHisto->SetMarkerSize(0.85);

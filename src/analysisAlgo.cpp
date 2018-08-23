@@ -7,6 +7,7 @@
 #include "TH2D.h"
 #include "TMVA/Timer.h"
 #include "TPad.h"
+#include "TH1D.h"
 #include "TTree.h"
 #include "config_parser.hpp"
 
@@ -315,8 +316,8 @@ void AnalysisAlgo::setupSystematics()
     systNames.emplace_back("__bTag__minus");
     systNames.emplace_back("__pdf__plus");
     systNames.emplace_back("__pdf__minus");
-    systNames.emplace_back("__ME_PS__plus");
-    systNames.emplace_back("__ME_PS__minus");
+    systNames.emplace_back("__ME__plus");
+    systNames.emplace_back("__ME__minus");
     systNames.emplace_back("__alphaS__plus");
     systNames.emplace_back("__alphaS__minus");
 
@@ -498,7 +499,7 @@ void AnalysisAlgo::runMainAnalysis()
                         == cutFlowMap.end())
                     {
                         const size_t numCutFlowBins{stageNames.size()};
-                        cutFlowMap[histoName] = new TH1F{
+                        cutFlowMap[histoName] = new TH1D{
                             (histoName + systNames[systInd] + "cutFlow")
                                 .c_str(),
                             (histoName + systNames[systInd] + "cutFlow")

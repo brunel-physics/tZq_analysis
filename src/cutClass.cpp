@@ -172,7 +172,7 @@ Cuts::Cuts(bool doPlots,
     // If doing synchronisation., initialise that here.
     if (synchCutFlow_)
     {
-        synchCutFlowHist_ = new TH1F{"synchCutFlow", "synchCutFlow", 11, 0, 11};
+        synchCutFlowHist_ = new TH1D{"synchCutFlow", "synchCutFlow", 11, 0, 11};
         synchNumEles_ = new TH1I{"synchNumEles", "synchNumEles", 11, 0, 11};
         synchNumMus_ = new TH1I{"synchNumMuos", "synchNumMuos", 11, 0, 11};
         synchMuonCutFlow_ =
@@ -481,7 +481,7 @@ bool Cuts::parse_config(std::string confName)
 bool Cuts::makeCuts(AnalysisEvent* event,
                     float* eventWeight,
                     std::map<std::string, Plots*> plotMap,
-                    TH1F* cutFlow,
+                    TH1D* cutFlow,
                     int systToRun)
 {
     // If we're doing synchronisation, do this function.
@@ -650,7 +650,7 @@ bool Cuts::makeCuts(AnalysisEvent* event,
 bool Cuts::makeLeptonCuts(AnalysisEvent* event,
                           float* eventWeight,
                           std::map<std::string, Plots*> plotMap,
-                          TH1F* cutFlow,
+                          TH1D* cutFlow,
                           int syst,
                           bool isControl)
 {
@@ -2435,7 +2435,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
     return true;
 }
 
-TH1F* Cuts::getSynchCutFlow()
+TH1D* Cuts::getSynchCutFlow()
 {
     std::cout << "Eles: " << numTightEle_ << " Muons: " << numTightMu_
               << std::endl;
@@ -2656,7 +2656,7 @@ std::vector<int> Cuts::getSynchMus(AnalysisEvent* event)
 bool Cuts::invertIsoCut(AnalysisEvent* event,
                         float* eventWeight,
                         std::map<std::string, Plots*> plotMap,
-                        TH1F* cutFlow)
+                        TH1D* cutFlow)
 {
     std::cout << "Invert Iso Cut is not avaliable for the dilepton channel."
               << std::endl;
@@ -2907,7 +2907,7 @@ double Cuts::getChiSquared(double wMass, double topMass)
 bool Cuts::ttbarCuts(AnalysisEvent* event,
                      float* eventWeight,
                      std::map<std::string, Plots*> plotMap,
-                     TH1F* cutFlow,
+                     TH1D* cutFlow,
                      int systToRun)
 {
     if (!skipTrigger_ && !triggerCuts(event, eventWeight, systToRun))
