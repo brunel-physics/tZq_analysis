@@ -59,7 +59,7 @@ class MakeMvaInputs
     JetCorrectionUncertainty jetUnc;
 
     std::map<std::string, float> inputVars;
-
+    bool oldMetFlag;
     bool ttbarControlRegion;
     bool useSidebandRegion;
     std::string inputDir;
