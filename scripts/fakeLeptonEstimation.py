@@ -161,8 +161,8 @@ def main():
     infile_MC_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumumvaOut.root")
     infile_MC_inv_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"eeinvLepmvaOut.root")
     infile_MC_inv_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"mumuinvLepmvaOut.root")
-    infile_MC_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/emu/"+sample+"emumvaOut.root")
-    infile_MC_inv_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/emu/"+sample+"emuinvLepmvaOut.root")
+    infile_MC_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"emumvaOut.root")
+    infile_MC_inv_emu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/"+sample+"emuinvLepmvaOut.root")
 
     tree_MC_ee = infile_MC_ee.Get("tree")
     try:
