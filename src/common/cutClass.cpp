@@ -525,9 +525,9 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if ( isNPL_ ) { // if is NPL channel
     double eeWeight {1.0}, mumuWeight {1.0}, emuWeight{1.0};
     if ( invZMassCut_ == 20. && invWMassCut_ == 20. ) {
-      eeWeight = 0.939;
-      mumuWeight = 0.894;
-      emuWeight = 1.513;
+      eeWeight = 0.926;
+      mumuWeight = 1.114;
+      emuWeight = 1.489;
     }
     if ( invZMassCut_ == 20. && invWMassCut_ == 50. ) {
       eeWeight = 1.12750771638;

@@ -374,18 +374,25 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	
 	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
+
         metVec = TLorentzVector();
         if ( syst == 1024 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnUp, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnUp);
         elif ( syst == 2048 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnDown, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnDown);
         else : metVec.SetPtEtaPhiE(tree.metPF2PATEt, 0, tree.metPF2PATPhi, tree.metPF2PATEt);  
 
+#        metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
+
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
-             
+
+#        if syst == 1024 or syst == 2048:
+#            metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
+
         ## SFs for NPL lepton estimation normilisation
-        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.939 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.894 # SF we weight fake ee shape by
+        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.926 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.114 # SF we weight fake ee shape by
+        elif ( SameSignMC == True and channel == "emu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.489 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
@@ -577,18 +584,18 @@ def main():
     #Mapping of our mc names to IPHC names
 #    listOfMCs = {"WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
-#    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
+    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 #    listOfMCs = {"QCD_EMEnriched_Pt-20to30":"QCD_EM","QCD_EMEnriched_Pt-30to50":"QCD_EM","QCD_EMEnriched_Pt-50to80":"QCD_EM","QCD_EMEnriched_Pt-80to120":"QCD_EM","QCD_EMEnriched_Pt-120to170":"QCD_EM","QCD_EMEnriched_Pt-170to300":"QCD_EM","QCD_EMEnriched_Pt-300toInf":"QCD_EM","QCD_EMEnriched_Pt-15to20":"QCD_Mu","QCD_EMEnriched_Pt-20to30":"QCD_Mu","QCD_EMEnriched_Pt-30to50":"QCD_Mu","QCD_EMEnriched_Pt-50to80":"QCD_Mu","QCD_EMEnriched_Pt805to120":"QCD_Mu","QCD_EMEnriched_Pt-120to170":"QCD_Mu","QCD_EMEnriched_Pt-170to300":"QCD_Mu","QCD_EMEnriched_Pt-300to470":"QCD_Mu","QCD_EMEnriched_Pt-470to600":"QCD_Mu","QCD_EMEnriched_Pt-600to800":"QCD_Mu","QCD_EMEnriched_Pt-800to1000":"QCD_Mu","QCD_EMEnriched_Pt-1000toInf":"QCD_Mu"}
 #    listOfMCs = {"ttbarDilepton_aMCatNLO":"TT_aMCatNLO"}
 #    listOfMCs = {"DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 #    listOfMCs = {"ttbarInclusivePowerheg_hdampUP":"TT__hdampUp","ttbarInclusivePowerheg_hdampDown":"TT__hdampDown","ttbarInclusivePowerheg_fsrup":"TT__fsrUp","ttbarInclusivePowerheg_fsrdown":"TT__fsrDown","ttbarInclusivePowerheg_isrup":"TT__isrUp","ttbarInclusivePowerheg_isrdown":"TT__isrDown"}
 #    listOfMCs = {"tChannel_scaleup":"TtChan__scaleUp","tChannel_scaledown":"TtChan__scaleDown","tChannel_hdampup":"TtChan__hdampUp","tChannel_hdampdown":"TtChan__hdampDown","tbarChannel_scaleup":"TbartChan__scaleUp","tbarChannel_scaledown":"TbartChan__scaleDown","tbarChannel_hdampup":"TbartChan__hdampUp","tbarChannel_hdampdown":"TbartChan__hdampDown"}
-    listOfMCs = {"tWInclusive_scaleup":"TtW__scaleUp","tWInclusive_scaledown":"TtW__scaleDown","tbarWInclusive_scaleup":"TbartW__scaleUp","tbarWInclusive_scaledown":"TbartW__scaleDown"}
+#    listOfMCs = {"tWInclusive_scaleup":"TtW__scaleUp","tWInclusive_scaledown":"TtW__scaleDown","tbarWInclusive_scaleup":"TbartW__scaleUp","tbarWInclusive_scaledown":"TbartW__scaleDown"}
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
 #    listOfMCs = {"ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ"}
 #    listOfMCs = {"ttZ2l2nu":"TTZ"}
-#    listOfMCs = {"ttHTobb": "ttH"}
+#    listOfMCs = {"WZ1l1nu2q": "WZ"}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
