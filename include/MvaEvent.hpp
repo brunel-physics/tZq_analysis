@@ -1015,6 +1015,8 @@ class MvaEvent
     TBranch* b_metPF2PATScalarEt; //!
     TBranch* b_metPF2PATEtUncorrected; //!
     TBranch* b_metPF2PATPhiUncorrected; //!
+    TBranch* b_metPF2PATUnclusteredEnUp;
+    TBranch* b_metPF2PATUnclusteredEnDown;
     TBranch* b_genMetPF2PATEt; //!
     TBranch* b_genMetPF2PATPhi; //!
     TBranch* b_genMetPF2PATPt; //!
@@ -1891,6 +1893,8 @@ void MvaEvent::Init(bool isMC,
     fChain->SetBranchAddress("metPF2PATScalarEt", &metPF2PATScalarEt, &b_metPF2PATScalarEt);
     fChain->SetBranchAddress("metPF2PATEtUncorrected", &metPF2PATEtUncorrected, &b_metPF2PATEtUncorrected);
     fChain->SetBranchAddress("metPF2PATPhiUncorrected", &metPF2PATPhiUncorrected, &b_metPF2PATPhiUncorrected);
+    fChain->SetBranchAddress("metPF2PATUnclusteredEnUp", &metPF2PATUnclusteredEnUp, &b_metPF2PATUnclusteredEnUp);
+    fChain->SetBranchAddress("metPF2PATUnclusteredEnDown", &metPF2PATUnclusteredEnDown, &b_metPF2PATUnclusteredEnDown);
     if (isMC)
     {
         fChain->SetBranchAddress("genMetPF2PATEt", &genMetPF2PATEt, &b_genMetPF2PATEt);

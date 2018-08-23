@@ -131,10 +131,8 @@ void MakeMvaInputs::runMainAnalysis()
                                              "__met__minus",
                                              "__pdf__plus",
                                              "__pdf__minus",
-                                             "__ME_PS__plus",
-                                             "__ME_PS__minus",
-                                             "__alphaS__plus",
-                                             "__alphaS__minus"};
+                                             "__ME__plus",
+                                             "__ME__minus"};
 
      if (sameSignMC)
      {
@@ -719,8 +717,26 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     const TLorentzVector zLep1{zPairLeptons.first};
     const TLorentzVector zLep2{zPairLeptons.second};
 
-    TLorentzVector metVec{
-        tree->metPF2PATPx, tree->metPF2PATPy, 0, tree->metPF2PATEt};
+    TLorentzVector metVec;
+    if (syst == 1024)
+    {
+        metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp,
+                            0,
+                            tree->metPF2PATPhi,
+                            tree->metPF2PATUnclusteredEnUp);
+    }
+    else if (syst == 2048)
+    {
+        metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown,
+                            0,
+                            tree->metPF2PATPhi,
+                            tree->metPF2PATUnclusteredEnDown);
+    }
+    else
+    {
+        metVec.SetPtEtaPhiE(
+            tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);
+    }
 
     const std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair{
         getJets(tree, syst, metVec)};
@@ -739,10 +755,6 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
-    if (syst == 1024 || syst == 2048)
-    {
-        metVec = doUncMet(metVec, zLep1, zLep2, jetVecs, syst);
-    }
 
     // SFs for NPL lepton estimation normilisation
     // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
@@ -860,7 +872,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                            - tree->jetPF2PATPhi[tree->wQuark2Index])));
     inputVars.at("nJets") = boost::numeric_cast<float>(jets.size());
     inputVars.at("nBjets") = boost::numeric_cast<float>(bJets.size());
-    inputVars.at("met") = tree->metPF2PATEt;
+    inputVars.at("met") = metVec.Pt();
     inputVars.at("bTagDisc") = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars.at("leadJetbTag") = tree->jetPF2PATBDiscriminator[jets[0]];
     inputVars.at("secJetbTag") = NaN;

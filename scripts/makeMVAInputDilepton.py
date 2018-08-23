@@ -374,7 +374,11 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 
 	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
-        metVec = TLorentzVector(tree.metPF2PATPx,tree.metPF2PATPy,0,tree.metPF2PATEt)
+        metVec = TLorentzVector();
+        if ( syst == 1024 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnUp, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnUp);
+        elif ( syst == 2048 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnDown, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnDown);
+        else : metVec.SetPtEtaPhiE(tree.metPF2PATEt, 0, tree.metPF2PATPhi, tree.metPF2PATEt);  
+
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
         (wQuark1,wQuark2) = sortOutHadronicW(tree,channel)
@@ -608,7 +612,7 @@ def main():
     channelToDataset = {"ee":"DataEG","mumu":"DataMu","emu":"MuonEG"}
 
     #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME_PS__plus","__ME_PS__minus"]
+    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME__plus","__ME__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
