@@ -374,10 +374,10 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 	
 	##Now the real stuff!
         (zLep1,zLep2) = sortOutLeptons(tree,channel)
-        TLorentzVector metVec;
-        if ( syst == 1024 ) : metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnUp);
-        elif ( syst == 2048 ) : metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown, 0, tree->metPF2PATPhi, tree->metPF2PATUnclusteredEnDown);
-        else metVec.SetPtEtaPhiE(tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);  
+        metVec = TLorentzVector();
+        if ( syst == 1024 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnUp, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnUp);
+        elif ( syst == 2048 ) : metVec.SetPtEtaPhiE(tree.metPF2PATUnclusteredEnDown, 0, tree.metPF2PATPhi, tree.metPF2PATUnclusteredEnDown);
+        else : metVec.SetPtEtaPhiE(tree.metPF2PATEt, 0, tree.metPF2PATPhi, tree.metPF2PATEt);  
 
         (jets,jetVecs) = getJets(tree,syst,jetUnc,metVec,is2016)
         (bJets,bJetVecs) = getBjets(tree,syst,jetUnc,metVec,jets,is2016)
