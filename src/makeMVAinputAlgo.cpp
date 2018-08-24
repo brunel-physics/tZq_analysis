@@ -101,8 +101,8 @@ void MakeMvaInputs::runMainAnalysis()
          {"ttbarInclusivePowerheg", "TT"},
          {"tWZ", "TWZ"},
          {"wPlusJets", "Wjets"},
-         {"DYJetsToLL_M-50", "DYToLL_M50"},
-         {"DYJetsToLL_M-10To50", "DYToLL_M10To50"}};
+         {"DYJetsToLL_M-10To50", "DYToLL_M10To50"},
+         {"DYJetsToLL_M-50", "DYToLL_M50"}};
 
      const std::map<std::string, std::string> channelToDataset{
          {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
@@ -645,7 +645,7 @@ void MakeMvaInputs::setupBranches(TTree* tree)
     tree->Branch("totPhi", &inputVars["totPhi"], "totPhi/F");
     tree->Branch("totPtVec", &inputVars["totPtVec"], "totPtVec/F");
     tree->Branch("totVecM", &inputVars["totVecM"], "totVecM/F");
-    tree->Branch("Channel", &inputVars["chan"], "Channel/I");
+    tree->Branch("Channel", &inputVars["chan"], "Channel/F");
     tree->Branch("totPt2Jet", &inputVars["totPt2Jet"], "totPt2Jet/F");
     tree->Branch("wzdelR", &inputVars["wZdelR"], "wzdelR/F");
     tree->Branch("wzdelPhi", &inputVars["wZdelPhi"], "wzdelPhi/F");
@@ -701,15 +701,15 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     if (channel == "emu")
     {
-        inputVars.at("chan") = 2;
+        inputVars.at("chan") = 2.;
     }
     if (channel == "ee")
     {
-        inputVars.at("chan") = 1;
+        inputVars.at("chan") = 1.;
     }
     if (channel == "mumu")
     {
-        inputVars.at("chan") = 0;
+        inputVars.at("chan") = 0.;
     }
 
     inputVars.at("eventNumber") = tree->eventNum;
