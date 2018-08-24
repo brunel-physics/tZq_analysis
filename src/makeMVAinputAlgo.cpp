@@ -16,6 +16,7 @@ MakeMvaInputs::MakeMvaInputs()
     : jetUnc(JetCorrectionUncertainty(
           "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt"))
     , inputVars{}
+    , oldMetFlag{false}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
     , sameSignMC{false}
@@ -33,6 +34,7 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
     namespace po = boost::program_options;
     po::options_description desc("Options");
     desc.add_options()("help,h", "Print this message.")(
+        "met,m", po::bool_switch(&oldMetFlag), "Use old MET uncerts recipe")(
         "ttbar", po::bool_switch(&ttbarControlRegion), "Make ttbar CR stuff")(
         "inputDir,i",
         po::value<std::string>(&inputDir),
@@ -718,24 +720,33 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     const TLorentzVector zLep2{zPairLeptons.second};
 
     TLorentzVector metVec;
-    if (syst == 1024)
-    {
-        metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp,
-                            0,
-                            tree->metPF2PATPhi,
-                            tree->metPF2PATUnclusteredEnUp);
-    }
-    else if (syst == 2048)
-    {
-        metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown,
-                            0,
-                            tree->metPF2PATPhi,
-                            tree->metPF2PATUnclusteredEnDown);
-    }
-    else
+
+    if (oldMetFlag)
     {
         metVec.SetPtEtaPhiE(
             tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);
+    }
+    else
+    {
+        if (syst == 1024)
+        {
+            metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnUp,
+                                0,
+                                tree->metPF2PATPhi,
+                                tree->metPF2PATUnclusteredEnUp);
+        }
+        else if (syst == 2048)
+        {
+            metVec.SetPtEtaPhiE(tree->metPF2PATUnclusteredEnDown,
+                                0,
+                                tree->metPF2PATPhi,
+                                tree->metPF2PATUnclusteredEnDown);
+        }
+        else
+        {
+            metVec.SetPtEtaPhiE(
+                tree->metPF2PATEt, 0, tree->metPF2PATPhi, tree->metPF2PATEt);
+        }
     }
 
     const std::pair<std::vector<int>, std::vector<TLorentzVector>> jetPair{
@@ -755,6 +766,10 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
+    if (oldMetFlag && (syst == 1024 || syst == 2048))
+    {
+        metVec = doUncMet(metVec, zLep1, zLep2, jetVecs, syst);
+    }
 
     // SFs for NPL lepton estimation normilisation
     // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
