@@ -67,26 +67,33 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-    //  std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-    //  {"WWZ","WWZ"}, {"WZZ","WZZ"},
-    //  {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+//      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+
     //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
     //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
     //  "WW1l1nu2q","WW",
     //  "WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tChannel_scaleup","TtChan__scaleUp"},{"tChannel_scaledown","TtChan__scaleDown"},{"tChannel_hdampup","TtChan__hdampUp"},{"tChannel_hdampdown","TtChan__hdampDown"},{"tbarChannel_scaleup","TbartChan__scaleUp"},{"tbarChannel_scaledown","TbartChan__scaleDown"},{"tbarChannel_hdampup","TbartChan__hdampUp"},{"tbarChannel_hdampdown","TbartChan__hdampDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
-    //  std::map< std::string, std::string > listOfMCs =
-    //  {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
-    std::map< std::string, std::string > listOfMCs = {{"ttbarInclusivePowerheg","TT"}};
-    //std::map<std::string, std::string> listOfMCs = {{"ttHTobb", "ttH"}};
-    //  std::map< std::string, std::string > listOfMCs = {};
+
+//      std::map< std::string, std::string > listOfMCs =
+//      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
+
+      std::map< std::string, std::string > listOfMCs =
+      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
+
+//      std::map< std::string, std::string > listOfMCs =
+//      {{"tChannel_scaleup","TtChan__scaleUp"},{"tChannel_scaledown","TtChan__scaleDown"},{"tChannel_hdampup","TtChan__hdampUp"},{"tChannel_hdampdown","TtChan__hdampDown"},{"tbarChannel_scaleup","TbartChan__scaleUp"},{"tbarChannel_scaledown","TbartChan__scaleDown"},{"tbarChannel_hdampup","TbartChan__hdampUp"},{"tbarChannel_hdampdown","TbartChan__hdampDown"}};
+
+//      std::map< std::string, std::string > listOfMCs =
+//      {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
+ 
+//      std::map< std::string, std::string > listOfMCs =
+//      {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
+
+//    std::map<std::string, std::string> listOfMCs = {{"ttHToNonbb", "ttH"}};
+
+//      std::map< std::string, std::string > listOfMCs = { { "ttHTobb","ttH" } };
 
     std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
@@ -194,7 +201,6 @@ void MakeMvaInputs::runMainAnalysis()
                     new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
                                     "Running over dataset ...",
                                     false}};
-                lEventTimer->DrawProgressBar(0);
 
                 // loop over events
                 for (int i{0}; i < numberOfEvents; i++)
@@ -515,7 +521,7 @@ std::map<std::string, float> MakeMvaInputs::setupInputVars()
     inputVars["totPhi"] = {0.0};
     inputVars["totPtVec"] = {0.0};
     inputVars["totVecM"] = {0.0};
-    inputVars["chan"] = {0.0};
+    inputVars["chan"] = {0.};
     inputVars["totPt2Jet"] = {0.0};
     inputVars["wZdelR"] = {0.0};
     inputVars["wZdelPhi"] = {0.0};
@@ -697,15 +703,15 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     if (channel == "emu")
     {
-        inputVars["chan"] = 2;
+        inputVars["chan"] = 2.;
     }
     if (channel == "ee")
     {
-        inputVars["chan"] = 1;
+        inputVars["chan"] = 1.;
     }
     if (channel == "mumu")
     {
-        inputVars["chan"] = 0;
+        inputVars["chan"] = 0.;
     }
 
     inputVars["eventNumber"] = tree->eventNum;
@@ -850,8 +856,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
                   * (1
                      - cos(tree->jetPF2PATPhi[tree->wQuark1Index]
                            - tree->jetPF2PATPhi[tree->wQuark2Index])));
-    inputVars["nJets"] = float(jets.size());
-    inputVars["nBjets"] = float(bJets.size());
+    inputVars["nJets"] = boost::numeric_cast<float>(jets.size());
+    inputVars["nBjets"] = boost::numeric_cast<float>(bJets.size());
     inputVars["met"] = metVec.Pt();
     inputVars["bTagDisc"] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars["leadJetbTag"] = tree->jetPF2PATBDiscriminator[jets[0]];
