@@ -28,6 +28,8 @@ class MakeMvaInputs
                           const std::vector<std::string>& systs,
                           const std::vector<std::string>& channels,
                           const bool useSidebandRegion);
+    void dataAnalysis(const std::vector<std::string>& channels,
+                      const bool useSidebandRegion);
     void sameSignAnalysis(const std::map<std::string, std::string>& listOfMCs,
                           const std::vector<std::string>& channels,
                           const bool useSidebandRegion);
@@ -73,7 +75,9 @@ class MakeMvaInputs
     bool oldMetFlag;
     bool ttbarControlRegion;
     bool useSidebandRegion;
-    bool sameSignMC;
+    bool doMC;
+    bool doData;
+    bool doFakes;
     std::string inputDir;
     std::string outputDir;
 };

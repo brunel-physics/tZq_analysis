@@ -19,7 +19,9 @@ MakeMvaInputs::MakeMvaInputs()
     , oldMetFlag{false}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
-    , sameSignMC{false}
+    , doMC{true}
+    , doData{false}
+    , doFakes{false}
     , inputDir{"mvaTest/"}
     , outputDir{"mvaInputs/"}
 {
@@ -43,9 +45,10 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
                                      "Mva inputs output directory")(
         "sideband,s",
         po::bool_switch(&useSidebandRegion),
-        "Make side band CR plots")("samesign,S",
-                                   po::bool_switch(&sameSignMC),
-                                   "Run the same sign fake analysis mode");
+        "Make side band CR plots")(
+        "data,D", po::bool_switch(&doData), "Run the data analysis")(
+        "MC,M", po::bool_switch(&doMC), "Run MC analysis")(
+        "fakes,F", po::bool_switch(&doFakes), "Run fakes analysis");
 
     po::variables_map vm;
 
@@ -136,13 +139,17 @@ void MakeMvaInputs::runMainAnalysis()
                                              "__ME__plus",
                                              "__ME__minus"};
 
-     if (sameSignMC)
-     {
-         sameSignAnalysis(listOfMCs, channels, useSidebandRegion);
-     }
-     else
+     if (doMC)
      {
          standardAnalysis(listOfMCs, systs, channels, useSidebandRegion);
+     }
+     if (doData)
+     {
+         dataAnalysis(channels, useSidebandRegion);
+     }
+     if (doFakes)
+     {
+         sameSignAnalysis(listOfMCs, channels, useSidebandRegion);
      }
 }
 
@@ -254,6 +261,73 @@ void MakeMvaInputs::standardAnalysis(
         outFile->Write();
         outFile->Close();
     } // end sample loop
+}
+
+void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
+                                 const bool useSidebandRegion)
+{
+    std::map<std::string, std::string> outChanToData = {{"ee", "DataEG"},
+                                                        {"mumu", "DataMu"}};
+
+    std::string treeNamePostfixSig{""};
+    std::string treeNamePostfixSB{""};
+    if (useSidebandRegion)
+    {
+        std::cout << "Using control region stuff" << std::endl;
+        treeNamePostfixSig = "sig_";
+        treeNamePostfixSB = "ctrl_";
+    }
+
+    for (const auto& channel : channels)
+    {
+        std::cout << "Data " << channel << std::endl;
+        const std::string outChan{outChanToData.at(channel)};
+
+        auto outTreeSig{
+            new TTree{("Ttree_" + treeNamePostfixSig + outChan).c_str(),
+                      ("Ttree_" + treeNamePostfixSig + outChan).c_str()}};
+        setupBranches(outTreeSig);
+        TTree* outTreeSdBnd{};
+        if (useSidebandRegion)
+        {
+            outTreeSdBnd =
+                new TTree{("Ttree_" + treeNamePostfixSB + outChan).c_str(),
+                          ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
+            setupBranches(outTreeSdBnd);
+        }
+        auto outFile{new TFile{
+            (outputDir + "histofile_" + outChan + ".root")
+                .c_str(),
+            "RECREATE"}};
+        auto dataChain{new TChain{"tree"}};
+        dataChain->Add(
+            (inputDir + channel + "Run2016" + channel + "mvaOut.root").c_str());
+
+        auto event{new MvaEvent{true, "", dataChain, true}};
+        const long long numberOfEvents{dataChain->GetEntries()};
+        TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
+                                "Running over dataset ...",
+                                false};
+        for (long long i{0}; i < numberOfEvents; i++)
+        {
+            lEventTimer.DrawProgressBar(i);
+            event->GetEntry(i);
+            fillTree(outTreeSig,
+                     outTreeSdBnd,
+                     event,
+                     outChan,
+                     channel,
+                     false);
+        }
+        outFile->cd();
+        outFile->Write();
+        outTreeSig->Write();
+        if (useSidebandRegion)
+        {
+            outTreeSdBnd->Write();
+        }
+        outFile->Close();
+    }
 }
 
 void MakeMvaInputs::sameSignAnalysis(
