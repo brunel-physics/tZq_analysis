@@ -79,8 +79,8 @@ void MakeMvaInputs::runMainAnalysis()
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
 
-      std::map< std::string, std::string > listOfMCs =
-      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
+//      std::map< std::string, std::string > listOfMCs =
+//      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
 
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tChannel_scaleup","TtChan__scaleUp"},{"tChannel_scaledown","TtChan__scaleDown"},{"tChannel_hdampup","TtChan__hdampUp"},{"tChannel_hdampdown","TtChan__hdampDown"},{"tbarChannel_scaleup","TbartChan__scaleUp"},{"tbarChannel_scaledown","TbartChan__scaleDown"},{"tbarChannel_hdampup","TbartChan__hdampUp"},{"tbarChannel_hdampdown","TbartChan__hdampDown"}};
@@ -93,7 +93,7 @@ void MakeMvaInputs::runMainAnalysis()
 
 //    std::map<std::string, std::string> listOfMCs = {{"ttHToNonbb", "ttH"}};
 
-//      std::map< std::string, std::string > listOfMCs = { { "ttHTobb","ttH" } };
+      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
 
     std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
@@ -647,7 +647,7 @@ void MakeMvaInputs::setupBranches(TTree* tree, std::map<std::string, float>)
     tree->Branch("totPhi", &inputVars["totPhi"], "totPhi/F");
     tree->Branch("totPtVec", &inputVars["totPtVec"], "totPtVec/F");
     tree->Branch("totVecM", &inputVars["totVecM"], "totVecM/F");
-    tree->Branch("Channel", &inputVars["chan"], "Channel/I");
+    tree->Branch("Channel", &inputVars["chan"], "Channel/F");
     tree->Branch("totPt2Jet", &inputVars["totPt2Jet"], "totPt2Jet/F");
     tree->Branch("wzdelR", &inputVars["wZdelR"], "wzdelR/F");
     tree->Branch("wzdelPhi", &inputVars["wZdelPhi"], "wzdelPhi/F");
