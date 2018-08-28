@@ -4,6 +4,7 @@
 #include "jetCorrectionUncertainty.hpp"
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 class TTree;
@@ -71,7 +72,7 @@ class MakeMvaInputs
 
     JetCorrectionUncertainty jetUnc;
 
-    std::map<std::string, float> inputVars;
+    std::unordered_map<std::string, float> inputVars;
     bool oldMetFlag;
     bool ttbarControlRegion;
     bool useSidebandRegion;

@@ -263,9 +263,8 @@ void MakeMvaInputs::standardAnalysis(
 void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                                  const bool useSidebandRegion)
 {
-    std::map<std::string, std::string> outChanToData = {{"ee", "DataEG"},
-                                                        {"mumu", "DataMu"},
-                                                        {"emu", "MuonEG"}};
+    std::unordered_map<std::string, std::string> outChanToData = {
+        {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
 
     std::string treeNamePostfixSig{""};
     std::string treeNamePostfixSB{""};
@@ -334,10 +333,10 @@ void MakeMvaInputs::sameSignAnalysis(
     const bool useSidebandRegion)
 {
     std::vector<std::string> outFakeChannels{"FakeEG", "FakeMu"};
-    std::map<std::string, std::string> outFakeChanToData{{"FakeEG", "ee"},
+    std::unordered_map<std::string, std::string> outFakeChanToData{{"FakeEG", "ee"},
                                                          {"FakeMu", "mumu"}};
-    std::map<std::string, std::string> chanMap{{"ee", "eeRun2016"},
-                                               {"mumu", "mumuRun2016"}};
+    std::unordered_map<std::string, std::string> chanMap{
+        {"ee", "eeRun2016"}, {"mumu", "mumuRun2016"}};
 
     std::string treeNamePostfixSig;
     std::string treeNamePostfixSB;
