@@ -107,9 +107,6 @@ void MakeMvaInputs::runMainAnalysis()
          {"DYJetsToLL_M-10To50", "DYToLL_M10To50"},
          {"DYJetsToLL_M-50", "DYToLL_M50"}};
 
-     const std::map<std::string, std::string> channelToDataset{
-         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
-
      const auto channels{[=]() -> std::vector<std::string> {
          if (ttbarControlRegion)
          {
@@ -267,7 +264,8 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                                  const bool useSidebandRegion)
 {
     std::map<std::string, std::string> outChanToData = {{"ee", "DataEG"},
-                                                        {"mumu", "DataMu"}};
+                                                        {"mumu", "DataMu"},
+                                                        {"emu", "MuonEG"}};
 
     std::string treeNamePostfixSig{""};
     std::string treeNamePostfixSB{""};
