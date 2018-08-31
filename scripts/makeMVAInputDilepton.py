@@ -365,13 +365,12 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         tree.GetEntry(event)
 
         ## If same sign and non-prompt, continue
-	if ( tree.isMC == 1 ) :
-            if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-            if ( SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
-            if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-            if ( SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
-            if ( SameSignMC == True and channel == "emu" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-            if ( SameSignMC == True and channel == "emu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "emu" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "emu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
 
 	##Save event number for debugging
 	varMap["eventNumber"][0] = tree.eventNum
@@ -394,9 +393,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 #            metVec = doUncMet(tree,metVec,zLep1,zLep2,jetVecs,syst)
 
         ## SFs for NPL lepton estimation normilisation
-        if ( SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.926 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.114 # SF we weight fake ee shape by
-        elif ( SameSignMC == True and channel == "emu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.489 # SF we weight fake ee shape by
+        if ( tree.isMC == 1 and SameSignMC == True and channel == "ee" ) : varMap["eventWeight"][0] = tree.eventWeight * 0.926 # SF we weight fake ee shape by
+        elif ( tree.isMC == 1 and SameSignMC == True and channel == "mumu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.114 # SF we weight fake ee shape by
+        elif ( tree.isMC == 1 and SameSignMC == True and channel == "emu" ) : varMap["eventWeight"][0] = tree.eventWeight * 1.489 # SF we weight fake ee shape by
         else : varMap["eventWeight"][0] = tree.eventWeight
         varMap["leadJetPt"][0] = jetVecs[0].Pt()
         varMap["leadJetEta"][0] = jetVecs[0].Eta()
@@ -612,7 +611,7 @@ def main():
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
 #    listOfMCs = {"ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ"}
-#    listOfMCs = {"ttZ2l2nu":"TTZ"}
+#    listOfMCs = {"WZ2l2q":"WZ"}
     listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
