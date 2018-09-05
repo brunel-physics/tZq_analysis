@@ -1460,7 +1460,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3  > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5  > 0 ) mumuTrig = true;
     }
-    // non-DZ legs in MC
+    // non-DZ legs in MC - THIS CONDITION MUST BE COMMENTED OUT FOR ttbar THEORY SAMPLES WHICH LACK THESE BRANCHES
     else if ( isMC_ ) {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5  > 0 ) mumuTrig = true;
