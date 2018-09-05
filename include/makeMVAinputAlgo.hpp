@@ -61,6 +61,7 @@ class MakeMvaInputs
     std::map<std::string, float> inputVars;
     bool oldMetFlag;
     bool ttbarControlRegion;
+    bool oldZplusControlRegion;
     bool useSidebandRegion;
     std::string inputDir;
     std::string outputDir;

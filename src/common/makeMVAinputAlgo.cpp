@@ -16,6 +16,7 @@ MakeMvaInputs::MakeMvaInputs()
     , inputVars{}
     , oldMetFlag{false}
     , ttbarControlRegion{false}
+    , oldZplusControlRegion{false}
     , useSidebandRegion{false}
     , inputDir{"mvaTest/"}
     , outputDir{"mvaInputs/"}
@@ -33,6 +34,7 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
     desc.add_options()("help,h", "Print this message.")(
         "met,m", po::bool_switch(&oldMetFlag), "Use old MET uncerts recipe")(
         "ttbar", po::bool_switch(&ttbarControlRegion), "Make ttbar CR stuff")(
+        "zPlus", po::bool_switch(&oldZplusControlRegion), "Make old Z+jets CR stuff")(
         "inputDir,i",
         po::value<std::string>(&inputDir),
         "Mva skims input directory")("outputDir,o",
@@ -67,9 +69,9 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
-//      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
     //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
     //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
@@ -91,9 +93,9 @@ void MakeMvaInputs::runMainAnalysis()
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
 
-//    std::map<std::string, std::string> listOfMCs = {{"ttHToNonbb", "ttH"}};
+//    std::map<std::string, std::string> listOfMCs = {{"ttZ2l2nu", "TTZ"}};
 
-      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
+//      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
 
     std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
@@ -900,9 +902,16 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
 
     float topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
     inputVars["topMass"] = topMass;
-    inputVars["topPt"] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
-    inputVars["topEta"] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
-    inputVars["topPhi"] = (bJetVecs[0] + wQuark1 + wQuark2).Phi();
+    if ( !oldZplusControlRegion ) {
+      inputVars["topPt"] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
+      inputVars["topEta"] = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
+      inputVars["topPhi"] = (bJetVecs[0] + wQuark1 + wQuark2).Phi();
+    }
+    else {
+      inputVars["topPt"] = 0.0;
+      inputVars["topEta"] = 0.0;
+      inputVars["topPhi"] = 0.0;
+    }
     inputVars["wZdelR"] = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2);
     inputVars["wZdelPhi"] = (zLep2 + zLep1).DeltaPhi(wQuark1 + wQuark2);
 
@@ -911,29 +920,43 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["zQuark2DelR"] = (zLep2 + zLep1).DeltaR(wQuark2);
     inputVars["zQuark2DelPhi"] = (zLep2 + zLep1).DeltaPhi(wQuark2);
 
-    inputVars["zTopDelR"] =
-        (zLep2 + zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["zTopDelPhi"] =
-        (zLep2 + zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["zl1TopDelR"] = (zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["zl1TopDelPhi"] =
-        (zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["zl2TopDelR"] = (zLep2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["zl2TopDelPhi"] =
-        (zLep2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+    if ( !oldZplusControlRegion ) {
+      inputVars["zTopDelR"] =
+          (zLep2 + zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["zTopDelPhi"] =
+          (zLep2 + zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["zl1TopDelR"] = (zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["zl1TopDelPhi"] =
+          (zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["zl2TopDelR"] = (zLep2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["zl2TopDelPhi"] =
+          (zLep2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
 
-    inputVars["wTopDelR"] =
-        (wQuark1 + wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["wTopDelPhi"] =
-        (wQuark1 + wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["w1TopDelR"] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["w1TopDelR"] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["w1TopDelPhi"] =
-        (wQuark1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["w2TopDelR"] = (wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars["w2TopDelPhi"] =
-        (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-
+      inputVars["wTopDelR"] =
+          (wQuark1 + wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["wTopDelPhi"] =
+          (wQuark1 + wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["w1TopDelR"] = (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["w1TopDelPhi"] =
+          (wQuark1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["w2TopDelR"] = (wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
+      inputVars["w2TopDelPhi"] =
+          (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+    }
+    else {
+      inputVars["zTopDelR"] = 0.0;
+      inputVars["zTopDelPhi"] = 0.0;
+      inputVars["zl1TopDelR"] = 0.0;
+      inputVars["zl1TopDelPhi"] = 0.0;
+      inputVars["zl2TopDelR"] = 0.0;
+      inputVars["zl2TopDelPhi"] = 0.0;
+      inputVars["wTopDelR"] = 0.0;
+      inputVars["wTopDelPhi"] = 0.0;
+      inputVars["w1TopDelR"] = 0.0;
+      inputVars["w1TopDelPhi"] = 0.0;
+      inputVars["w2TopDelR"] = 0.0;
+      inputVars["w2TopDelPhi"] = 0.0;
+    }
     inputVars["j1j2delR"] = -1.;
     inputVars["j1j2delPhi"] = -10.;
 
