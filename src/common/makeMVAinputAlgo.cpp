@@ -861,7 +861,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars["nJets"] = boost::numeric_cast<float>(jets.size());
     inputVars["nBjets"] = boost::numeric_cast<float>(bJets.size());
     inputVars["met"] = metVec.Pt();
-    inputVars["bTagDisc"] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
+    if ( !oldZplusControlRegion) inputVars["bTagDisc"] = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
+    else inputVars["bTagDisc"] = 0.0;
     inputVars["leadJetbTag"] = tree->jetPF2PATBDiscriminator[jets[0]];
     inputVars["secJetbTag"] = -1.;
     inputVars["secJetPt"] = -1.;
@@ -900,7 +901,9 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars["fourthJetbTag"] = tree->jetPF2PATBDiscriminator[jets[3]];
     }
 
-    float topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
+    float topMass;
+    if ( !oldZplusControlRegion ) topMass = (bJetVecs[0] + wQuark1 + wQuark2).M();
+    else topMass = 0.0;
     inputVars["topMass"] = topMass;
     if ( !oldZplusControlRegion ) {
       inputVars["topPt"] = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
@@ -996,11 +999,19 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
             inputVars["minZJetPhi"] = jetVecs[i].DeltaPhi(zLep2 + zLep1);
         }
     }
-
-    inputVars["zlb1DelR"] = zLep1.DeltaR(bJetVecs[0]);
-    inputVars["zlb1DelPhi"] = zLep1.DeltaPhi(bJetVecs[0]);
-    inputVars["zlb2DelR"] = zLep2.DeltaR(bJetVecs[0]);
-    inputVars["zlb2DelPhi"] = zLep2.DeltaPhi(bJetVecs[0]);
+    
+    if ( !oldZplusControlRegion ) {
+      inputVars["zlb1DelR"] = zLep1.DeltaR(bJetVecs[0]);
+      inputVars["zlb1DelPhi"] = zLep1.DeltaPhi(bJetVecs[0]);
+      inputVars["zlb2DelR"] = zLep2.DeltaR(bJetVecs[0]);
+      inputVars["zlb2DelPhi"] = zLep2.DeltaPhi(bJetVecs[0]);
+    }
+    else {
+      inputVars["zlb1DelR"] = 0.0;
+      inputVars["zlb1DelPhi"] = 0.0;
+      inputVars["zlb2DelR"] = 0.0;
+      inputVars["zlb2DelPhi"] = 0.0;
+    }
 
     float ht = 0.;
     ht += zLep1.Pt() + zLep2.Pt();
