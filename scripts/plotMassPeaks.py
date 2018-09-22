@@ -8,22 +8,22 @@ def main():
 
   era = "2016"
 
-  massCut = False
+  massCut = True
 
   weighted = True
-  sigCut = 50.0
-  bkgCut = 290.0
+  sigCut = 5.0
+  bkgCut = 30.0
 
-  wSigma = 8.0
+  wSigma = 7.0
   topSigma = 30.0
 
   mzCut = "20"
-  mwCut = "9999"
+  mwCut = "20"
 
   infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_tZq.root")
   infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TT.root")
   infile_DY = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M50.root")
-  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M50_aMCatNLO.root")
+#  infile_DY_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M50_aMCatNLO.root")
 
   infile_DY2 = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M10To50.root")
 #  infile_DY2_amcatnlo = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_DYToLL_M10To50_aMCatNLO.root")
@@ -47,9 +47,9 @@ def main():
   tZq_wMassHisto = ROOT.TH1D("tZq_wMassHisto","W Mass Histo", 300, 0.0, 300.0)
   tZq_chi2Histo = ROOT.TH1D("tZq_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
 
-  tZq_topVsWmassHisto = ROOT.TH2D("tZq_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  tZq_topVsWsignalHisto = ROOT.TH2D("tZq_topVsWsignalHisto", "Top mass vs W Mass for signal region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
-  tZq_topVsWcontrolHisto = ROOT.TH2D("tZq_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 300, 0., 300.)
+  tZq_topVsWmassHisto = ROOT.TH2D("tZq_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
+  tZq_topVsWsignalHisto = ROOT.TH2D("tZq_topVsWsignalHisto", "Top mass vs W Mass for signal region; m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
+  tZq_topVsWcontrolHisto = ROOT.TH2D("tZq_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
 
   tZq_topVsChi2Histo  = ROOT.TH2D("tZq_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
   tZq_wVsChi2Histo    = ROOT.TH2D("tZq_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 150, 0., 150., 300, 0., 300.)
@@ -115,9 +115,9 @@ def main():
   All_wMassHisto = ROOT.TH1D("All_wMassHisto","W Mass Histo", 300, 0.0, 300.0)
   All_chi2Histo = ROOT.TH1D("All_chi2Histo","chi2 Histo", 300, 0.0, 300.0)
 
-  All_topVsWmassHisto = ROOT.TH2D("All_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  All_topVsWsignalHisto = ROOT.TH2D("All_topVsWsignalHisto", "Top mass vs W Mass for signal region, m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
-  All_topVsWcontrolHisto = ROOT.TH2D("All_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 300, 0., 300., 300, 0., 300.)
+  All_topVsWmassHisto = ROOT.TH2D("All_topVsWmassHisto", "Top mass vs W Mass; m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
+  All_topVsWsignalHisto = ROOT.TH2D("All_topVsWsignalHisto", "Top mass vs W Mass for signal region, m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
+  All_topVsWcontrolHisto = ROOT.TH2D("All_topVsWcontrolHisto", "Top mass vs W Mass for control region; m_{W}; m_{Top};", 150, 0., 150., 350, 0., 350.)
 
   All_topVsChi2Histo  = ROOT.TH2D("All_topVsChi2Histo", "Chi2 vs Top mass; m_{Top}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
   All_wVsChi2Histo    = ROOT.TH2D("All_wVsChi2Histo", "Chi2 vs W Mass; m_{W}; #chi^{2}", 300, 0., 300., 300, 0., 300.)
@@ -140,7 +140,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    tZq_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : tZq_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     tZq_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     tZq_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     tZq_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -201,7 +201,7 @@ def main():
     if ( chi2 < sigCut ) : DY_topVsWsignalHisto.Fill(event.wPairMass,event.topMass,weight)
     if ( chi2 >= sigCut and chi2 < bkgCut ) : DY_topVsWcontrolHisto.Fill(event.wPairMass,event.topMass,weight)
 
-  for event in infile_DY_amcatnlo.Ttree_DYToLL_M50_aMCatNLO :
+  for event in infile_DY.Ttree_DYToLL_M50 :
 #    if (event.Channel != 0) : continue
     weight = 1
     if (weighted) : weight = event.EvtWeight
@@ -265,7 +265,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)

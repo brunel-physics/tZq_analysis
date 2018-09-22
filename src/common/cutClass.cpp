@@ -395,8 +395,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 //   float wTerm = ( (event->wPairQuarks.first + event->wPairQuarks.second).M() - 80.3585 )/8.0;
 
 //   float chi2 = topTerm*topTerm + wTerm*wTerm;
-//   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
-//   if ( chi2 >= 2.0 ) return false; //signal region
+//   if ( chi2 < 50.0 && chi2 > 290.0 ) return false; // control region
+//   if ( chi2 >= 50.0 ) return false; //signal region
     
 // Signal Region W mass cut
     if (!isZplusCR_){
@@ -525,8 +525,8 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
   if ( isNPL_ ) { // if is NPL channel
     double eeWeight {1.0}, mumuWeight {1.0}, emuWeight{1.0};
     if ( invZMassCut_ == 20. && invWMassCut_ == 20. ) {
-      eeWeight = 0.926;
-      mumuWeight = 1.114;
+//      eeWeight = 0.926;
+//      mumuWeight = 1.114;
       emuWeight = 1.489;
     }
     if ( invZMassCut_ == 20. && invWMassCut_ == 50. ) {
@@ -542,9 +542,10 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,float * eventWeight,std::map<std:
     if ( numTightEle_ == 1 && numTightMu_ == 1 ) *eventWeight *= emuWeight;
   }
 
-  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
+  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ ) return false;
+//  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) > invZMassCut_ && !isControl) return false;
 //  if (std::abs( (event->zPairLeptons.first + event->zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl) return false;
-  if (std::abs(invZmass) < 106 && isControl) return false;  
+//  if (std::abs(invZmass) < 106 && isControl) return false;  
 
   if ( doPlots_||fillCutFlow_ ) event->jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
   if ( doPlots_) plotMap["zMass"]->fillAllPlots(event,*eventWeight);

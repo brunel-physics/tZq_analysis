@@ -155,7 +155,7 @@ crossSection = 0.2086
 runType = mc
 histoName = vvv
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [WWZ]
@@ -165,7 +165,7 @@ crossSection = 0.1651
 runType = mc
 histoName = vvv
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [WZZ]
@@ -175,7 +175,7 @@ crossSection = 0.05565
 runType = mc
 histoName = vvv
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [ZZZ]
@@ -185,7 +185,7 @@ crossSection = 0.01398
 runType = mc
 histoName = vvv
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [wPlusJets]

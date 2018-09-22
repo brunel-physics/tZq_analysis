@@ -15,11 +15,12 @@ if ( channel == "emu" ) : channelIndex = 2
 if ( channel == "ee" ) : channelIndex = 1
 if ( channel == "mumu" ) : channelIndex = 0
 
-infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2016/all/mz20mw20/histofile_"+sample+".root")
+#infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2016/all/mz20mw20/histofile_"+sample+".root")
+infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2016/all/mz20mw20_zPlusJets/histofile_"+sample+".root")
 #infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2016/all/mz20mw20_zPlusJets_oldCR/histofile_"+sample+".root")
 #infile = ROOT.TFile.Open("/scratch/data/TopPhysics/mvaDirs/inputs/2016/emu/histofile_"+sample+".root")
 
-doSysts = 1
+doSysts = 0
 nom_yield  = 0
 nEvents = 0
 

@@ -315,7 +315,7 @@ crossSection = 5941.0
 runType = mc
 histoName = zPlusJetsAmcAtNlo
 colour = kBlue
-label = zPlusJets
+label = Z+jets
 plotType = f
 
 [DYJetsToLL_M-10To50_amcatnlo]
@@ -325,7 +325,7 @@ crossSection = 18810.0
 runType = mc
 histoName = zPlusJetsAmcAtNlo
 colour = kBlue
-label = zPlusJets
+label = Z+jets
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -335,7 +335,7 @@ crossSection = 831.76
 runType = mc
 histoName = ttbarInc
 colour = kRed
-label = ttbar
+label = t#bar{t}
 plotType = f
 
 [tHq]
@@ -345,7 +345,7 @@ crossSection = 0.07462
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [sChannel]
@@ -355,7 +355,7 @@ crossSection = 10.32
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [tChannel]
@@ -365,7 +365,7 @@ crossSection = 136.02
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [tbarChannel]
@@ -375,7 +375,7 @@ crossSection = 80.95
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [WZ1l1nu2q]
@@ -383,9 +383,9 @@ fileName = configs/2016/datasets/fileLists/WZ1l1nu2q.txt
 totalEvents = 24221923
 crossSection = 10.73
 runType = mc
-histoName = wz
+histoName = VV
 colour = kOrange
-label = wz
+label = VV
 plotType = f
 
 [WZ2l2q]
@@ -393,9 +393,9 @@ fileName = configs/2016/datasets/fileLists/WZ2l2q.txt
 totalEvents = 26517272
 crossSection = 5.606
 runType = mc
-histoName = wz
+histoName = VV
 colour = kOrange
-label = wz
+label = VV
 plotType = f
 
 [WZjets]
@@ -403,9 +403,9 @@ fileName = configs/2016/datasets/fileLists/WZjets.txt
 totalEvents = 1930828
 crossSection = 5.26
 runType = mc
-histoName = wz
+histoName = VV
 colour = kOrange
-label = wz
+label = VV
 plotType = f
 
 [ZZ4l]
@@ -413,9 +413,9 @@ fileName = configs/2016/datasets/fileLists/ZZ4lFiles.txt
 totalEvents = 10709784
 crossSection = 1.204
 runType = mc
-histoName = zz
-colour = kPink
-label = zz
+histoName = VV
+colour = kOrange
+label = VV
 plotType = f
 
 [ZZ2l2nu]
@@ -423,9 +423,9 @@ fileName = configs/2016/datasets/fileLists/ZZ2l2nuFiles.txt
 totalEvents = 8842475
 crossSection = 0.5644
 runType = mc
-histoName = zz
-colour = kPink
-label = zz
+histoName = VV
+colour = kOrange
+label = VV
 plotType = f
 
 [ZZ2l2q]
@@ -433,9 +433,9 @@ fileName = configs/2016/datasets/fileLists/ZZ2l2qFiles.txt
 runType = mc
 crossSection = 3.222
 totalEvents = 15345572
-histoName = zz
-colour = kPink
-label = zz
+histoName = VV
+colour = kOrange
+label = VV
 plotType = f
 
 [WW1l1nu2q]
@@ -443,9 +443,9 @@ fileName = configs/2016/datasets/fileLists/WW1l1nu2qFiles.txt
 totalEvents = 8997800
 crossSection = 49.997
 runType = mc
-histoName = WW
-colour = kCyan
-label = WW
+histoName = VV
+colour = kOrange
+label = VV
 plotType = f
 
 [WW2l2nu]
@@ -453,9 +453,9 @@ fileName = configs/2016/datasets/fileLists/WW2l2nuFiles.txt
 totalEvents = 1999000
 crossSection = 12.178
 runType = mc
-histoName = WW
-colour = kCyan
-label = WW
+histoName = VV
+colour = kOrange
+label = VV
 plotType = f
 
 [WWW]
@@ -464,8 +464,8 @@ totalEvents = 240000
 crossSection = 0.2086
 runType = mc
 histoName = vvv
-colour = kViolet
-label = vvv
+colour = kCyan
+label = VVV
 plotType = f
 
 [WWZ]
@@ -474,8 +474,8 @@ totalEvents = 250000
 crossSection = 0.1651
 runType = mc
 histoName = vvv
-colour = kViolet
-label = vvv
+colour = kCyan
+label = VVV
 plotType = f
 
 [WZZ]
@@ -484,8 +484,8 @@ totalEvents = 246800
 crossSection = 0.05565
 runType = mc
 histoName = vvv
-colour = kViolet
-label = vvv
+colour = kCyan
+label = VVV
 plotType = f
 
 [ZZZ]
@@ -494,8 +494,8 @@ totalEvents = 249237
 crossSection = 0.01398
 runType = mc
 histoName = vvv
-colour = kViolet
-label = vvv
+colour = kCyan
+label = VVV
 plotType = f
 
 [wPlusJets]
@@ -505,7 +505,7 @@ totalEvents = 259604315
 crossSection = 61526.7
 histoName = wJets
 colour = kGray
-label = w+jets
+label = W+jets
 plotType = f
 
 [ttWlnu]
@@ -575,7 +575,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [tbarWInclusive]
@@ -585,7 +585,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [tWZ]
@@ -595,7 +595,7 @@ crossSection = 0.01104
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = SingleTop
+label = Single top
 plotType = f
 
 [tZq]

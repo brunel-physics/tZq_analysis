@@ -69,9 +69,9 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-      {"WWZ","WWZ"}, {"WZZ","WZZ"},
-      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+//     {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
     //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
     //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
@@ -93,9 +93,10 @@ void MakeMvaInputs::runMainAnalysis()
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
 
-//    std::map<std::string, std::string> listOfMCs = {{"ttZ2l2nu", "TTZ"}};
+//    std::map<std::string, std::string> listOfMCs = {{"WZ2l2nu", ""}};
 
-//      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
+      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
+
 
     std::map<std::string, std::string> channelToDataset{
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};

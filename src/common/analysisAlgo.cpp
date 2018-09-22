@@ -1053,7 +1053,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	  //}
 
 	  //If amcatnlo DY, normalise
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.405077;
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && channel == "ee" ) eventWeight *= 0.405077;
+	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ && channel == "mumu" ) eventWeight *= 0.374842;
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;

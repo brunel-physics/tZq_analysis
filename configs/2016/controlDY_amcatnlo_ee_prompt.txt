@@ -1,4 +1,4 @@
-datasets = "configs/2016/datasets/prompt_eeDataMC_amcatnloMC.txt";
+datasets = "configs/2016/datasets/prompt_eeDataMC_DYamcatnloMC.txt";
 cuts = "configs/2016/cuts/ZplusCuts.txt";
 plots = "configs/plots/plotDileptonConf.cfg";
 outputFolder = "plots/2016/zPlus_amcatnlo_ee_prompt/";

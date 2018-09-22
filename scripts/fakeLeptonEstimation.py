@@ -24,7 +24,7 @@ def main():
 
   era = "2016"
 
-  weighted = True
+  weighted = False
 
   mzCut = sys.argv[1]
   mzStr = mzCut.split(".")[0]

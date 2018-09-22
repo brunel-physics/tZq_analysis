@@ -38,6 +38,7 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   gErrorIgnoreLevel = kInfo;
 
   extensions_.emplace_back(".root");
+  extensions_.emplace_back(".pdf");
 
   //Make three labels but don't put anything in them just yet. This will be called on the plotting object if we want a label.
   labelOne_ = new TPaveText{0.16,0.88,0.5,0.94,"NDCBR"};
@@ -170,10 +171,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
-  TLegend* legend_{new TLegend{0.72,0.62,0.98,0.90}};
+  TLegend* legend_{new TLegend{0.78,0.52,0.98,0.90}};
 //  legend_->SetFillStyle(1001);
   legend_->SetFillStyle(0);
   legend_->SetBorderSize(0);
+//  legend_->SetTextSize(0.05);
 //  legend_->SetFillColor(kWhite);
   for (auto leg_iter = legOrder_.begin(); leg_iter != legOrder_.end(); leg_iter++){
     legend_->AddEntry(plotMap[*leg_iter], dsetMap_[*leg_iter].legLabel.c_str(), dsetMap_[*leg_iter].legType.c_str());
@@ -191,7 +193,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     plotMap[*plot_iter]->SetLineWidth(1);
     if( *plot_iter == "data"){
       plotMap["data"]->SetMarkerStyle(20);
-      plotMap["data"]->SetMarkerSize(0.9);
+      plotMap["data"]->SetMarkerSize(1.4);
       plotMap["data"]->SetMarkerColor(kBlack);
       continue;
     }
@@ -205,15 +207,15 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     ratioHisto->Divide(ratioHisto, dynamic_cast<TH1D*>(mcStack->GetStack()->Last()),1,1 );
 
     ratioHisto->SetMarkerStyle(20);
-    ratioHisto->SetMarkerSize(0.85);
+    ratioHisto->SetMarkerSize(1.6);
     ratioHisto->SetMarkerColor(kBlack);
   }
 
   // Set up canvas
-  int W = 800;
-  int H = 600;
-  int H_ref = 600; 
-  int W_ref = 800; 
+  int W = 1280;
+  int H = 1024;
+  int H_ref = 925; 
+  int W_ref = 1024; 
 
   // references for T, B, L, R
   float T = 0.08*H_ref;
@@ -279,12 +281,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
   }
-
   mcStack->SetMaximum(max*1.1);
   mcStack->GetXaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
-  mcStack->GetYaxis()->SetTitleOffset( L/W * 8.6 );
-
+  mcStack->GetYaxis()->SetTitleOffset( L/W * 6.5 );
+  mcStack->GetYaxis()->SetLabelSize(0.0625);
   if (xAxisLabels.size() > 1){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
       if ( !BLIND_PLOTS ) mcStack->GetXaxis()->SetBinLabel(i,"");
@@ -297,7 +298,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   if ( !BLIND_PLOTS ) {
     // Bottom ratio plots
     canvy->cd();
-    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.3275);
+    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.3255);
   //  canvy_2->SetOptStat(0);
     canvy_2->Draw();
     canvy_2->cd();
@@ -309,7 +310,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     canvy_2->SetLeftMargin( L/W );
     canvy_2->SetRightMargin( R/W );
     canvy_2->SetTopMargin( T/H );
-    canvy_2->SetBottomMargin( B/H * 2.1 );
+    canvy_2->SetBottomMargin( B/H * 2.6 );
     canvy_2->SetTickx(0);
     canvy_2->SetTicky(0);
     canvy_2->SetGridy(1);
@@ -317,7 +318,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     ratioHisto->SetStats(false);
     ratioHisto->SetMinimum(0.5);
     ratioHisto->SetMaximum(1.5);
-    ratioHisto->SetTitle( (";"+xAxisLabel+";data/MC").c_str() );
+    ratioHisto->SetTitle( (";"+xAxisLabel+";Data/MC").c_str() );
     ratioHisto->GetXaxis()->SetNdivisions(6,5,0);
     ratioHisto->GetYaxis()->SetNdivisions(6,5,0);
 
@@ -327,19 +328,20 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
       }
     }
 
-    ratioHisto->GetXaxis()->SetTitleSize(0.11);
+    ratioHisto->GetXaxis()->SetTitleSize(0.13);
 //    ratioHisto->GetXaxis()->SetTitleOffset(0.018);
     if ( xAxisLabels.size() > 1 ) {
-      ratioHisto->GetXaxis()->SetLabelSize(0.14);
-      ratioHisto->GetXaxis()->SetLabelOffset(0.030);
+      ratioHisto->GetXaxis()->SetLabelSize(0.18);
+      ratioHisto->GetXaxis()->SetLabelOffset(0.032);
     }
     else {
-      ratioHisto->GetXaxis()->SetLabelSize(0.104);
-      ratioHisto->GetXaxis()->SetLabelOffset(0.018);
+      ratioHisto->GetXaxis()->SetLabelSize(0.15);
+      ratioHisto->GetXaxis()->SetLabelOffset(0.015);
     }
-    ratioHisto->GetYaxis()->SetLabelSize(0.06);
-    ratioHisto->GetYaxis()->SetTitleSize(0.12);
-    ratioHisto->GetYaxis()->SetTitleOffset( L/W * 3. );
+    ratioHisto->GetYaxis()->SetLabelSize(0.12);
+    ratioHisto->GetYaxis()->SetLabelOffset(0.01);
+    ratioHisto->GetYaxis()->SetTitleSize(0.16);
+    ratioHisto->GetYaxis()->SetTitleOffset( 0.30 );
     ratioHisto->GetYaxis()->CenterTitle();
 
     ratioHisto->Draw("e x0, SCAT");
@@ -386,18 +388,18 @@ void HistogramPlotter::setOutputFolder(std::string output){
 
 void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
 
-  TString cmsText     = "CMS";
+  TString cmsText     = "";
   float cmsTextFont   = 61;  // default is helvetic-bold
-  TString extraText   = "Preliminary";
+  TString extraText   = "";
 //  TString extraText   = "WORK IN PROGRESS";
   float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
   // in unit of the top margin size
-  float lumiTextSize     = 0.6;
-  float lumiTextOffset   = 0.2;
+  float lumiTextSize     = 0.94;
+  float lumiTextOffset   = 0.21;
   float cmsTextSize      = 0.75;
-  float cmsTextOffset    = 0.1;  // only used in outOfFrame version
+  float cmsTextOffset    = 0.15;  // only used in outOfFrame version
 
   float relPosX    = 0.045;
   float relPosY    = 0.035;
@@ -406,8 +408,8 @@ void HistogramPlotter::CMS_lumi(TPad* pad, int period, int posX) {
   // ratio of "CMS" and extra text size
   float extraOverCmsTextSize  = 0.76;
 
-  TString lumi_2016 = "35.86 fb^{-1}";
-  TString lumi_2015 = "2.32 fb^{-1}";
+  TString lumi_2016 = "35.9 fb^{-1}";
+  TString lumi_2015 = "2.3 fb^{-1}";
   TString lumi_sqrtS = "";
 
   bool drawLogo      = false;
@@ -575,7 +577,7 @@ void HistogramPlotter::setTDRStyle() {
   // tdrStyle->SetHistFillStyle(0);
   tdrStyle->SetHistLineColor(1);
   tdrStyle->SetHistLineStyle(0);
-  tdrStyle->SetHistLineWidth(1);
+  tdrStyle->SetHistLineWidth(0);
   // tdrStyle->SetLegoInnerR(Float_t rad = 0.5);
   // tdrStyle->SetNumberContours(Int_t number = 20);
 
@@ -625,7 +627,7 @@ void HistogramPlotter::setTDRStyle() {
   tdrStyle->SetTitleColor(1);
   tdrStyle->SetTitleTextColor(1);
   tdrStyle->SetTitleFillColor(10);
-  tdrStyle->SetTitleFontSize(0.05);
+  tdrStyle->SetTitleFontSize(0.11);
   // tdrStyle->SetTitleH(0); // Set the height of the title box
   // tdrStyle->SetTitleW(0); // Set the width of the title box
   // tdrStyle->SetTitleX(0); // Set the position of the title box
@@ -637,12 +639,12 @@ void HistogramPlotter::setTDRStyle() {
 
   tdrStyle->SetTitleColor(1, "XYZ");
   tdrStyle->SetTitleFont(42, "XYZ");
-  tdrStyle->SetTitleSize(0.06, "XYZ");
+  tdrStyle->SetTitleSize(0.08, "XYZ");
   // tdrStyle->SetTitleXSize(Float_t size = 0.02); // Another way to set the size?
   // tdrStyle->SetTitleYSize(Float_t size = 0.02);
-  tdrStyle->SetTitleXOffset(0.9);
-  tdrStyle->SetTitleYOffset(1.25);
-  // tdrStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset
+//  tdrStyle->SetTitleXOffset(0.62);
+//  tdrStyle->SetTitleYOffset(0.62);
+//   tdrStyle->SetTitleOffset(1.1, "Y"); // Another way to set the Offset
 
 // For the axis labels:
 

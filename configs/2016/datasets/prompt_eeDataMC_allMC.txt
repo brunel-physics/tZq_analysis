@@ -463,9 +463,9 @@ fileName = configs/2016/datasets/fileLists/WWWFiles.txt
 totalEvents = 240000
 crossSection = 0.2086
 runType = mc
-histoName = vvv
+histoName = VVV
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [WWZ]
@@ -473,9 +473,9 @@ fileName = configs/2016/datasets/fileLists/WWZFiles.txt
 totalEvents = 250000
 crossSection = 0.1651
 runType = mc
-histoName = vvv
+histoName = VVV
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [WZZ]
@@ -483,9 +483,9 @@ fileName = configs/2016/datasets/fileLists/WZZFiles.txt
 totalEvents = 246800
 crossSection = 0.05565
 runType = mc
-histoName = vvv
+histoName = VVV
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [ZZZ]
@@ -493,9 +493,9 @@ fileName = configs/2016/datasets/fileLists/ZZZFiles.txt
 totalEvents = 249237
 crossSection = 0.01398
 runType = mc
-histoName = vvv
+histoName = VVV
 colour = kViolet
-label = vvv
+label = VVV
 plotType = f
 
 [wPlusJets]

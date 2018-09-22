@@ -600,7 +600,7 @@ def main():
 #    listOfMCs = {"tZq":"tZq"}
 #    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
 #    listOfMCs = {"ttZ2l2nu":"TTZ"}
-    listOfMCs = {"wPlusJets":"Wjets"}
+    listOfMCs = {}
 
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
