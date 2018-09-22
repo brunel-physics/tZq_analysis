@@ -289,8 +289,9 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   mcStack->SetMaximum(max*1.1);
   mcStack->GetXaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
-  mcStack->GetYaxis()->SetTitleOffset( L/W * 6.5 );
+  mcStack->GetYaxis()->SetTitleOffset( L/W * 6.6 );
   mcStack->GetYaxis()->SetLabelSize(0.062);
+  mcStack->GetYaxis()->SetLabelOffset(0.01);
   if (xAxisLabels.size() > 1){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
       if ( !BLIND_PLOTS ) mcStack->GetXaxis()->SetBinLabel(i,"");
