@@ -304,7 +304,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   if ( !BLIND_PLOTS ) {
     // Bottom ratio plots
     canvy->cd();
-    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.3255);
+    canvy_2 = new TPad("canvy_2", "newpad2",0.01,0.01,0.99,0.322);
   //  canvy_2->SetOptStat(0);
     canvy_2->Draw();
     canvy_2->cd();
@@ -369,6 +369,11 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   // Save the plots.
   for (unsigned ext_it = 0; ext_it < extensions_.size(); ext_it++){
     canvy->SaveAs((outputFolder_ + plotName + extensions_[ext_it]).c_str());
+  }
+
+  //Save the log plots
+  for (unsigned int ext_it = 0; ext_it < extensions_.size(); ext_it++){
+    canvy->SaveAs((outputFolder_ + plotName + subLabel + postfix_ + "_log" + extensions_[ext_it]).c_str());
   }
 
   delete canvy;
