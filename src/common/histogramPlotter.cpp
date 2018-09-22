@@ -11,6 +11,7 @@
 // For CMS Guideline styling
 #include "TLatex.h"
 #include "TASImage.h"
+#include "TGaxis.h"
 
 #include <sys/stat.h>
 #include <boost/filesystem.hpp>
@@ -34,6 +35,8 @@ HistogramPlotter::HistogramPlotter(std::vector<std::string> legOrder, std::vecto
   legOrder_{legOrder},
   dsetMap_{dsetMap}
 {
+  TGaxis::SetMaxDigits(3);
+
 
   gErrorIgnoreLevel = kInfo;
 
@@ -189,12 +192,13 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   //Do a few colour changing things and add MC to the stack.
   for (auto plot_iter = plotOrder_.rbegin(); plot_iter != plotOrder_.rend(); plot_iter++){
     plotMap[*plot_iter]->SetFillColor(dsetMap_[*plot_iter].colour);
-    plotMap[*plot_iter]->SetLineColor(kBlack);
-    plotMap[*plot_iter]->SetLineWidth(1);
+    plotMap[*plot_iter]->SetLineColor(dsetMap_[*plot_iter].colour);
+    plotMap[*plot_iter]->SetLineWidth(0);
     if( *plot_iter == "data"){
       plotMap["data"]->SetMarkerStyle(20);
       plotMap["data"]->SetMarkerSize(1.4);
       plotMap["data"]->SetMarkerColor(kBlack);
+      plotMap["data"]->SetLineWidth(2.0);
       continue;
     }
     mcStack->Add(plotMap[*plot_iter]);
@@ -281,11 +285,12 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     max = TMath::Max(mcStack->GetMaximum(),plotMap["data"]->GetMaximum());
     plotMap["data"]->Draw("e x0, same");
   }
+//  TGaxis::SetMaxDigits(3);
   mcStack->SetMaximum(max*1.1);
   mcStack->GetXaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetNdivisions(6,5,0);
   mcStack->GetYaxis()->SetTitleOffset( L/W * 6.5 );
-  mcStack->GetYaxis()->SetLabelSize(0.0625);
+  mcStack->GetYaxis()->SetLabelSize(0.062);
   if (xAxisLabels.size() > 1){
     for (unsigned i{1}; i <= xAxisLabels.size(); i++){
       if ( !BLIND_PLOTS ) mcStack->GetXaxis()->SetBinLabel(i,"");
