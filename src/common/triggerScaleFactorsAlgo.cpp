@@ -1876,8 +1876,11 @@ void TriggerScaleFactors::savePlots()
 
   // Calculate alphas
   double alphaDoubleElectron    = ( (numberSelectedDoubleElectronsTriggered[0]/numberSelectedElectrons[0])*(numberPassedElectrons[0]/numberSelectedElectrons[0]) )/(numberTriggeredDoubleElectrons[0]/numberSelectedElectrons[0]+1.0e-6);
+  double alphaDoubleElectronUncert = alphaDoubleElectron * std::sqrt( std::pow((std::sqrt(numberSelectedDoubleElectronsTriggered[0])/numberSelectedDoubleElectronsTriggered[0]),2) +  std::pow((std::sqrt(numberSelectedElectrons[0])/numberSelectedElectrons[0]),2) +  std::pow((std::sqrt(numberPassedElectrons[0])/numberPassedElectrons[0]),2) +  std::pow((std::sqrt(numberSelectedElectrons[0])/numberSelectedElectrons[0]),2) +  std::pow((std::sqrt(numberTriggeredDoubleElectrons[0])/numberTriggeredDoubleElectrons[0]),2) +  std::pow((std::sqrt(numberSelectedElectrons[0])/numberSelectedElectrons[0]),2) );
   double alphaDoubleMuon        = ( (numberSelectedDoubleMuonsTriggered[0]/numberSelectedMuons[0])*(numberPassedMuons[0]/numberSelectedMuons[0]) )/(numberTriggeredDoubleMuons[0]/numberSelectedMuons[0]+1.0e-6);
+  double alphaDoubleMuonUncert = alphaDoubleElectron * std::sqrt( std::pow((std::sqrt(numberSelectedDoubleMuonsTriggered[0])/numberSelectedDoubleMuonsTriggered[0]),2) +  std::pow((std::sqrt(numberSelectedMuons[0])/numberSelectedMuons[0]),2) +  std::pow((std::sqrt(numberPassedMuons[0])/numberPassedMuons[0]),2) +  std::pow((std::sqrt(numberSelectedMuons[0])/numberSelectedMuons[0]),2) +  std::pow((std::sqrt(numberTriggeredDoubleMuons[0])/numberTriggeredDoubleMuons[0]),2) +  std::pow((std::sqrt(numberSelectedMuons[0])/numberSelectedMuons[0]),2) );
   double alphaMuonElectron 	= ( (numberSelectedMuonElectronsTriggered[0]/numberSelectedMuonElectrons[0])*(numberPassedMuonElectrons[0]/numberSelectedMuonElectrons[0]) )/(numberTriggeredMuonElectrons[0]/numberSelectedMuonElectrons[0]+1.0e-6);
+  double alphaMuonElectronUncert = alphaDoubleElectron * std::sqrt( std::pow((std::sqrt(numberSelectedMuonElectronsTriggered[0])/numberSelectedMuonElectronsTriggered[0]),2) +  std::pow((std::sqrt(numberSelectedMuonElectrons[0])/numberSelectedMuonElectrons[0]),2) +  std::pow((std::sqrt(numberPassedMuonElectrons[0])/numberPassedMuonElectrons[0]),2) +  std::pow((std::sqrt(numberSelectedMuonElectrons[0])/numberSelectedMuonElectrons[0]),2) +  std::pow((std::sqrt(numberTriggeredMuonElectrons[0])/numberTriggeredMuonElectrons[0]),2) +  std::pow((std::sqrt(numberSelectedMuonElectrons[0])/numberSelectedMuonElectrons[0]),2) );
 
   // Calculate uncertainities
 
@@ -1932,7 +1935,7 @@ void TriggerScaleFactors::savePlots()
   std::cout << "MuonEG MC efficiency: " << muonElectronEfficiencyMC << " +/- " << muonElectronMcUpperUncert << " / " << muonElectronMcLowerUncert << std::endl;
   std::cout << "MuonEG trigger SF: " << muonElectronSF << " +/- " << muonElectronSfUncert << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << "alpha for DoubleEG/DoubleMuon/MuonEG Triggers: " << alphaDoubleElectron << "/" << alphaDoubleMuon << "/" << alphaMuonElectron << std::endl;
+  std::cout << "alpha for DoubleEG/DoubleMuon/MuonEG Triggers: " << alphaDoubleElectron << "+/-" << alphaDoubleElectronUncert << "/" << alphaDoubleMuon << "+/-" << alphaDoubleMuonUncert << "/" << alphaMuonElectron << "+/-" << alphaMuonElectronUncert << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
 
