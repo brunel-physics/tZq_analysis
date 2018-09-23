@@ -371,7 +371,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     canvy->SaveAs((outputFolder_ + plotName + extensions_[ext_it]).c_str());
   }
 
-  canvy->SetLogy();
+  canvy_1->SetLogy();
   mcStack->SetMaximum(max*10);
   
   //Save the log plots
