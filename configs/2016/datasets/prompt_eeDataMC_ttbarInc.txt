@@ -515,7 +515,7 @@ crossSection = 0.2001
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttW2q]
@@ -525,7 +525,7 @@ crossSection = 0.405
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttZ2l2nu]
@@ -535,7 +535,7 @@ crossSection = 0.2529
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttZ2q]
@@ -545,7 +545,7 @@ crossSection = 0.5297
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttHTobb]
@@ -555,7 +555,7 @@ crossSection = 0.2942
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttHToNonbb]
@@ -565,7 +565,7 @@ crossSection = 0.2123
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [tWInclusive]

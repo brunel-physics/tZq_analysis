@@ -21,11 +21,11 @@ plotType = f
 [ttbarInclusivePowerheg]
 fileName = configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 totalEvents = 77081156
-crossSection = 831.76
+crossSection = 730.6	
 runType = mc
-histoName = t#bar{0}
+histoName = tt
 colour = kRed
-label = ttbar
+label = t#bar{t}
 plotType = f
 
 [tHq]
@@ -35,7 +35,7 @@ crossSection = 0.07462
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [sChannel]
@@ -45,7 +45,7 @@ crossSection = 10.32
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [tChannel]
@@ -55,7 +55,7 @@ crossSection = 136.02
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [tbarChannel]
@@ -65,7 +65,7 @@ crossSection = 80.95
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [WZ1l1nu2q]
@@ -205,7 +205,7 @@ crossSection = 0.2001
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttW2q]
@@ -215,7 +215,7 @@ crossSection = 0.405
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttZ2l2nu]
@@ -225,7 +225,7 @@ crossSection = 0.2529
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttZ2q]
@@ -235,7 +235,7 @@ crossSection = 0.5297
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttHTobb]
@@ -245,7 +245,7 @@ crossSection = 0.2942
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [ttHToNonbb]
@@ -255,7 +255,7 @@ crossSection = 0.2123
 runType = mc
 histoName = ttV
 colour = kGreen
-label = ttV
+label = t#bar{t}V
 plotType = f
 
 [tWInclusive]
@@ -265,7 +265,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [tbarWInclusive]
@@ -275,7 +275,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [tWZ]
@@ -285,7 +285,7 @@ crossSection = 0.01104
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = Single top
 plotType = f
 
 [tZq]
