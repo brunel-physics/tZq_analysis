@@ -7,6 +7,7 @@
 #include "config_parser.hpp"
 
 #include <limits>
+#include <memory>
 
 #include <boost/filesystem.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -349,6 +350,30 @@ void MakeMvaInputs::sameSignAnalysis(
 
     for (const auto& outChan : outFakeChannels)
     {
+        // Get same sign data
+        const std::string chan{outFakeChanToData.at(outChan)};
+
+        auto dataChain{new TChain{"tree"}};
+        // Get expected real SS events from MC
+        for (const auto& mc : listOfMCs)
+        {
+            const std::string sample{mc.first};
+
+        // std::cout << "Doing SS fakes " << sample << std::endl;
+            if (!dataChain->Add(
+                    (inputDir + sample + chan + "invLepmvaOut.root").c_str()))
+                abort();
+        }
+
+        if (!dataChain->AddFile(
+                (inputDir + chanMap.at(chan) + chan + "invLepmvaOut.root")
+                    .c_str()))
+            abort();
+
+
+        auto outFile{
+            new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
+                      "RECREATE"}};
         auto outTreeSig{
             new TTree{("Ttree_" + treeNamePostfixSig + outChan).c_str(),
                       ("Ttree_" + treeNamePostfixSig + outChan).c_str()}};
@@ -361,27 +386,8 @@ void MakeMvaInputs::sameSignAnalysis(
                           ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
             setupBranches(outTreeSdBnd);
         }
-        auto outFile{
-            new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
-                      "RECREATE"}};
-
-        // Get same sign data
-        const std::string chan{outFakeChanToData.at(outChan)};
-        auto dataChain{new TChain{"tree"}};
-        dataChain->Add(
-            (inputDir + chanMap.at(chan) + chan + "invLepmvaOut.root").c_str());
-
-        // Get expected real SS events from MC
-        for (const auto& mc : listOfMCs)
-        {
-            const std::string sample{mc.first};
-
-            std::cout << "Doing SS fakes " << sample << std::endl;
-            dataChain->Add(
-                (inputDir + sample + chan + "invLepmvaOut.root").c_str());
-        }
-
         auto event{new MvaEvent{true, "", dataChain, true}};
+
         const long long numberOfEvents{dataChain->GetEntries()};
         TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
@@ -391,16 +397,16 @@ void MakeMvaInputs::sameSignAnalysis(
             lEventTimer.DrawProgressBar(i);
             event->GetEntry(i);
 
-            if (chan == "ee"
-                && (event->genElePF2PATPromptFinalState[event->zLep1Index] == 0
-                    || event->genElePF2PATPromptFinalState[event->zLep2Index]
+            if (event->isMC && chan == "mumu"
+                && (event->genMuonPF2PATPromptFinalState[event->zLep1Index] == 0
+                    || event->genMuonPF2PATPromptFinalState[event->zLep2Index]
                            == 0))
             {
                 continue;
             }
-            if (chan == "mumu"
-                && (event->genMuonPF2PATPromptFinalState[event->zLep1Index] == 0
-                    || event->genMuonPF2PATPromptFinalState[event->zLep2Index]
+            if (event->isMC && chan == "ee"
+                && (event->genElePF2PATPromptFinalState[event->zLep1Index] == 0
+                    || event->genElePF2PATPromptFinalState[event->zLep2Index]
                            == 0))
             {
                 continue;
@@ -418,6 +424,7 @@ void MakeMvaInputs::sameSignAnalysis(
             outTreeSdBnd->Write();
         }
         outFile->Close();
+        delete dataChain;
     }
 }
 
@@ -507,7 +514,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>> MakeMvaInputs::getJets(
 
     for (int i{0}; i != tree->NJETS; i++)
     {
-        if (tree->jetInd.at(i) > -1)
+        if (tree->jetInd[i] > -1)
         {
             jetList.emplace_back(tree->jetInd[i]);
             jetVecList.emplace_back(getJetVec(tree,
@@ -846,8 +853,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
     // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
     // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
-    constexpr double SF_EE{0.958391264995};
-    constexpr double SF_MUMU{1.02492608673};
+    constexpr double SF_EE{0.926};
+    constexpr double SF_MUMU{1.114};
 
     if (SameSignMC == true && channel == "ee")
     {
