@@ -7,7 +7,7 @@
 #include <sstream>
 #include <vector>
 
-class MvaEvent;
+#include "MvaEvent.hpp"
 
 class JetCorrectionUncertainty
 {

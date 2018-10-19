@@ -60,13 +60,10 @@ class MvaEvent : public AnalysisEvent
     virtual ~MvaEvent();
 };
 
-#endif
-
-#ifdef MvaEvent_cxx
-MvaEvent::MvaEvent(bool isMC,
-                   std::string triggerFlag,
-                   TTree* tree,
-                   bool is2016)
+inline MvaEvent::MvaEvent(bool isMC,
+                          std::string triggerFlag,
+                          TTree* tree,
+                          bool is2016)
     : AnalysisEvent{isMC, triggerFlag, tree, is2016}
 {
     // if parameter tree is not specified (or zero), connect the file
@@ -112,4 +109,4 @@ inline MvaEvent::~MvaEvent()
 {
 }
 
-#endif // #ifdef MvaEvent_cxx
+#endif
