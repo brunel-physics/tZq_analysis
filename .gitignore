@@ -10,8 +10,8 @@
 *.save
 bin/
 plots/
-configs/2015/datasets/fileLists/*
 configs/2016/datasets/fileLists/*
+configs/2017/datasets/fileLists/*
 step*EventDump*.txt
 *.png
 *.jpeg
