@@ -1,5 +1,6 @@
 #!/bin/env bash
 
+set -Eeuo pipefail
 shopt -s extglob
 
 pushd () {
@@ -10,13 +11,10 @@ popd () {
     command popd "$@" > /dev/null
 }
 
+TQZ_TOOLS_PATH="${TZQ_TOOLS_PATH-$PWD}"
+
 printf "Updating filelists for datasets used ...\n"
 printf "First deleting old filelists ...\n"
-
-if [ -z "${TQZ_TOOLS_PATH}" ]; then
-    printf "TQZ_TOOLS_PATH not set, setting to ${PWD}\n"
-    TQZ_TOOLS_PATH="${PWD}"
-fi
 
 rm -rf "${TQZ_TOOLS_PATH}"/configs/2017/datasets/fileLists/*
 
@@ -28,7 +26,7 @@ pushd /scratch/data/tZqSkimsRun2017/
 for i in *; do
     if [ -d "${i}" ]; then
         pushd "${i}"
-        ls -d "${PWD}"/* >> "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i%%_ext+([[:digit:]])}Files.txt"
+        ls -d "${PWD}"/* >> "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i%%_ext+([[:digit:]])}Files.txt" || printf "WARNING: ${PWD} is empty\n"
         popd
     fi
 done
@@ -39,7 +37,7 @@ pushd /data0/data/TopPhysics/postTriggerSkims2017/
 for i in *; do
     if [ -d "${i}" ]; then
         pushd "${i}"
-        ls -d "${PWD}"/* > "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i}Files.txt"
+        ls -d "${PWD}"/* > "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i}Files.txt" || printf "WARNING: ${PWD} is empty\n"
         popd
     fi
 done
