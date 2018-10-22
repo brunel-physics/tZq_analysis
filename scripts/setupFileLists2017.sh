@@ -26,7 +26,7 @@ pushd /scratch/data/tZqSkimsRun2017/
 for i in *; do
     if [ -d "${i}" ]; then
         pushd "${i}"
-        ls -d "${PWD}"/* >> "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i%%_ext+([[:digit:]])}Files.txt" || printf "WARNING: ${PWD} is empty\n"
+        ls -d "${PWD}"/* >> "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i%_ext+([[:digit:]])}Files.txt" || printf "WARNING: ${PWD} is empty\n"
         popd
     fi
 done
