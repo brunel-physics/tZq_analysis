@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+shopt -s extglob
+
 pushd () {
     command pushd "$@" > /dev/null
 }
@@ -26,7 +28,7 @@ pushd /scratch/data/tZqSkimsRun2017/
 for i in *; do
     if [ -d "${i}" ]; then
         pushd "${i}"
-        ls -d "${PWD}"/* > "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i}Files.txt"
+        ls -d "${PWD}"/* >> "${TQZ_TOOLS_PATH}/configs/2017/datasets/fileLists/${i%%_ext+([[:digit:]])}Files.txt"
         popd
     fi
 done
