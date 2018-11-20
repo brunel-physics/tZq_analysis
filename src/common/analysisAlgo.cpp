@@ -1006,7 +1006,7 @@ void AnalysisAlgo::runMainAnalysis(){
 
 	  //apply generator weights here.
 	  double generatorWeight{1.0};
-	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && event->origWeightForNorm > -998 && !synchCutFlow ){
+	  if ( dataset->isMC() && sumNegativeWeights_ >= 0 && !synchCutFlow ){
 	    if ( systMask == 4096 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleUp_ ) * ( event->weight_muF2muR2/std::abs(event->origWeightForNorm) );
 	    else if ( systMask == 8192 ) generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeightsScaleDown_ ) * ( event->weight_muF0p5muR0p5/std::abs(event->origWeightForNorm) );
 	    else generatorWeight = ( sumPositiveWeights_ )/( sumNegativeWeights_ ) * ( event->origWeightForNorm / std::abs(event->origWeightForNorm) );
@@ -1051,9 +1051,6 @@ void AnalysisAlgo::runMainAnalysis(){
 	    //if ( channel == "mumu" ) eventWeight *= 1.03226;
 	    //if ( dataset->isMC() ) eventWeight *= -1.0; 
 	  //}
-
-	  //If amcatnlo DY, normalise
-	  if ( dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_ ) eventWeight *= 0.405077;
 
 	  //If ttbar, do reweight
 	  //          std::cout << "eventWeight: " << eventWeight << std::endl;

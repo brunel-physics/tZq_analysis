@@ -1,6 +1,6 @@
 [DYJetsToLL_M-50_amcatnlo]
 fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
-totalEvents = 151023640
+totalEvents = 122055388
 crossSection = 5941.0
 runType = mc
 histoName = NPL_emu_DYamcatnlo
@@ -310,7 +310,7 @@ triggerFlag = eCt
 
 [DYJetsToLL_M-50_amcatnlo]
 fileName = configs/2016/datasets/fileLists/DYJets50Files.txt
-totalEvents = 151023640
+totalEvents = 122055388
 crossSection = 5941.0
 runType = mc
 histoName = zPlusJetsAmcAtNlo
