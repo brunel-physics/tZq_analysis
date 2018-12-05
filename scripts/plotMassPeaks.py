@@ -17,8 +17,8 @@ def main():
   wSigma = 7.0
   topSigma = 30.0
 
-  mzCut = "20"
-  mwCut = "20"
+  mzCut = "50"
+  mwCut = "175"
 
   infile_tZq = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_tZq.root")
   infile_TT = ROOT.TFile.Open(" /scratch/data/TopPhysics/mvaDirs/inputs/"+era+"/all/mz"+mzCut+"mw"+mwCut+"/histofile_TT.root")
@@ -241,7 +241,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -289,7 +289,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -313,7 +313,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -337,7 +337,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -361,7 +361,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -385,7 +385,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -410,7 +410,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -434,7 +434,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -458,7 +458,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -482,7 +482,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -506,7 +506,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -530,7 +530,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -554,7 +554,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -578,7 +578,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)
@@ -602,7 +602,7 @@ def main():
     topChi2Term = (event.topMass - 173.21)/topSigma
     chi2 = wChi2Term*wChi2Term + topChi2Term*topChi2Term
 
-    All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
+    if ( weight > 0. ) : All_topVsWmassHisto.Fill(event.wPairMass,event.topMass,weight)
     All_wVsChi2Histo.Fill(event.wPairMass,chi2,weight)
     All_topVsChi2Histo.Fill(event.topMass,chi2,weight)
     All_wVsTopvsChi2Histo.Fill(event.wPairMass,event.topMass,chi2,weight)

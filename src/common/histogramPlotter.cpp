@@ -174,7 +174,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
   std::cerr << "Making a plot called: " << plotName << std::endl;
 
   //Make the legend. This is clearly the first thing I should do.
-  TLegend* legend_{new TLegend{0.78,0.52,0.98,0.90}};
+  TLegend* legend_{new TLegend{0.78,0.42,0.98,0.90}};
 //  legend_->SetFillStyle(1001);
   legend_->SetFillStyle(0);
   legend_->SetBorderSize(0);
@@ -322,8 +322,8 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap, std::strin
     canvy_2->SetGridy(1);
 
     ratioHisto->SetStats(false);
-    ratioHisto->SetMinimum(0.5);
-    ratioHisto->SetMaximum(1.5);
+    ratioHisto->SetMinimum(0.9);
+    ratioHisto->SetMaximum(1.1);
     ratioHisto->SetTitle( (";"+xAxisLabel+";Data/MC").c_str() );
     ratioHisto->GetXaxis()->SetNdivisions(6,5,0);
     ratioHisto->GetYaxis()->SetNdivisions(6,5,0);

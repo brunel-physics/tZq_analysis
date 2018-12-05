@@ -395,8 +395,8 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
 //   float wTerm = ( (event->wPairQuarks.first + event->wPairQuarks.second).M() - 80.3585 )/8.0;
 
 //   float chi2 = topTerm*topTerm + wTerm*wTerm;
-//   if ( chi2 < 50.0 && chi2 > 290.0 ) return false; // control region
-//   if ( chi2 >= 50.0 ) return false; //signal region
+//   if ( chi2 < 5.0 && chi2 > 50.0 ) return false; // control region
+//   if ( chi2 >= 5.0 ) return false; //signal region
     
 // Signal Region W mass cut
     if (!isZplusCR_){
@@ -1575,7 +1575,7 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     }
     else if (channel == "emu"){ // If MuonEG trigger fires, regardless of singleElectron/singleMuon triggers 
       if ( muEGTrig ) {
-        twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF 
+        twgt = 0.99; // 0.87661 for eff; 0.99399 for SF 
         if (syst == 1) twgt += 0.02; // -0.01220/0.01339 for eff; 0.01018 for SF
         if (syst == 2) twgt -= 0.02;
       }

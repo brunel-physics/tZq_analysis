@@ -759,12 +759,12 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event) {
     if (!event->elePF2PATIsGsf[i]) continue;
     TLorentzVector tempVec{event->elePF2PATPX[i],event->elePF2PATPY[i],event->elePF2PATPZ[i],event->elePF2PATE[i]};
 
-    if ( electrons.size() < 1 && tempVec.Pt() <= 20. && !is2016_ ) continue;
-    else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && !is2016_ ) continue;
+    if ( electrons.size() < 1 && tempVec.Pt() <= 25. && !is2016_ ) continue;
+    else if ( electrons.size() >= 1 && tempVec.Pt() <= 25. && !is2016_ ) continue;
     
     if ( !customElectronCuts_ ) { // Nominal cuts
-      if ( electrons.size() < 1 && tempVec.Pt() <= 35. && is2016_ ) continue;
-      else if ( electrons.size() >= 1 && tempVec.Pt() <= 15. && is2016_ ) continue;
+      if ( electrons.size() < 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
+      else if ( electrons.size() >= 1 && tempVec.Pt() <= 25. && is2016_ ) continue;
     }
 
     else { // Custom cuts of form minElectron1Pt maxElectron1Pt, minElectron2Pt, maxElectron2Pt, minElectron1Eta maxElectron1Eta, minElectron2Eta, maxElectron2Eta
@@ -821,12 +821,12 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event) {
 
     if (!event->muonPF2PATIsPFMuon[i]) continue;
 
-    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 20. && !is2016_ ) continue;
-    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && !is2016_) continue;
+    if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 25. && !is2016_ ) continue;
+    else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 25. && !is2016_) continue;
 
     if (!customMuonCuts_) {
-      if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 26. && is2016_ ) continue;
-      else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 20. && is2016_) continue;
+      if ( muons.size() < 1 && event->muonPF2PATPt[i] <= 25. && is2016_ ) continue;
+      else if ( muons.size() >= 1 && event->muonPF2PATPt[i] <= 25. && is2016_) continue;
     }
 
     else { // Custom cuts of form minMuon1Pt maxMuon1Pt, minMuon2Pt, maxMuon2Pt, minMuon1Eta maxMuon1Eta, minMuon2Eta, maxMuon2Eta
