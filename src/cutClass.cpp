@@ -189,16 +189,16 @@ Cuts::Cuts(bool doPlots,
     {
         std::cout << "\nLoad 2017 electron SFs from root file ... "
                   << std::endl;
-        electronSFsFile = new TFile(
-            "scaleFactors/2017/"
-            "egammaEffi.txt_EGM2D_runBCDEF_passingTight94X.root"); // Electron
-                                                                   // cut-based
-                                                                   // Tight ID
+        electronSFsFile =
+            new TFile("scaleFactors/2017/"
+                      "egammaEffi.txt_EGM2D_runBCDEF_"
+                      "passingTight94X.root"); // Electron cut-based
+                                               // Tight ID
         h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
         electronRecoFile = new TFile{
             "scaleFactors/2017/"
-            "egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"}; // Electron
-                                                               // Reco SF
+            "egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"}; // Electron Reco
+                                                               // SF
         h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
         std::cout << "Got 2017 electron SFs!\n" << std::endl;
 
@@ -207,22 +207,14 @@ Cuts::Cuts(bool doPlots,
             "scaleFactors/2017/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
         muonIDsFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ID.root"};
         muonIsoFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ISO.root"};
-        muonHltFile1->cd(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
+        muonHltFile1->cd("IsoMu27_PtEtaBins"); // Single Muon HLT SF
         h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon
-                                                                // HLT SF
-        muonIDsFile1->cd("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_"
-                         "bin1"); // Tight
-                                  // ID
-        h_muonIDs1 = dynamic_cast<TH2F*>(
-            muonIDsFile1->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_"
-                              "spliteta_bin1/abseta_pt_ratio")); // Tight ID
-        muonIsoFile1->cd(
-            "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1"); // Tight ID
-        h_muonPFiso1 = dynamic_cast<TH2F*>(
-            muonIsoFile1->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_"
-                              "bin1/abseta_pt_ratio")); // Tight ID
+            "IsoMu27_PtEtaBins/abseta_pt_ratio")); // Single Muon
+                                                   // HLT SF
+        h_muonIDs1 = dynamic_cast<TH2F*>(muonIDsFile1->Get(
+            "NUM_TightID_DEN_genTracks_pt_abseta")); // Tight ID
+        h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get(
+            "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta")); // Tight ID
         std::cout << "Got 2017 muon SFs!\n" << std::endl;
     }
     else
@@ -480,7 +472,7 @@ bool Cuts::parse_config(std::string confName)
 
 bool Cuts::makeCuts(AnalysisEvent* event,
                     float* eventWeight,
-                    std::map<std::string, Plots*> plotMap,
+                    std::map<std::string, Plots*>& plotMap,
                     TH1D* cutFlow,
                     int systToRun)
 {
@@ -1562,16 +1554,19 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
     //  std::cout << event->eventNum << std::endl << "Jets: " << std::endl;
     for (int i{0}; i < event->numJetPF2PAT; i++)
     {
+        // Check η before retrieving TLorentzVector to prevent runtime error
+        // when trying to apply a SF for an out of range η
+        if (event->jetPF2PATEta[i] >= jetEta_)
+        {
+            continue;
+        }
+
         // if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] +
         // event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
         TLorentzVector jetVec{getJetLVec(event, i, syst, true)};
         // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy),
         // event->jetPF2PATEta[i],syst) << " " << syst << std::endl;
         if (jetVec.Pt() <= jetPt_)
-        {
-            continue;
-        }
-        if (std::abs(jetVec.Eta()) >= jetEta_)
         {
             continue;
         }
@@ -2255,46 +2250,32 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
 // Does event pass MET Filter
 bool Cuts::metFilters(AnalysisEvent* event)
 {
-    if (event->Flag_HBHENoiseFilter <= 0)
+    if (event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0
+        || event->Flag_globalTightHalo2016Filter <= 0
+        || event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0
+        || event->Flag_goodVertices <= 0
+        || (!isMC_ && event->Flag_eeBadScFilter <= 0))
     {
         return false;
     }
-    if (event->Flag_HBHENoiseIsoFilter <= 0)
+
+    if (is2016_
+        && (event->Flag_ecalLaserCorrFilter <= 0
+            || event->Flag_chargedHadronTrackResolutionFilter <= 0
+            || event->Flag_muonBadTrackFilter <= 0 || event->Flag_badMuons <= 0
+            || event->Flag_duplicateMuons <= 0 || event->Flag_noBadMuons))
     {
         return false;
     }
-    if (event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0)
+
+    if (!is2016_
+        && (event->Flag_BadPFMuonFilter <= 0
+            || event->Flag_BadChargedCandidateFilter <= 0
+            || event->Flag_ecalBadCalibFilter <= 0))
     {
         return false;
     }
-    if (event->Flag_goodVertices <= 0)
-    {
-        return false;
-    }
-    if (event->Flag_eeBadScFilter <= 0)
-    {
-        return false;
-    }
-    if (event->Flag_globalTightHalo2016Filter <= 0)
-    {
-        return false;
-    }
-    if (event->Flag_chargedHadronTrackResolutionFilter <= 0)
-    {
-        return false;
-    }
-    if (event->Flag_muonBadTrackFilter <= 0)
-    {
-        return false;
-    }
-    if (event->Flag_ecalLaserCorrFilter <= 0)
-    {
-        return false;
-    }
-    if (!isMC_ && event->Flag_noBadMuons <= 0)
-    {
-        return false;
-    }
+
     return true;
 }
 
@@ -4255,7 +4236,9 @@ std::pair<double, double> Cuts::jet2017SFs(const double eta) const
         case 11: return {2.20438, 0.0652898};
         case 12: return {1.49907, 0.0205643};
         case 13: return {1.52548, 0.0308124};
-        default: throw std::runtime_error("Eta out of range");
+        default:
+            throw std::runtime_error("Eta " + std::to_string(eta)
+                                     + " out of range");
     }
 }
 

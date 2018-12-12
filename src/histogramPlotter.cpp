@@ -379,7 +379,7 @@ void HistogramPlotter::makePlot(std::map<std::string, TH1D*> plotMap,
         canvy_1->SetTicky(0);
     }
 
-    mcStack->Draw("");
+    mcStack->Draw("HIST");
 
     if (!BLIND_PLOTS)
     {

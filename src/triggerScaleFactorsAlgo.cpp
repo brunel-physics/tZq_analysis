@@ -224,24 +224,28 @@ TriggerScaleFactors::TriggerScaleFactors()
                                               numEta_bins,
                                               etaBins);
 
-    muonHltFile1 = new TFile{
-        "scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"}; // RunsB-F
-                                                                      // -
-                                                                      // pre-HIP
-                                                                      // fix
-    muonHltFile2 = new TFile{
-        "scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunGtoH.root"}; // RunsB-F
-                                                                      // -
-                                                                      // post-HIP
-                                                                      // fix
-    muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
-    muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
-    h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
-        "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon HLT
-                                                            // SF
-    h_muonHlt2 = dynamic_cast<TH2F*>(muonHltFile2->Get(
-        "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon HLT
-                                                            // SF
+    if (is2016_)
+    {
+        muonHltFile1 = new TFile{
+            "scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
+        muonHltFile2 = new TFile{
+            "scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunGtoH.root"};
+        muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins");
+        muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins");
+        h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
+            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio"));
+        h_muonHlt2 = dynamic_cast<TH2F*>(muonHltFile2->Get(
+            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio"));
+    }
+    else
+    {
+        muonHltFile1 = new TFile{
+            "scaleFactors/2017/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
+        muonHltFile2 = nullptr;
+        muonHltFile1->cd("IsoMu27_PtEtaBins");
+        h_muonHlt1 = dynamic_cast<TH2F*>(
+            muonHltFile1->Get("IsoMu27_PtEtaBins/abseta_pt_ratio"));
+    }
 }
 
 TriggerScaleFactors::~TriggerScaleFactors()
@@ -644,7 +648,7 @@ void TriggerScaleFactors::runMainAnalysis()
                 {
                     double maxSfPt = h_muonHlt1->GetYaxis()->GetXmax() - 0.1;
                     double minSfPt = h_muonHlt1->GetYaxis()->GetXmin() + 0.1;
-                    unsigned binSf1{0}, binSf2{0};
+                    unsigned binSf1{0};
 
                     double pt = event->zPairLeptons.first.Pt();
                     double eta = event->zPairLeptons.first.Eta();
@@ -662,32 +666,39 @@ void TriggerScaleFactors::runMainAnalysis()
                         binSf1 = h_muonHlt1->FindBin(std::abs(eta), pt);
                     }
 
-                    if (pt > maxSfPt)
+                    if (is2016_)
                     {
-                        binSf2 = h_muonHlt2->FindBin(std::abs(eta), maxSfPt);
-                    }
-                    else if (pt < minSfPt)
-                    {
-                        binSf2 = h_muonHlt2->FindBin(std::abs(eta), minSfPt);
-                    }
-                    else
-                    {
-                        binSf2 = h_muonHlt2->FindBin(std::abs(eta), pt);
-                    }
+                        unsigned binSf2{0};
+                        if (pt > maxSfPt)
+                        {
+                            binSf2 =
+                                h_muonHlt2->FindBin(std::abs(eta), maxSfPt);
+                        }
+                        else if (pt < minSfPt)
+                        {
+                            binSf2 =
+                                h_muonHlt2->FindBin(std::abs(eta), minSfPt);
+                        }
+                        else
+                        {
+                            binSf2 = h_muonHlt2->FindBin(std::abs(eta), pt);
+                        }
 
-                    if (!DO_HIPS)
-                    {
-                        SF = (h_muonHlt1->GetBinContent(binSf1) * 19648.534
-                              + h_muonHlt2->GetBinContent(binSf2) * 16144.444)
-                             / (19648.534 + 16144.444 + 1.0e-06);
-                    }
-                    if (DO_HIPS && HIP_ERA)
-                    {
-                        SF = h_muonHlt1->GetBinContent(binSf1);
-                    }
-                    if (DO_HIPS && !HIP_ERA)
-                    {
-                        SF = h_muonHlt2->GetBinContent(binSf2);
+                        if (!DO_HIPS)
+                        {
+                            SF = (h_muonHlt1->GetBinContent(binSf1) * 19648.534
+                                  + h_muonHlt2->GetBinContent(binSf2)
+                                        * 16144.444)
+                                 / (19648.534 + 16144.444 + 1.0e-06);
+                        }
+                        if (DO_HIPS && HIP_ERA)
+                        {
+                            SF = h_muonHlt1->GetBinContent(binSf1);
+                        }
+                        if (DO_HIPS && !HIP_ERA)
+                        {
+                            SF = h_muonHlt2->GetBinContent(binSf2);
+                        }
                     }
                 }
 

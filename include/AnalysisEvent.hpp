@@ -235,7 +235,6 @@ class AnalysisEvent
     Float_t jetPF2PATSVDZ[NJETSMAX];
     Float_t jetPF2PATBDiscriminator[NJETSMAX];
     Float_t jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[NJETSMAX];
-    Float_t jetPF2PATpfCombinedMVAV2BJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsLJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsBJetTags[NJETSMAX];
     Int_t jetPF2PATNConstituents[NJETSMAX];
@@ -1003,7 +1002,6 @@ class AnalysisEvent
     TBranch* b_jetPF2PATSVDZ; //!
     TBranch* b_jetPF2PATBDiscriminator;
     TBranch* b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags; //!
-    TBranch* b_jetPF2PATpfCombinedMVAV2BJetTags; //!
     TBranch* b_jetPF2PATpfCombinedCvsLJetTags; //!
     TBranch* b_jetPF2PATpfCombinedCvsBJetTags; //!
     TBranch* b_jetPF2PATNConstituents; //!
@@ -1830,7 +1828,6 @@ inline AnalysisEvent::AnalysisEvent(bool isMC,
    else
    {
        fChain->SetBranchAddress("jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags", jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags, &b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags);
-       fChain->SetBranchAddress("jetPF2PATpfCombinedMVAV2BJetTags", jetPF2PATpfCombinedMVAV2BJetTags, &b_jetPF2PATpfCombinedMVAV2BJetTags);
        fChain->SetBranchAddress("jetPF2PATpfCombinedCvsLJetTags", jetPF2PATpfCombinedCvsLJetTags, &b_jetPF2PATpfCombinedCvsLJetTags);
        fChain->SetBranchAddress("jetPF2PATpfCombinedCvsBJetTags", jetPF2PATpfCombinedCvsBJetTags, &b_jetPF2PATpfCombinedCvsBJetTags);
    }

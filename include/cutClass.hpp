@@ -291,7 +291,7 @@ class Cuts
          const bool);
     ~Cuts();
     bool makeCuts(
-        AnalysisEvent*, float*, std::map<std::string, Plots*>, TH1D*, int);
+        AnalysisEvent*, float*, std::map<std::string, Plots*>&, TH1D*, int);
     void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
     void setMC(bool isMC)
     {

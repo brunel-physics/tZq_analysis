@@ -105,6 +105,7 @@ std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap()
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPt", &Plots::fillZPairPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairEta", &Plots::fillZPairEta));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPhi", &Plots::fillZPairPhi));
+    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairMass",&Plots::fillWPairMass));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topMass", &Plots::fillTopMass));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topPt", &Plots::fillTopPt));
     functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topEta", &Plots::fillTopEta));
