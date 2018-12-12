@@ -2080,14 +2080,14 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         {
             if (eTrig || eeTrig)
             {
-                twgt = 1.;
+                twgt = 0.97397;
                 if (syst == 1)
                 {
-                    twgt += 0.01;
+                    twgt += 0.00050;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.01;
+                    twgt += 0.00050;
                 }
             }
         }
@@ -2095,21 +2095,29 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         {
             if (muTrig || mumuTrig)
             {
-                twgt = 1.0;
+                twgt = 1.06937;
+                if (syst == 1)
+                {
+                    twgt += 0.00097;
+                }
+                else if (syst == 2)
+                {
+                    twgt += 0.00097;
+                }
             }
         }
         else if (channel == "emu")
         {
             if (muEGTrig)
             {
-                twgt = 1.;
+                twgt = 0.98562;
                 if (syst == 1)
                 {
-                    twgt += 0.01;
+                    twgt += 0.00057;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.01;
+                    twgt -= 0.00057;
                 }
             }
         }
