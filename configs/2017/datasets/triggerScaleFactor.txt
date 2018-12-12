@@ -1,0 +1,41 @@
+[ttbar_2l2v]
+fileName = configs/2017/datasets/fileLists/ttbar_2l2vFiles.txt
+totalEvents = 5500000
+crossSection = 687.1
+runType = mc
+histoName = SingleTop
+colour = kRed
+label = SingleTop
+plotType = f
+
+[ttbar_semileptonic]
+fileName = configs/2017/datasets/fileLists/ttbar_semileptonicFiles.txt
+totalEvents = 43732445
+crossSection = 687.1
+runType = mc
+histoName = SingleTop
+colour = kRed
+label = SingleTop
+plotType = f
+
+[ttbar_hadronic]
+fileName = configs/2017/datasets/fileLists/ttbar_semileptonicFiles.txt
+totalEvents = 27108792
+crossSection = 687.1
+runType = mc
+histoName = SingleTop
+colour = kRed
+label = SingleTop
+plotType = f
+
+[metRun2017]
+fileName = configs/2017/datasets/fileLists/metRun2017Files.txt
+luminosity = 41529.740
+runType = data
+histoName = data
+label = Data
+plotType = p
+colour = kBlack
+triggerFlag = eCt
+
+[]
