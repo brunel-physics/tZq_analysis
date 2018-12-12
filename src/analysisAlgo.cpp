@@ -954,7 +954,7 @@ void AnalysisAlgo::runMainAnalysis()
                     // apply generator weights here.
                     double generatorWeight{1.0};
                     if (dataset->isMC() && sumNegativeWeights_ >= 0
-                        && event->origWeightForNorm > -998 && !synchCutFlow)
+                        && !synchCutFlow)
                     {
                         if (systMask == 4096)
                         {
@@ -1063,13 +1063,6 @@ void AnalysisAlgo::runMainAnalysis()
                     // eventWeight
                     // *= -1.0;
                     //}
-
-                    // If amcatnlo DY, normalise
-                    if (dataset->name() == "DYJetsToLL_M-50_amcatnlo" && is2016_
-                        && !doZplusCR_)
-                    {
-                        eventWeight *= 0.405077;
-                    }
 
                     // If ttbar, do reweight
                     //          std::cout << "eventWeight: " << eventWeight <<
