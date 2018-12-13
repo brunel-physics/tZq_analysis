@@ -1075,7 +1075,10 @@ void AnalysisAlgo::runMainAnalysis()
                         || dataset->name() == "ttbarInclusivePowerheg_fsrup"
                         || dataset->name() == "ttbarInclusivePowerheg_fsrdown"
                         || dataset->name() == "ttbarInclusivePowerheg_isrup"
-                        || dataset->name() == "ttbarInclusivePowerheg_isrdown")
+                        || dataset->name() == "ttbarInclusivePowerheg_isrdown"
+                        || dataset->name() == "ttbar_2l2v"
+                        || dataset->name() == "ttbar_hadronic"
+                        || dataset->name() == "ttbar_semileptonic")
                     {
                         eventWeight *= event->topPtReweight;
                     }
