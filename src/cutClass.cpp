@@ -105,10 +105,10 @@ Cuts::Cuts(bool doPlots,
     , maxbJets_{2}
     ,
     // bDiscCut_{0.9535}, // Tight cut
-    bDiscCut_{0.8484}
+    bDiscCut_{is2016 ? 0.8484 : 0.8838}
     , // Medium level
     // bDiscCut_{0.5426}, // Loose cut
-    bLooseDiscCut_{0.5426}
+    bLooseDiscCut_{is2016 ? 0.5426 : 0.5803}
     , // Loose cut
     bDiscSynchCut_{0.5426}
     ,
