@@ -211,9 +211,9 @@ Cuts::Cuts(bool doPlots,
         h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
             "IsoMu27_PtEtaBins/abseta_pt_ratio")); // Single Muon
                                                    // HLT SF
-        h_muonIDs1 = dynamic_cast<TH2F*>(muonIDsFile1->Get(
+        h_muonIDs1 = dynamic_cast<TH2D*>(muonIDsFile1->Get(
             "NUM_TightID_DEN_genTracks_pt_abseta")); // Tight ID
-        h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get(
+        h_muonPFiso1 = dynamic_cast<TH2D*>(muonIsoFile1->Get(
             "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta")); // Tight ID
         std::cout << "Got 2017 muon SFs!\n" << std::endl;
     }
@@ -283,18 +283,19 @@ Cuts::Cuts(bool doPlots,
                                                                 // HLT SF
         muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
         muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
-        h_muonIDs1 = dynamic_cast<TH2F*>(
+        dynamic_cast<TH2F*>(
             muonIDsFile1->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
-                              "abseta_pt_ratio")); // Tight
-                                                   // ID
+                              "abseta_pt_ratio"))
+            ->Copy(*h_muonIDs1); // Tight ID
         h_muonIDs2 = dynamic_cast<TH2F*>(
             muonIDsFile2->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
                               "abseta_pt_ratio")); // Tight
                                                    // ID
         muonIsoFile1->cd("TightISO_TightID_pt_eta"); // Tight Iso
         muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
-        h_muonPFiso1 = dynamic_cast<TH2F*>(muonIsoFile1->Get(
-            "TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
+        dynamic_cast<TH2F*>(
+            muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"))
+            ->Copy(*h_muonPFiso1); // Tight Iso
         h_muonPFiso2 = dynamic_cast<TH2F*>(muonIsoFile2->Get(
             "TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
         std::cout << "Got 2016 muon SFs!\n" << std::endl;

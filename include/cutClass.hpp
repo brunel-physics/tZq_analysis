@@ -275,9 +275,9 @@ class Cuts
     TFile* muonIsoFile2;
     TH2F* h_muonHlt1;
     TH2F* h_muonHlt2;
-    TH2F* h_muonIDs1;
+    TH2D* h_muonIDs1;
     TH2F* h_muonIDs2;
-    TH2F* h_muonPFiso1;
+    TH2D* h_muonPFiso1;
     TH2F* h_muonPFiso2;
 
     public:
