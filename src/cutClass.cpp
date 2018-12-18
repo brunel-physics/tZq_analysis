@@ -1556,7 +1556,7 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
     {
         // Check η before retrieving TLorentzVector to prevent runtime error
         // when trying to apply a SF for an out of range η
-        if (event->jetPF2PATEta[i] >= jetEta_)
+        if (std::abs(event->jetPF2PATEta[i]) >= jetEta_)
         {
             continue;
         }
