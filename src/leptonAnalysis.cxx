@@ -13,7 +13,6 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <libconfig.h++>
 #include <memory>
 #include <sstream>
 #include <string>

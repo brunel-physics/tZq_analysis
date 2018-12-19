@@ -18,7 +18,6 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <libconfig.h++>
 #include <sstream>
 #include <string>
 
