@@ -18,34 +18,44 @@ colour = kMagenta
 label = SingleTop
 plotType = f
 
+# [ttjets]
+# fileName = configs/2017/datasets/fileLists/ttjets_2l2vFiles.txt
+# totalEvents =  154280331
+# crossSection = 722.8
+# runType = mc
+# histoName = ttjets
+# colour = kGray
+# label = ttjets
+# plotType = f
+
 [ttbar_2l2v]
 fileName = configs/2017/datasets/fileLists/ttbar_2l2vFiles.txt
 totalEvents = 5500000
-crossSection = 687.1
+crossSection = 88.29
 runType = mc
-histoName = SingleTop
+histoName = ttbar
 colour = kRed
-label = SingleTop
+label = ttbar
 plotType = f
 
 [ttbar_hadronic]
 fileName = configs/2017/datasets/fileLists/ttbar_hadronicFiles.txt
 totalEvents = 27108792
-crossSection = 687.1
+crossSection = 377.96
 runType = mc
-histoName = SingleTop
+histoName = ttbar
 colour = kRed
-label = SingleTop
+label = ttbar
 plotType = f
 
 [ttbar_semileptonic]
 fileName = configs/2017/datasets/fileLists/ttbar_semileptonicFiles.txt
 totalEvents = 43732445
-crossSection = 687.1
+crossSection = 365.34
 runType = mc
-histoName = SingleTop
+histoName = ttbar
 colour = kRed
-label = SingleTop
+label = ttbar
 plotType = f
 
 [ttH_bb]
@@ -109,15 +119,15 @@ colour = kGreen
 label = ttV
 plotType = f
 
-[tWZ]
-fileName = configs/2017/datasets/fileLists/tWz_tWllFiles.txt
-totalEvents = 8785360
-crossSection = 45.99
-runType = mc
-histoName = SingleTop
-colour = kMagenta
-label = SingleTop
-plotType = f
+# [tWZ]
+# fileName = configs/2017/datasets/fileLists/tWz_tWllFiles.txt
+# totalEvents = 8785360
+# crossSection = 45.99
+# runType = mc
+# histoName = SingleTop
+# colour = kMagenta
+# label = SingleTop
+# plotType = f
 
 [wPlusJets]
 fileName = configs/2017/datasets/fileLists/WJets_altFiles.txt
@@ -230,4 +240,3 @@ colour = kBlack
 triggerFlag = eCt
 
 []
-
