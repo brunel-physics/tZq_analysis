@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <libconfig.h++>
+#include <yaml-cpp/yaml.h>
 #include <random>
 #include <sstream>
 
@@ -370,90 +370,57 @@ Cuts::~Cuts()
 
 bool Cuts::parse_config(std::string confName)
 {
-    libconfig::Config cutConf;
-
     // Get the configuration file
-    try
-    {
-        cutConf.readFile(confName.c_str());
-    }
-    catch (const libconfig::FileIOException& exep)
-    {
-        std::cerr << "Error opening cut configuration file" << std::endl;
-        return 0;
-    }
-    catch (const libconfig::ParseException& e)
-    {
-        std::cerr << "Parse error in cut configuration at " << e.getFile()
-                  << ":" << e.getLine() << " - " << e.getError() << std::endl;
-        return 0;
-    }
-    const libconfig::Setting& root = cutConf.getRoot();
+    const YAML::Node config{YAML::LoadFile(confName)};
 
-    if (!root.exists("cuts"))
+    if (config["trigLabel"])
     {
-        std::cerr << "I don't know what you think you're doing, but there "
-                     "aren't any cuts here. Get back to the drawing board."
-                  << std::endl;
-        return false;
+        cutConfTrigLabel_ = config["trigLabel"].as<std::string>();
     }
-    if (root.exists("trigLabel"))
+    if (config["plotPostfix"])
     {
-        root.lookupValue("trigLabel", cutConfTrigLabel_);
+        postfixName_ = config["plotPostfix"].as<std::string>();
     }
-    if (root.exists("plotPostfix"))
-    {
-        root.lookupValue("plotPostfix", postfixName_);
-    }
-    libconfig::Setting& cuts = root["cuts"];
-    if (cuts.exists("tightElectrons"))
-    {
-        libconfig::Setting& eles = cuts["tightElectrons"];
-        eles.lookupValue("pt", tightElePt_);
-        eles.lookupValue("ptLeading", tightElePtLeading_);
-        eles.lookupValue("eta", tightEleEta_);
-        eles.lookupValue("relIso", tightEleRelIso_);
-        eles.lookupValue("number", numTightEle_);
-    }
-    if (cuts.exists("looseElectrons"))
-    {
-        libconfig::Setting& eles = cuts["looseElectrons"];
-        eles.lookupValue("pt", looseElePt_);
-        eles.lookupValue("ptLeading", looseElePtLeading_);
-        eles.lookupValue("eta", looseEleEta_);
-        eles.lookupValue("relIso", looseEleRelIso_);
-        eles.lookupValue("number", numLooseEle_);
-    }
-    if (cuts.exists("tightMuons"))
-    {
-        libconfig::Setting& mus = cuts["tightMuons"];
-        mus.lookupValue("pt", tightMuonPt_);
-        mus.lookupValue("ptLeading", tightMuonPtLeading_);
-        mus.lookupValue("eta", tightMuonEta_);
-        mus.lookupValue("relIso", tightMuonRelIso_);
-        mus.lookupValue("number", numTightMu_);
-    }
-    if (cuts.exists("looseMuons"))
-    {
-        libconfig::Setting& mus = cuts["looseMuons"];
-        mus.lookupValue("pt", looseMuonPt_);
-        mus.lookupValue("ptLeading", looseMuonPtLeading_);
-        mus.lookupValue("eta", looseMuonEta_);
-        mus.lookupValue("relIso", looseMuonRelIso_);
-        mus.lookupValue("number", numLooseMu_);
-    }
-    if (cuts.exists("jets"))
-    {
-        libconfig::Setting& jets = cuts["jets"];
-        jets.lookupValue("pt", jetPt_);
-        jets.lookupValue("eta", jetEta_);
-        jets.lookupValue("numJets", numJets_);
-        jets.lookupValue("maxJets", maxJets_);
-        jets.lookupValue("numbJets", numbJets_);
-        jets.lookupValue("maxbJets", maxbJets_);
-        jets.lookupValue("numcJets", numcJets_);
-        jets.lookupValue("maxcJets", maxcJets_);
-    }
+
+    const YAML::Node cuts{config["cuts"]};
+
+    const YAML::Node tight_eles{cuts["tightElectrons"]};
+    tightElePt_ = tight_eles["pt"].as<double>();
+    tightElePtLeading_ = tight_eles["ptLeading"].as<double>();
+    tightEleEta_ = tight_eles["eta"].as<double>();
+    tightEleRelIso_ = tight_eles["relIso"].as<double>();
+    numTightEle_ = tight_eles["number"].as<unsigned>();
+
+    const YAML::Node loose_eles{cuts["looseElectrons"]};
+    looseElePt_ = loose_eles["pt"].as<double>();
+    looseElePtLeading_ = loose_eles["ptLeading"].as<double>();
+    looseEleEta_ = loose_eles["eta"].as<double>();
+    looseEleRelIso_ = loose_eles["relIso"].as<double>();
+    numLooseEle_ = loose_eles["number"].as<unsigned>();
+
+    const YAML::Node tight_mus{cuts["tightMuons"]};
+    tightMuonPt_ = tight_mus["pt"].as<double>();
+    tightMuonPtLeading_ = tight_mus["ptLeading"].as<double>();
+    tightMuonEta_ = tight_mus["eta"].as<double>();
+    tightMuonRelIso_ = tight_mus["relIso"].as<double>();
+    numTightMu_ = tight_mus["number"].as<unsigned>();
+
+    const YAML::Node loose_mus{cuts["looseMuons"]};
+    looseMuonPt_ = loose_mus["pt"].as<double>();
+    looseMuonPtLeading_ = loose_mus["ptLeading"].as<double>();
+    looseMuonEta_ = loose_mus["eta"].as<double>();
+    looseMuonRelIso_ = loose_mus["relIso"].as<double>();
+    numLooseMu_ = loose_mus["number"].as<unsigned>();
+
+    const YAML::Node jets{cuts["jets"]};
+    jetPt_ = jets["pt"].as<double>();
+    jetEta_ = jets["eta"].as<double>();
+    numJets_ = jets["numJets"].as<unsigned>();
+    maxJets_ = jets["maxJets"].as<unsigned>();
+    numbJets_ = jets["numbJets"].as<unsigned>();
+    maxbJets_ = jets["maxbJets"].as<unsigned>();
+    // numcJets_ = jets["numcJets"].as<unsigned>();
+    // maxcJets_ = jets["maxcJets"].as<unsigned>();
 
     std::cerr << "And so it's looking for " << numTightMu_ << " muons and "
               << numTightEle_ << " electrons" << std::endl;

@@ -43,7 +43,6 @@ namespace Parser
                     std::vector<std::string>*,
                     std::vector<std::string>*,
                     std::vector<int>*);
-    std::map<std::string, int> getColourMap();
 } // namespace Parser
 
 #endif

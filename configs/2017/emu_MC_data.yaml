@@ -1,0 +1,6 @@
+datasets: "configs/2017/datasets/emu_data_MC_datasets.yaml"
+cuts: "configs/2017/cuts/ttbarCuts.yaml"
+plots: "configs/plots/plotTtbarConf.yaml"
+outputFolder: "plots/2017/emu/"
+outputPostfix: "emu"
+channelName: "emu"

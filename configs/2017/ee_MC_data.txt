@@ -1,6 +1,0 @@
-datasets = "configs/2017/datasets/ee_data_MC_datasets.txt";
-cuts = "configs/2017/cuts/SRCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2017/ee/";
-outputPostfix = "ee";
-channelName = "ee";

@@ -1,0 +1,35 @@
+cuts:
+    tightMuons:
+        pt: 20
+        ptLeading: 26
+        eta: 2.4
+        relIso: 0.15
+        number: 0
+    looseMuons:
+        pt: 20
+        ptLeading: 26
+        eta: 2.4
+        relIso: 0.25
+        number: 0
+    tightElectrons:
+        pt: 15
+        ptLeading: 35
+        eta: 2.5
+        relIso: 0.107587
+        number: 2
+    looseElectrons:
+        pt: 15
+        ptLeading: 35
+        eta: 2.5
+        relIso: 0.107587
+        number: 2
+    jets:
+        pt: 30
+        eta: 4.7
+        numJets: 4
+        maxJets: 6
+        numbJets: 1
+        maxbJets: 2
+
+trigLabel: "e"
+plotPostfix: "ee"
