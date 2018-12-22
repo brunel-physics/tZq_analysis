@@ -8,11 +8,9 @@
 #include <unordered_map>
 #include <yaml-cpp/yaml.h>
 
-#include "Rtypes.h"
-
-int Parser::parse_config(std::string conf,
-                         std::vector<Dataset>* datasets,
-                         double* lumi)
+int Parser::parse_config(const std::string conf,
+                         std::vector<Dataset>& datasets,
+                         double& lumi)
 {
     const YAML::Node root{YAML::LoadFile(conf)};
 
@@ -27,22 +25,22 @@ int Parser::parse_config(std::string conf,
     return 1;
 }
 
-int Parser::parse_config(std::string conf,
-                         std::vector<Dataset>* datasets,
-                         double* lumi,
-                         std::vector<std::string>* plotTitles,
-                         std::vector<std::string>* plotNames,
-                         std::vector<float>* xMin,
-                         std::vector<float>* xMax,
-                         std::vector<int>* nBins,
-                         std::vector<std::string>* fillExp,
-                         std::vector<std::string>* xAxisLabels,
-                         std::vector<int>* cutStage,
-                         std::string* cutsConfName,
-                         std::string* plotConfName,
-                         std::string* outFolder,
-                         std::string* postfix,
-                         std::string* channel)
+int Parser::parse_config(const std::string conf,
+                         std::vector<Dataset>& datasets,
+                         double& lumi,
+                         std::vector<std::string>& plotTitles,
+                         std::vector<std::string>& plotNames,
+                         std::vector<float>& xMin,
+                         std::vector<float>& xMax,
+                         std::vector<int>& nBins,
+                         std::vector<std::string>& fillExp,
+                         std::vector<std::string>& xAxisLabels,
+                         std::vector<int>& cutStage,
+                         std::string& cutsConfName,
+                         std::string& plotConfName,
+                         std::string& outFolder,
+                         std::string& postfix,
+                         std::string& channel)
 {
     const YAML::Node root{YAML::LoadFile(conf)};
 
@@ -54,17 +52,17 @@ int Parser::parse_config(std::string conf,
         return 0;
     }
 
-    if (*cutsConfName == "")
+    if (cutsConfName == "")
     {
-        *cutsConfName = root["cuts"].as<std::string>();
+        cutsConfName = root["cuts"].as<std::string>();
     }
-    if (*plotConfName == "") // If you haven't already chosen the plots to use,
+    if (plotConfName == "") // If you haven't already chosen the plots to use,
                              // use the ones here.
     {
-        *plotConfName = root["plots"].as<std::string>();
+        plotConfName = root["plots"].as<std::string>();
     }
 
-    if (!parse_plots(*plotConfName,
+    if (!parse_plots(plotConfName,
                      plotTitles,
                      plotNames,
                      xMin,
@@ -78,26 +76,26 @@ int Parser::parse_config(std::string conf,
         return 0;
     }
 
-    if (*outFolder == "plots/" && root["outputFolder"])
+    if (outFolder == "plots/" && root["outputFolder"])
     {
-        *outFolder = root["outputFolder"].as<std::string>();
+        outFolder = root["outputFolder"].as<std::string>();
     }
-    if (*postfix == "default" && root["outputPostfix"])
+    if (postfix == "default" && root["outputPostfix"])
     {
-        *postfix = root["outputPostfix"].as<std::string>();
+        postfix = root["outputPostfix"].as<std::string>();
     }
     if (root["channelName"])
     {
-        *channel = root["channelName"].as<std::string>();
+        channel = root["channelName"].as<std::string>();
     }
 
     return 1;
 }
 
 // For reading the file config.
-int Parser::parse_files(std::string fileConf,
-                        std::vector<Dataset>* datasets,
-                        double* totalLumi)
+int Parser::parse_files(const std::string fileConf,
+                        std::vector<Dataset>& datasets,
+                        double& totalLumi)
 {
     const YAML::Node root{YAML::LoadFile(fileConf)};
     const std::unordered_map<std::string, int> colourMap{
@@ -124,7 +122,7 @@ int Parser::parse_files(std::string fileConf,
     {
         const bool isMC{it->second["mc"].as<bool>()};
 
-        datasets->emplace_back(
+        datasets.emplace_back(
             it->first.as<std::string>(),
             isMC ? 0 : it->second["luminosity"].as<double>(),
             isMC,
@@ -138,36 +136,36 @@ int Parser::parse_files(std::string fileConf,
             it->second["plot_type"].as<std::string>(),
             isMC ? "" : it->second["trigger_flag"].as<std::string>());
 
-        std::cerr << datasets->back().name() << "\t(" << (isMC ? "MC" : "Data")
+        std::cerr << datasets.back().name() << "\t(" << (isMC ? "MC" : "Data")
                   << ')' << std::endl;
     }
 
     return 1;
 }
 
-int Parser::parse_plots(std::string plotConf,
-                        std::vector<std::string>* plotTitles,
-                        std::vector<std::string>* plotNames,
-                        std::vector<float>* xMin,
-                        std::vector<float>* xMax,
-                        std::vector<int>* nBins,
-                        std::vector<std::string>* fillExp,
-                        std::vector<std::string>* xAxisLabels,
-                        std::vector<int>* cutStage)
+int Parser::parse_plots(const std::string plotConf,
+                        std::vector<std::string>& plotTitles,
+                        std::vector<std::string>& plotNames,
+                        std::vector<float>& xMin,
+                        std::vector<float>& xMax,
+                        std::vector<int>& nBins,
+                        std::vector<std::string>& fillExp,
+                        std::vector<std::string>& xAxisLabels,
+                        std::vector<int>& cutStage)
 {
     const YAML::Node root{YAML::LoadFile(plotConf)};
     const YAML::Node plots{root["plots"]};
 
     for (YAML::const_iterator it = plots.begin(); it != plots.end(); ++it)
     {
-        plotTitles->emplace_back((*it)["title"].as<std::string>());
-        plotNames->emplace_back((*it)["name"].as<std::string>());
-        xMin->emplace_back((*it)["xMin"].as<float>());
-        xMax->emplace_back((*it)["xMax"].as<float>());
-        nBins->emplace_back((*it)["nBins"].as<int>());
-        fillExp->emplace_back((*it)["fillExp"].as<std::string>());
-        xAxisLabels->emplace_back((*it)["xAxisLabel"].as<std::string>());
-        cutStage->emplace_back((*it)["cutStage"].as<int>());
+        plotTitles.emplace_back((*it)["title"].as<std::string>());
+        plotNames.emplace_back((*it)["name"].as<std::string>());
+        xMin.emplace_back((*it)["xMin"].as<float>());
+        xMax.emplace_back((*it)["xMax"].as<float>());
+        nBins.emplace_back((*it)["nBins"].as<int>());
+        fillExp.emplace_back((*it)["fillExp"].as<std::string>());
+        xAxisLabels.emplace_back((*it)["xAxisLabel"].as<std::string>());
+        cutStage.emplace_back((*it)["cutStage"].as<int>());
     }
 
     return 1;
