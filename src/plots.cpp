@@ -21,7 +21,7 @@ Plots::Plots(std::vector<std::string> titles,
 {
     // Get the function pointer map for later custopmisation. This is gonna be
     // great, I promise.
-    auto functionPointerMap{getFncPtrMap()};
+    auto functionMap{getFncMap()};
 
     plotPoint = std::vector<plot>(names.size());
     for (unsigned i{0}; i < names.size(); i++)
@@ -29,7 +29,7 @@ Plots::Plots(std::vector<std::string> titles,
         std::string plotName = names[i] + "_" + postfixName;
         plotPoint[i].name = plotName;
         plotPoint[i].title = titles[i];
-        plotPoint[i].fillExp = functionPointerMap[fillExps[i]];
+        plotPoint[i].fillExp = functionMap[fillExps[i]];
         plotPoint[i].xAxisLabel = xAxisLabels[i];
         plotPoint[i].plotHist =
             new TH1D{plotName.c_str(),
@@ -51,7 +51,7 @@ Plots::~Plots()
 }
 
 // clang-format off
-std::map<std::string, std::function<float(AnalysisEvent*)>> Plots::getFncPtrMap()
+std::map<std::string, std::function<float(AnalysisEvent*)>> Plots::getFncMap()
 {
     return
     {

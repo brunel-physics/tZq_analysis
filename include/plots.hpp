@@ -166,7 +166,7 @@ class Plots
     {
         return plotPoint;
     }
-    std::map<std::string, std::function<float(AnalysisEvent*)>> getFncPtrMap();
+    std::map<std::string, std::function<float(AnalysisEvent*)>> getFncMap();
 };
 
 struct plot
