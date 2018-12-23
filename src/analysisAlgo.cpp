@@ -239,26 +239,22 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     // Some vectors that will be filled in the parsing.
     totalLumi = 0;
 
-    if (!Parser::parse_config(config,
-                              datasets,
-                              totalLumi,
-                              plotTitles,
-                              plotNames,
-                              xMin,
-                              xMax,
-                              nBins,
-                              fillExp,
-                              xAxisLabels,
-                              cutStage,
-                              cutConfName,
-                              plotConfName,
-                              outFolder,
-                              postfix,
-                              channel))
-    {
-        std::cerr << "There was an error parsing the config file.\n";
-        exit(0);
-    }
+    Parser::parse_config(config,
+                         datasets,
+                         totalLumi,
+                         plotTitles,
+                         plotNames,
+                         xMin,
+                         xMax,
+                         nBins,
+                         fillExp,
+                         xAxisLabels,
+                         cutStage,
+                         cutConfName,
+                         plotConfName,
+                         outFolder,
+                         postfix,
+                         channel);
 
     if (channelsToRun)
     {
@@ -390,12 +386,7 @@ void AnalysisAlgo::setupCuts()
                       is2016_,
                       isFCNC_,
                       isCtag_};
-    if (!cutObj->parse_config(cutConfName))
-    {
-        std::cerr << "There was a problem with parsing the config!"
-                  << std::endl;
-        exit(0);
-    }
+    cutObj->parse_config(cutConfName);
     // For studying some trigger things. Default is false.
     cutObj->setSkipTrig(skipTrig);
     if (customJetRegion)

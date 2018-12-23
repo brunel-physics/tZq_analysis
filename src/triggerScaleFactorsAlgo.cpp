@@ -386,11 +386,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
     // Some vectors that will be filled in the parsing.
     totalLumi = 0;
-    if (!Parser::parse_config(config, datasets, totalLumi))
-    {
-        std::cerr << "There was an error parsing the config file.\n";
-        exit(0);
-    }
+    Parser::parse_config(config, datasets, totalLumi);
 }
 
 void TriggerScaleFactors::runMainAnalysis()

@@ -350,7 +350,7 @@ class Cuts
         maxJets_ = maxJets;
         maxbJets_ = maxBJets;
     }
-    bool parse_config(std::string);
+    void parse_config(std::string);
     void dumpLeptonInfo(AnalysisEvent*);
     void dumpLooseLepInfo(AnalysisEvent*);
     TH1D* getSynchCutFlow();

@@ -368,7 +368,7 @@ Cuts::~Cuts()
     }
 }
 
-bool Cuts::parse_config(std::string confName)
+void Cuts::parse_config(std::string confName)
 {
     // Get the configuration file
     const YAML::Node config{YAML::LoadFile(confName)};
@@ -434,8 +434,6 @@ bool Cuts::parse_config(std::string confName)
         step6EventDump_.open("step6EventDump" + postfixName_ + ".txt");
         step9EventDump_.open("step9EventDump" + postfixName_ + ".txt");
     }
-
-    return true;
 }
 
 bool Cuts::makeCuts(AnalysisEvent* event,
