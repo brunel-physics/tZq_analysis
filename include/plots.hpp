@@ -4,8 +4,8 @@
 #include "AnalysisEvent.hpp"
 
 #include <functional>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 typedef struct plot plot;
@@ -166,7 +166,8 @@ class Plots
     {
         return plotPoint;
     }
-    std::map<std::string, std::function<float(AnalysisEvent*)>> getFncMap();
+    std::unordered_map<std::string, std::function<float(AnalysisEvent*)>>
+        getFncMap();
 };
 
 struct plot
