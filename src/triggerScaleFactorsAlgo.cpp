@@ -386,7 +386,18 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
     // Some vectors that will be filled in the parsing.
     totalLumi = 0;
-    Parser::parse_config(config, datasets, totalLumi);
+    try
+    {
+        Parser::parse_config(config, datasets, totalLumi);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR Problem with a confugration file, see previous "
+                     "errors for more details. If this is the only error, the "
+                     "problem is with the main configuration file."
+                  << std::endl;
+        throw;
+    }
 }
 
 void TriggerScaleFactors::runMainAnalysis()

@@ -14,7 +14,15 @@ void Parser::parse_config(const std::string conf,
 {
     const YAML::Node root{YAML::LoadFile(conf)};
     auto datasetConf{root["datasets"].as<std::string>()};
-    parse_files(datasetConf, datasets, lumi);
+    try
+    {
+        parse_files(datasetConf, datasets, lumi);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR while parsing dataset file" << std::endl;
+        throw;
+    }
 }
 
 void Parser::parse_config(const std::string conf,
@@ -38,7 +46,15 @@ void Parser::parse_config(const std::string conf,
 
     auto datasetConf{root["datasets"].as<std::string>()};
 
-    parse_files(datasetConf, datasets, lumi);
+    try
+    {
+        parse_files(datasetConf, datasets, lumi);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR while parsing dataset file" << std::endl;
+        throw;
+    }
 
     if (cutsConfName == "")
     {
@@ -50,15 +66,23 @@ void Parser::parse_config(const std::string conf,
         plotConfName = root["plots"].as<std::string>();
     }
 
-    parse_plots(plotConfName,
-                plotTitles,
-                plotNames,
-                xMin,
-                xMax,
-                nBins,
-                fillExp,
-                xAxisLabels,
-                cutStage);
+    try
+    {
+        parse_plots(plotConfName,
+                    plotTitles,
+                    plotNames,
+                    xMin,
+                    xMax,
+                    nBins,
+                    fillExp,
+                    xAxisLabels,
+                    cutStage);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR while parsing plot configuration" << std::endl;
+        throw;
+    }
 
     if (outFolder == "plots/" && root["outputFolder"])
     {
