@@ -21,8 +21,7 @@ Plots::Plots(std::vector<std::string> titles,
 {
     // Get the function pointer map for later custopmisation. This is gonna be
     // great, I promise.
-    std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap{
-        getFncPtrMap()};
+    auto functionPointerMap{getFncPtrMap()};
 
     plotPoint = std::vector<plot>(names.size());
     for (unsigned i{0}; i < names.size(); i++)
@@ -52,115 +51,115 @@ Plots::~Plots()
 }
 
 // clang-format off
-std::map<std::string, float (Plots::*)(AnalysisEvent*)> Plots::getFncPtrMap()
+std::map<std::string, std::function<float(AnalysisEvent*)>> Plots::getFncPtrMap()
 {
-    std::map<std::string, float (Plots::*)(AnalysisEvent*)> functionPointerMap;
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1Pt", &Plots::fillLepton1Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1Eta", &Plots::fillLepton1Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2Pt", &Plots::fillLepton2Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2Eta", &Plots::fillLepton2Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1RelIso", &Plots::fillLepton1RelIso));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2RelIso", &Plots::fillLepton2RelIso));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1Phi", &Plots::fillLepton1Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2Phi", &Plots::fillLepton2Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Pt", &Plots::fillWbosonQuark1Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Eta", &Plots::fillWbosonQuark1Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark1Phi", &Plots::fillWbosonQuark1Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Pt", &Plots::fillWbosonQuark2Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Eta", &Plots::fillWbosonQuark2Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuark2Phi", &Plots::fillWbosonQuark2Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("met", &Plots::fillMetPlot));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("numbJets", &Plots::getNumberOfJets));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totalJetMass", &Plots::fillTotalJetMass));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totalJetPt", &Plots::fillTotalJetPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totalJetEta", &Plots::fillTotalJetEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totalJetPhi", &Plots::fillTotalJetPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("leadingJetPt", &Plots::fillLeadingJetPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("leadingJetEta", &Plots::fillLeadingJetEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("leadingJetPhi", &Plots::fillLeadingJetPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("leadingJetBDisc", &Plots::fillLeadingJetBDisc));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("secondJetPt", &Plots::fillSecondJetPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("secondJetEta", &Plots::fillSecondJetEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("secondJetPhi", &Plots::fillSecondJetPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("secondJetBDisc", &Plots::fillSecondJetBDisc));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("thirdJetPt", &Plots::fillThirdJetPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("thirdJetEta", &Plots::fillThirdJetEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("thirdJetPhi", &Plots::fillThirdJetPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("thirdJetBDisc", &Plots::fillThirdJetBDisc));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("fourthJetPt", &Plots::fillFourthJetPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("fourthJetEta", &Plots::fillFourthJetEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("fourthJetPhi", &Plots::fillFourthJetPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("fourthJetBDisc", &Plots::fillFourthJetBDisc));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("numbBJets", &Plots::numbBJets));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("bTagDisc", &Plots::fillBtagDisc));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1Pt", &Plots::fillZLep1Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1Eta", &Plots::fillZLep1Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Pt", &Plots::fillZLep2Pt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Eta", &Plots::fillZLep2Eta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1RelIso", &Plots::fillZLep1RelIso));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2RelIso", &Plots::fillZLep2RelIso));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton1Phi", &Plots::fillZLep1Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepton2Phi", &Plots::fillZLep2Phi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairMass", &Plots::fillZPairMass));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPt", &Plots::fillZPairPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairEta", &Plots::fillZPairEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zPairPhi", &Plots::fillZPairPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wPairMass",&Plots::fillWPairMass));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topMass", &Plots::fillTopMass));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topPt", &Plots::fillTopPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topEta", &Plots::fillTopEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("topPhi", &Plots::fillTopPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1D0", &Plots::fillLepton1D0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2D0", &Plots::fillLepton2D0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1DBD0", &Plots::fillLepton1DBD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2DBD0", &Plots::fillLepton2DBD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1BeamSpotCorrectedD0", &Plots::fillLepton1BeamSpotCorrectedD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2BeamSpotCorrectedD0", &Plots::fillLepton2BeamSpotCorrectedD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep1InnerTrackD0", &Plots::fillLepton1InnerTrackD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lep2InnerTrackD0", &Plots::fillLepton2InnerTrackD0));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wTransverseMass", &Plots::fillwTransverseMass));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jjDelR", &Plots::filljjDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jjDelPhi", &Plots::filljjDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelR", &Plots::fillwwDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wwDelPhi", &Plots::fillwwDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelR", &Plots::filllbDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lbDelPhi", &Plots::filllbDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepDelR", &Plots::fillZLepDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLepDelPhi", &Plots::fillZLepDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1Quark1DelR", &Plots::fillZLep1Quark1DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1Quark1DelPhi", &Plots::fillZLep1Quark1DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1Quark2DelR", &Plots::fillZLep1Quark2DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1Quark2DelPhi", &Plots::fillZLep1Quark2DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2Quark1DelR", &Plots::fillZLep2Quark1DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2Quark1DelPhi", &Plots::fillZLep2Quark1DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2Quark2DelR", &Plots::fillZLep2Quark2DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2Quark2DelPhi", &Plots::fillZLep2Quark2DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1BjetDelR", &Plots::fillZLep1BjetDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep1BjetDelPhi", &Plots::fillZLep1BjetDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2BjetDelR", &Plots::fillZLep2BjetDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zLep2BjetDelPhi", &Plots::fillZLep2BjetDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("lepHt", &Plots::fillLepHt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wQuarkHt", &Plots::fillWquarkHt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("jetHt", &Plots::fillJetHt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totHt", &Plots::fillTotHt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totHtOverPt", &Plots::fillTotHtOverPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totPt", &Plots::fillTotPt));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totEta", &Plots::fillTotEta));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("totM", &Plots::fillTotM));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelR", &Plots::fillWZdelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("wzDelPhi", &Plots::fillWZdelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelR", &Plots::fillZquark1DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark1DelPhi", &Plots::fillZquark1DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelR", &Plots::fillZquark2DelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zQuark2DelPhi", &Plots::fillZquark2DelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelR", &Plots::fillZtopDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zTopDelPhi", &Plots::fillZtopDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelR", &Plots::fillZLep1TopDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl1TopDelPhi", &Plots::fillZLep1TopDelPhi));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelR", &Plots::fillZLep2TopDelR));
-    functionPointerMap.insert(std::pair<std::string, float (Plots::*)(AnalysisEvent*)>("zl2TopDelPhi", &Plots::fillZLep2TopDelPhi));
-
-    return functionPointerMap;
+    return
+    {
+        {"lep1Pt", Plots::fillLepton1Pt},
+        {"lep1Eta", Plots::fillLepton1Eta},
+        {"lep2Pt", Plots::fillLepton2Pt},
+        {"lep2Eta", Plots::fillLepton2Eta},
+        {"lep1RelIso", Plots::fillLepton1RelIso},
+        {"lep2RelIso", Plots::fillLepton2RelIso},
+        {"lep1Phi", Plots::fillLepton1Phi},
+        {"lep2Phi", Plots::fillLepton2Phi},
+        {"wQuark1Pt", Plots::fillWbosonQuark1Pt},
+        {"wQuark1Eta", Plots::fillWbosonQuark1Eta},
+        {"wQuark1Phi", Plots::fillWbosonQuark1Phi},
+        {"wQuark2Pt", Plots::fillWbosonQuark2Pt},
+        {"wQuark2Eta", Plots::fillWbosonQuark2Eta},
+        {"wQuark2Phi", Plots::fillWbosonQuark2Phi},
+        {"met", Plots::fillMetPlot},
+        {"numbJets", Plots::getNumberOfJets},
+        {"totalJetMass", Plots::fillTotalJetMass},
+        {"totalJetPt", Plots::fillTotalJetPt},
+        {"totalJetEta", Plots::fillTotalJetEta},
+        {"totalJetPhi", Plots::fillTotalJetPhi},
+        {"leadingJetPt", Plots::fillLeadingJetPt},
+        {"leadingJetEta", Plots::fillLeadingJetEta},
+        {"leadingJetPhi", Plots::fillLeadingJetPhi},
+        {"leadingJetBDisc", Plots::fillLeadingJetBDisc},
+        {"secondJetPt", Plots::fillSecondJetPt},
+        {"secondJetEta", Plots::fillSecondJetEta},
+        {"secondJetPhi", Plots::fillSecondJetPhi},
+        {"secondJetBDisc", Plots::fillSecondJetBDisc},
+        {"thirdJetPt", Plots::fillThirdJetPt},
+        {"thirdJetEta", Plots::fillThirdJetEta},
+        {"thirdJetPhi", Plots::fillThirdJetPhi},
+        {"thirdJetBDisc", Plots::fillThirdJetBDisc},
+        {"fourthJetPt", Plots::fillFourthJetPt},
+        {"fourthJetEta", Plots::fillFourthJetEta},
+        {"fourthJetPhi", Plots::fillFourthJetPhi},
+        {"fourthJetBDisc", Plots::fillFourthJetBDisc},
+        {"numbBJets", Plots::numbBJets},
+        {"bTagDisc", Plots::fillBtagDisc},
+        {"zLepton1Pt", Plots::fillZLep1Pt},
+        {"zLepton1Eta", Plots::fillZLep1Eta},
+        {"zLepton2Pt", Plots::fillZLep2Pt},
+        {"zLepton2Eta", Plots::fillZLep2Eta},
+        {"zLepton1RelIso", Plots::fillZLep1RelIso},
+        {"zLepton2RelIso", Plots::fillZLep2RelIso},
+        {"zLepton1Phi", Plots::fillZLep1Phi},
+        {"zLepton2Phi", Plots::fillZLep2Phi},
+        {"zPairMass", Plots::fillZPairMass},
+        {"zPairPt", Plots::fillZPairPt},
+        {"zPairEta", Plots::fillZPairEta},
+        {"zPairPhi", Plots::fillZPairPhi},
+        {"wPairMass",Plots::fillWPairMass},
+        {"topMass", Plots::fillTopMass},
+        {"topPt", Plots::fillTopPt},
+        {"topEta", Plots::fillTopEta},
+        {"topPhi", Plots::fillTopPhi},
+        {"lep1D0", Plots::fillLepton1D0},
+        {"lep2D0", Plots::fillLepton2D0},
+        {"lep1DBD0", Plots::fillLepton1DBD0},
+        {"lep2DBD0", Plots::fillLepton2DBD0},
+        {"lep1BeamSpotCorrectedD0", Plots::fillLepton1BeamSpotCorrectedD0},
+        {"lep2BeamSpotCorrectedD0", Plots::fillLepton2BeamSpotCorrectedD0},
+        {"lep1InnerTrackD0", Plots::fillLepton1InnerTrackD0},
+        {"lep2InnerTrackD0", Plots::fillLepton2InnerTrackD0},
+        {"wTransverseMass", Plots::fillwTransverseMass},
+        {"jjDelR", Plots::filljjDelR},
+        {"jjDelPhi", Plots::filljjDelPhi},
+        {"wwDelR", Plots::fillwwDelR},
+        {"wwDelPhi", Plots::fillwwDelPhi},
+        {"lbDelR", Plots::filllbDelR},
+        {"lbDelPhi", Plots::filllbDelPhi},
+        {"zLepDelR", Plots::fillZLepDelR},
+        {"zLepDelPhi", Plots::fillZLepDelPhi},
+        {"zLep1Quark1DelR", Plots::fillZLep1Quark1DelR},
+        {"zLep1Quark1DelPhi", Plots::fillZLep1Quark1DelPhi},
+        {"zLep1Quark2DelR", Plots::fillZLep1Quark2DelR},
+        {"zLep1Quark2DelPhi", Plots::fillZLep1Quark2DelPhi},
+        {"zLep2Quark1DelR", Plots::fillZLep2Quark1DelR},
+        {"zLep2Quark1DelPhi", Plots::fillZLep2Quark1DelPhi},
+        {"zLep2Quark2DelR", Plots::fillZLep2Quark2DelR},
+        {"zLep2Quark2DelPhi", Plots::fillZLep2Quark2DelPhi},
+        {"zLep1BjetDelR", Plots::fillZLep1BjetDelR},
+        {"zLep1BjetDelPhi", Plots::fillZLep1BjetDelPhi},
+        {"zLep2BjetDelR", Plots::fillZLep2BjetDelR},
+        {"zLep2BjetDelPhi", Plots::fillZLep2BjetDelPhi},
+        {"lepHt", Plots::fillLepHt},
+        {"wQuarkHt", Plots::fillWquarkHt},
+        {"jetHt", Plots::fillJetHt},
+        {"totHt", Plots::fillTotHt},
+        {"totHtOverPt", Plots::fillTotHtOverPt},
+        {"totPt", Plots::fillTotPt},
+        {"totEta", Plots::fillTotEta},
+        {"totM", Plots::fillTotM},
+        {"wzDelR", Plots::fillWZdelR},
+        {"wzDelPhi", Plots::fillWZdelPhi},
+        {"zQuark1DelR", Plots::fillZquark1DelR},
+        {"zQuark1DelPhi", Plots::fillZquark1DelPhi},
+        {"zQuark2DelR", Plots::fillZquark2DelR},
+        {"zQuark2DelPhi", Plots::fillZquark2DelPhi},
+        {"zTopDelR", Plots::fillZtopDelR},
+        {"zTopDelPhi", Plots::fillZtopDelPhi},
+        {"zl1TopDelR", Plots::fillZLep1TopDelR},
+        {"zl1TopDelPhi", Plots::fillZLep1TopDelPhi},
+        {"zl2TopDelR", Plots::fillZLep2TopDelR},
+        {"zl2TopDelPhi", Plots::fillZLep2TopDelPhi}
+    };
 }
 // clang-format on
 
@@ -1750,7 +1749,7 @@ void Plots::fillAllPlots(AnalysisEvent* event, float eventWeight)
     {
         if (plotPoint[i].fillPlot)
         {
-            plotPoint[i].plotHist->Fill((this->*plotPoint[i].fillExp)(event),
+            plotPoint[i].plotHist->Fill((this->plotPoint[i].fillExp)(event),
                                         eventWeight);
         }
     }
