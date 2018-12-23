@@ -10,23 +10,23 @@ EXECUTABLES = $(patsubst src/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
 		-L/scratch/shared/lib \
-		-L/usr/lib64/boost148 \
 		-Llib \
+		-L/opt/rh/rh-mongodb34/root/usr/lib64 \
 
 LIBRARIES = 	$(shell root-config --libs) \
 		-lLHAPDF \
 		-lTMVA  \
-		-lconfig++ \
 		-lz \
-		-lboost_system-mt \
-		-lboost_filesystem-mt \
+		-lboost_system \
+		-lboost_filesystem \
 		-lboost_program_options \
+		-lyaml-cpp \
 
 INCLUDE_PATH = 	-Iinclude  \
 		-isystem/scratch/shared/include \
-		-isystem/usr/include/boost148 \
-		-I/usr/include \
+		-isystem/opt/rh/rh-mongodb34/root/usr/include \
 		-isystem$(shell root-config --incdir) \
+		-isystem/opt/rh/rh-mongodb34/root/usr/include \
 
 CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 	 -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wformat=2 -Winit-self \
@@ -39,7 +39,7 @@ CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 LINK_LIBRARY_FLAGS = -shared -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
 LINK_EXECUTABLE_FLAGS = -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
 			-lTQZanalysisTools \
-			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,--enable-new-dtags
+			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,-R/opt/rh/rh-mongodb34/root/usr/lib64,--enable-new-dtags
 
 .PHONY: all _all clean _cleanall build _buildall install _installall rpm _rpmall test _testall spec_update
 

@@ -51,8 +51,8 @@ class AnalysisAlgo
     bool skipData; // utility stuff. True if flags are set and will skip either
                    // data or mc.
     bool skipMC;
-    std::string* cutConfName;
-    std::string* plotConfName;
+    std::string cutConfName;
+    std::string plotConfName;
     int numFiles;
     bool readEventList;
     bool dumpEventNumbers;

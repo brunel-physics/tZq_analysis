@@ -82,11 +82,17 @@ void DebugInfo::parseCommandLineArguements(int argc, char* argv[])
 
     // Some vectors that will be filled in the parsing.
     totalLumi = 0;
-    lumiPtr = &totalLumi;
-    if (!Parser::parse_config(config, &datasets, lumiPtr))
+    try
     {
-        std::cerr << "There was an error parsing the config file.\n";
-        exit(0);
+        Parser::parse_config(config, datasets, totalLumi);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR Problem with a confugration file, see previous "
+                     "errors for more details. If this is the only error, the "
+                     "problem is with the main configuration file."
+                  << std::endl;
+        throw;
     }
 }
 

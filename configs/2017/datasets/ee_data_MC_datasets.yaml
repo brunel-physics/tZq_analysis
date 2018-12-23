@@ -1,0 +1,240 @@
+DYJetsToLL_M-50:
+    file_list: "configs/2017/datasets/fileLists/DYJetsToLL_M-50Files.txt"
+    total_events: 209773027
+    cross_section: 6529.0
+    mc: true
+    histogram: "zPlusJets"
+    colour: "kBlue"
+    label: "zPlusJets"
+    plot_type: "f"
+
+tHq:
+    file_list: "configs/2017/datasets/fileLists/tHqFiles.txt"
+    total_events: 3381548
+    cross_section: 0.3184
+    mc: true
+    histogram: "SingleTop"
+    colour: "kMagenta"
+    label: "SingleTop"
+    plot_type: "f"
+
+# ttjets:
+#    file_list: "configs/2017/datasets/fileLists/ttjets_2l2vFiles.txt"
+#    total_events: 154280331
+#    cross_section: 722.8
+#    mc: true
+#    histogram: "ttjets"
+#    colour: "kGray"
+#    label: "ttjets"
+#    plot_type: "f"
+
+ttbar_2l2v:
+    file_list: "configs/2017/datasets/fileLists/ttbar_2l2vFiles.txt"
+    total_events: 69155808
+    cross_section: 88.29
+    mc: true
+    histogram: "ttbar"
+    colour: "kRed"
+    label: "ttbar"
+    plot_type: "f"
+
+ttbar_hadronic:
+    file_list: "configs/2017/datasets/fileLists/ttbar_hadronicFiles.txt"
+    total_events: 130262440
+    cross_section: 377.96
+    mc: true
+    histogram: "ttbar"
+    colour: "kRed"
+    label: "ttbar"
+    plot_type: "f"
+
+ttbar_semileptonic:
+    file_list: "configs/2017/datasets/fileLists/ttbar_semileptonicFiles.txt"
+    total_events: 43732445
+    cross_section: 365.34
+    mc: true
+    histogram: "ttbar"
+    colour: "kRed"
+    label: "ttbar"
+    plot_type: "f"
+
+ttH_bb:
+    file_list: "configs/2017/datasets/fileLists/ttH_bbFiles.txt"
+    total_events: 8000000
+    cross_section: 0.5269
+    mc: true
+    histogram: "ttV"
+    colour: "kGreen"
+    label: "ttV"
+    plot_type: "f"
+
+# Still in production
+# ttH_nonbb:
+#    file_list: configs/"2017/datasets/fileLists/ttH_nonbbFiles.txt"
+#    total_events: 7669336
+#    cross_section: 0.2123
+#    mc: true
+#    histogram: "ttV"
+#    colour: "kGreen"
+#    label: "ttV"
+#    plot_type: "f"
+
+ttWTolnu:
+    file_list: "configs/2017/datasets/fileLists/ttWTolnuFiles.txt"
+    total_events: 4919674
+    cross_section: 0.2125
+    mc: true
+    histogram: "ttV"
+    colour: "kGreen"
+    label: "ttV"
+    plot_type: "f"
+
+ttW2q:
+    file_list: "configs/2017/datasets/fileLists/ttWToqqFiles.txt"
+    total_events: 811306
+    cross_section: 0.4357
+    mc: true
+    histogram: "ttV"
+    colour: "kGreen"
+    label: "ttV"
+    plot_type: "f"
+
+ttZToll:
+    file_list: "configs/2017/datasets/fileLists/ttZTollFiles.txt"
+    total_events: 250000
+    cross_section: 0.0532
+    mc: true
+    histogram: "ttV"
+    colour: "kGreen"
+    label: "ttV"
+    plot_type: "f"
+
+ttZ2q:
+    file_list: "configs/2017/datasets/fileLists/ttZToqqFiles.txt"
+    total_events: 750000
+    cross_section: 0.5104
+    mc: true
+    histogram: "ttV"
+    colour: "kGreen"
+    label: "ttV"
+    plot_type: "f"
+
+# tWZ:
+#    file_list: "configs"/2017/datasets/fileLists/tWz_tWllFiles.txt
+#    total_events: 8785360
+#    cross_section: 45.99
+#    mc: true
+#    histogram: "SingleTop"
+#    colour: "kMagenta"
+#    label: "SingleTop"
+#    plot_type: "f"
+
+wPlusJets:
+    file_list: "configs/2017/datasets/fileLists/WJets_altFiles.txt"
+    mc: true
+    total_events: 77841284
+    cross_section: 52940.0
+    histogram: "wJets"
+    colour: "kGray"
+    label: "w+jets"
+    plot_type: "f"
+
+WZ_2l2q:
+    file_list: "configs/2017/datasets/fileLists/WZ_2l2qFiles.txt"
+    total_events: 27582164
+    cross_section: 6.331
+    mc: true
+    histogram: "wz"
+    colour: "kOrange"
+    label: "wz"
+    plot_type: "f"
+
+WZ_lnu2q:
+    file_list: "configs/2017/datasets/fileLists/WZ_lnu2qFiles.txt"
+    total_events: 19086373
+    cross_section: 11.66
+    mc: true
+    histogram: "wz"
+    colour: "kOrange"
+    label: "wz"
+    plot_type: "f"
+
+WZ_3lnu:
+    file_list: "configs/2017/datasets/fileLists/WZ_3lnuFiles.txt"
+    total_events: 10987679
+    cross_section: 5.052
+    mc: true
+    histogram: "wz"
+    colour: "kOrange"
+    label: "wz"
+    plot_type: "f"
+
+WZZ:
+    file_list: "configs/2017/datasets/fileLists/WZZFiles.txt"
+    total_events: 250000
+    cross_section: 0.05565
+    mc: true
+    histogram: "vvv"
+    colour: "kViolet"
+    label: "vvv"
+    plot_type: "f"
+
+ZZ_2l2nu:
+    file_list: "configs/2017/datasets/fileLists/ZZ_2l2nuFiles.txt"
+    total_events: 8744768
+    cross_section: 5.052
+    mc: true
+    histogram: "zz"
+    colour: "kPink"
+    label: "zz"
+    plot_type: "f"
+
+ZZ_2l2q:
+    file_list: "configs/2017/datasets/fileLists/ZZ_2l2qFiles.txt"
+    mc: true
+    total_events: 62172314
+    cross_section: 6.331
+    histogram: "zz"
+    colour: "kPink"
+    label: "zz"
+    plot_type: "f"
+
+ZZ_4l:
+    file_list: "configs/2017/datasets/fileLists/ZZ_4lFiles.txt"
+    total_events: 6964071
+    cross_section: 11.66
+    mc: true
+    histogram: "zz"
+    colour: "kPink"
+    label: "zz"
+    plot_type: "f"
+
+ZZZ:
+    file_list: "configs/2017/datasets/fileLists/ZZZFiles.txt"
+    total_events: 250000
+    cross_section: 0.01398
+    mc: true
+    histogram: "vvv"
+    colour: "kViolet"
+    label: "vvv"
+    plot_type: "f"
+
+tZq:
+    file_list: "configs/2017/datasets/fileLists/tZq_llFiles.txt"
+    total_events: 13308207
+    cross_section: 0.07358
+    mc: true
+    histogram: "tZq"
+    colour: "kYellow"
+    label: "tZq"
+    plot_type: "f"
+
+eeRun2017:
+    file_list: "configs/2017/datasets/fileLists/eeRun2017Files.txt"
+    luminosity: 41529.740
+    mc: false
+    histogram: "data"
+    label: "Data"
+    plot_type: "p"
+    colour: "kBlack"
+    trigger_flag: "eCt"

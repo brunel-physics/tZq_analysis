@@ -96,40 +96,40 @@ class Cuts
 
     // Tight electron cuts
     unsigned numTightEle_;
-    float tightElePt_;
-    float tightElePtLeading_;
-    float tightEleEta_;
-    float tightEled0_;
+    double tightElePt_;
+    double tightElePtLeading_;
+    double tightEleEta_;
+    double tightEled0_;
     int tightEleMissLayers_;
     bool tightEleCheckPhotonVeto_;
     float tightEleMVA0_;
     float tightEleMVA1_;
     float tightEleMVA2_;
-    float tightEleRelIso_;
+    double tightEleRelIso_;
 
     // Loose electron cuts
     unsigned numLooseEle_;
-    float looseElePt_;
-    float looseElePtLeading_;
-    float looseEleEta_;
+    double looseElePt_;
+    double looseElePtLeading_;
+    double looseEleEta_;
     float looseEleMVA0_;
     float looseEleMVA1_;
     float looseEleMVA2_;
-    float looseEleRelIso_;
+    double looseEleRelIso_;
 
     // Tight muon cuts
     unsigned numTightMu_;
-    float tightMuonPt_;
-    float tightMuonPtLeading_;
-    float tightMuonEta_;
-    float tightMuonRelIso_;
+    double tightMuonPt_;
+    double tightMuonPtLeading_;
+    double tightMuonEta_;
+    double tightMuonRelIso_;
 
     // Loose muon cuts
     unsigned numLooseMu_;
-    float looseMuonPt_;
-    float looseMuonPtLeading_;
-    float looseMuonEta_;
-    float looseMuonRelIso_;
+    double looseMuonPt_;
+    double looseMuonPtLeading_;
+    double looseMuonEta_;
+    double looseMuonRelIso_;
 
     // z and w inv cuts
     float invZMassCut_;
@@ -138,8 +138,8 @@ class Cuts
     // Tight jet cuts
     unsigned numJets_;
     unsigned maxJets_;
-    float jetPt_;
-    float jetEta_;
+    double jetPt_;
+    double jetEta_;
     int jetNConsts_;
     bool jetIDDo_;
 
@@ -350,7 +350,7 @@ class Cuts
         maxJets_ = maxJets;
         maxbJets_ = maxBJets;
     }
-    bool parse_config(std::string);
+    void parse_config(std::string);
     void dumpLeptonInfo(AnalysisEvent*);
     void dumpLooseLepInfo(AnalysisEvent*);
     TH1D* getSynchCutFlow();

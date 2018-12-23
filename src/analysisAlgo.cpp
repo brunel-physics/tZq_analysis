@@ -18,7 +18,6 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <libconfig.h++>
 #include <sstream>
 #include <string>
 
@@ -27,8 +26,8 @@ AnalysisAlgo::AnalysisAlgo()
     , makeHistos{false}
     , useHistos{false}
     , channel{}
-    , cutConfName{new std::string{}}
-    , plotConfName{new std::string{}}
+    , cutConfName{}
+    , plotConfName{}
     , readEventList{false}
     , customJetRegion{false}
     , is2016_{false}
@@ -95,10 +94,10 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
                                       "yield at each stage. Sets all event "
                                       "weights to 1.")(
         "cutConf,x",
-        po::value<std::string>(cutConfName),
+        po::value<std::string>(&cutConfName),
         "Override the cut configuration given in the config file.")(
         "plotConf",
-        po::value<std::string>(plotConfName),
+        po::value<std::string>(&plotConfName),
         "Override the plot configuration given in the config file. Sets "
         "--allPlots.")("invert,i",
                        po::bool_switch(&invertLepCut),
@@ -239,27 +238,33 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
     // Some vectors that will be filled in the parsing.
     totalLumi = 0;
-    lumiPtr = &totalLumi;
 
-    if (!Parser::parse_config(config,
-                              &datasets,
-                              lumiPtr,
-                              &plotTitles,
-                              &plotNames,
-                              &xMin,
-                              &xMax,
-                              &nBins,
-                              &fillExp,
-                              &xAxisLabels,
-                              &cutStage,
-                              cutConfName,
-                              plotConfName,
-                              &outFolder,
-                              &postfix,
-                              &channel))
+    try
     {
-        std::cerr << "There was an error parsing the config file.\n";
-        exit(0);
+        Parser::parse_config(config,
+                             datasets,
+                             totalLumi,
+                             plotTitles,
+                             plotNames,
+                             xMin,
+                             xMax,
+                             nBins,
+                             fillExp,
+                             xAxisLabels,
+                             cutStage,
+                             cutConfName,
+                             plotConfName,
+                             outFolder,
+                             postfix,
+                             channel);
+    }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR Problem with a confugration file, see previous "
+                     "errors for more details. If this is the only error, the "
+                     "problem is with the main configuration file."
+                  << std::endl;
+        throw;
     }
 
     if (channelsToRun)
@@ -392,12 +397,17 @@ void AnalysisAlgo::setupCuts()
                       is2016_,
                       isFCNC_,
                       isCtag_};
-    if (!cutObj->parse_config(*cutConfName))
+
+    try
     {
-        std::cerr << "There was a problem with parsing the config!"
-                  << std::endl;
-        exit(0);
+        cutObj->parse_config(cutConfName);
     }
+    catch (const std::exception)
+    {
+        std::cerr << "ERROR parsing cut configuration file" << std::endl;
+        throw;
+    }
+
     // For studying some trigger things. Default is false.
     cutObj->setSkipTrig(skipTrig);
     if (customJetRegion)
@@ -1488,8 +1498,6 @@ void AnalysisAlgo::savePlots()
         }
       }
     */
-    delete cutConfName;
-    delete plotConfName;
 
     std::cerr << "But not past it" << std::endl;
 }

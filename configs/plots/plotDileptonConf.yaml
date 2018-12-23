@@ -1,0 +1,593 @@
+plots:
+  - title: "Leading Lepton p_{T}"
+    name: "lep1Pt"
+    xMax: 200.
+    xMin: 0.
+    nBins: 20
+    fillExp: "lep1Pt"
+    xAxisLabel: "p_{T} lep 1 (GeV/c)"
+    cutStage: 0
+  - title: "Second Lepton p_{T}"
+    name: "lep2Pt"
+    xMax: 200.
+    xMin: 0.
+    nBins: 20
+    fillExp: "lep2Pt"
+    xAxisLabel: "p_{T} lep 2 (GeV/c)"
+    cutStage: 0
+  - title: "Leading Lepton #phi"
+    name: "lep1Phi"
+    xMax: 3.2
+    xMin: -3.2
+    nBins: 40
+    fillExp: "lep1Phi"
+    xAxisLabel: "#phi lep 1"
+    cutStage: 0
+  - title: "Second Lepton #phi"
+    name: "lep2Phi"
+    xMax: 3.2
+    xMin: -3.2
+    nBins: 40
+    fillExp: "lep2Phi"
+    xAxisLabel: "#phi_{T} lep 2"
+    cutStage: 0
+  - title: "Leading Lepton #eta"
+    name: "lep1Eta"
+    xMax: 3.
+    xMin: 0.
+    nBins: 30
+    fillExp: "lep1Eta"
+    xAxisLabel: "#eta lep 1"
+    cutStage: 0
+  - title: "Second Lepton #eta"
+    name: "lep2Eta"
+    xMax: 3.
+    xMin: 0.
+    nBins: 30
+    fillExp: "lep2Eta"
+    xAxisLabel: "#eta lep 2"
+    cutStage: 0
+  - title: "Leading Lepton Relative Isolation"
+    name: "lep1RelIso"
+    xMax: 0.2
+    xMin: 0.
+    nBins: 500
+    fillExp: "lep1RelIso"
+    xAxisLabel: "RelIso lep 1"
+    cutStage: 0
+  - title: "Second Lepton Relative Isolation"
+    name: "lep2RelIso"
+    xMax: 0.2
+    xMin: 0.
+    nBins: 500
+    fillExp: "lep2RelIso"
+    xAxisLabel: "RelIso lep 2"
+    cutStage: 0
+  - title: "Leading Lepton D0"
+    name: "lep1D0"
+    xMax: 0.1
+    xMin: 0.
+    nBins: 100
+    fillExp: "lep1D0"
+    xAxisLabel: "lep 1 D0"
+    cutStage: 0
+  - title: "Second Lepton D0"
+    name: "lep2D0"
+    xMax: 0.1
+    xMin: 0.
+    nBins: 100
+    fillExp: "lep2D0"
+    xAxisLabel: "lep 2 D0"
+    cutStage: 0
+  - title: "E_{T}^{miss}"
+    name: "met"
+    xMax: 200.
+    xMin: 0.
+    nBins: 50
+    fillExp: "met"
+    xAxisLabel: "E_{T}^{miss}"
+    cutStage: 0
+  - title: "Number of Tight Jets"
+    name: "numbJets"
+    xMax: 8.5
+    xMin: -0.5
+    nBins: 9
+    fillExp: "numbJets"
+    xAxisLabel: "Number of tight jets"
+    cutStage: 0
+  - title: "Total Jet p_{T}"
+    name: "totalJetPt"
+    xMax: 300.
+    xMin: 0.
+    nBins: 35
+    fillExp: "totalJetPt"
+    xAxisLabel: "p_{T} total jets (GeV/c)"
+    cutStage: 0
+  - title: "Total Jet Phi"
+    name: "totalJetPhi"
+    xMax: 3.2
+    xMin: -3.2
+    nBins: 40
+    fillExp: "totalJetPhi"
+    xAxisLabel: "#phi of the jets"
+    cutStage: 0
+  - title: "Leading Jet p_{T}"
+    name: "leadingJetPt"
+    xMax: 300.
+    xMin: 0.
+    nBins: 35
+    fillExp: "leadingJetPt"
+    xAxisLabel: "p_{T} leading jet (GeV/c)"
+    cutStage: 0
+  - title: "Leading Jet #eta"
+    name: "leadingJetEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 25
+    fillExp: "leadingJetEta"
+    xAxisLabel: "#eta leading jet"
+    cutStage: 0
+  - title: "Second Jet p_{T}"
+    name: "secondJetPt"
+    xMin: 0.
+    xMax: 300.
+    nBins: 35
+    fillExp: "secondJetPt"
+    xAxisLabel: "p_{T} second jet (GeV/c)"
+    cutStage: 0
+  - title: "Second Jet #eta"
+    name: "secondJetEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 25
+    fillExp: "secondJetEta"
+    xAxisLabel: "#eta second jet"
+    cutStage: 0
+  - title: "Third Jet p_{T}"
+    name: "thirdJetPt"
+    xMin: 0.
+    xMax: 300.
+    nBins: 35
+    fillExp: "thirdJetPt"
+    xAxisLabel: "p_{T} third jet (GeV/c)"
+    cutStage: 0
+  - title: "Third Jet #eta"
+    name: "thirdJetEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 25
+    fillExp: "thirdJetEta"
+    xAxisLabel: "#eta third jet"
+    cutStage: 0
+  - title: "Fourth Jet p_{T}"
+    name: "fourthJetPt"
+    xMin: 0.
+    xMax: 300.
+    nBins: 35
+    fillExp: "fourthJetPt"
+    xAxisLabel: "p_{T} fourth jet (GeV/c)"
+    cutStage: 0
+  - title: "Fourth Jet #eta"
+    name: "fourthJetEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 25
+    fillExp: "fourthJetEta"
+    xAxisLabel: "#eta fourth jet"
+    cutStage: 0
+  - title: "Leading Jet #phi"
+    name: "leadingJetPhi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "leadingJetPhi"
+    xAxisLabel: "#phi leading jet"
+    cutStage: 0
+  - title: "Second Jet #phi"
+    name: "secondJetPhi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "secondJetPhi"
+    xAxisLabel: "#phi second jet"
+    cutStage: 0
+  - title: "Third Jet #phi"
+    name: "thirdJetPhi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "thirdJetPhi"
+    xAxisLabel: "#phi third jet"
+    cutStage: 0
+  - title: "Fourth Jet #phi"
+    name: "fourthJetPhi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "fourthJetPhi"
+    xAxisLabel: "#phi fourth jet"
+    cutStage: 0
+  - title: "Leading Jet bTag Discriminator"
+    name: "leadingJetBDisc"
+    xMin: 0.
+    xMax: 1.2
+    nBins: 50
+    fillExp: "leadingJetBDisc"
+    xAxisLabel: "leading jet bDisc"
+    cutStage: 0
+  - title: "Second Jet bTag Discriminator"
+    name: "secondJetBDisc"
+    xMin: 0.
+    xMax: 1.2
+    nBins: 50
+    fillExp: "secondJetBDisc"
+    xAxisLabel: "second jet bDisc"
+    cutStage: 0
+  - title: "Third Jet bTag Discriminator"
+    name: "thirdJetBDisc"
+    xMin: 0.
+    xMax: 1.2
+    nBins: 50
+    fillExp: "thirdJetBDisc"
+    xAxisLabel: "third jet bDisc"
+    cutStage: 0
+  - title: "Fourth Jet bTag Discriminator"
+    name: "fourthJetBDisc"
+    xMin: 0.
+    xMax: 1.2
+    nBins: 50
+    fillExp: "fourthJetBDisc"
+    xAxisLabel: "fourth jet bDisc"
+    cutStage: 0
+  - title: "Number of b-tagged Jets"
+    name: "numbBJets"
+    xMin: -0.5
+    xMax: 8.5
+    nBins: 9
+    fillExp: "numbBJets"
+    xAxisLabel: "Number of b tags"
+    cutStage: 2
+  - title: "b-tag Discriminator Distribution"
+    name: "bTagDisc"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "bTagDisc"
+    xAxisLabel: "bTag Discriminators"
+    cutStage: 2
+  - title: "Leading Z Lepton p_{T}"
+    name: "zLepton1Pt"
+    xMin: 0.
+    xMax: 200.
+    nBins: 50
+    fillExp: "zLepton1Pt"
+    xAxisLabel: "p_{T} leading Z lepton (GeV/c)"
+    cutStage: 0
+  - title: "Second Z Lepton p_{T}"
+    name: "zLepton2Pt"
+    xMin: 0.
+    xMax: 200.
+    nBins: 50
+    fillExp: "zLepton2Pt"
+    xAxisLabel: "p_{T} second Z lepton (GeV/c)"
+    cutStage: 0
+  - title: "Leading Z Lepton #eta"
+    name: "zLepton1Eta"
+    xMin: 0.
+    xMax: 3.
+    nBins: 30
+    fillExp: "zLepton1Eta"
+    xAxisLabel: "#eta leading Z lepton"
+    cutStage: 0
+  - title: "Second Z Lepton #eta"
+    name: "zLepton2Eta"
+    xMin: 0.
+    xMax: 3.
+    nBins: 30
+    fillExp: "zLepton2Eta"
+    xAxisLabel: "#eta second Z lepton"
+    cutStage: 0
+  - title: "Leading Z Lepton #phi"
+    name: "zLepton1Phi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 40
+    fillExp: "zLepton1Phi"
+    xAxisLabel: "#phi leading Z lepton"
+    cutStage: 0
+  - title: "Second Z Lepton #phi"
+    name: "zLepton2Phi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 40
+    fillExp: "zLepton2Phi"
+    xAxisLabel: "#phi second Z lepton"
+    cutStage: 0
+  - title: "Leading Z Lepton Relative Isolation"
+    name: "zLepton1RelIso"
+    xMax: 0.2
+    xMin: 0.
+    nBins: 500
+    fillExp: "zLepton1RelIso"
+    xAxisLabel: "RelIso Z lepton 1"
+    cutStage: 0
+  - title: "Second Z Lepton Relative Isolation"
+    name: "zLepton2RelIso"
+    xMax: 0.2
+    xMin: 0.
+    nBins: 500
+    fillExp: "zLepton2RelIso"
+    xAxisLabel: "RelIso Z lepton 2"
+    cutStage: 0
+  - title: "Invariant Z Mass"
+    name: "zPairMass"
+    xMin: 50.
+    xMax: 140.
+    nBins: 20
+    fillExp: "zPairMass"
+    xAxisLabel: "m_{ll} (GeV/c^{2})"
+    cutStage: 0
+  - title: "Z p_{T}"
+    name: "zPairPt"
+    xMin: 0.
+    xMax: 400.
+    nBins: 20
+    fillExp: "zPairPt"
+    xAxisLabel: "p_{T} Z pair (GeV/c)"
+    cutStage: 0
+  - title: "Z #eta"
+    name: "zPairEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 30
+    fillExp: "zPairEta"
+    xAxisLabel: "#eta Z pair"
+    cutStage: 0
+  - title: "Z #phi"
+    name: "zPairPhi"
+    xMin: 3.2
+    xMax: -3.2
+    nBins: 40
+    fillExp: "zPairPhi"
+    xAxisLabel: "#phi Z pair"
+    cutStage: 0
+  - title: "Invariant Top Mass"
+    name: "topMass"
+    xMin: 0.
+    xMax: 500.
+    nBins: 25
+    fillExp: "topMass"
+    xAxisLabel: "mass_{top} (GeV/c^{2})"
+    cutStage: 3
+  - title: "Top p_{T}"
+    name: "topPt"
+    xMin: 0.
+    xMax: 1000.
+    nBins: 100
+    fillExp: "topPt"
+    xAxisLabel: "p_{T}^{top} (GeV/c)"
+    cutStage: 3
+  - title: "Top #eta"
+    name: "topEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 30
+    fillExp: "topEta"
+    xAxisLabel: "#eta_{top}"
+    cutStage: 3
+  - title: "Top #phi"
+    name: "topPhi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 40
+    fillExp: "topPhi"
+    xAxisLabel: "#phi_{top}"
+    cutStage: 3
+  - title: "Leading W jet p_{T}"
+    name: "wQuark1Pt"
+    xMin: 0.
+    xMax: 200.
+    nBins: 50
+    fillExp: "wQuark1Pt"
+    xAxisLabel: "p_{T} w quark 1 (GeV/c)"
+    cutStage: 3
+  - title: "Second W Jet p_{T}"
+    name: "wQuark2Pt"
+    xMin: 0.
+    xMax: 200.
+    nBins: 50
+    fillExp: "wQuark2Pt"
+    xAxisLabel: "p_{T} w quark 2 (GeV/c)"
+    cutStage: 3
+  - title: "Leading W Jet #eta"
+    name: "wQuark1Eta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 30
+    fillExp: "wQuark1Eta"
+    xAxisLabel: "#eta w quark 1"
+    cutStage: 3
+  - title: "Second W Jet #eta"
+    name: "wQuark2Eta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 30
+    fillExp: "wQuark2Eta"
+    xAxisLabel: "#eta w quark 2"
+    cutStage: 3
+  - title: "Leading W Jet #phi"
+    name: "wQuark1Phi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "wQuark1Phi"
+    xAxisLabel: "#phi w quark 1"
+    cutStage: 3
+  - title: "Second W Jet #phi"
+    name: "wQuark2Phi"
+    xMin: -3.2
+    xMax: 3.2
+    nBins: 25
+    fillExp: "wQuark2Phi"
+    xAxisLabel: "#phi w quark 2"
+    cutStage: 3
+  - title: "Invariant W Mass"
+    name: "wPairMass"
+    xMin: 0.
+    xMax: 200.
+    nBins: 25
+    fillExp: "wPairMass"
+    xAxisLabel: "m_{jj'} (GeV)"
+    cutStage: 3
+  - title: "Transverse W Mass"
+    name: "wTransverseMass"
+    xMin: 0.
+    xMax: 130.
+    nBins: 25
+    fillExp: "wTransverseMass"
+    xAxisLabel: "Wm_{T} (GeV)"
+    cutStage: 3
+  - title: "#Delta(R) between Leading Jets"
+    name: "jjDelR"
+    xMin: 0.
+    xMax: 8.5
+    nBins: 100
+    fillExp: "jjDelR"
+    xAxisLabel: "jjDelR"
+    cutStage: 1
+  - title: "#Delta(#phi) between Leading Jets"
+    name: "jjDelPhi"
+    xMin: 0.
+    xMax: 3.2
+    nBins: 100
+    fillExp: "jjDelPhi"
+    xAxisLabel: "jjDelPhi"
+    cutStage: 1
+  - title: "#Delta(R) between W Jets"
+    name: "wwDelR"
+    xMin: 0.
+    xMax: 8.5
+    nBins: 100
+    fillExp: "wwDelR"
+    xAxisLabel: "wwDelR"
+    cutStage: 3
+  - title: "#Delta(#phi) between W Jets"
+    name: "wwDelPhi"
+    xMin: 0.
+    xMax: 3.2
+    nBins: 100
+    fillExp: "wwDelPhi"
+    xAxisLabel: "wwDelPhi"
+    cutStage: 3
+  - title: "#Delta(R) between Z Leptons"
+    name: "zLepDelR"
+    xMin: 0.
+    xMax: 8.5
+    nBins: 100
+    fillExp: "zLepDelR"
+    xAxisLabel: "zLepDelR"
+    cutStage: 1
+  - title: "#Delta(phi) between Z Leptons"
+    name: "zLepDelPhi"
+    xMin: 0.
+    xMax: 3.2
+    nBins: 100
+    fillExp: "zLepDelPhi"
+    xAxisLabel: "zLepDelPhi"
+    cutStage: 1
+  - title: "#Delta(R) between Leading Z Lepton and b-Jet"
+    name: "zLep1BjetDelR"
+    xMin: 0.
+    xMax: 8.5
+    nBins: 100
+    fillExp: "zLep1BjetDelR"
+    xAxisLabel: "zLep1BjetDelR"
+    cutStage: 3
+  - title: "#Delta(phi) between Leading Z Lepton and b-Jet"
+    name: "zLep1BjetDelPhi"
+    xMin: 0.
+    xMax: 3.2
+    nBins: 100
+    fillExp: "zLep1BjetDelPhi"
+    xAxisLabel: "zLep1BjetDelPhi"
+    cutStage: 3
+  - title: "#Delta(R) between Second Z Lepton and b-Jet"
+    name: "zLep2BjetDelR"
+    xMin: 0.
+    xMax: 8.5
+    nBins: 100
+    fillExp: "zLep2BjetDelR"
+    xAxisLabel: "zSecond Lepton BjetDelR"
+    cutStage: 3
+  - title: "#Delta(Phi) between Second Z Lepton and b-Jet"
+    name: "zLep2BjetDelPhi"
+    xMin: 0.
+    xMax: 3.2
+    nBins: 100
+    fillExp: "zLep2BjetDelPhi"
+    xAxisLabel: "zLep2BjetDelPhi"
+    cutStage: 3
+  - title: "lepton H_{T}"
+    name: "lepHt"
+    xMin: 0.
+    xMax: 250.
+    nBins: 100
+    fillExp: "lepHt"
+    xAxisLabel: "lepton H_{T}"
+    cutStage: 0
+  - title: "W Jets H_{T}"
+    name: "wQuarkHt"
+    xMin: 0.
+    xMax: 250.
+    nBins: 100
+    fillExp: "wQuarkHt"
+    xAxisLabel: "w boson quark H_{T}"
+    cutStage: 3
+  - title: "Jet H_{T}"
+    name: "jetHt"
+    xMin: 0.
+    xMax: 1000.
+    nBins: 250
+    fillExp: "jetHt"
+    xAxisLabel: "jet H_{T}"
+    cutStage: 2
+  - title: "Total H_{T}"
+    name: "totHt"
+    xMin: 0.
+    xMax: 1250.
+    nBins: 300
+    fillExp: "totHt"
+    xAxisLabel: "total H_{T}"
+    cutStage: 2
+  - title: "Total H_{T}/p_{T}"
+    name: "totHtOverPt"
+    xMin: 0.
+    xMax: 500
+    nBins: 100
+    fillExp: "totHtOverPt"
+    xAxisLabel: "Total H_{T}/p_{T}"
+    cutStage: 2
+  - title: "Total p_{T}"
+    name: "totPt"
+    xMin: 0.
+    xMax: 400.
+    nBins: 100
+    fillExp: "totPt"
+    xAxisLabel: "total p_{T} (GeV/c)"
+    cutStage: 2
+  - title: "Total #eta"
+    name: "totEta"
+    xMin: 0.
+    xMax: 5.
+    nBins: 30
+    fillExp: "totEta"
+    xAxisLabel: "total #eta"
+    cutStage: 2
+  - title: "Total Invariant Mass"
+    name: "totM"
+    xMin: 0.
+    xMax: 5000.
+    nBins: 50
+    fillExp: "totM"
+    xAxisLabel: "mass_{total} (GeV/c^{2})"
+    cutStage: 2

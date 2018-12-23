@@ -6,7 +6,6 @@
 #include "dataset.hpp"
 
 #include <LHAPDF/LHAPDF.h>
-#include <libconfig.h++>
 #include <map>
 #include <vector>
 
