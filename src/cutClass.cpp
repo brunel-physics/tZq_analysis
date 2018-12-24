@@ -1723,14 +1723,14 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
             getBWeight(event,
                        jetVec,
                        i,
-                       &mcTag,
-                       &mcNoTag,
-                       &dataTag,
-                       &dataNoTag,
-                       &err1,
-                       &err2,
-                       &err3,
-                       &err4);
+                       mcTag,
+                       mcNoTag,
+                       dataTag,
+                       dataNoTag,
+                       err1,
+                       err2,
+                       err3,
+                       err4);
         }
     }
     // Evaluate b-tag weight for event here.
@@ -4211,14 +4211,14 @@ std::pair<double, double> Cuts::jet2017SFs(const double eta) const
 void Cuts::getBWeight(AnalysisEvent* event,
                       TLorentzVector jet,
                       int index,
-                      float* mcTag,
-                      float* mcNoTag,
-                      float* dataTag,
-                      float* dataNoTag,
-                      float* err1,
-                      float* err2,
-                      float* err3,
-                      float* err4)
+                      float& mcTag,
+                      float& mcNoTag,
+                      float& dataTag,
+                      float& dataNoTag,
+                      float& err1,
+                      float& err2,
+                      float& err3,
+                      float& err4)
 {
     // Use b-tagging efficiencies and scale factors.
     // Firstly get efficiency for pt/eta bin here.
@@ -4348,30 +4348,30 @@ void Cuts::getBWeight(AnalysisEvent* event,
     if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[index]
         > bDiscCut_)
     {
-        *mcTag *= eff;
-        *dataTag *= eff * jet_scalefactor;
+        mcTag *= eff;
+        dataTag *= eff * jet_scalefactor;
 
         if (partonFlavour == 5 || partonFlavour == 4)
         {
-            *err1 += SFerr / jet_scalefactor;
+            err1 += SFerr / jet_scalefactor;
         }
         else
         {
-            *err3 += SFerr / jet_scalefactor;
+            err3 += SFerr / jet_scalefactor;
         }
     }
     else
     {
-        *mcNoTag *= (1 - eff);
-        *dataNoTag *= (1 - eff * jet_scalefactor);
+        mcNoTag *= (1 - eff);
+        dataNoTag *= (1 - eff * jet_scalefactor);
 
         if (partonFlavour == 5 || partonFlavour == 4)
         {
-            *err2 += (-eff * SFerr) / (1 - eff * jet_scalefactor);
+            err2 += (-eff * SFerr) / (1 - eff * jet_scalefactor);
         }
         else
         {
-            *err4 += (-eff * SFerr) / (1 - eff * jet_scalefactor);
+            err4 += (-eff * SFerr) / (1 - eff * jet_scalefactor);
         }
     }
 }

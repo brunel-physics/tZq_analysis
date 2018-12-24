@@ -236,17 +236,17 @@ class Cuts
                              const int type,
                              const double pt) const;
 
-    void getBWeight(AnalysisEvent*,
-                    TLorentzVector,
-                    int,
-                    float*,
-                    float*,
-                    float*,
-                    float*,
-                    float*,
-                    float*,
-                    float*,
-                    float*);
+    void getBWeight(AnalysisEvent* event,
+                    TLorentzVector jet,
+                    int index,
+                    float& mcTag,
+                    float& mcNoTag,
+                    float& dataTag,
+                    float& dataNoTag,
+                    float& err1,
+                    float& err2,
+                    float& err3,
+                    float& err4);
 
     // met and mtw cut values
     float metCut_;
