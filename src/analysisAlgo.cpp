@@ -773,10 +773,10 @@ void AnalysisAlgo::runMainAnalysis()
                 std::cout << "No entries in tree, skipping..." << std::endl;
                 continue;
             }
-            AnalysisEvent* event{new AnalysisEvent{dataset->isMC(),
-                                                   dataset->getTriggerFlag(),
-                                                   datasetChain,
-                                                   is2016_}};
+            AnalysisEvent event{dataset->isMC(),
+                                dataset->getTriggerFlag(),
+                                datasetChain,
+                                is2016_};
 
             // Adding in some stuff here to make a skim file out of post lep sel
             // stuff
@@ -819,7 +819,7 @@ void AnalysisAlgo::runMainAnalysis()
             float muonMomentumSF[3]{};
             float jetSmearValue[15]{};
             int isMC{dataset->isMC()}; // isMC flag for debug purposes
-            event->isMC_ = (dataset->isMC());
+            event.isMC_ = (dataset->isMC());
             // Now add in the branches:
 
             if (makeMVATree)
@@ -935,7 +935,7 @@ void AnalysisAlgo::runMainAnalysis()
                     << (synchCutFlow ? cutObj->numFound() : foundEvents);
                 lEventTimer->DrawProgressBar(
                     i, ("Found " + lSStrFoundEvents.str() + " events."));
-                event->GetEntry(i);
+                event.GetEntry(i);
                 // Do the systematics indicated by the systematic flag, oooor
                 // just do data if that's your thing. Whatevs.
                 int systMask{1};
@@ -966,29 +966,29 @@ void AnalysisAlgo::runMainAnalysis()
                             generatorWeight =
                                 (sumPositiveWeights_)
                                 / (sumNegativeWeightsScaleUp_)
-                                * (event->weight_muF2muR2
-                                   / std::abs(event->origWeightForNorm));
+                                * (event.weight_muF2muR2
+                                   / std::abs(event.origWeightForNorm));
                         }
                         else if (systMask == 8192)
                         {
                             generatorWeight =
                                 (sumPositiveWeights_)
                                 / (sumNegativeWeightsScaleDown_)
-                                * (event->weight_muF0p5muR0p5
-                                   / std::abs(event->origWeightForNorm));
+                                * (event.weight_muF0p5muR0p5
+                                   / std::abs(event.origWeightForNorm));
                         }
                         else
                         {
                             generatorWeight =
                                 (sumPositiveWeights_) / (sumNegativeWeights_)
-                                * (event->origWeightForNorm
-                                   / std::abs(event->origWeightForNorm));
+                                * (event.origWeightForNorm
+                                   / std::abs(event.origWeightForNorm));
                         }
                         //	    	      std::cout << std::setprecision(5) <<
                         // std::fixed; 	                std::cout <<
                         // sumPositiveWeights_ << "/" << sumNegativeWeights_ <<
-                        // "*" << event->origWeightForNorm
-                        //<< "/" << std::abs(event->origWeightForNorm) <<
+                        // "*" << event.origWeightForNorm
+                        //<< "/" << std::abs(event.origWeightForNorm) <<
                         // std::endl; 	                std::cout << "generator
                         // level SF = " << generatorWeight << std::endl;
                         // std::cout << "NB. This should only not be 1.0 for
@@ -999,17 +999,17 @@ void AnalysisAlgo::runMainAnalysis()
                     if (dataset->isMC() && !synchCutFlow)
                     { // no weights applied for synchronisation
                         double pileupWeight{puReweight->GetBinContent(
-                            puReweight->GetXaxis()->FindBin(event->numVert))};
+                            puReweight->GetXaxis()->FindBin(event.numVert))};
                         if (systMask == 64)
                         {
                             pileupWeight = puSystUp->GetBinContent(
-                                puSystUp->GetXaxis()->FindBin(event->numVert));
+                                puSystUp->GetXaxis()->FindBin(event.numVert));
                         }
                         if (systMask == 128)
                         {
                             pileupWeight = puSystDown->GetBinContent(
                                 puSystDown->GetXaxis()->FindBin(
-                                    event->numVert));
+                                    event.numVert));
                         }
                         eventWeight *= pileupWeight;
                         // std::cout << "pileupWeight: " <<  pileupWeight <<
@@ -1024,7 +1024,7 @@ void AnalysisAlgo::runMainAnalysis()
                         bool tempBool{false};
                         for (unsigned j{0}; j < eventNumbers.size(); j++)
                         {
-                            if (eventNumbers[j] == event->eventNum)
+                            if (eventNumbers[j] == event.eventNum)
                             {
                                 tempBool = true;
                                 break;
@@ -1034,8 +1034,8 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             continue;
                         }
-                        std::cout << event->eventNum << " " << event->eventRun
-                                  << " " << event->eventLumiblock << " "
+                        std::cout << event.eventNum << " " << event.eventRun
+                                  << " " << event.eventLumiblock << " "
                                   << datasetChain->GetFile()->GetName()
                                   << std::endl;
                         cutObj->dumpLooseLepInfo(event);
@@ -1085,10 +1085,10 @@ void AnalysisAlgo::runMainAnalysis()
                         || dataset->name() == "ttbar_hadronic"
                         || dataset->name() == "ttbar_semileptonic")
                     {
-                        eventWeight *= event->topPtReweight;
+                        eventWeight *= event.topPtReweight;
                     }
-                    //	  std::cout << "event->topPtReweight: " <<
-                    // event->topPtReweight << std::endl;
+                    //	  std::cout << "event.topPtReweight: " <<
+                    // event.topPtReweight << std::endl;
                     //          std::cout << "eventWeight: " << eventWeight <<
                     //          std::endl;
 
@@ -1124,11 +1124,11 @@ void AnalysisAlgo::runMainAnalysis()
                             // std::cout << std::setprecision(15) << eventWeight
                             // << " ";
                             LHAPDF::usePDFMember(1, 0);
-                            float q{event->genPDFScale};
-                            float x1{event->genPDFx1};
-                            float x2{event->genPDFx2};
-                            int id1{event->genPDFf1};
-                            int id2{event->genPDFf2};
+                            float q{event.genPDFScale};
+                            float x1{event.genPDFx1};
+                            float x2{event.genPDFx2};
+                            int id1{event.genPDFf1};
+                            int id2{event.genPDFf2};
                             if (id2 == 21)
                             {
                                 id2 = 0;
@@ -1205,11 +1205,11 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             if (systMask == 1024)
                             {
-                                eventWeight *= event->weight_pdfMax; // Max
+                                eventWeight *= event.weight_pdfMax; // Max
                             }
                             if (systMask == 2048)
                             {
-                                eventWeight *= event->weight_pdfMin; // Min
+                                eventWeight *= event.weight_pdfMin; // Min
                             }
                         }
                     }
@@ -1218,38 +1218,38 @@ void AnalysisAlgo::runMainAnalysis()
                         if (systMask == 16384)
                         {
                             eventWeight *=
-                                event->weight_alphaMin; // Max, but incorrectly
+                                event.weight_alphaMin; // Max, but incorrectly
                                                         // named branch
                         }
                         if (systMask == 32768)
                         {
                             eventWeight *=
-                                event->weight_alphaMax; // Min, but incorrectly
+                                event.weight_alphaMax; // Min, but incorrectly
                                                         // named branch
                         }
                     }
                     //      if (synchCutFlow){
-                    //	std::cout << event->eventNum << " " << event->eventRun
-                    //<< " " << event->eventLumiblock << " " << std::endl;
+                    //	std::cout << event.eventNum << " " << event.eventRun
+                    //<< " " << event.eventLumiblock << " " << std::endl;
                     //}
                     // Do the Zpt reweighting here
                     if (makeMVATree)
                     {
-                        zLep1Index = event->zPairIndex.first;
-                        zLep2Index = event->zPairIndex.second;
-                        muonMomentumSF[0] = event->muonMomentumSF[0];
-                        muonMomentumSF[1] = event->muonMomentumSF[1];
-                        wQuark1Index = event->wPairIndex.first;
-                        wQuark2Index = event->wPairIndex.second;
+                        zLep1Index = event.zPairIndex.first;
+                        zLep2Index = event.zPairIndex.second;
+                        muonMomentumSF[0] = event.muonMomentumSF[0];
+                        muonMomentumSF[1] = event.muonMomentumSF[1];
+                        wQuark1Index = event.wPairIndex.first;
+                        wQuark2Index = event.wPairIndex.second;
                         for (unsigned jetIndexIt{0}; jetIndexIt < 15;
                              jetIndexIt++)
                         {
-                            if (jetIndexIt < event->jetIndex.size())
+                            if (jetIndexIt < event.jetIndex.size())
                             {
                                 jetInd[jetIndexIt] =
-                                    event->jetIndex[jetIndexIt];
+                                    event.jetIndex[jetIndexIt];
                                 jetSmearValue[jetIndexIt] =
-                                    event->jetSmearValue[jetIndexIt];
+                                    event.jetSmearValue[jetIndexIt];
                             }
                             else
                             {
@@ -1259,9 +1259,9 @@ void AnalysisAlgo::runMainAnalysis()
                         }
                         for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++)
                         {
-                            if (bJetIt < event->bTagIndex.size())
+                            if (bJetIt < event.bTagIndex.size())
                             {
-                                bJetInd[bJetIt] = event->bTagIndex[bJetIt];
+                                bJetInd[bJetIt] = event.bTagIndex[bJetIt];
                             }
                             else
                             {

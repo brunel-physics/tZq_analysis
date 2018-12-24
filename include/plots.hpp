@@ -29,15 +29,15 @@ class Plots
           unsigned,
           std::string postfixName = "");
     ~Plots();
-    void fillAllPlots(AnalysisEvent*, float);
+    void fillAllPlots(AnalysisEvent&, float);
     void saveAllPlots();
-    void fillOnePlot(std::string, AnalysisEvent*, float);
+    void fillOnePlot(std::string, AnalysisEvent&, float);
     void saveOnePlots(int);
     std::vector<plot> getPlotPoint()
     {
         return plotPoint;
     }
-    std::unordered_map<std::string, std::function<float(AnalysisEvent*)>>
+    std::unordered_map<std::string, std::function<float(AnalysisEvent&)>>
         getFncMap();
 };
 
@@ -46,7 +46,7 @@ struct plot
     std::string name;
     std::string title;
     TH1D* plotHist;
-    std::function<float(AnalysisEvent*)> fillExp;
+    std::function<float(AnalysisEvent&)> fillExp;
     std::string xAxisLabel;
     bool fillPlot;
 };
