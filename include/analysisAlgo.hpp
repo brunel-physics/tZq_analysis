@@ -20,9 +20,6 @@ class AnalysisAlgo
     AnalysisAlgo();
     ~AnalysisAlgo();
 
-    void setBranchStatusAll(TTree* chain, bool isMC, std::string triggerFlag);
-    void show_usage(std::string name);
-
     void parseCommandLineArguements(int argc, char* argv[]);
     void setupSystematics();
     void setupCuts();
@@ -76,7 +73,6 @@ class AnalysisAlgo
 
     std::vector<Dataset> datasets;
     double totalLumi;
-    double* lumiPtr;
 
     // Cuts stuff
     Cuts* cutObj;

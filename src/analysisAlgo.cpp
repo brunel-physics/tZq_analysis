@@ -884,11 +884,6 @@ void AnalysisAlgo::runMainAnalysis()
                 }
                 std::cout << std::endl;
             }
-            /*    else{
-              event->fChain->SetBranchStatus("*",0); //Should disable most
-              branches.
-              setBranchStatusAll(event->fChain,dataset->isMC(),dataset->getTriggerFlag());
-              }*/
 
             long long numberOfEvents{datasetChain->GetEntries()};
             if (nEvents && nEvents < numberOfEvents)
@@ -1102,7 +1097,7 @@ void AnalysisAlgo::runMainAnalysis()
 
                     if (!cutObj->makeCuts(
                             event,
-                            &eventWeight,
+                            eventWeight,
                             plotsMap[systNames[systInd] + channel][histoName],
                             cutFlowMap[histoName + systNames[systInd]],
                             systInd ? systMask : systInd))

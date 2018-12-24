@@ -21,17 +21,17 @@ class Cuts
 {
     private:
     bool makeLeptonCuts(AnalysisEvent*,
-                        float*,
+                        float&,
                         std::map<std::string, Plots*>,
                         TH1D*,
                         int syst = 0,
                         bool isControl = false);
     bool invertIsoCut(AnalysisEvent*,
-                      float*,
+                      float&,
                       std::map<std::string, Plots*>,
                       TH1D*);
     std::pair<std::vector<int>, std::vector<float>>
-        makeJetCuts(AnalysisEvent*, int, float*, bool isProper = true);
+        makeJetCuts(AnalysisEvent*, int, float&, bool isProper = true);
     std::vector<int> makeMetCuts(AnalysisEvent*);
     std::vector<int> makeBCuts(AnalysisEvent*, std::vector<int>, int syst = 0);
     std::vector<int>
@@ -52,13 +52,13 @@ class Cuts
         AnalysisEvent*, std::vector<int>, std::vector<int>);
 
     float getTopMass(AnalysisEvent*);
-    bool triggerCuts(AnalysisEvent*, float*, int syst = 0);
+    bool triggerCuts(AnalysisEvent*, float&, int syst = 0);
     bool metFilters(AnalysisEvent*);
 
     double getChiSquared(double wMass = 0.0, double topMass = 0.0);
 
     // Method for running the synchronisation with Jeremy.
-    bool synchCuts(AnalysisEvent* event, float* eventWeight);
+    bool synchCuts(AnalysisEvent* event, float& eventWeight);
     int getLooseLepsNum(AnalysisEvent* event); // Mimic preselection skims
     int getLooseElecs(AnalysisEvent* event);
     int getLooseMus(AnalysisEvent* event);
@@ -68,7 +68,7 @@ class Cuts
 
     // Method to do ttbar cuts for the dilepton background estimation
     bool ttbarCuts(AnalysisEvent* event,
-                   float*,
+                   float&,
                    std::map<std::string, Plots*>,
                    TH1D*,
                    int);
@@ -291,7 +291,7 @@ class Cuts
          const bool);
     ~Cuts();
     bool makeCuts(
-        AnalysisEvent*, float*, std::map<std::string, Plots*>&, TH1D*, int);
+        AnalysisEvent*, float&, std::map<std::string, Plots*>&, TH1D*, int);
     void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
     void setMC(bool isMC)
     {

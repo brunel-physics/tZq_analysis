@@ -437,7 +437,7 @@ void Cuts::parse_config(std::string confName)
 }
 
 bool Cuts::makeCuts(AnalysisEvent* event,
-                    float* eventWeight,
+                    float& eventWeight,
                     std::map<std::string, Plots*>& plotMap,
                     TH1D* cutFlow,
                     int systToRun)
@@ -495,11 +495,11 @@ bool Cuts::makeCuts(AnalysisEvent* event,
 
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(2.5, *eventWeight);
+        cutFlow->Fill(2.5, eventWeight);
     }
     if (doPlots_)
     {
-        plotMap["jetSel"]->fillAllPlots(event, *eventWeight);
+        plotMap["jetSel"]->fillAllPlots(event, eventWeight);
     }
 
     if (event->bTagIndex.size() < numbJets_)
@@ -512,11 +512,11 @@ bool Cuts::makeCuts(AnalysisEvent* event,
     }
     if (doPlots_)
     {
-        plotMap["bTag"]->fillAllPlots(event, *eventWeight);
+        plotMap["bTag"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, *eventWeight);
+        cutFlow->Fill(3.5, eventWeight);
     }
 
     if (!isFCNC_)
@@ -557,11 +557,11 @@ bool Cuts::makeCuts(AnalysisEvent* event,
 
         if (doPlots_)
         {
-            plotMap["wMass"]->fillAllPlots(event, *eventWeight);
+            plotMap["wMass"]->fillAllPlots(event, eventWeight);
         }
         if (doPlots_ || fillCutFlow_)
         {
-            cutFlow->Fill(4.5, *eventWeight);
+            cutFlow->Fill(4.5, eventWeight);
         }
     }
 
@@ -587,10 +587,10 @@ bool Cuts::makeCuts(AnalysisEvent* event,
             {
                 if (doPlots_)
                 {
-                    plotMap["cTag"]->fillAllPlots(event, *eventWeight);
+                    plotMap["cTag"]->fillAllPlots(event, eventWeight);
                 }
 
-                cutFlow->Fill(4.5, *eventWeight);
+                cutFlow->Fill(4.5, eventWeight);
             }
         }
     }
@@ -606,7 +606,7 @@ bool Cuts::makeCuts(AnalysisEvent* event,
 
 // Make lepton cuts. Will become customisable in a config later on.
 bool Cuts::makeLeptonCuts(AnalysisEvent* event,
-                          float* eventWeight,
+                          float& eventWeight,
                           std::map<std::string, Plots*> plotMap,
                           TH1D* cutFlow,
                           int syst,
@@ -644,7 +644,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
         //        << "/" <<
         //        event->genElePF2PATPromptFinalState[event->zPairIndex.second]
         //        << std::endl;
-        *eventWeight *= -1.0;
+        eventWeight *= -1.0;
         if (!event->genElePF2PATPromptFinalState[event->zPairIndex.first])
         {
             return false;
@@ -657,7 +657,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
 
     if (isNPL_ && numTightMu_ == 2 && isMC_)
     { // if mumu channel
-        *eventWeight *= -1.0;
+        eventWeight *= -1.0;
         if (!event->genMuonPF2PATPromptFinalState[event->zPairIndex.first])
         {
             return false;
@@ -670,7 +670,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
 
     if (isNPL_ && numTightEle_ == 1 && numTightMu_ == 1 && isMC_)
     { // if emu channel
-        *eventWeight *= -1.0;
+        eventWeight *= -1.0;
         if (!event->genElePF2PATPromptFinalState[event->zPairIndex.first])
         {
             return false;
@@ -736,7 +736,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
         return false;
     }
 
-    *eventWeight *= getLeptonWeight(event, syst);
+    eventWeight *= getLeptonWeight(event, syst);
 
     if (doPlots_ || fillCutFlow_)
     {
@@ -744,11 +744,11 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
     }
     if (doPlots_)
     {
-        plotMap["lepSel"]->fillAllPlots(event, *eventWeight);
+        plotMap["lepSel"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(0.5, *eventWeight);
+        cutFlow->Fill(0.5, eventWeight);
     }
 
     if (isNPL_)
@@ -772,15 +772,15 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
         }
         if (numTightEle_ == 2)
         {
-            *eventWeight *= eeWeight;
+            eventWeight *= eeWeight;
         }
         if (numTightMu_ == 2)
         {
-            *eventWeight *= mumuWeight;
+            eventWeight *= mumuWeight;
         }
         if (numTightEle_ == 1 && numTightMu_ == 1)
         {
-            *eventWeight *= emuWeight;
+            eventWeight *= emuWeight;
         }
     }
 
@@ -805,11 +805,11 @@ bool Cuts::makeLeptonCuts(AnalysisEvent* event,
     }
     if (doPlots_)
     {
-        plotMap["zMass"]->fillAllPlots(event, *eventWeight);
+        plotMap["zMass"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(1.5, *eventWeight);
+        cutFlow->Fill(1.5, eventWeight);
     }
 
     return true;
@@ -1502,7 +1502,7 @@ float Cuts::getTopMass(AnalysisEvent* event)
 }
 
 std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
-    AnalysisEvent* event, int syst, float* eventWeight, bool isProper)
+    AnalysisEvent* event, int syst, float& eventWeight, bool isProper)
 {
     std::vector<int> jets;
     std::vector<float> SFs;
@@ -1754,7 +1754,7 @@ std::pair<std::vector<int>, std::vector<float>> Cuts::makeJetCuts(
             bWeight -= bWeightErr;
         }
 
-        *eventWeight *= bWeight;
+        eventWeight *= bWeight;
     }
 
     return std::make_pair(jets, SFs);
@@ -1848,7 +1848,7 @@ void Cuts::setTightEle(float, float, float)
 {
 }
 
-bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
+bool Cuts::triggerCuts(AnalysisEvent* event, float& eventWeight, int syst)
 {
     if (skipTrigger_)
     {
@@ -2167,9 +2167,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         {
             if (isMC_)
             {
-                *eventWeight *= twgt; // trigger weight should be unchanged
-                                      // for data anyway, but good practice to
-                                      // explicitly not apply it.
+                eventWeight *= twgt; // trigger weight should be unchanged
+                                     // for data anyway, but good practice to
+                                     // explicitly not apply it.
             }
             return true;
         }
@@ -2183,9 +2183,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         {
             if (isMC_)
             {
-                *eventWeight *= twgt; // trigger weight should be unchanged
-                                      // for data anyway, but good practice to
-                                      // explicitly not apply it.
+                eventWeight *= twgt; // trigger weight should be unchanged
+                                     // for data anyway, but good practice to
+                                     // explicitly not apply it.
             }
             return true;
         }
@@ -2203,9 +2203,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst)
         {
             if (isMC_)
             {
-                *eventWeight *= twgt; // trigger weight should be unchanged
-                                      // for data anyway, but good practice to
-                                      // explicitly not apply it.
+                eventWeight *= twgt; // trigger weight should be unchanged
+                                     // for data anyway, but good practice to
+                                     // explicitly not apply it.
             }
             return true;
         }
@@ -2246,7 +2246,7 @@ bool Cuts::metFilters(AnalysisEvent* event)
 }
 
 // Does the cuts required for the synchronisation.
-bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
+bool Cuts::synchCuts(AnalysisEvent* event, float& eventWeight)
 {
     // Trigger stuff would go first, but in MC at least (what I'm starting with)
     // I don't have that saved. Idiot.
@@ -2270,7 +2270,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
 
     // 2016 tZq dilepton synch
 
-    synchCutFlowHist_->Fill(0.5, *eventWeight); // Total events
+    synchCutFlowHist_->Fill(0.5, eventWeight); // Total events
     //    std::cout << std::setprecision(6) << std::fixed;
 
     if (!triggerCuts(event, eventWeight, 0))
@@ -2282,7 +2282,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
         return false;
     }
 
-    synchCutFlowHist_->Fill(1.5, *eventWeight); // Trigger cuts - Step 0
+    synchCutFlowHist_->Fill(1.5, eventWeight); // Trigger cuts - Step 0
     event->electronIndexTight = getTightEles(event);
     event->muonIndexTight = getTightMuons(event);
     synchNumEles_->Fill(event->electronIndexTight.size());
@@ -2301,13 +2301,13 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
         return false;
     }
 
-    synchCutFlowHist_->Fill(2.5, *eventWeight); // 2 Tight Leptons - step 1
+    synchCutFlowHist_->Fill(2.5, eventWeight); // 2 Tight Leptons - step 1
     if ((event->electronIndexTight.size() != getLooseEles(event).size())
         || (event->muonIndexTight.size() != getLooseMuons(event).size()))
     {
         return false;
     }
-    synchCutFlowHist_->Fill(3.5, *eventWeight); // Lepton Veto - step 2
+    synchCutFlowHist_->Fill(3.5, eventWeight); // Lepton Veto - step 2
 
     if (!getDileptonZCand(
             event, event->electronIndexTight, event->muonIndexTight))
@@ -2320,9 +2320,9 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
     {
         return false;
     }
-    synchCutFlowHist_->Fill(4.5, *eventWeight); // Z veto - step 3
+    synchCutFlowHist_->Fill(4.5, eventWeight); // Z veto - step 3
 
-    *eventWeight *= getLeptonWeight(event, 0);
+    eventWeight *= getLeptonWeight(event, 0);
 
     std::pair<std::vector<int>, std::vector<float>> jetInfo;
     jetInfo = makeJetCuts(event, 0, eventWeight);
@@ -2339,7 +2339,7 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
     }
 
     event->bTagIndex = makeBCuts(event, event->jetIndex, 0);
-    synchCutFlowHist_->Fill(5.5, *eventWeight); // jet selection - step 4
+    synchCutFlowHist_->Fill(5.5, eventWeight); // jet selection - step 4
 
     if (event->bTagIndex.size() < numbJets_)
     {
@@ -2349,9 +2349,9 @@ bool Cuts::synchCuts(AnalysisEvent* event, float* eventWeight)
     {
         return false;
     }
-    synchCutFlowHist_->Fill(6.5, *eventWeight); // b-jet selection - step 5
+    synchCutFlowHist_->Fill(6.5, eventWeight); // b-jet selection - step 5
 
-    synchCutFlowHist_->Fill(7.5, *eventWeight); // no Met cut applied
+    synchCutFlowHist_->Fill(7.5, eventWeight); // no Met cut applied
 
     double wMass = getWbosonQuarksCand(event, event->jetIndex, 0);
 
@@ -2609,7 +2609,7 @@ std::vector<int> Cuts::getSynchMus(AnalysisEvent* event)
 
 // First tentative attempt at doing the background isolation.
 bool Cuts::invertIsoCut(AnalysisEvent* event,
-                        float* eventWeight,
+                        float& eventWeight,
                         std::map<std::string, Plots*> plotMap,
                         TH1D* cutFlow)
 {
@@ -2737,11 +2737,11 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,
 
     if (doPlots_)
     {
-        plotMap["lepSel"]->fillAllPlots(event, *eventWeight);
+        plotMap["lepSel"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(0.5, *eventWeight);
+        cutFlow->Fill(0.5, eventWeight);
     }
 
     if (std::abs(invMass) > invZMassCut_)
@@ -2750,11 +2750,11 @@ bool Cuts::invertIsoCut(AnalysisEvent* event,
     }
     if (doPlots_)
     {
-        plotMap["zMass"]->fillAllPlots(event, *eventWeight);
+        plotMap["zMass"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(1.5, *eventWeight);
+        cutFlow->Fill(1.5, eventWeight);
     }
     return true;
 }
@@ -2860,7 +2860,7 @@ double Cuts::getChiSquared(double wMass, double topMass)
 }
 
 bool Cuts::ttbarCuts(AnalysisEvent* event,
-                     float* eventWeight,
+                     float& eventWeight,
                      std::map<std::string, Plots*> plotMap,
                      TH1D* cutFlow,
                      int systToRun)
@@ -2899,11 +2899,11 @@ bool Cuts::ttbarCuts(AnalysisEvent* event,
 
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, *eventWeight);
+        cutFlow->Fill(3.5, eventWeight);
     }
     if (doPlots_)
     {
-        plotMap["jetSel"]->fillAllPlots(event, *eventWeight);
+        plotMap["jetSel"]->fillAllPlots(event, eventWeight);
     }
 
     if (event->bTagIndex.size() < numbJets_)
@@ -2917,11 +2917,11 @@ bool Cuts::ttbarCuts(AnalysisEvent* event,
 
     if (doPlots_)
     {
-        plotMap["bTag"]->fillAllPlots(event, *eventWeight);
+        plotMap["bTag"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, *eventWeight);
+        cutFlow->Fill(3.5, eventWeight);
     }
 
     float invWmass{0.};
@@ -2944,11 +2944,11 @@ bool Cuts::ttbarCuts(AnalysisEvent* event,
 
     if (doPlots_)
     {
-        plotMap["wMass"]->fillAllPlots(event, *eventWeight);
+        plotMap["wMass"]->fillAllPlots(event, eventWeight);
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(4.5, *eventWeight);
+        cutFlow->Fill(4.5, eventWeight);
     }
 
     return true;
@@ -3216,7 +3216,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step)
 
         float tempWeight{1.};
         std::pair<std::vector<int>, std::vector<float>> jetInfo;
-        jetInfo = makeJetCuts(event, 0, &tempWeight);
+        jetInfo = makeJetCuts(event, 0, tempWeight);
         event->jetIndex = jetInfo.first;
 
         step9EventDump_ << event->eventNum << " " << event->numElePF2PAT << " "
@@ -3445,7 +3445,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step)
 
     float tempWeight{1.};
     std::pair<std::vector<int>, std::vector<float>> jetInfo;
-    jetInfo = makeJetCuts(event, 0, &tempWeight);
+    jetInfo = makeJetCuts(event, 0, tempWeight);
     event->jetIndex = jetInfo.first;
     event->jetSmearValue = jetInfo.second;
 
@@ -3507,7 +3507,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step)
             step0EventDump_.precision(3);
             step0EventDump_ << event->metPF2PATPt << "|";
             // Synch Cut Flow stuff
-            if (triggerCuts(event, &tempWeight, 0))
+            if (triggerCuts(event, tempWeight, 0))
             {
                 step0EventDump_ << "1"; // Trigger Selection - step 0
             }
@@ -3554,7 +3554,7 @@ void Cuts::dumpToFile(AnalysisEvent* event, int step)
             {
                 step0EventDump_ << "0";
             }
-            jetInfo = makeJetCuts(event, 0, &tempWeight);
+            jetInfo = makeJetCuts(event, 0, tempWeight);
             event->jetIndex = jetInfo.first;
             event->jetSmearValue = jetInfo.second;
             if (event->jetIndex.size() >= 1)
