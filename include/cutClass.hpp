@@ -22,13 +22,13 @@ class Cuts
     private:
     bool makeLeptonCuts(AnalysisEvent&,
                         float&,
-                        std::map<std::string, std::shared_ptr<Plots>>,
+                        std::map<std::string, std::shared_ptr<Plots>>&,
                         TH1D&,
                         int syst = 0,
                         bool isControl = false);
     bool invertIsoCut(AnalysisEvent&,
                       float&,
-                      std::map<std::string, std::shared_ptr<Plots>>,
+                      std::map<std::string, std::shared_ptr<Plots>>&,
                       TH1D&);
     std::pair<std::vector<int>, std::vector<float>>
         makeJetCuts(AnalysisEvent&, int, float&, bool isProper = true);
@@ -69,7 +69,7 @@ class Cuts
     // Method to do ttbar cuts for the dilepton background estimation
     bool ttbarCuts(AnalysisEvent& event,
                    float&,
-                   std::map<std::string, std::shared_ptr<Plots>>,
+                   std::map<std::string, std::shared_ptr<Plots>>&,
                    TH1D&,
                    int);
 

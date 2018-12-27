@@ -605,12 +605,13 @@ bool Cuts::makeCuts(AnalysisEvent& event,
 }
 
 // Make lepton cuts. Will become customisable in a config later on.
-bool Cuts::makeLeptonCuts(AnalysisEvent& event,
-                          float& eventWeight,
-                          std::map<std::string, std::shared_ptr<Plots>> plotMap,
-                          TH1D& cutFlow,
-                          int syst,
-                          bool isControl)
+bool Cuts::makeLeptonCuts(
+    AnalysisEvent& event,
+    float& eventWeight,
+    std::map<std::string, std::shared_ptr<Plots>>& plotMap,
+    TH1D& cutFlow,
+    int syst,
+    bool isControl)
 {
     ////Do lepton selection.
 
@@ -2609,7 +2610,7 @@ std::vector<int> Cuts::getSynchMus(AnalysisEvent& event)
 // First tentative attempt at doing the background isolation.
 bool Cuts::invertIsoCut(AnalysisEvent& event,
                         float& eventWeight,
-                        std::map<std::string, std::shared_ptr<Plots>> plotMap,
+                        std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                         TH1D& cutFlow)
 {
     std::cout << "Invert Iso Cut is not avaliable for the dilepton channel."
@@ -2860,7 +2861,7 @@ double Cuts::getChiSquared(double wMass, double topMass)
 
 bool Cuts::ttbarCuts(AnalysisEvent& event,
                      float& eventWeight,
-                     std::map<std::string, std::shared_ptr<Plots>> plotMap,
+                     std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                      TH1D& cutFlow,
                      int systToRun)
 {
