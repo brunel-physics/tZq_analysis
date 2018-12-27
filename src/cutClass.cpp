@@ -438,8 +438,8 @@ void Cuts::parse_config(std::string confName)
 
 bool Cuts::makeCuts(AnalysisEvent& event,
                     float& eventWeight,
-                    std::map<std::string, Plots*>& plotMap,
-                    TH1D* cutFlow,
+                    std::map<std::string, std::shared_ptr<Plots>>& plotMap,
+                    TH1D& cutFlow,
                     int systToRun)
 {
     // If we're doing synchronisation, do this function.
@@ -495,7 +495,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
 
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(2.5, eventWeight);
+        cutFlow.Fill(2.5, eventWeight);
     }
     if (doPlots_)
     {
@@ -516,7 +516,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, eventWeight);
+        cutFlow.Fill(3.5, eventWeight);
     }
 
     if (!isFCNC_)
@@ -561,7 +561,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         }
         if (doPlots_ || fillCutFlow_)
         {
-            cutFlow->Fill(4.5, eventWeight);
+            cutFlow.Fill(4.5, eventWeight);
         }
     }
 
@@ -590,7 +590,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
                     plotMap["cTag"]->fillAllPlots(event, eventWeight);
                 }
 
-                cutFlow->Fill(4.5, eventWeight);
+                cutFlow.Fill(4.5, eventWeight);
             }
         }
     }
@@ -607,8 +607,8 @@ bool Cuts::makeCuts(AnalysisEvent& event,
 // Make lepton cuts. Will become customisable in a config later on.
 bool Cuts::makeLeptonCuts(AnalysisEvent& event,
                           float& eventWeight,
-                          std::map<std::string, Plots*> plotMap,
-                          TH1D* cutFlow,
+                          std::map<std::string, std::shared_ptr<Plots>> plotMap,
+                          TH1D& cutFlow,
                           int syst,
                           bool isControl)
 {
@@ -748,7 +748,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(0.5, eventWeight);
+        cutFlow.Fill(0.5, eventWeight);
     }
 
     if (isNPL_)
@@ -809,7 +809,7 @@ bool Cuts::makeLeptonCuts(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(1.5, eventWeight);
+        cutFlow.Fill(1.5, eventWeight);
     }
 
     return true;
@@ -2609,8 +2609,8 @@ std::vector<int> Cuts::getSynchMus(AnalysisEvent& event)
 // First tentative attempt at doing the background isolation.
 bool Cuts::invertIsoCut(AnalysisEvent& event,
                         float& eventWeight,
-                        std::map<std::string, Plots*> plotMap,
-                        TH1D* cutFlow)
+                        std::map<std::string, std::shared_ptr<Plots>> plotMap,
+                        TH1D& cutFlow)
 {
     std::cout << "Invert Iso Cut is not avaliable for the dilepton channel."
               << std::endl;
@@ -2740,7 +2740,7 @@ bool Cuts::invertIsoCut(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(0.5, eventWeight);
+        cutFlow.Fill(0.5, eventWeight);
     }
 
     if (std::abs(invMass) > invZMassCut_)
@@ -2753,7 +2753,7 @@ bool Cuts::invertIsoCut(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(1.5, eventWeight);
+        cutFlow.Fill(1.5, eventWeight);
     }
     return true;
 }
@@ -2860,8 +2860,8 @@ double Cuts::getChiSquared(double wMass, double topMass)
 
 bool Cuts::ttbarCuts(AnalysisEvent& event,
                      float& eventWeight,
-                     std::map<std::string, Plots*> plotMap,
-                     TH1D* cutFlow,
+                     std::map<std::string, std::shared_ptr<Plots>> plotMap,
+                     TH1D& cutFlow,
                      int systToRun)
 {
     if (!skipTrigger_ && !triggerCuts(event, eventWeight, systToRun))
@@ -2898,7 +2898,7 @@ bool Cuts::ttbarCuts(AnalysisEvent& event,
 
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, eventWeight);
+        cutFlow.Fill(3.5, eventWeight);
     }
     if (doPlots_)
     {
@@ -2920,7 +2920,7 @@ bool Cuts::ttbarCuts(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(3.5, eventWeight);
+        cutFlow.Fill(3.5, eventWeight);
     }
 
     float invWmass{0.};
@@ -2947,7 +2947,7 @@ bool Cuts::ttbarCuts(AnalysisEvent& event,
     }
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow->Fill(4.5, eventWeight);
+        cutFlow.Fill(4.5, eventWeight);
     }
 
     return true;

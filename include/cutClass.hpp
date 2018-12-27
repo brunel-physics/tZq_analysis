@@ -22,14 +22,14 @@ class Cuts
     private:
     bool makeLeptonCuts(AnalysisEvent&,
                         float&,
-                        std::map<std::string, Plots*>,
-                        TH1D*,
+                        std::map<std::string, std::shared_ptr<Plots>>,
+                        TH1D&,
                         int syst = 0,
                         bool isControl = false);
     bool invertIsoCut(AnalysisEvent&,
                       float&,
-                      std::map<std::string, Plots*>,
-                      TH1D*);
+                      std::map<std::string, std::shared_ptr<Plots>>,
+                      TH1D&);
     std::pair<std::vector<int>, std::vector<float>>
         makeJetCuts(AnalysisEvent&, int, float&, bool isProper = true);
     std::vector<int> makeMetCuts(AnalysisEvent&);
@@ -69,8 +69,8 @@ class Cuts
     // Method to do ttbar cuts for the dilepton background estimation
     bool ttbarCuts(AnalysisEvent& event,
                    float&,
-                   std::map<std::string, Plots*>,
-                   TH1D*,
+                   std::map<std::string, std::shared_ptr<Plots>>,
+                   TH1D&,
                    int);
 
     // Simple deltaR function, because the reco namespace doesn't work or
@@ -290,8 +290,11 @@ class Cuts
          const bool,
          const bool);
     ~Cuts();
-    bool makeCuts(
-        AnalysisEvent&, float&, std::map<std::string, Plots*>&, TH1D*, int);
+    bool makeCuts(AnalysisEvent&,
+                  float&,
+                  std::map<std::string, std::shared_ptr<Plots>>&,
+                  TH1D&,
+                  int);
     void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
     void setMC(bool isMC)
     {

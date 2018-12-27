@@ -544,25 +544,25 @@ void AnalysisAlgo::runMainAnalysis()
                                                       + channel);
                             }
                             plotsMap[systNames[systInd] + channel]
-                                    [(histoName)] =
-                                        std::map<std::string, Plots*>();
+                                    [(histoName)] = {};
                             for (unsigned j{0}; j < stageNames.size(); j++)
                             {
                                 plotsMap[systNames[systInd] + channel]
                                         [histoName][stageNames[j].first] =
-                                            new Plots{plotTitles,
-                                                      plotNames,
-                                                      xMin,
-                                                      xMax,
-                                                      nBins,
-                                                      fillExp,
-                                                      xAxisLabels,
-                                                      cutStage,
-                                                      j,
-                                                      histoName + "_"
-                                                          + stageNames[j].first
-                                                          + systNames[systInd]
-                                                          + "_" + channel};
+                                            std::make_shared<Plots>(
+                                                plotTitles,
+                                                plotNames,
+                                                xMin,
+                                                xMax,
+                                                nBins,
+                                                fillExp,
+                                                xAxisLabels,
+                                                cutStage,
+                                                j,
+                                                histoName + "_"
+                                                    + stageNames[j].first
+                                                    + systNames[systInd] + "_"
+                                                    + channel);
                             }
                         }
                     } // end cutFlow find loop
@@ -1099,7 +1099,7 @@ void AnalysisAlgo::runMainAnalysis()
                             event,
                             eventWeight,
                             plotsMap[systNames[systInd] + channel][histoName],
-                            cutFlowMap[histoName + systNames[systInd]],
+                            *cutFlowMap[histoName + systNames[systInd]],
                             systInd ? systMask : systInd))
                     {
                         if (systInd)

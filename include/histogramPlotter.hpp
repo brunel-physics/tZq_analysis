@@ -5,6 +5,7 @@
 #include "plots.hpp"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -84,14 +85,16 @@ class HistogramPlotter
         extensions_ = extentions;
     }
     // Actual plotting commands
-    void plotHistos(std::map<std::string, std::map<std::string, Plots*>>);
+    void plotHistos(
+        std::map<std::string, std::map<std::string, std::shared_ptr<Plots>>>);
     void loadHistos()
     {
         loadHistos_ = true;
     }
     std::map<std::string, TH1D*> loadCutFlowMap(std::string, std::string);
     void saveHistos(std::map<std::string, TH1D*>, std::string, std::string);
-    void saveHistos(std::map<std::string, std::map<std::string, Plots*>>);
+    void saveHistos(
+        std::map<std::string, std::map<std::string, std::shared_ptr<Plots>>>);
     void plotCutFlows(std::map<std::string, TH1D*>);
     void makePlot(std::map<std::string, TH1D*>, std::string, std::string);
     void makePlot(std::map<std::string, TH1D*>,

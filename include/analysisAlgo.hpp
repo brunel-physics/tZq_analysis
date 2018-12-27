@@ -6,6 +6,7 @@
 #include "histogramPlotter.hpp"
 
 #include <map>
+#include <memory>
 #include <vector>
 
 class TH1D;
@@ -78,7 +79,9 @@ class AnalysisAlgo
     Cuts* cutObj;
 
     // Plotting stuff
-    std::map<std::string, std::map<std::string, std::map<std::string, Plots*>>>
+    std::map<
+        std::string,
+        std::map<std::string, std::map<std::string, std::shared_ptr<Plots>>>>
         plotsMap;
     std::map<std::string, TH1D*> cutFlowMap;
 

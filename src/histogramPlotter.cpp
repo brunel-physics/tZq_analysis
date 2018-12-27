@@ -83,7 +83,8 @@ HistogramPlotter::~HistogramPlotter()
 }
 
 void HistogramPlotter::plotHistos(
-    std::map<std::string, std::map<std::string, Plots*>> plotMap)
+    std::map<std::string, std::map<std::string, std::shared_ptr<Plots>>>
+        plotMap)
 {
     // Get a list of keys from the map.
     auto firstIt = plotMap.begin();
@@ -183,7 +184,8 @@ void HistogramPlotter::saveHistos(std::map<std::string, TH1D*> cutFlowMap,
 }
 
 void HistogramPlotter::saveHistos(
-    std::map<std::string, std::map<std::string, Plots*>> plotMap)
+    std::map<std::string, std::map<std::string, std::shared_ptr<Plots>>>
+        plotMap)
 {
     // Get a list of keys from the map.
     auto firstIt = plotMap.begin();
