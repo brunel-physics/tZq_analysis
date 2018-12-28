@@ -1536,6 +1536,7 @@ class AnalysisEvent
     TBranch* b_eventLumiblock; //!
 
     bool isMC_{};
+    const bool is2016_{};
 
     std::vector<float> muonMomentumSF;
     std::vector<float> jetSmearValue;
@@ -1568,13 +1569,18 @@ class AnalysisEvent
     virtual Long64_t LoadTree(const Long64_t entry);
     virtual void Loop();
     virtual void Show(const Long64_t entry = -1) const;
+    bool eTrig() const;
+    bool muTrig() const;
+    bool eeTrig() const;
+    bool muEGTrig() const;
+    bool mumuTrig() const;
 };
 
 inline AnalysisEvent::AnalysisEvent(const bool isMC,
                                     const std::string triggerFlag,
                                     TTree* tree,
                                     const bool is2016)
-    : fChain{nullptr}, isMC_{isMC}
+    : fChain{nullptr}, isMC_{isMC}, is2016_{is2016}
 {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
@@ -2470,6 +2476,164 @@ inline void AnalysisEvent::Loop()
         nb = fChain->GetEntry(jentry);
         nbytes += nb;
     }
+}
+
+inline bool AnalysisEvent::eTrig() const
+{
+    return is2016_ ? HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0
+                         || HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0
+                   : HLT_Ele32_WPTight_Gsf_L1DoubleEG_v1 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v2 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v3 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v4 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v5 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v6 > 0
+                         || HLT_Ele32_WPTight_Gsf_L1DoubleEG_v7 > 0
+                         || HLT_Ele35_WPTight_Gsf_v1 > 0
+                         || HLT_Ele35_WPTight_Gsf_v2 > 0
+                         || HLT_Ele35_WPTight_Gsf_v3 > 0
+                         || HLT_Ele35_WPTight_Gsf_v4 > 0
+                         || HLT_Ele35_WPTight_Gsf_v5 > 0
+                         || HLT_Ele35_WPTight_Gsf_v6 > 0
+                         || HLT_Ele35_WPTight_Gsf_v7 > 0;
+}
+
+inline bool AnalysisEvent::muTrig() const
+{
+    return is2016_
+               ? HLT_IsoMu24_v1 > 0 || HLT_IsoMu24_v2 > 0 || HLT_IsoMu24_v3 > 0
+                     || HLT_IsoMu24_v4 > 0 || HLT_IsoTkMu24_v1 > 0
+                     || HLT_IsoTkMu24_v2 > 0 || HLT_IsoTkMu24_v3 > 0
+                     || HLT_IsoTkMu24_v4 > 0
+               : HLT_IsoMu27_v8 > 0 || HLT_IsoMu27_v9 > 0 || HLT_IsoMu27_v10 > 0
+                     || HLT_IsoMu27_v11 > 0 || HLT_IsoMu27_v12 > 0
+                     || HLT_IsoMu27_v13 > 0 || HLT_IsoMu27_v14 > 0;
+}
+
+inline bool AnalysisEvent::eeTrig() const
+{
+    return is2016_ ? HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                   : HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v10 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v11 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v12 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v13 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v14 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v15 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v16 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v17 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v14 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v15 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v16 > 0
+                         || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v17 > 0;
+}
+
+inline bool AnalysisEvent::muEGTrig() const
+{
+    // clang-format off
+    return
+      is2016_ ? eventRun < 280919 // different triggers for run H
+                    ? HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 > 0
+                          || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0
+                    : HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                          || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                          || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
+                          || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
+                          || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
+                          || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+              : HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
+                    || HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
+                    || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
+                    || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0;
+    // clang-format on
+}
+
+inline bool AnalysisEvent::mumuTrig() const
+{
+    return is2016_ ? (eventRun < 280919
+                      && (HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0
+                          || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0
+                          || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0
+                          || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0
+                          || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2 > 0
+                          || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3 > 0
+                          || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5 > 0))
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0
+                         || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0
+                         || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0
+                         || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0
+                   : HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v8 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v9 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v10 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v11 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v12 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v13 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v14 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v1 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v2 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v3 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v4 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v7 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v8 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v1 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v2 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v3 > 0
+                         || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v4 > 0;
 }
 
 #endif

@@ -594,40 +594,24 @@ void TriggerScaleFactors::runMainAnalysis()
             // selection?
             if (passDoubleElectronSelection)
             {
-                triggerDoubleEG =
-                    (doubleElectronTriggerCut(event, dataset->isMC()));
-            }
-            if (passDoubleElectronSelection)
-            {
-                triggerMetDoubleEG =
-                    (doubleElectronTriggerCut(event, dataset->isMC())
-                     * metTriggerCut(event));
+                triggerDoubleEG = event->eTrig() && event->eeTrig();
+                triggerMetDoubleEG = triggerDoubleEG && metTriggerCut(event);
             }
             // Does event pass Single/Double Muon trigger and the muon
             // selection?
             if (passDoubleMuonSelection)
             {
-                triggerDoubleMuon =
-                    (doubleMuonTriggerCut(event, dataset->isMC()));
-            }
-            if (passDoubleMuonSelection)
-            {
+                triggerDoubleMuon = event->muTrig() || event->mumuTrig();
                 triggerMetDoubleMuon =
-                    (doubleMuonTriggerCut(event, dataset->isMC())
-                     * metTriggerCut(event));
+                    triggerDoubleMuon && metTriggerCut(event);
             }
             // Does event pass Single Electron/Single Muon/MuonEG trigger and
             // the muon selection?
             if (passMuonElectronSelection)
             {
-                triggerMuonElectron =
-                    (muonElectronTriggerCut(event, dataset->isMC()));
-            }
-            if (passMuonElectronSelection)
-            {
+                triggerMuonElectron = event->muEGTrig();
                 triggerMetMuonElectron =
-                    (muonElectronTriggerCut(event, dataset->isMC())
-                     * metTriggerCut(event));
+                    triggerMuonElectron && metTriggerCut(event);
             }
             //
             // Does event pass either double lepton seletion and the MET
@@ -1157,168 +1141,9 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
     }
 }
 
-bool TriggerScaleFactors::doubleElectronTriggerCut(AnalysisEvent* event,
-                                                   bool isMC)
-{
-    const bool eTrig{is2016_
-                         ? event->HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0
-                               || event->HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0
-                         : event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v1 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v2 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v3 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v4 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v5 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v6 > 0
-                               || event->HLT_Ele32_WPTight_Gsf_L1DoubleEG_v7 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v1 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v2 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v3 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v4 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v5 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v6 > 0
-                               || event->HLT_Ele35_WPTight_Gsf_v7 > 0};
-
-    const bool eeTrig{
-        is2016_
-            ? event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
-            : event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v10 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v11 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v12 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v13 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v14 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v15 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v16 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v17 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v14 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v15 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v16 > 0
-                  || event->HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v17 > 0};
-
-    return eTrig || eeTrig;
-}
-
-bool TriggerScaleFactors::muonElectronTriggerCut(AnalysisEvent* event,
-                                                 bool isMC)
-{
-    // clang-format off
-    return is2016_
-               ? event->eventRun < 280919 // different triggers for run H
-                     ? event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v6 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v7 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v8 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v9 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v4 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v5 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v6 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v7 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 > 0
-                           || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v9 > 0
-                     : event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
-                           || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
-                           || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v1 > 0
-                           || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v2 > 0
-                           || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v3 > 0
-                           || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
-               : event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v5 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v12 > 0
-                     || event->HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v13 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v4 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v6 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v7 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v8 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v9 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 > 0
-                     || event->HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v11 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v3 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v4 > 0
-                     || event->HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v5 > 0;
-    // clang-format on
-}
-
 bool TriggerScaleFactors::doubleMuonTriggerCut(AnalysisEvent* event, bool isMC)
 {
-    const bool muTrig{
-        is2016_
-            ? event->HLT_IsoMu24_v1 > 0 || event->HLT_IsoMu24_v2 > 0
-                  || event->HLT_IsoMu24_v3 > 0 || event->HLT_IsoMu24_v4 > 0
-                  || event->HLT_IsoTkMu24_v1 > 0 || event->HLT_IsoTkMu24_v2 > 0
-                  || event->HLT_IsoTkMu24_v3 > 0 || event->HLT_IsoTkMu24_v4 > 0
-            : event->HLT_IsoMu27_v8 > 0 || event->HLT_IsoMu27_v9 > 0
-                  || event->HLT_IsoMu27_v10 > 0 || event->HLT_IsoMu27_v11 > 0
-                  || event->HLT_IsoMu27_v12 > 0 || event->HLT_IsoMu27_v13 > 0
-                  || event->HLT_IsoMu27_v14 > 0};
-    const bool mumuTrig{
-        is2016_
-            ? (event->eventRun < 280919
-               && (event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v6 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v3 > 0
-                   || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v5 > 0))
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0
-            : event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v8 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v9 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v10 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v11 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v12 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v13 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v14 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v1 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v2 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v3 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v4 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v7 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v8 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v1 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v2 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v3 > 0
-                  || event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v4 > 0};
-
-    return muTrig || mumuTrig;
+    return event->muTrig() || event->mumuTrig();
 }
 
 bool TriggerScaleFactors::metTriggerCut(AnalysisEvent* event)
