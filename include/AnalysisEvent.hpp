@@ -1564,16 +1564,16 @@ class AnalysisEvent
 
     AnalysisEvent(bool isMC, std::string triggerFlag, TTree* tree, bool is2016);
     virtual ~AnalysisEvent();
-    virtual Int_t GetEntry(Long64_t entry) const;
-    virtual Long64_t LoadTree(Long64_t entry);
+    virtual Int_t GetEntry(const Long64_t entry);
+    virtual Long64_t LoadTree(const Long64_t entry);
     virtual void Loop();
-    virtual void Show(Long64_t entry = -1) const;
+    virtual void Show(const Long64_t entry = -1) const;
 };
 
-inline AnalysisEvent::AnalysisEvent(bool isMC,
-                                    std::string triggerFlag,
+inline AnalysisEvent::AnalysisEvent(const bool isMC,
+                                    const std::string triggerFlag,
                                     TTree* tree,
-                                    bool is2016)
+                                    const bool is2016)
     : fChain{nullptr}, isMC_{isMC}
 {
     // if parameter tree is not specified (or zero), connect the file
@@ -2409,7 +2409,7 @@ inline AnalysisEvent::~AnalysisEvent()
     delete fChain->GetCurrentFile();
 }
 
-inline Int_t AnalysisEvent::GetEntry(Long64_t entry) const
+inline Int_t AnalysisEvent::GetEntry(const Long64_t entry)
 {
     // Read contents of entry.
     if (!fChain)
@@ -2419,7 +2419,7 @@ inline Int_t AnalysisEvent::GetEntry(Long64_t entry) const
     return fChain->GetEntry(entry);
 }
 
-inline Long64_t AnalysisEvent::LoadTree(Long64_t entry)
+inline Long64_t AnalysisEvent::LoadTree(const Long64_t entry)
 {
     // Set the environment to read one entry
     if (!fChain)
@@ -2438,7 +2438,7 @@ inline Long64_t AnalysisEvent::LoadTree(Long64_t entry)
     return centry;
 }
 
-inline void AnalysisEvent::Show(Long64_t entry) const
+inline void AnalysisEvent::Show(const Long64_t entry) const
 {
     // Print contents of entry.
     // If entry is not specified, print current entry

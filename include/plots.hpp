@@ -18,18 +18,18 @@ class Plots
     std::vector<plot> plotPoint;
 
     public:
-    Plots(std::vector<std::string>,
-          std::vector<std::string>,
-          std::vector<float>,
-          std::vector<float>,
-          std::vector<int>,
-          std::vector<std::string>,
-          std::vector<std::string>,
-          std::vector<int>,
-          unsigned,
-          std::string postfixName = "");
+    Plots(const std::vector<std::string> titles,
+          const std::vector<std::string> names,
+          const std::vector<float> xMins,
+          const std::vector<float> xMaxs,
+          const std::vector<int> nBins,
+          const std::vector<std::string> fillExps,
+          const std::vector<std::string> xAxisLabels,
+          const std::vector<int> cutStage,
+          const unsigned thisCutStage,
+          const std::string postfixName);
     ~Plots();
-    void fillAllPlots(AnalysisEvent&, float);
+    void fillAllPlots(const AnalysisEvent& event, const float eventWeight);
     void saveAllPlots();
     void fillOnePlot(std::string, AnalysisEvent&, float);
     void saveOnePlots(int);
@@ -37,8 +37,8 @@ class Plots
     {
         return plotPoint;
     }
-    std::unordered_map<std::string, std::function<float(AnalysisEvent&)>>
-        getFncMap();
+    std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
+        getFncMap() const;
 };
 
 struct plot
@@ -46,7 +46,7 @@ struct plot
     std::string name;
     std::string title;
     TH1D* plotHist;
-    std::function<float(AnalysisEvent&)> fillExp;
+    std::function<float(const AnalysisEvent&)> fillExp;
     std::string xAxisLabel;
     bool fillPlot;
 };

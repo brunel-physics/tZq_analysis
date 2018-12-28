@@ -20,68 +20,86 @@ class TGraphAsymmErrors;
 class Cuts
 {
     private:
-    bool makeLeptonCuts(AnalysisEvent&,
-                        float&,
-                        std::map<std::string, std::shared_ptr<Plots>>&,
-                        TH1D&,
-                        int syst = 0,
-                        bool isControl = false);
+    bool makeLeptonCuts(AnalysisEvent& event,
+                        float& eventWeight,
+                        std::map<std::string, std::shared_ptr<Plots>>& plotMap,
+                        TH1D& cutFlow,
+                        const int syst,
+                        const bool isControl = false);
     bool invertIsoCut(AnalysisEvent&,
                       float&,
                       std::map<std::string, std::shared_ptr<Plots>>&,
                       TH1D&);
     std::pair<std::vector<int>, std::vector<float>>
-        makeJetCuts(AnalysisEvent&, int, float&, bool isProper = true);
+        makeJetCuts(AnalysisEvent& event,
+                    const int syst,
+                    float& eventWeight,
+                    const bool isProper = true);
     std::vector<int> makeMetCuts(AnalysisEvent&);
-    std::vector<int> makeBCuts(AnalysisEvent&, std::vector<int>, int syst = 0);
-    std::vector<int>
-        makeLooseBCuts(AnalysisEvent&, std::vector<int>, int syst = 0);
+    std::vector<int> makeBCuts(AnalysisEvent& event,
+                               const std::vector<int> jets,
+                               const int syst = 0);
+    std::vector<int> makeLooseBCuts(AnalysisEvent& event,
+                                    const std::vector<int> jets,
+                                    const int syst);
     std::vector<int> makeCCuts(AnalysisEvent&, std::vector<int>);
 
-    std::vector<int> getTightEles(AnalysisEvent& event);
-    std::vector<int> getInvIsoEles(AnalysisEvent& event);
-    std::vector<int> getLooseEles(AnalysisEvent& event);
-    std::vector<int> getTightMuons(AnalysisEvent& event);
-    std::vector<int> getInvIsoMuons(AnalysisEvent& event);
-    std::vector<int> getLooseMuons(AnalysisEvent& event);
-    float getTrileptonZCand(AnalysisEvent&, std::vector<int>, std::vector<int>);
-    bool getDileptonZCand(AnalysisEvent&, std::vector<int>, std::vector<int>);
-    float getWbosonQuarksCand(AnalysisEvent&, std::vector<int>, int syst = 0);
+    std::vector<int> getTightEles(const AnalysisEvent& event) const;
+    std::vector<int> getInvIsoEles(const AnalysisEvent& event) const;
+    std::vector<int> getLooseEles(const AnalysisEvent& event) const;
+    std::vector<int> getTightMuons(const AnalysisEvent& event) const;
+    std::vector<int> getInvIsoMuons(const AnalysisEvent& event) const;
+    std::vector<int> getLooseMuons(const AnalysisEvent& event) const;
+    float getTrileptonZCand(AnalysisEvent& event,
+                            const std::vector<int> electrons,
+                            const std::vector<int> muons) const;
+    bool getDileptonZCand(AnalysisEvent& event,
+                          const std::vector<int> electrons,
+                          const std::vector<int> muons) const;
+    float getWbosonQuarksCand(AnalysisEvent& event,
+                              const std::vector<int> jets,
+                              const int syst);
 
-    std::vector<std::pair<int, int>> getSynchDileptonCandidates(
-        AnalysisEvent&, std::vector<int>, std::vector<int>);
+    std::vector<std::pair<int, int>>
+        getSynchDileptonCandidates(const AnalysisEvent& event,
+                                   const std::vector<int> eles,
+                                   const std::vector<int> mus) const;
 
-    float getTopMass(AnalysisEvent&);
-    bool triggerCuts(AnalysisEvent&, float&, int syst = 0);
-    bool metFilters(AnalysisEvent&);
-
-    double getChiSquared(double wMass = 0.0, double topMass = 0.0);
+    float getTopMass(const AnalysisEvent& event) const;
+    bool triggerCuts(const AnalysisEvent& event,
+                     float& eventWeight,
+                     const int syst = 0) const;
+    bool metFilters(const AnalysisEvent& event) const;
 
     // Method for running the synchronisation with Jeremy.
     bool synchCuts(AnalysisEvent& event, float& eventWeight);
-    int getLooseLepsNum(AnalysisEvent& event); // Mimic preselection skims
-    int getLooseElecs(AnalysisEvent& event);
-    int getLooseMus(AnalysisEvent& event);
+    int getLooseLepsNum(
+        const AnalysisEvent& event) const; // Mimic preselection skims
+    int getLooseElecs(const AnalysisEvent& event) const;
+    int getLooseMus(const AnalysisEvent& event) const;
     // Methods for running tW synch
-    std::vector<int> getSynchEles(AnalysisEvent& event);
-    std::vector<int> getSynchMus(AnalysisEvent& event);
+    std::vector<int> getSynchEles(const AnalysisEvent& event) const;
+    std::vector<int> getSynchMus(const AnalysisEvent& event) const;
 
     // Method to do ttbar cuts for the dilepton background estimation
     bool ttbarCuts(AnalysisEvent& event,
-                   float&,
-                   std::map<std::string, std::shared_ptr<Plots>>&,
-                   TH1D&,
-                   int);
+                   float& eventWeight,
+                   std::map<std::string, std::shared_ptr<Plots>>& plotMap,
+                   TH1D& cutFlow,
+                   const int systToRun);
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
-    double deltaR(float, float, float, float);
-    void dumpToFile(AnalysisEvent& event, int);
+    double deltaR(const float eta1,
+                  const float phi1,
+                  const float eta2,
+                  const float phi2) const;
+    void dumpToFile(AnalysisEvent& event, const int step);
 
     // Function to get lepton SF
-    float getLeptonWeight(AnalysisEvent&, int syst = 0);
-    float eleSF(double, double, int syst = 0);
-    float muonSF(double, double, int syst = 0);
+    float getLeptonWeight(const AnalysisEvent& event, const int syst) const;
+    float eleSF(const double pt, const double eta, const int syst) const;
+    float muonSF(const double pt, const double eta, const int syst) const;
 
     // set to true to fill in histograms/spit out other info
     bool doPlots_;
@@ -175,10 +193,14 @@ class Cuts
     std::vector<std::vector<float>> jecSFUp_;
     std::vector<std::vector<float>> jecSFDown_;
     void initialiseJECCors();
-    float getJECUncertainty(float, float, int);
-    TLorentzVector
-        getJetLVec(AnalysisEvent&, int, int, bool initialRun = false);
-    std::pair<float, float> jet2016SFs(float);
+    float getJECUncertainty(const float pt,
+                            const float eta,
+                            const int syst) const;
+    TLorentzVector getJetLVec(AnalysisEvent& event,
+                              const int index,
+                              const int syst,
+                              const bool initialRun);
+    std::pair<float, float> jet2016SFs(const float eta) const;
     std::pair<double, double> jet2017SFs(const double eta) const;
 
     // Histogram to be used in synchronisation.
@@ -236,9 +258,9 @@ class Cuts
                              const int type,
                              const double pt) const;
 
-    void getBWeight(AnalysisEvent& event,
-                    TLorentzVector jet,
-                    int index,
+    void getBWeight(const AnalysisEvent& event,
+                    const TLorentzVector jet,
+                    const int index,
                     float& mcTag,
                     float& mcNoTag,
                     float& dataTag,
@@ -246,7 +268,7 @@ class Cuts
                     float& err1,
                     float& err2,
                     float& err3,
-                    float& err4);
+                    float& err4) const;
 
     // met and mtw cut values
     float metCut_;
@@ -281,21 +303,20 @@ class Cuts
     TH2F* h_muonPFiso2;
 
     public:
-    Cuts(bool,
-         bool,
-         bool,
-         bool,
-         const bool,
-         const bool,
-         const bool,
-         const bool);
+    Cuts(const bool doPlots,
+         const bool fillCutFlows,
+         const bool invertLepCut,
+         const bool lepCutFlow,
+         const bool dumpEventNumber,
+         const bool is2016,
+         const bool isFCNC,
+         const bool isCtag);
     ~Cuts();
-    bool makeCuts(AnalysisEvent&,
-                  float&,
-                  std::map<std::string, std::shared_ptr<Plots>>&,
-                  TH1D&,
-                  int);
-    void setTightEle(float pt = 20, float eta = 2.5, float d0 = 0.04);
+    bool makeCuts(AnalysisEvent& event,
+                  float& eventWeight,
+                  std::map<std::string, std::shared_ptr<Plots>>& plotMap,
+                  TH1D& cutFlow,
+                  const int systToRun);
     void setMC(bool isMC)
     {
         isMC_ = isMC;
@@ -353,10 +374,10 @@ class Cuts
         maxJets_ = maxJets;
         maxbJets_ = maxBJets;
     }
-    void parse_config(std::string);
-    void dumpLeptonInfo(AnalysisEvent&);
-    void dumpLooseLepInfo(AnalysisEvent&);
-    TH1D* getSynchCutFlow();
+    void parse_config(const std::string confName);
+    void dumpLeptonInfo(AnalysisEvent& event);
+    void dumpLooseLepInfo(const AnalysisEvent& event) const;
+    TH1D* getSynchCutFlow() const;
     int numFound()
     {
         return synchCutFlowHist_->GetBinContent(4);
