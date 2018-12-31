@@ -2,6 +2,7 @@
 #define _dataset_hpp_
 
 #include <string>
+#include <vector>
 
 class TChain;
 class TH1I;
@@ -16,7 +17,7 @@ class Dataset
     float crossSection_;
     std::string fillName_;
     std::string treeName_;
-    std::string fileList_;
+    std::vector<std::string> locations_;
     long long totalEvents_;
     int colour_;
     std::string plotLabel_;
@@ -28,7 +29,7 @@ class Dataset
             float lumi,
             bool isMC,
             float crossSection,
-            std::string fileList,
+            std::vector<std::string> locations,
             std::string histoName,
             std::string treeName,
             long long,

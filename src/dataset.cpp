@@ -4,14 +4,19 @@
 #include "TFile.h"
 #include "TH1.h"
 
+#include <boost/range/iterator_range.hpp>
+#include <boost/filesystem.hpp>
 #include <fstream>
 #include <iostream>
+#include <regex>
+
+namespace fs = boost::filesystem;
 
 Dataset::Dataset(std::string name,
                  float lumi,
                  bool isMC,
                  float crossSection,
-                 std::string fileList,
+                 std::vector<std::string> locations,
                  std::string histoName,
                  std::string treeName,
                  long long totalEvents,
@@ -27,7 +32,7 @@ Dataset::Dataset(std::string name,
     // TODO: Do something with the fileList here. This will build the TChain.
     fillName_ = histoName;
     treeName_ = treeName;
-    fileList_ = fileList;
+    locations_ = locations;
     totalEvents_ = totalEvents;
     colour_ = colourInt;
     plotType_ = plotType;
@@ -35,6 +40,14 @@ Dataset::Dataset(std::string name,
     triggerFlag_ = triggerFlag;
     std::cout << "For dataset " << name_ << " trigger flag is " << triggerFlag_
               << std::endl;
+
+    for (auto& location : locations_)
+    {
+        if (location.back() != '/')
+        {
+            location += '/';
+        }
+    }
 }
 
 // Method that fills a TChain with the files that will be used for the analysis.
@@ -42,25 +55,18 @@ Dataset::Dataset(std::string name,
 // ignored.
 int Dataset::fillChain(TChain* chain, int nFiles)
 {
-    std::cerr << fileList_ << "\n";
-    std::ifstream fileList(fileList_);
-    if (!fileList.is_open())
+    for (const auto& location : locations_)
     {
-        std::cerr << "Couldn't read file list for " << name_ << std::endl;
-        return 0;
-    }
-    std::string line;
-    int files{0};
-    while (getline(fileList, line))
-    {
-        chain->Add(line.c_str());
-        if (nFiles > 0)
+        const fs::path dir{location};
+        if (fs::is_directory(dir))
         {
-            files++;
-            if (files > nFiles)
-            {
-                break;
-            }
+            chain->Add(TString{location + "*.root"});
+        }
+        else
+        {
+            std::cout << "ERROR: " << location << "is not a valid directory"
+                      << std::endl;
+            return 0;
         }
     }
     return 1;
@@ -87,45 +93,37 @@ float Dataset::getEventWeight()
 // across the entire dataset
 TH1I* Dataset::getGeneratorWeightHistogram(int nFiles)
 {
-    //  std::cerr <<  fileList_ << "\n";
-    std::ifstream fileList(fileList_);
-
     TH1I* generatorWeightPlot{nullptr};
-
-    if (!fileList.is_open())
-    {
-        std::cerr << "Couldn't read file list for " << name_ << std::endl;
-        return generatorWeightPlot;
-    }
-
-    std::string line;
-    int files{0};
+    const std::regex mask{R"(\.root$)"};
     bool firstFile{true};
-
-    while (getline(fileList, line))
+    for (const auto& location : locations_)
     {
-        TFile* tempFile{new TFile{line.c_str(), "READ"}};
-        if (firstFile)
+        for (const auto& file :
+             boost::make_iterator_range(fs::directory_iterator{location}, {}))
         {
-            generatorWeightPlot = dynamic_cast<TH1I*>(
-                (TH1I*)tempFile->Get("sumNumPosMinusNegWeights")->Clone());
-            firstFile = false;
-        }
-        else
-        {
-            generatorWeightPlot->Add(
-                (TH1I*)tempFile->Get("sumNumPosMinusNegWeights"));
-            tempFile->Close();
-            delete tempFile;
-        }
-        if (nFiles > 0)
-        {
-            files++;
-            if (files > nFiles)
+            const std::string path{file.path().string()};
+            if (!fs::is_regular_file(file.status())
+                || !std::regex_search(path, mask))
             {
-                break;
+                continue;
+            }
+
+            TFile* tempFile{new TFile{path.c_str(), "READ"}};
+            if (firstFile)
+            {
+                generatorWeightPlot = dynamic_cast<TH1I*>(
+                    (TH1I*)tempFile->Get("sumNumPosMinusNegWeights")->Clone());
+                firstFile = false;
+            }
+            else
+            {
+                generatorWeightPlot->Add(
+                    (TH1I*)tempFile->Get("sumNumPosMinusNegWeights"));
+                tempFile->Close();
+                delete tempFile;
             }
         }
     }
+
     return generatorWeightPlot;
 }
