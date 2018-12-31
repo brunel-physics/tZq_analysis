@@ -16,6 +16,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
 #include <cmath>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -446,8 +447,6 @@ void AnalysisAlgo::setupPlots()
 
 void AnalysisAlgo::runMainAnalysis()
 {
-    srand(666);
-
     if (totalLumi == 0.)
     {
         totalLumi = usePreLumi;
@@ -466,6 +465,9 @@ void AnalysisAlgo::runMainAnalysis()
         datasetFilled = false;
         TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
         unsigned channelIndMax{256};
+
+        const std::hash<std::string> hasher;
+        srand(hasher(dataset->name()));
 
         channelIndMax = 64;
         for (unsigned channelInd{1}; channelInd != channelIndMax;

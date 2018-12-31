@@ -461,6 +461,9 @@ void TriggerScaleFactors::runMainAnalysis()
     std::cout << "Using lumi: " << totalLumi << std::endl;
     for (auto dataset = datasets.begin(); dataset != datasets.end(); ++dataset)
     {
+        const std::hash<std::string> hasher;
+        srand(hasher(dataset->name()));
+
         datasetFilled = false;
         TChain* datasetChain = new TChain(dataset->treeName().c_str());
 
