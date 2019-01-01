@@ -1,0 +1,10 @@
+name: "ttbar_2l2v"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttbar_2l2v/"
+total_events: 69155808
+cross_section: 88.29
+mc: true
+histogram: "ttbar"
+colour: "kRed"
+label: "ttbar"
+plot_type: "f"

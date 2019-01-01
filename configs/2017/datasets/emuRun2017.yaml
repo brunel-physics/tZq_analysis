@@ -1,0 +1,14 @@
+name: "emuRun2017"
+locations:
+    - "/data0/data/TopPhysics/postTriggerSkims2017/emuRun2017B/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/emuRun2017C/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/emuRun2017D/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/emuRun2017E/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/emuRun2017F/"
+luminosity: 41529.740
+mc: false
+histogram: "data"
+label: "Data"
+plot_type: "p"
+colour: "kBlack"
+trigger_flag: "eCt"

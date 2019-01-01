@@ -1,0 +1,10 @@
+tWZ:
+locations:
+    - "/scratch/data/tZqSkimsRun2017/tWZ/"
+total_events: 8785360
+cross_section: 45.99
+mc: true
+histogram: "SingleTop"
+colour: "kMagenta"
+label: "SingleTop"
+plot_type: "f"

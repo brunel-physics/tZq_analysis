@@ -1,0 +1,10 @@
+name: "ttW2q"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttW2q/"
+total_events: 811306
+cross_section: 0.4357
+mc: true
+histogram: "ttV"
+colour: "kGreen"
+label: "ttV"
+plot_type: "f"

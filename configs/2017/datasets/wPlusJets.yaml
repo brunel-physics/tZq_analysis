@@ -1,0 +1,11 @@
+name: "wPlusJets"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/WJets_alt/"
+    - "/scratch/data/tZqSkimsRun2017/WJets_alt_ext1/"
+mc: true
+total_events: 77841284
+cross_section: 52940.0
+histogram: "wJets"
+colour: "kGray"
+label: "w+jets"
+plot_type: "f"

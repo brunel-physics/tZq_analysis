@@ -1,0 +1,10 @@
+name: "ttbar_hadronic"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttbar_hadronic/"
+total_events: 130262440
+cross_section: 377.96
+mc: true
+histogram: "ttbar"
+colour: "kRed"
+label: "ttbar"
+plot_type: "f"

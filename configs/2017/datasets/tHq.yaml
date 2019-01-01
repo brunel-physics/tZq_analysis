@@ -1,0 +1,10 @@
+name: "tHq"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/tHq/"
+total_events: 3381548
+cross_section: 0.3184
+mc: true
+histogram: "SingleTop"
+colour: "kMagenta"
+label: "SingleTop"
+plot_type: "f"

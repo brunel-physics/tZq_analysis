@@ -1,0 +1,10 @@
+name: "WZ_3lnu"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/WZ_3lnu/"
+total_events: 10987679
+cross_section: 5.052
+mc: true
+histogram: "wz"
+colour: "kOrange"
+label: "wz"
+plot_type: "f"

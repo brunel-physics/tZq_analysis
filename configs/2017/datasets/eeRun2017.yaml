@@ -1,0 +1,14 @@
+name: "eeRun2017"
+locations:
+    - "/data0/data/TopPhysics/postTriggerSkims2017/eeRun2017B/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/eeRun2017C/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/eeRun2017D/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/eeRun2017E/"
+    - "/data0/data/TopPhysics/postTriggerSkims2017/eeRun2017F/"
+luminosity: 41529.740
+mc: false
+histogram: "data"
+label: "Data"
+plot_type: "p"
+colour: "kBlack"
+trigger_flag: "eCt"

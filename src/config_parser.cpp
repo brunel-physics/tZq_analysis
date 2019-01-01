@@ -13,10 +13,10 @@ void Parser::parse_config(const std::string conf,
                           double& lumi)
 {
     const YAML::Node root{YAML::LoadFile(conf)};
-    auto datasetConf{root["datasets"].as<std::string>()};
+    auto datasetConfs{root["datasets"].as<std::vector<std::string>>()};
     try
     {
-        parse_files(datasetConf, datasets, lumi);
+        parse_files(datasetConfs, datasets, lumi);
     }
     catch (const std::exception)
     {
@@ -44,11 +44,11 @@ void Parser::parse_config(const std::string conf,
 {
     const YAML::Node root{YAML::LoadFile(conf)};
 
-    auto datasetConf{root["datasets"].as<std::string>()};
+    auto datasetConfs{root["datasets"].as<std::vector<std::string>>()};
 
     try
     {
-        parse_files(datasetConf, datasets, lumi);
+        parse_files(datasetConfs, datasets, lumi);
     }
     catch (const std::exception)
     {
@@ -99,11 +99,10 @@ void Parser::parse_config(const std::string conf,
 }
 
 // For reading the file config.
-void Parser::parse_files(const std::string fileConf,
+void Parser::parse_files(const std::vector<std::string> files,
                          std::vector<Dataset>& datasets,
                          double& totalLumi)
 {
-    const YAML::Node root{YAML::LoadFile(fileConf)};
     const std::unordered_map<std::string, int> colourMap{
         {"kAzure", kAzure},
         {"kBlack", kRed},
@@ -124,23 +123,23 @@ void Parser::parse_files(const std::string fileConf,
 
     std::cerr << "Adding datasets:" << std::endl;
 
-    for (YAML::const_iterator it = root.begin(); it != root.end(); ++it)
+    for (const auto& file: files)
     {
-        const bool isMC{it->second["mc"].as<bool>()};
-
-        datasets.emplace_back(
-            it->first.as<std::string>(),
-            isMC ? 0 : it->second["luminosity"].as<double>(),
-            isMC,
-            isMC ? it->second["cross_section"].as<double>() : 0,
-            it->second["locations"].as<std::vector<std::string>>(),
-            it->second["histogram"].as<std::string>(),
-            "tree",
-            isMC ? it->second["total_events"].as<long>() : 0,
-            colourMap.at(it->second["colour"].as<std::string>()),
-            it->second["label"].as<std::string>(),
-            it->second["plot_type"].as<std::string>(),
-            isMC ? "" : it->second["trigger_flag"].as<std::string>());
+        const YAML::Node root{YAML::LoadFile(file)};
+        const bool isMC{root["mc"].as<bool>()};
+        datasets.emplace_back(root["name"].as<std::string>(),
+                              isMC ? 0 : root["luminosity"].as<double>(),
+                              isMC,
+                              isMC ? root["cross_section"].as<double>() : 0,
+                              root["locations"].as<std::vector<std::string>>(),
+                              root["histogram"].as<std::string>(),
+                              "tree",
+                              isMC ? root["total_events"].as<long>() : 0,
+                              colourMap.at(root["colour"].as<std::string>()),
+                              root["label"].as<std::string>(),
+                              root["plot_type"].as<std::string>(),
+                              isMC ? ""
+                                   : root["trigger_flag"].as<std::string>());
 
         std::cerr << datasets.back().name() << "\t(" << (isMC ? "MC" : "Data")
                   << ')' << std::endl;

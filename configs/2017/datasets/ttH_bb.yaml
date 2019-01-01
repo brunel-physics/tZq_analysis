@@ -1,0 +1,10 @@
+name: "ttH_bb"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttH_bb/"
+total_events: 8000000
+cross_section: 0.5269
+mc: true
+histogram: "ttV"
+colour: "kGreen"
+label: "ttV"
+plot_type: "f"

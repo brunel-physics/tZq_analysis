@@ -1,0 +1,10 @@
+ttjets:
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttjets/"
+total_events:  154280331
+cross_section: 722.8
+mc: true
+histogram: "ttjets"
+colour: "kGray"
+label: "ttjets"
+plot_type: "f"

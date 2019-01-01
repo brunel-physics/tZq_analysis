@@ -1,0 +1,10 @@
+name: "tZq"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/tZq_ll/"
+total_events: 13308207
+cross_section: 0.07358
+mc: true
+histogram: "tZq"
+colour: "kYellow"
+label: "tZq"
+plot_type: "f"

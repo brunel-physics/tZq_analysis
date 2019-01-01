@@ -1,0 +1,10 @@
+name: "WZ_2l2q"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/WZ_2l2q/"
+total_events:  27582164
+cross_section: 6.331
+mc: true
+histogram: "wz"
+colour: "kOrange"
+label: "wz"
+plot_type: "f"

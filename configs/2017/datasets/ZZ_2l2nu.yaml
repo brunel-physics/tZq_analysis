@@ -1,0 +1,10 @@
+name: "ZZ_2l2nu"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ZZ_2l2nu/"
+total_events:  8744768
+cross_section: 5.052
+mc: true
+histogram: "zz"
+colour: "kPink"
+label: "zz"
+plot_type: "f"

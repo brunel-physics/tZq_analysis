@@ -31,7 +31,7 @@ namespace Parser
                       std::string&,
                       std::string&,
                       std::string&);
-    void parse_files(const std::string FileConf,
+    void parse_files(const std::vector<std::string> files,
                      std::vector<Dataset>& datasets,
                      double& lumi);
     void parse_plots(const std::string plotConf,
