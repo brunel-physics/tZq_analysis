@@ -4026,7 +4026,7 @@ std::pair<float, float> Cuts::jet2016SFs(const float eta) const
 
 std::pair<double, double> Cuts::jet2017SFs(const double eta) const
 {
-    // https://indico.cern.ch/event/735951/contributions/3035608/attachments/1665505/2669871/JER_MEETING_11_06_2018.pdf
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Uncertainty
     constexpr std::array<double, 14> etaBinEdges{0,
                                                  0.522,
                                                  0.783,
@@ -4046,19 +4046,19 @@ std::pair<double, double> Cuts::jet2017SFs(const double eta) const
         etaBinEdges.begin(),
         std::upper_bound(etaBinEdges.begin(), etaBinEdges.end(), eta)))
     {
-        case 1: return {1.072, 0.00355243};
-        case 2: return {1.09955, 0.00769757};
-        case 3: return {1.06982, 0.00585163};
-        case 4: return {1.09573, 0.0078385};
-        case 5: return {1.0778, 0.00632877};
-        case 6: return {1.10929, 0.0116475};
-        case 7: return {1.17148, 0.0168652};
-        case 8: return {1.15621, 0.0125006};
-        case 9: return {1.31407, 0.025415};
-        case 10: return {2.08284, 0.0407744};
-        case 11: return {2.20438, 0.0652898};
-        case 12: return {1.49907, 0.0205643};
-        case 13: return {1.52548, 0.0308124};
+        case 1: return {1.1432, 0.0222};
+        case 2: return {1.1815, 0.0484};
+        case 3: return {1.0989, 0.0456};
+        case 4: return {1.1137, 0.1397};
+        case 5: return {1.1307, 0.147};
+        case 6: return {1.16, 0.0976};
+        case 7: return {1.2393, 0.1909};
+        case 8: return {1.2604, 0.1501};
+        case 9: return {1.4085, 0.2020};
+        case 10: return {1.9909, 0.5684};
+        case 11: return {2.2923, 0.3743};
+        case 12: return {1.2696, 0.1089};
+        case 13: return {1.1542, 0.1524};
         default:
             throw std::runtime_error("Eta " + std::to_string(eta)
                                      + " out of range");
