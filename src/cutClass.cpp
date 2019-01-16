@@ -2756,7 +2756,7 @@ bool Cuts::ttbarCuts(AnalysisEvent& event,
 
     if (doPlots_ || fillCutFlow_)
     {
-        cutFlow.Fill(3.5, eventWeight);
+        cutFlow.Fill(2.5, eventWeight);
     }
     if (doPlots_)
     {
