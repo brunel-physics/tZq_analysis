@@ -1,0 +1,10 @@
+name: "WWW"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/WWW/"
+total_events: 232300
+cross_section: 0.2086
+mc: true
+histogram: "vvv"
+colour: "kViolet"
+label: "vvv"
+plot_type: "f"
