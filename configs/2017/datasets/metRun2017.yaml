@@ -1,6 +1,6 @@
 name: "metRun2017"
 file_list: "configs/2017/datasets/fileLists/metRun2017Files.txt"
-luminosity: 41529.740
+luminosity: 41.528
 mc: false
 histogram: "data"
 label: "Data"
