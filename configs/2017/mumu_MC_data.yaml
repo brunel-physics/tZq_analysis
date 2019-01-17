@@ -18,6 +18,8 @@ datasets:
   - "configs/2017/datasets/ttZ2q.yaml"
   # - "configs/2017/datasets/tWZ.yaml"
   - "configs/2017/datasets/wPlusJets.yaml"
+  - "configs/2017/datasets/WWW.yaml"
+  - "configs/2017/datasets/WWZ.yaml"
   - "configs/2017/datasets/WZ_2l2q.yaml"
   - "configs/2017/datasets/WZ_lnu2q.yaml"
   - "configs/2017/datasets/WZ_3lnu.yaml"
