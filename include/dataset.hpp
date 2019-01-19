@@ -33,7 +33,7 @@ class Dataset
             std::string histoName,
             std::string treeName,
             long long,
-            int,
+            std::string,
             std::string,
             std::string,
             std::string);

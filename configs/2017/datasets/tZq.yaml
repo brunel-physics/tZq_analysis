@@ -5,6 +5,6 @@ total_events: 13308207
 cross_section: 0.07358
 mc: true
 histogram: "tZq"
-colour: "kYellow"
+colour: "#999999"
 label: "tZq"
 plot_type: "f"

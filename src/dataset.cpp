@@ -1,6 +1,7 @@
 #include "dataset.hpp"
 
 #include "TChain.h"
+#include "TColor.h"
 #include "TFile.h"
 #include "TH1.h"
 
@@ -20,7 +21,7 @@ Dataset::Dataset(std::string name,
                  std::string histoName,
                  std::string treeName,
                  long long totalEvents,
-                 int colourInt,
+                 std::string colourHex,
                  std::string plotLabel,
                  std::string plotType,
                  std::string triggerFlag)
@@ -34,7 +35,7 @@ Dataset::Dataset(std::string name,
     treeName_ = treeName;
     locations_ = locations;
     totalEvents_ = totalEvents;
-    colour_ = colourInt;
+    colour_ = TColor::GetColor(colourHex.c_str());
     plotType_ = plotType;
     plotLabel_ = plotLabel;
     triggerFlag_ = triggerFlag;

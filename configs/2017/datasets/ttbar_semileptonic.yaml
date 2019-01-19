@@ -5,6 +5,6 @@ total_events: 110085096
 cross_section: 365.34
 mc: true
 histogram: "ttbar"
-colour: "kRed"
+colour: "#e41a1c"
 label: "t#bar{t}"
 plot_type: "f"

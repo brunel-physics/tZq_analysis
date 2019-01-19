@@ -103,24 +103,6 @@ void Parser::parse_files(const std::vector<std::string> files,
                          std::vector<Dataset>& datasets,
                          double& totalLumi)
 {
-    const std::unordered_map<std::string, int> colourMap{
-        {"kAzure", kAzure},
-        {"kBlack", kRed},
-        {"kBlue", kBlue},
-        {"kCyan", kCyan},
-        {"kGray", kGray},
-        {"kGreen", kGreen},
-        {"kMagenta", kMagenta},
-        {"kOrange", kOrange},
-        {"kPink", kPink},
-        {"kPurple", kMagenta + 3},
-        {"kRed", kRed},
-        {"kRed1", kRed + 5},
-        {"kSpring", kSpring},
-        {"kTeal", kTeal},
-        {"kViolet", kViolet},
-        {"kYellow", kYellow}};
-
     std::cerr << "Adding datasets:" << std::endl;
 
     for (const auto& file: files)
@@ -135,7 +117,7 @@ void Parser::parse_files(const std::vector<std::string> files,
                               root["histogram"].as<std::string>(),
                               "tree",
                               isMC ? root["total_events"].as<long>() : 0,
-                              colourMap.at(root["colour"].as<std::string>()),
+                              root["colour"].as<std::string>(),
                               root["label"].as<std::string>(),
                               root["plot_type"].as<std::string>(),
                               isMC ? ""

@@ -6,6 +6,6 @@ total_events: 209773027
 cross_section: 6529.0
 mc: true
 histogram: "Zjets"
-colour: "kBlue"
+colour: "#377eb8"
 label: "Z+jets"
 plot_type: "f"

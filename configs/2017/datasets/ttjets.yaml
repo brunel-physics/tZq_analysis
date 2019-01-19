@@ -5,6 +5,6 @@ total_events:  154280331
 cross_section: 722.8
 mc: true
 histogram: "ttjets"
-colour: "kGray"
+colour: "#ffff33"
 label: "ttjets"
 plot_type: "f"
