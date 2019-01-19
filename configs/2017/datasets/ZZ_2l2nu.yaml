@@ -4,7 +4,7 @@ locations:
 total_events:  8744768
 cross_section: 5.052
 mc: true
-histogram: "zz"
+histogram: "VV"
 colour: "kPink"
-label: "zz"
+label: "VV"
 plot_type: "f"

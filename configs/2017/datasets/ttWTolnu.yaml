@@ -6,5 +6,5 @@ cross_section: 0.2125
 mc: true
 histogram: "ttV"
 colour: "kGreen"
-label: "ttV"
+label: "t#bar{t}V"
 plot_type: "f"

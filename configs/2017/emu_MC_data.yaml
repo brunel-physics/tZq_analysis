@@ -4,29 +4,38 @@ outputFolder: "plots/2017/emu/"
 outputPostfix: "emu"
 channelName: "emu"
 datasets:
+# Z+jets
   - "configs/2017/datasets/DYJetsToLL_M-50.yaml"
-  - "configs/2017/datasets/tHq.yaml"
+# ttbar
   # - "configs/2017/datasets/ttjets.yaml"
   - "configs/2017/datasets/ttbar_2l2v.yaml"
   - "configs/2017/datasets/ttbar_hadronic.yaml"
   - "configs/2017/datasets/ttbar_semileptonic.yaml"
-  - "configs/2017/datasets/ttH_bb.yaml"
-  # - "configs/2017/datasets/ttH_nonbb.yaml"
+# VV
+  - "configs/2017/datasets/WZ_2l2q.yaml"
+  - "configs/2017/datasets/WZ_3lnu.yaml"
+  - "configs/2017/datasets/WZ_lnu2q.yaml"
+  - "configs/2017/datasets/ZZ_2l2nu.yaml"
+  - "configs/2017/datasets/ZZ_2l2q.yaml"
+  - "configs/2017/datasets/ZZ_4l.yaml"
+# W+jets
+  - "configs/2017/datasets/wPlusJets.yaml"
+# ttV
   - "configs/2017/datasets/ttWTolnu.yaml"
   - "configs/2017/datasets/ttW2q.yaml"
   - "configs/2017/datasets/ttZToll.yaml"
   - "configs/2017/datasets/ttZ2q.yaml"
-  # - "configs/2017/datasets/tWZ.yaml"
-  - "configs/2017/datasets/wPlusJets.yaml"
+  - "configs/2017/datasets/ttH_bb.yaml"
+  # - "configs/2017/datasets/ttH_nonbb.yaml"
+# VVV
   - "configs/2017/datasets/WWW.yaml"
   - "configs/2017/datasets/WWZ.yaml"
-  - "configs/2017/datasets/WZ_2l2q.yaml"
-  - "configs/2017/datasets/WZ_lnu2q.yaml"
-  - "configs/2017/datasets/WZ_3lnu.yaml"
   - "configs/2017/datasets/WZZ.yaml"
-  - "configs/2017/datasets/ZZ_2l2nu.yaml"
-  - "configs/2017/datasets/ZZ_2l2q.yaml"
-  - "configs/2017/datasets/ZZ_4l.yaml"
   - "configs/2017/datasets/ZZZ.yaml"
+# Single top
+  # - "configs/2017/datasets/tWZ.yaml"
+  - "configs/2017/datasets/tHq.yaml"
+# tZq
   - "configs/2017/datasets/tZq.yaml"
+# Data
   - "configs/2017/datasets/emuRun2017.yaml"

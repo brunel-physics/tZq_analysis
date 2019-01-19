@@ -1,14 +1,10 @@
 name: "ttbar_semileptonic"
 locations:
-    - "/scratch/data/tZqSkimsRun2017/metRun2017B/"
-    - "/scratch/data/tZqSkimsRun2017/metRun2017C/"
-    - "/scratch/data/tZqSkimsRun2017/metRun2017D/"
-    - "/scratch/data/tZqSkimsRun2017/metRun2017E/"
-    - "/scratch/data/tZqSkimsRun2017/metRun2017F/"
-total_events: 43732445
+    - "/scratch/data/tZqSkimsRun2017/ttbar_semileptonic/"
+total_events: 110085096
 cross_section: 365.34
 mc: true
 histogram: "ttbar"
 colour: "kRed"
-label: "ttbar"
+label: "t#bar{t}"
 plot_type: "f"

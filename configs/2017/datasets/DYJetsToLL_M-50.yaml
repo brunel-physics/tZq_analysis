@@ -5,7 +5,7 @@ locations:
 total_events: 209773027
 cross_section: 6529.0
 mc: true
-histogram: "zPlusJets"
+histogram: "Zjets"
 colour: "kBlue"
-label: "zPlusJets"
+label: "Z+jets"
 plot_type: "f"

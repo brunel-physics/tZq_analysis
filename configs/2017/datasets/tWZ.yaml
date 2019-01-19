@@ -6,5 +6,5 @@ cross_section: 45.99
 mc: true
 histogram: "SingleTop"
 colour: "kMagenta"
-label: "SingleTop"
+label: "Single top"
 plot_type: "f"
