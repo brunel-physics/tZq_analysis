@@ -1,4 +1,4 @@
-ttjets:
+name: "ttjets"
 locations:
     - "/scratch/data/tZqSkimsRun2017/ttjets/"
 total_events:  154280331
