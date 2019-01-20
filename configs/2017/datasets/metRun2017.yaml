@@ -5,5 +5,5 @@ mc: false
 histogram: "data"
 label: "Data"
 plot_type: "p"
-colour: "kBlack"
+colour: "#ffffff"
 trigger_flag: "eCt"
