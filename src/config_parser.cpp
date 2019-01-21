@@ -123,6 +123,11 @@ void Parser::parse_files(const std::vector<std::string> files,
                               isMC ? ""
                                    : root["trigger_flag"].as<std::string>());
 
+        if (root["luminosity"])
+        {
+            totalLumi += root["luminosity"].as<double>();
+        }
+
         std::cerr << datasets.back().name() << "\t(" << (isMC ? "MC" : "Data")
                   << ')' << std::endl;
     }
