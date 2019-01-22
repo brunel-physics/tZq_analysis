@@ -1,5 +1,10 @@
 name: "metRun2017"
-file_list: "configs/2017/datasets/fileLists/metRun2017Files.txt"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/metRun2017B"
+    - "/scratch/data/tZqSkimsRun2017/metRun2017C"
+    - "/scratch/data/tZqSkimsRun2017/metRun2017D"
+    - "/scratch/data/tZqSkimsRun2017/metRun2017E"
+    - "/scratch/data/tZqSkimsRun2017/metRun2017F"
 luminosity: 41528
 mc: false
 histogram: "data"
