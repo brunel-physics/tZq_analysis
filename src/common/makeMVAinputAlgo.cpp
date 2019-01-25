@@ -70,16 +70,16 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 void MakeMvaInputs::runMainAnalysis()
 {
       std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-      {"WWZ","WWZ"}, {"WZZ","WZZ"},
-      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+//      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
     //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
     //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
     //  "WW1l1nu2q","WW",
     //  "WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
-//      std::map< std::string, std::string > listOfMCs =
-//      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
+      std::map< std::string, std::string > listOfMCs =
+      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
 
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
@@ -751,17 +751,17 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     // corrected for their various SFs etc ...
 
     // SFs for NPL lepton estimation normilisation
-    // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
+    // mz20 mw 20, ee = 0.941778739056; mumu = 1.12063800206;
     // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
     // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
 
     if (SameSignMC == true && channel == "ee")
     {
-        inputVars["eventWeight"] = tree->eventWeight * 0.958391264995;
+        inputVars["eventWeight"] = tree->eventWeight * 0.941778739056;
     }
     else if (SameSignMC == true && channel == "mumu")
     {
-        inputVars["eventWeight"] = tree->eventWeight * 1.02492608673;
+        inputVars["eventWeight"] = tree->eventWeight * 1.12063800206;
     }
     else
     {
