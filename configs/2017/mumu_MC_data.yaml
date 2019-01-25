@@ -5,6 +5,7 @@ outputPostfix: "mumu"
 channelName: "mumu"
 datasets:
 # Z+jets
+  - "configs/2017/datasets/DYJetsToLL_M-10to50.yaml"
   - "configs/2017/datasets/DYJetsToLL_M-50.yaml"
 # ttbar
   # - "configs/2017/datasets/ttjets.yaml"
