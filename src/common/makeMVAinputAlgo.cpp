@@ -69,7 +69,7 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
 //      {"WWZ","WWZ"}, {"WZZ","WZZ"},
 //      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
