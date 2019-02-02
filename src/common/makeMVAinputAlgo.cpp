@@ -82,6 +82,14 @@ void MakeMvaInputs::runMainAnalysis()
       {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
 
 //      std::map< std::string, std::string > listOfMCs =
+//      {{"DYJetsToLL_Pt-0To50","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-50To100","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-100To250","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-250To400","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-400To650","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
+
+//      std::map< std::string, std::string > listOfMCs =
 //      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
 
 //      std::map< std::string, std::string > listOfMCs =
