@@ -27,7 +27,14 @@ MakeMvaInputs::MakeMvaInputs()
     , treeNamePostfixSig{""}
     , treeNamePostfixSB{""}
     , chanMap{{"ee","eeRun2016"},{"mumu","mumuRun2016"},{"emu","emuRun2016"}}
+    , eeNPL{0.941778739056}
+    , mumuNPL{1.12063800206}
+    , emuNPL{0.399615233763}
 {
+    // SFs for NPL lepton estimation normilisation
+    // mz20 mw 20, ee = 0.941778739056; mumu = 1.12063800206; emu = 0.399615233763
+    // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
+    // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
 }
 
 MakeMvaInputs::~MakeMvaInputs()
@@ -221,7 +228,7 @@ void MakeMvaInputs::runNPLs()
         "Running over data for same sign fakes ...",
         false}};
 
-    // loop over events
+    // loop over SS data events
     for (int i{0}; i < numberOfDataEvents; i++)
     {
       lDataEventTimer->DrawProgressBar(i);
@@ -232,7 +239,8 @@ void MakeMvaInputs::runNPLs()
         //mvaMap,
         dataEvent,
         outChannel, 
-        channel);
+        channel,
+        true);
     } // end event loop
     inFileData->Close();
 
@@ -244,7 +252,7 @@ void MakeMvaInputs::runNPLs()
         std::string sample = sampleIt->first;
         std::string outSample = sampleIt->second;
 
-        std::cout << "Doing SS fakes " << sample << " : " << std::endl;
+        std::cout << "Doing " << outChannel << " SS fakes " << sample << " : " << std::endl;
 
         TFile* inFileMC = new TFile( (inputDir + sample + channel + "invLepmvaOut.root").c_str() ); 
         TTree* mcTree = (TTree*)inFileMC->Get("tree");
@@ -257,18 +265,27 @@ void MakeMvaInputs::runNPLs()
             ("Running over "+sample+" for same sign fakes ...").c_str(),
             false}};
 
-        // loop over events
+        // loop over SS MC events
         for (int i{0}; i < numberOfMcEvents; i++)
         {
           lMcEventTimer->DrawProgressBar(i);
           mcEvent->GetEntry(i);
+
+          // Do not consider non-prompt SS MC - SS data minus prompt SS MC = SS non-prompt data driven estimate
+          if ( channel == "ee" &&  mcEvent->genElePF2PATPromptFinalState[mcEvent->zLep1Index] == 0 ) continue;
+          if ( channel == "ee" &&  mcEvent->genElePF2PATPromptFinalState[mcEvent->zLep2Index] == 0 ) continue;
+          if ( channel == "mumu" && mcEvent->genMuonPF2PATPromptFinalState[mcEvent->zLep1Index] == 0 ) continue;
+          if ( channel == "mumu" && mcEvent->genMuonPF2PATPromptFinalState[mcEvent->zLep2Index] == 0 ) continue;
+          if ( channel == "emu" && mcEvent->genElePF2PATPromptFinalState[mcEvent->zLep1Index] == 0 ) continue;
+          if ( channel == "emu" && mcEvent->genMuonPF2PATPromptFinalState[mcEvent->zLep2Index] == 0 ) continue;
 
           fillTree(outTreeSig,
             outTreeSdBnd,
             //mvaMap,
             mcEvent,
             outChannel,
-            channel);
+            channel,
+            true);
         } // end event loop
         inFileMC->Close();
     } // end sample loop
@@ -461,21 +478,6 @@ void MakeMvaInputs::runMC()
                 {
                     lEventTimer->DrawProgressBar(i);
                     event->GetEntry(i);
-/*
-                    bool SameSignMC = false;
-                    if (SameSignMC == true && *channel == "ee"
-                        && (event->genElePF2PATPromptFinalState[0] == 0
-                            || event->genElePF2PATPromptFinalState[1] == 0))
-                    {
-                        continue;
-                    }
-                    if (SameSignMC == true && *channel == "mumu"
-                        && (event->genMuonPF2PATPromptFinalState[0] == 0
-                            || event->genMuonPF2PATPromptFinalState[1] == 0))
-                    {
-                        continue;
-                    }
-*/
                     fillTree(outTreeSig,
                              outTreeSdBnd,
                              //mvaMap,
@@ -1002,23 +1004,10 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     // Do unclustered met stuff here now that we have all of the objects, all
     // corrected for their various SFs etc ...
 
-    // SFs for NPL lepton estimation normilisation
-    // mz20 mw 20, ee = 0.941778739056; mumu = 1.12063800206;
-    // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
-    // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
-
-    if (SameSignMC == true && channel == "ee")
-    {
-        inputVars["eventWeight"] = tree->eventWeight * 0.941778739056;
-    }
-    else if (SameSignMC == true && channel == "mumu")
-    {
-        inputVars["eventWeight"] = tree->eventWeight * 1.12063800206;
-    }
-    else
-    {
-        inputVars["eventWeight"] = tree->eventWeight;
-    }
+    if (SameSignMC == true && channel == "ee") inputVars["eventWeight"] = tree->eventWeight * eeNPL;
+    else if (SameSignMC == true && channel == "mumu") inputVars["eventWeight"] = tree->eventWeight * mumuNPL;
+    else if (SameSignMC == true && channel == "emu") inputVars["eventWeight"] = tree->eventWeight * emuNPL;
+    else inputVars["eventWeight"] = tree->eventWeight;
 
     inputVars["leadJetPt"] = jetVecs[0].Pt();
     inputVars["leadJetEta"] = jetVecs[0].Eta();

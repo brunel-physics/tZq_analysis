@@ -75,6 +75,9 @@ class MakeMvaInputs
     std::string treeNamePostfixSig;
     std::string treeNamePostfixSB;
     std::map< std::string, std::string > chanMap;
+    float eeNPL;
+    float mumuNPL;
+    float emuNPL;
 };
 
 #endif
