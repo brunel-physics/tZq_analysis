@@ -584,31 +584,9 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
 
 def main():
 
-    #Mapping of our mc names to IPHC names
-#    listOfMCs = {"WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
-#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets"}
-#    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
-#    listOfMCs = {"QCD_EMEnriched_Pt-20to30":"QCD_EM","QCD_EMEnriched_Pt-30to50":"QCD_EM","QCD_EMEnriched_Pt-50to80":"QCD_EM","QCD_EMEnriched_Pt-80to120":"QCD_EM","QCD_EMEnriched_Pt-120to170":"QCD_EM","QCD_EMEnriched_Pt-170to300":"QCD_EM","QCD_EMEnriched_Pt-300toInf":"QCD_EM","QCD_EMEnriched_Pt-15to20":"QCD_Mu","QCD_EMEnriched_Pt-20to30":"QCD_Mu","QCD_EMEnriched_Pt-30to50":"QCD_Mu","QCD_EMEnriched_Pt-50to80":"QCD_Mu","QCD_EMEnriched_Pt805to120":"QCD_Mu","QCD_EMEnriched_Pt-120to170":"QCD_Mu","QCD_EMEnriched_Pt-170to300":"QCD_Mu","QCD_EMEnriched_Pt-300to470":"QCD_Mu","QCD_EMEnriched_Pt-470to600":"QCD_Mu","QCD_EMEnriched_Pt-600to800":"QCD_Mu","QCD_EMEnriched_Pt-800to1000":"QCD_Mu","QCD_EMEnriched_Pt-1000toInf":"QCD_Mu"}
-#    listOfMCs = {"ttbarDilepton_aMCatNLO":"TT_aMCatNLO"}
-#    listOfMCs = {"DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
-#    listOfMCs = {"ttbarInclusivePowerheg_hdampUP":"TT__hdampUp","ttbarInclusivePowerheg_hdampDown":"TT__hdampDown","ttbarInclusivePowerheg_fsrup":"TT__fsrUp","ttbarInclusivePowerheg_fsrdown":"TT__fsrDown","ttbarInclusivePowerheg_isrup":"TT__isrUp","ttbarInclusivePowerheg_isrdown":"TT__isrDown"}
-#    listOfMCs = {"tChannel_scaleup":"TtChan__scaleUp","tChannel_scaledown":"TtChan__scaleDown","tChannel_hdampup":"TtChan__hdampUp","tChannel_hdampdown":"TtChan__hdampDown","tbarChannel_scaleup":"TbartChan__scaleUp","tbarChannel_scaledown":"TbartChan__scaleDown","tbarChannel_hdampup":"TbartChan__hdampUp","tbarChannel_hdampdown":"TbartChan__hdampDown"}
-#    listOfMCs = {"tWInclusive_scaleup":"TtW__scaleUp","tWInclusive_scaledown":"TtW__scaleDown","tbarWInclusive_scaleup":"TbartW__scaleUp","tbarWInclusive_scaledown":"TbartW__scaleDown"}
-#    listOfMCs = {"tZq":"tZq"}
-#    listOfMCs = {"tZq_scaleup":"tZq__scaleUp","tZq_scaledown":"tZq__scaleDown"}
-#    listOfMCs = {"ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ"}
-#    listOfMCs = {"WZ2l2q":"WZ"}
-    listOfMCs = {}
-
     #jetUnc = JetCorrectionUncertainty("../scaleFactors/2015/Fall15_25nsV2_MC_Uncertainty_AK4PFchs.txt")
     #if (is2016)
     jetUnc = JetCorrectionUncertainty("scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt")
-
-    #mapping of channels to dataTypes
-    channelToDataset = {"ee":"DataEG","mumu":"DataMu","emu":"MuonEG"}
-
-    #systematics list
-    systs = ["","__trig__plus","__trig__minus","__jer__plus","__jer__minus","__jes__plus","__jes__minus","__pileup__plus","__pileup__minus","__bTag__plus","__bTag__minus","__met__plus","__met__minus","__pdf__plus","__pdf__minus","__ME__plus","__ME__minus"]
 
     #read what channel we're using here - changing this so that multiple things can be stored in the same file. i.e. should now be a list of channels to run over
     channels = eval(sys.argv[1])
@@ -639,91 +617,11 @@ def main():
         treeNamePostfixSig = "sig_"
         treeNamePostfixSB = "ctrl_"
 
-    #Loop over nominal samples
-    for sample in listOfMCs.keys():
-        print "Doing " + sample + ": ",
-        sys.stdout.flush()
-
-        outFile = 0
-        #update the appropriate root file
-        outFile = TFile(outputDir+"histofile_"+listOfMCs[sample] + ".root","RECREATE")
-
-        for syst in systs:
-            #We now define the outTreeSig out here, coz it seems like a more sensible option.
-            outTreeSig = TTree("Ttree_"+treeNamePostfixSig+listOfMCs[sample]+syst, "Ttree_"+treeNamePostfixSig+listOfMCs[sample]+syst)
-            setupBranches(outTreeSig,inputVars)
-	    #We now setup the control/side band region - set to null if not enabled.
-            outTreeSdBnd = 0
-            if useSidebandRegion:
-                outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+listOfMCs[sample]+syst, "Ttree_"+treeNamePostfixSB+listOfMCs[sample]+syst)
-                setupBranches(outTreeSdBnd,inputVars)
-            for channel in channels:
-                inFile = TFile(inputDir+sample+channel+"mvaOut.root","READ")
-                if "met" in syst:
-                    tree = inFile.Get("tree")
-                else:
-                    tree = inFile.Get("tree"+syst)
-                try:
-                    print syst +  " : " + str(tree.GetEntriesFast())
-                    sys.stdout.flush()
-                    fillTree(outTreeSig, outTreeSdBnd, inputVars, tree, listOfMCs[sample]+syst, jetUnc, channel, is2016)
-                except AttributeError:
-                    print "\nAttribute Error \n"
-                    print syst + " : " + "0",
-                    sys.stdout.flush()
-                    #Various stuff needs to be saved in the same trees. Create new one if it doesn't exist, open current one if it does
-                inFile.Close()
-            outFile.cd()
-#            outFile.Write()
-            outTreeSig.Write()
-            if useSidebandRegion:
-                outTreeSdBnd.Write()
-
-        #if tree exists just update that.
-        #        if outFile.GetListOfKeys().Contains("Ttree_"+listOfMCs[sample]):
-        #            outTreeSig = outFile.Get("Ttree_"+listOfMCs[sample])
-        #        else:
-    #next do the data files
-        outFile.Write()
-        outFile.Close()
-        print
-
     chanMap = {}
     if is2016 :
         chanMap = {"ee":"eeRun2016","mumu":"mumuRun2016","emu":"emuRun2016"}
     else :
         chanMap = {"ee":"eeRun2015","mumu":"mumuRun2015"}
-
-    outChannels = ["DataEG","DataMu"]
-#    outChannels = ["MuonEG"]
-    outChanToData = {}
-    outChanToData["DataEG"] = ["ee"]
-    outChanToData["DataMu"] = ["mumu"]
-#    outChanToData["MuonEG"] = ["emu"]
-
-    for outChan in outChannels:
-        print "Data ",outChan
-        outTreeSig = TTree("Ttree_"+treeNamePostfixSig+outChan,"Ttree_"+treeNamePostfixSig+outChan)
-        setupBranches(outTreeSig,inputVars)
-        outTreeSdBnd = 0
-        if useSidebandRegion:
-            outTreeSdBnd = TTree("Ttree_"+treeNamePostfixSB+outChan,"Ttree_"+treeNamePostfixSB+outChan)
-            setupBranches(outTreeSdBnd,inputVars)
-        outFile = TFile(outputDir+"histofile_"+outChan+".root","RECREATE")
-        for chan in outChanToData[outChan]:
-            dataChain = TChain("tree")
-            if is2016 :
-                 dataChain.Add(inputDir+chanMap[chan]+chan+"mvaOut.root")
-            else :
-                for run in ["C","D"]:
-                    dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
-            fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016)
-        outFile.cd()
-        outFile.Write()
-        outTreeSig.Write()
-        if useSidebandRegion:
-            outTreeSdBnd.Write()
-        outFile.Close()
 
     outFakeChannels = ["FakeEG","FakeMu"]
 #    outFakeChannels = ["FakeMuonEG"]
@@ -732,9 +630,12 @@ def main():
     outFakeChanToData["FakeMu"] = ["mumu"]
 #    outFakeChanToData["FakeMuonEG"] = ["emu"]
 
+### list of MC where Z+jets sample is mass binned (madgraph)
 #    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
+### list of MC where Z+jets sample is mass binned (amcatnlo)
     listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
-#    listOfMCs = {"DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
+### list of MC where Z+jets sample is pt binned (amcatnlo)
+#    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_Pt-0To50":"DYToLL_PtBinned","DYJetsToLL_Pt-50To100":"DYToLL_PtBinned","DYJetsToLL_Pt-100To250":"DYToLL_PtBinned","DYJetsToLL_Pt-250To400":"DYToLL_PtBinned","DYJetsToLL_Pt-400To650":"DYToLL_PtBinned","DYJetsToLL_Pt-650ToInf":"DYToLL_PtBinned"}
 
     #Loop over opposite sign samples to create fake shape
     for outChan in outFakeChannels:
