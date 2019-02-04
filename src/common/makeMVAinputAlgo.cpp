@@ -105,8 +105,11 @@ void MakeMvaInputs::runData()
   {
 
     std::string outChannel = (*outChan).c_str();
-
     std::cout << "Data " << outChannel << std::endl;
+
+    TFile* outFile = new TFile(
+      (outputDir + "histofile_" + outChannel + ".root").c_str(),
+      "RECREATE");
 
     TTree* outTreeSig = new TTree(
       ("Ttree_" + treeNamePostfixSig + outChannel).c_str(),
@@ -114,14 +117,11 @@ void MakeMvaInputs::runData()
     TTree* outTreeSdBnd{};
     setupBranches(outTreeSig, mvaMap);
     
-    TFile* outFile = new TFile(
-      (outputDir + "histofile_" + outChannel + ".root").c_str(),
-      "RECREATE");
-
     std::string channel = outputChannelToData[outChannel];
 
     TFile* inFile = new TFile( (inputDir+chanMap[channel]+channel+"mvaOut.root").c_str() );
     TTree* tree = (TTree*)inFile->Get("tree");
+
     std::cout << tree->GetEntries() << std::endl;
     MvaEvent* event = new MvaEvent(false, "", tree, true); // (isMC, triggerFlag = unused?, tree, is2016, hasMetTriggers)
 
@@ -299,9 +299,16 @@ void MakeMvaInputs::runMC()
     // All MC which does not suffer from being decomposed into multiple endstates/can be run without hadd'ing
     // Includes Madgraph Z+jets (mass binned)
 
+//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+//      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+
+    // All MC which does not suffer from being decomposed into multiple endstates/can be run without hadd'ing
+    // Includes aMCatNLO Z+jets (mass binned)
+
       std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
       {"WWZ","WWZ"}, {"WZZ","WZZ"},
-      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
 
         // aMCatNLO mass binned Z+jets
 
