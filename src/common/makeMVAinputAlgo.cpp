@@ -196,7 +196,11 @@ void MakeMvaInputs::runNPLs()
   {
 
     std::string outChannel = (*outChan).c_str();
-    
+
+    TFile* outFile = new TFile(
+      (outputDir + "histofile_" + outChannel + ".root").c_str(),
+      "RECREATE");
+
     std::cout << "Fakes estimated from data " << outChannel << std::endl;
     TTree* outTreeSig = new TTree(
       ("Ttree_" + treeNamePostfixSig + outChannel).c_str(),
@@ -204,12 +208,7 @@ void MakeMvaInputs::runNPLs()
     TTree* outTreeSdBnd{};
     setupBranches(outTreeSig, mvaMap);
 
-    TFile* outFile = new TFile(
-      (outputDir + "histofile_" + outChannel + ".root").c_str(),
-      "RECREATE");
-
     std::string channel = outputChannelToData[outChannel];
-
 
     TFile* inFileData = new TFile( (inputDir+chanMap[channel]+channel+"invLepmvaOut.root").c_str() );
     TTree* dataTree = (TTree*)inFileData->Get("tree");
