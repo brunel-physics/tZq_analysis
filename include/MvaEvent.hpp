@@ -533,6 +533,7 @@ public :
    Int_t wQuark2Index;
    std::array<Int_t, NJETS> jetInd;
    std::array<Int_t, NBJETS> bJetInd;
+   Int_t isMC;
    std::array<Float_t, NMUONS> muonMomentumSF;
    std::array<Float_t, NJETS> jetSmearValue;
 
@@ -1030,6 +1031,7 @@ public :
    TBranch *b_wQuark2Index;   //!
    TBranch *b_jetInd;   //!
    TBranch *b_bJetInd;   //!
+   TBranch *b_isMC;   //!
    TBranch *b_muonMomentumSF;   //!
    TBranch *b_jetSmearValue;   //!
 
@@ -1056,12 +1058,12 @@ public :
    Int_t numVert;
    TBranch * b_numVert;
 
-   MvaEvent(bool isMC = true, std::string triggerFlag = "", TTree *tree=nullptr, bool is2016 = false, bool hasMetTriggers = false);
+   MvaEvent(bool isMC_ = true, std::string triggerFlag = "", TTree *tree=nullptr, bool is2016 = false, bool hasMetTriggers = false);
    virtual ~MvaEvent();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers);
+   virtual void     Init(bool isMC_, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers);
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -1071,7 +1073,7 @@ public :
 #endif
 
 #ifdef MvaEvent_cxx
-MvaEvent::MvaEvent(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers) : fChain(nullptr)
+MvaEvent::MvaEvent(bool isMC_, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers) : fChain(nullptr)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
@@ -1096,7 +1098,7 @@ MvaEvent::MvaEvent(bool isMC, std::string triggerFlag, TTree *tree, bool is2016,
 #endif // SINGLE_TREE
 
    }
-   Init(isMC,triggerFlag,tree, is2016, hasMetTriggers);
+   Init(isMC_,triggerFlag,tree, is2016, hasMetTriggers);
 }
 
 MvaEvent::~MvaEvent()
@@ -1125,7 +1127,7 @@ Long64_t MvaEvent::LoadTree(Long64_t entry)
    return centry;
 }
 
-void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers)
+void MvaEvent::Init(bool isMC_, std::string triggerFlag, TTree *tree, bool is2016, bool hasMetTriggers)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1227,7 +1229,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("elePF2PATPhotonConversionDcotCustom", elePF2PATPhotonConversionDcotCustom.data(), &b_elePF2PATPhotonConversionDcotCustom);
    fChain->SetBranchAddress("elePF2PATTriggerMatch", elePF2PATTriggerMatch.data(), &b_elePF2PATTriggerMatch);
    fChain->SetBranchAddress("elePF2PATJetOverlap", elePF2PATJetOverlap.data(), &b_elePF2PATJetOverlap);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("genElePF2PATPT", genElePF2PATPT.data(), &b_genElePF2PATPT);
      fChain->SetBranchAddress("genElePF2PATET", genElePF2PATET.data(), &b_genElePF2PATET);
      fChain->SetBranchAddress("genElePF2PATPX", genElePF2PATPX.data(), &b_genElePF2PATPX);
@@ -1288,7 +1290,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("muonPF2PATDZPV", muonPF2PATDZPV.data(), &b_muonPF2PATDZPV);
    fChain->SetBranchAddress("muonPF2PATVldPixHits", muonPF2PATVldPixHits.data(), &b_muonPF2PATVldPixHits);
    fChain->SetBranchAddress("muonPF2PATMatchedStations", muonPF2PATMatchedStations.data(), &b_muonPF2PATMatchedStations);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("genMuonPF2PATPT", genMuonPF2PATPT.data(), &b_genMuonPF2PATPT);
      fChain->SetBranchAddress("genMuonPF2PATET", genMuonPF2PATET.data(), &b_genMuonPF2PATET);
      fChain->SetBranchAddress("genMuonPF2PATPX", genMuonPF2PATPX.data(), &b_genMuonPF2PATPX);
@@ -1347,7 +1349,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("jetPF2PATPID", jetPF2PATPID.data(), &b_jetPF2PATPID);
    fChain->SetBranchAddress("jetPF2PATClosestBPartonDeltaR", jetPF2PATClosestBPartonDeltaR.data(), &b_jetPF2PATClosestBPartonDeltaR);
    fChain->SetBranchAddress("jetPF2PATClosestCPartonDeltaR", jetPF2PATClosestCPartonDeltaR.data(), &b_jetPF2PATClosestCPartonDeltaR);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("genJetPF2PATET", genJetPF2PATET.data(), &b_genJetPF2PATET);
      fChain->SetBranchAddress("genJetPF2PATPT", genJetPF2PATPT.data(), &b_genJetPF2PATPT);
      fChain->SetBranchAddress("genJetPF2PATPX", genJetPF2PATPX.data(), &b_genJetPF2PATPX);
@@ -1385,7 +1387,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("metPF2PATPhiUncorrected", &metPF2PATPhiUncorrected, &b_metPF2PATPhiUncorrected);
    fChain->SetBranchAddress("metPF2PATUnclusteredEnUp", &metPF2PATUnclusteredEnUp, &b_metPF2PATUnclusteredEnUp);
    fChain->SetBranchAddress("metPF2PATUnclusteredEnDown", &metPF2PATUnclusteredEnDown, &b_metPF2PATUnclusteredEnDown);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("genMetPF2PATEt", &genMetPF2PATEt, &b_genMetPF2PATEt);
      fChain->SetBranchAddress("genMetPF2PATPhi", &genMetPF2PATPhi, &b_genMetPF2PATPhi);
      fChain->SetBranchAddress("genMetPF2PATPt", &genMetPF2PATPt, &b_genMetPF2PATPt);
@@ -1405,7 +1407,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("generalTracksBeamSpotCorrectedD0", generalTracksBeamSpotCorrectedD0.data(), &b_generalTracksBeamSpotCorrectedD0);
    fChain->SetBranchAddress("generalTracksPhi", generalTracksPhi.data(), &b_generalTracksPhi);
    fChain->SetBranchAddress("generalTracksCharge", generalTracksCharge.data(), &b_generalTracksCharge);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("isElePlusJets", &isElePlusJets, &b_isElePlusJets);
      fChain->SetBranchAddress("genPDFScale", &genPDFScale, &b_genPDFScale);
      fChain->SetBranchAddress("genPDFx1", &genPDFx1, &b_genPDFx1);
@@ -1438,7 +1440,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("mhtSignif", &mhtSignif, &b_mhtSignif);
    fChain->SetBranchAddress("nTriggerBits", &nTriggerBits, &b_nTriggerBits);
    fChain->SetBranchAddress("TriggerBits", TriggerBits.data(), &b_TriggerBits);
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("weight_muF0p5", &weight_muF0p5, &b_weight_muF0p5);
      fChain->SetBranchAddress("weight_muF2", &weight_muF2, &b_weight_muF2);
      fChain->SetBranchAddress("weight_muR0p5", &weight_muR0p5, &b_weight_muR0p5);
@@ -1627,7 +1629,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("Flag_goodVertices", &Flag_goodVertices, &b_Flag_goodVertices);
    fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
 
-   if (isMC) {
+   if (isMC_) {
      fChain->SetBranchAddress("nGenPar", &nGenPar, &b_nGenPar);
      fChain->SetBranchAddress("genParEta", genParEta.data(), &b_genParEta);
      fChain->SetBranchAddress("genParPhi", genParPhi.data(), &b_genParPhi);
@@ -1650,6 +1652,7 @@ void MvaEvent::Init(bool isMC, std::string triggerFlag, TTree *tree, bool is2016
    fChain->SetBranchAddress("wQuark2Index", &wQuark2Index, &b_wQuark2Index);
    fChain->SetBranchAddress("jetInd", jetInd.data(), &b_jetInd);
    fChain->SetBranchAddress("bJetInd", bJetInd.data(), &b_bJetInd);
+   fChain->SetBranchAddress("isMC", &isMC, &b_isMC);
    fChain->SetBranchAddress("muonMomentumSF", muonMomentumSF.data(), &b_muonMomentumSF);
    fChain->SetBranchAddress("jetSmearValue", jetSmearValue.data(), &b_jetSmearValue);
 
