@@ -197,7 +197,7 @@ void MakeMvaInputs::runNPLs()
 
     std::string outChannel = (*outChan).c_str();
     
-    std::cout << "Fakes est from data " << outChannel << std::endl;
+    std::cout << "Fakes estimated from data " << outChannel << std::endl;
     TTree* outTreeSig = new TTree(
       ("Ttree_" + treeNamePostfixSig + outChannel).c_str(),
       ("Ttree_" + treeNamePostfixSig + outChannel).c_str());
@@ -210,23 +210,80 @@ void MakeMvaInputs::runNPLs()
 
     std::string channel = outputChannelToData[outChannel];
 
-    TChain* dataChain {new TChain{"tree"}};
 
-    // Get same sign data
-    dataChain->Add( (inputDir+chanMap[channel]+channel+"invLepmvaOut.root").c_str() );
+    TFile* inFileData = new TFile( (inputDir+chanMap[channel]+channel+"invLepmvaOut.root").c_str() );
+    TTree* dataTree = (TTree*)inFileData->Get("tree");
+    std::cout << dataTree->GetEntries() << std::endl;
+    MvaEvent* dataEvent = new MvaEvent(false, "", dataTree, true); // (isMC, triggerFlag = unused?, tree, is2016, hasMetTriggers)
+
+    long long numberOfDataEvents{dataTree->GetEntries()};
+    TMVA::Timer* lDataEventTimer{
+      new TMVA::Timer{boost::numeric_cast<int>(numberOfDataEvents),
+        "Running over data for same sign fakes ...",
+        false}};
+
+    // loop over events
+    for (int i{0}; i < numberOfDataEvents; i++)
+    {
+      lDataEventTimer->DrawProgressBar(i);
+      dataEvent->GetEntry(i);
+
+      fillTree(outTreeSig,
+        outTreeSdBnd,
+        //mvaMap,
+        dataEvent,
+        outChannel, 
+        channel);
+    } // end event loop
+    inFileData->Close();
 
     // Get expected real SS events from MC
+    
     for (auto sampleIt = listOfMCs.begin(); sampleIt != listOfMCs.end();
          ++sampleIt)
     {
         std::string sample = sampleIt->first;
         std::string outSample = sampleIt->second;
 
-        dataChain->Add( (inputDir + sample + channel + "invLepmvaOut.root").c_str() );
-    }
-    MvaEvent* event = new MvaEvent(true, "", dataChain, true);
+        std::cout << "Doing SS fakes " << sample << " : " << std::endl;
 
-  }
+        TFile* inFileMC = new TFile( (inputDir + sample + channel + "invLepmvaOut.root").c_str() ); 
+        TTree* mcTree = (TTree*)inFileMC->Get("tree");
+        std::cout << mcTree->GetEntries() << std::endl;
+        MvaEvent* mcEvent = new MvaEvent(false, "", mcTree, true); // (isMC, triggerFlag = unused?, tree, is2016, hasMetTriggers)
+
+        long long numberOfMcEvents{mcTree->GetEntries()};
+        TMVA::Timer* lMcEventTimer{
+          new TMVA::Timer{boost::numeric_cast<int>(numberOfMcEvents),
+            ("Running over "+sample+" for same sign fakes ...").c_str(),
+            false}};
+
+        // loop over events
+        for (int i{0}; i < numberOfMcEvents; i++)
+        {
+          lMcEventTimer->DrawProgressBar(i);
+          mcEvent->GetEntry(i);
+
+          fillTree(outTreeSig,
+            outTreeSdBnd,
+            //mvaMap,
+            mcEvent,
+            outChannel,
+            channel);
+        } // end event loop
+        inFileMC->Close();
+    } // end sample loop
+
+    outFile->cd();
+    outTreeSig->Write();
+    delete outTreeSig;
+    delete outTreeSdBnd;
+    if (useSidebandRegion) outTreeSdBnd->Write();
+
+    outFile->Write();
+    outFile->Close();
+
+  } // end data channel loop
 }
 
 void MakeMvaInputs::runMC()
@@ -398,7 +455,7 @@ void MakeMvaInputs::runMC()
                 {
                     lEventTimer->DrawProgressBar(i);
                     event->GetEntry(i);
-
+/*
                     bool SameSignMC = false;
                     if (SameSignMC == true && *channel == "ee"
                         && (event->genElePF2PATPromptFinalState[0] == 0
@@ -412,7 +469,7 @@ void MakeMvaInputs::runMC()
                     {
                         continue;
                     }
-
+*/
                     fillTree(outTreeSig,
                              outTreeSdBnd,
                              //mvaMap,
