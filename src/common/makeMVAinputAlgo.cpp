@@ -26,8 +26,8 @@ MakeMvaInputs::MakeMvaInputs()
     , mvaMap{setupInputVars()}
     , treeNamePostfixSig{""}
     , treeNamePostfixSB{""}
+    , chanMap{{"ee","eeRun2016"},{"mumu","mumuRun2016"},{"emu","emuRun2016"}}
 {
-//  mvaMap = setupInputVars();
 }
 
 MakeMvaInputs::~MakeMvaInputs()
@@ -94,9 +94,6 @@ void MakeMvaInputs::runMainAnalysis()
 
 void MakeMvaInputs::runData()
 {
-
-  std::map< std::string, std::string > chanMap = {{"ee","eeRun2016"},{"mumu","mumuRun2016"},{"emu","emuRun2016"}};	
-
   std::vector < std::string > outChannels;
 
   if ( !ttbarControlRegion ) outChannels = {"DataEG","DataMu"};
@@ -165,48 +162,131 @@ void MakeMvaInputs::runData()
 
 void MakeMvaInputs::runNPLs()
 {
+  std::vector < std::string > outChannels;
+  if ( !ttbarControlRegion ) outChannels = {"FakeEG","FakeMu"};
+  else outChannels = {"FakeMuonEG"};
+
+  std::map< std::string, std::string > outputChannelToData = {{"FakeEG","ee"},{"FakeMu","mumu"},{"FakeMuonEG","emu"}};
+
+  // Lists of ALL MC
+
+  // List including Madgraph Z+jets
+    //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH"},
+    //  {"ttHToNonbb","ttH"}, {"WWW","WWW"}, {"WWZ","WWZ"}, {"WZZ","WZZ"}, {"ZZZ","ZZZ"},
+    //  {"WW1l1nu2q","WW"},
+    //  {"WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+
+  // List including aMCatNLO mass binned Z+jets
+      std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH"},
+      {"ttHToNonbb","ttH"}, {"WWW","WWW"}, {"WWZ","WWZ"}, {"WZZ","WZZ"}, {"ZZZ","ZZZ"},
+      {"WW1l1nu2q","WW"}, {"WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},
+      {"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},
+      {"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},
+      {"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},
+      {"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},
+      {"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
+
+  // List including aMCatNLO pT binned Z+jets
+    //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH"},
+    //  {"ttHToNonbb","ttH"}, {"WWW","WWW"}, {"WWZ","WWZ"}, {"WZZ","WZZ"}, {"ZZZ","ZZZ"},
+    //  {"WW1l1nu2q","WW"},
+    //  {"WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_Pt-0To50","DYToLL_PtBinned"},{"DYJetsToLL_Pt-50To100","DYToLL_PtBinned"},{"DYJetsToLL_Pt-100To250","DYToLL_PtBinned"},{"DYJetsToLL_Pt-250To400","DYToLL_PtBinned"},{"DYJetsToLL_Pt-400To650","DYToLL_PtBinned"},{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
+
+  for ( std::vector< std::string >::const_iterator outChan = outChannels.begin(); outChan != outChannels.end(); outChan++ )
+  {
+
+    std::string outChannel = (*outChan).c_str();
+    
+    std::cout << "Fakes est from data " << outChannel << std::endl;
+    TTree* outTreeSig = new TTree(
+      ("Ttree_" + treeNamePostfixSig + outChannel).c_str(),
+      ("Ttree_" + treeNamePostfixSig + outChannel).c_str());
+    TTree* outTreeSdBnd{};
+    setupBranches(outTreeSig, mvaMap);
+
+    TFile* outFile = new TFile(
+      (outputDir + "histofile_" + outChannel + ".root").c_str(),
+      "RECREATE");
+
+    std::string channel = outputChannelToData[outChannel];
+
+    TChain* dataChain {new TChain{"tree"}};
+
+    // Get same sign data
+    dataChain->Add( (inputDir+chanMap[channel]+channel+"invLepmvaOut.root").c_str() );
+
+    // Get expected real SS events from MC
+    for (auto sampleIt = listOfMCs.begin(); sampleIt != listOfMCs.end();
+         ++sampleIt)
+    {
+        std::string sample = sampleIt->first;
+        std::string outSample = sampleIt->second;
+
+        std::cout << "Doing SS fakes " << sample << " : " << std::endl;
+//        dataChain->Add( (inputDir+
+    }
+  }
 }
 
 void MakeMvaInputs::runMC()
 {
-//      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
-//      {"WWZ","WWZ"}, {"WZZ","WZZ"},
-//      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+    //  All MC - do not use as samples like WZ are composed of multiple samples which require hadd'ing to
+    //  maintain file name convention consistency with other groups
 
-    //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH",
-    //  "ttHToNonbb","ttH", "WWW","WWW", "WWZ","WWZ", "WZZ","WZZ", "ZZZ","ZZZ",
-    //  "WW1l1nu2q","WW",
-    //  "WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+    //  std::map< std::string, std::string > listOfMCs = {{"ttHTobb","ttH"},
+    //  {"ttHToNonbb","ttH"}, {"WWW","WWW"}, {"WWZ","WWZ"}, {"WZZ","WZZ"}, {"ZZZ","ZZZ"},
+    //  {"WW1l1nu2q","WW"},
+    //  {"WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+
+    // All MC which does not suffer from being decomposed into multiple endstates/can be run without hadd'ing
+    // Includes Madgraph Z+jets (mass binned)
+
+      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
+      {"WWZ","WWZ"}, {"WZZ","WZZ"},
+      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
+
+        // aMCatNLO mass binned Z+jets
 
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
 
-      std::map< std::string, std::string > listOfMCs =
+        // aMCatNLO pT binned Z+jets
+
+//      std::map< std::string, std::string > listOfMCs =
 //      {{"DYJetsToLL_Pt-0To50","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-50To100","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-100To250","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-250To400","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-400To650","DYToLL_PtBinned"}};
-      {{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
+//      {{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
+
+        // ttbar theory samples
 
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
 
+        // t-channel theory samples
+
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tChannel_scaleup","TtChan__scaleUp"},{"tChannel_scaledown","TtChan__scaleDown"},{"tChannel_hdampup","TtChan__hdampUp"},{"tChannel_hdampdown","TtChan__hdampDown"},{"tbarChannel_scaleup","TbartChan__scaleUp"},{"tbarChannel_scaledown","TbartChan__scaleDown"},{"tbarChannel_hdampup","TbartChan__hdampUp"},{"tbarChannel_hdampdown","TbartChan__hdampDown"}};
 
+        // tW theory samples
+
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tWInclusive_scaleup","TtW__scaleUp"},{"tWInclusive_scaledown","TtW__scaleDown"},{"tbarWInclusive_scaleup","TbartW__scaleUp"},{"tbarWInclusive_scaledown","TbartW__scaleDown"}};
+
+        // tZq theory samples
  
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"tZq_scaleup","tZq__scaleUp"},{"tZq_scaledown","tZq__scaleDown"}};
 
-//    std::map<std::string, std::string> listOfMCs = {{"ttZ2l2nu", "TTZ"}};
+        // Workspace for merging/hadd'ing samples ....
 
+//      std::map<std::string, std::string> listOfMCs = {{"ttZ2l2nu", "TTZ"}};
 //      std::map< std::string, std::string > listOfMCs = { {"ttZ2l2nu", "TTZ"} };
 
-    std::map<std::string, std::string> channelToDataset{
-        {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
+
+    // END MC SAMPLE LISTS
 
     std::vector<std::string> channels;
     if (!ttbarControlRegion)
@@ -246,7 +326,7 @@ void MakeMvaInputs::runMC()
 //        treeNamePostfixSB = "ctrl_";
 //    }
 
-    // loop over nominal samples
+    // loop over MC samples
     for (auto sampleIt = listOfMCs.begin(); sampleIt != listOfMCs.end();
          ++sampleIt)
     {

@@ -71,10 +71,10 @@ class MakeMvaInputs
     std::string inputDir;
     std::string outputDir;
 
-    std::map<std::string, float> mvaMap;
+    const std::map<std::string, float> mvaMap;
     std::string treeNamePostfixSig;
     std::string treeNamePostfixSB;
-
+    std::map< std::string, std::string > chanMap;
 };
 
 #endif
