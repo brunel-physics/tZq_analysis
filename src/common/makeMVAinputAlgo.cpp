@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "config_parser.hpp"
 
+
 #include <boost/filesystem.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
@@ -14,13 +15,19 @@ MakeMvaInputs::MakeMvaInputs()
     : jetUnc(JetCorrectionUncertainty(
           "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt"))
     , inputVars{}
+    , runData_{false}
+    , runNPLs_{false}
     , oldMetFlag{false}
     , ttbarControlRegion{false}
     , oldZplusControlRegion{false}
     , useSidebandRegion{false}
     , inputDir{"mvaTest/"}
     , outputDir{"mvaInputs/"}
+    , mvaMap{setupInputVars()}
+    , treeNamePostfixSig{""}
+    , treeNamePostfixSB{""}
 {
+//  mvaMap = setupInputVars();
 }
 
 MakeMvaInputs::~MakeMvaInputs()
@@ -32,6 +39,8 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
     namespace po = boost::program_options;
     po::options_description desc("Options");
     desc.add_options()("help,h", "Print this message.")(
+        "data,d", po::bool_switch(&runData_), "Run over data mva skims. If neither this or the NPL option is set, MC mva inputs are made")(
+        "NPLs,n", po::bool_switch(&runNPLs_), "Create NPL mva inputs. If neither this or the NPL option is set, MC mva inputs are made")(
         "met,m", po::bool_switch(&oldMetFlag), "Use old MET uncerts recipe")(
         "ttbar", po::bool_switch(&ttbarControlRegion), "Make ttbar CR stuff")(
         "zPlus", po::bool_switch(&oldZplusControlRegion), "Make old Z+jets CR stuff")(
@@ -69,6 +78,97 @@ void MakeMvaInputs::parseCommandLineArguements(int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
+
+  if (useSidebandRegion)
+  {
+      std::cout << "Using control region stuff" << std::endl;
+      treeNamePostfixSig = "sig_";
+      treeNamePostfixSB = "ctrl_";
+  }
+
+  if ( runData_ ) runData(); // If data flag is set, make data mva inputs
+  else if ( runNPLs_ ) runNPLs(); // If NPLs flag is set, make NPL mva inputs
+  else runMC(); // If neither data or NPLs flags are set, make MC mva inputs
+
+}
+
+void MakeMvaInputs::runData()
+{
+
+  std::map< std::string, std::string > chanMap = {{"ee","eeRun2016"},{"mumu","mumuRun2016"},{"emu","emuRun2016"}};	
+
+  std::vector < std::string > outChannels;
+
+  if ( !ttbarControlRegion ) outChannels = {"DataEG","DataMu"};
+  else outChannels = {"MuonEG"};
+
+  std::map< std::string, std::string > outputChannelToData = {{"DataEG","ee"},{"DataMu","mumu"},{"MuonEG","emu"}};
+
+  for ( std::vector< std::string >::const_iterator outChan = outChannels.begin(); outChan != outChannels.end(); outChan++ )
+  {
+
+    std::string outChannel = (*outChan).c_str();
+
+    std::cout << "Data " << outChannel << std::endl;
+
+    TTree* outTreeSig = new TTree(
+      ("Ttree_" + treeNamePostfixSig + outChannel).c_str(),
+      ("Ttree_" + treeNamePostfixSig + outChannel).c_str());
+    TTree* outTreeSdBnd{};
+    setupBranches(outTreeSig, mvaMap);
+    
+    TFile* outFile = new TFile(
+      (outputDir + "histofile_" + outChannel + ".root").c_str(),
+      "RECREATE");
+
+    std::string channel = outputChannelToData[outChannel];
+
+    TFile* inFile = new TFile( (inputDir+chanMap[channel]+channel+"mvaOut.root").c_str() );
+    TTree* tree = (TTree*)inFile->Get("tree");
+    std::cout << tree->GetEntries() << std::endl;
+    MvaEvent* event = new MvaEvent(false, "", tree, true); // (isMC, triggerFlag = unused?, tree, is2016, hasMetTriggers)
+
+    long long numberOfEvents{tree->GetEntries()};
+    TMVA::Timer* lEventTimer{
+      new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
+        "Running over dataset ...",
+        false}};
+     
+    // loop over events
+    for (int i{0}; i < numberOfEvents; i++)
+    {
+      lEventTimer->DrawProgressBar(i);
+      event->GetEntry(i);
+
+      fillTree(outTreeSig,
+        outTreeSdBnd,
+        //mvaMap,
+        event,
+        outChannel, 
+        channel);
+    } // end event loop
+    inFile->Close();         
+    
+    outFile->cd();
+    outTreeSig->Write();
+    delete outTreeSig;
+    delete outTreeSdBnd;
+    if (useSidebandRegion) outTreeSdBnd->Write();
+
+    outFile->Write();
+    outFile->Close();
+  } // end data channel loop
+
+  std::cout << "Run over all data channels ... done!" << std::endl;
+
+}
+
+void MakeMvaInputs::runNPLs()
+{
+}
+
+void MakeMvaInputs::runMC()
+{
 //      std::map< std::string, std::string > listOfMCs = {{"WWW","WWW"},
 //      {"WWZ","WWZ"}, {"WZZ","WZZ"},
 //      {"ZZZ","ZZZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
@@ -78,16 +178,16 @@ void MakeMvaInputs::runMainAnalysis()
     //  "WW1l1nu2q","WW",
     //  "WW2l2nu","WW"},{"ZZ4l","ZZ"},{"ZZ2l2nu","ZZ"},{"ZZ2l2q","ZZ"},{"WZjets","WZ"},{"WZ2l2q","WZ"},{"WZ1l1nu2q","WZ"},{"sChannel","TsChan"},{"tChannel","TtChan"},{"tbarChannel","TbartChan"},{"tWInclusive","TtW"},{"tbarWInclusive","TbartW"},{"tZq","tZq"},{"tHq","THQ"},{"ttWlnu","TTW"},{"ttW2q","TTW"},{"ttZ2l2nu","TTZ"},{"ttZ2q","TTZ"},{"ttbarInclusivePowerheg","TT"},{"tWZ","TWZ"},{"wPlusJets","Wjets"},{"DYJetsToLL_M-50","DYToLL_M50"},{"DYJetsToLL_M-10To50","DYToLL_M10To50"}};
 
-      std::map< std::string, std::string > listOfMCs =
-      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
-
 //      std::map< std::string, std::string > listOfMCs =
+//      {{"DYJetsToLL_M-50_amcatnlo","DYToLL_M50_aMCatNLO"},{"DYJetsToLL_M-10To50_amcatnlo","DYToLL_M10To50_aMCatNLO"}};
+
+      std::map< std::string, std::string > listOfMCs =
 //      {{"DYJetsToLL_Pt-0To50","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-50To100","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-100To250","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-250To400","DYToLL_PtBinned"}};
 //      {{"DYJetsToLL_Pt-400To650","DYToLL_PtBinned"}};
-//      {{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
+      {{"DYJetsToLL_Pt-650ToInf","DYToLL_PtBinned"}};
 
 //      std::map< std::string, std::string > listOfMCs =
 //      {{"ttbarInclusivePowerheg_hdampUP","TT__hdampUp"},{"ttbarInclusivePowerheg_hdampDown","TT__hdampDown"},{"ttbarInclusivePowerheg_fsrup","TT__fsrUp"},{"ttbarInclusivePowerheg_fsrdown","TT__fsrDown"},{"ttbarInclusivePowerheg_isrup","TT__isrUp"},{"ttbarInclusivePowerheg_isrdown","TT__isrDown"}};
@@ -136,15 +236,15 @@ void MakeMvaInputs::runMainAnalysis()
                                       "__ME__plus",
                                       "__ME__minus"};
 
-    std::map<std::string, float> mvaMap = setupInputVars();
+//    std::map<std::string, float> mvaMap = setupInputVars();
 
-    std::string treeNamePostfixSig{""}, treeNamePostfixSB{""};
-    if (useSidebandRegion)
-    {
-        std::cout << "Using control region stuff" << std::endl;
-        treeNamePostfixSig = "sig_";
-        treeNamePostfixSB = "ctrl_";
-    }
+//    std::string treeNamePostfixSig{""}, treeNamePostfixSB{""};
+//    if (useSidebandRegion)
+//    {
+//        std::cout << "Using control region stuff" << std::endl;
+//        treeNamePostfixSig = "sig_";
+//        treeNamePostfixSB = "ctrl_";
+//    }
 
     // loop over nominal samples
     for (auto sampleIt = listOfMCs.begin(); sampleIt != listOfMCs.end();

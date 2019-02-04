@@ -19,6 +19,9 @@ class MakeMvaInputs
 
     void parseCommandLineArguements(int argc, char* argv[]);
     void runMainAnalysis();
+    void runMC();
+    void runData();
+    void runNPLs();
 
     private:
     // functions
@@ -59,12 +62,19 @@ class MakeMvaInputs
     JetCorrectionUncertainty jetUnc;
 
     std::map<std::string, float> inputVars;
+    bool runData_;
+    bool runNPLs_;
     bool oldMetFlag;
     bool ttbarControlRegion;
     bool oldZplusControlRegion;
     bool useSidebandRegion;
     std::string inputDir;
     std::string outputDir;
+
+    std::map<std::string, float> mvaMap;
+    std::string treeNamePostfixSig;
+    std::string treeNamePostfixSB;
+
 };
 
 #endif
