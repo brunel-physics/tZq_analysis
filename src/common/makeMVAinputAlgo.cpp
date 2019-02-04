@@ -222,9 +222,10 @@ void MakeMvaInputs::runNPLs()
         std::string sample = sampleIt->first;
         std::string outSample = sampleIt->second;
 
-        std::cout << "Doing SS fakes " << sample << " : " << std::endl;
-//        dataChain->Add( (inputDir+
+        dataChain->Add( (inputDir + sample + channel + "invLepmvaOut.root").c_str() );
     }
+    MvaEvent* event = new MvaEvent(true, "", dataChain, true);
+
   }
 }
 
