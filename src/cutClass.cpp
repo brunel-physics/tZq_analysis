@@ -1998,21 +1998,19 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
     float twgt{1.0};
 
     if (!is2016_ && isMC_)
-    { // Placeholder SFs for 2017
-      // TODO: Update SFs
-        // Dilepton channels
+    {
         if (channel == "ee")
         {
             if (eTrig || eeTrig)
             {
-                twgt = 0.97397;
+                twgt = 0.92656;
                 if (syst == 1)
                 {
-                    twgt += 0.00050;
+                    twgt += 0.00148;
                 }
                 else if (syst == 2)
                 {
-                    twgt += 0.00050;
+                    twgt += 0.00148;
                 }
             }
         }
@@ -2020,14 +2018,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muTrig || mumuTrig)
             {
-                twgt = 1.06937;
+                twgt = 0.98991;
                 if (syst == 1)
                 {
-                    twgt += 0.00097;
+                    twgt += 0.00025;
                 }
                 else if (syst == 2)
                 {
-                    twgt += 0.00097;
+                    twgt += 0.00025;
                 }
             }
         }
@@ -2035,14 +2033,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muEGTrig)
             {
-                twgt = 0.98562;
+                twgt = 0.84604;
                 if (syst == 1)
                 {
-                    twgt += 0.00057;
+                    twgt += 0.00148;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00057;
+                    twgt -= 0.00148;
                 }
             }
         }
