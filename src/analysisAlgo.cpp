@@ -929,14 +929,15 @@ void AnalysisAlgo::runMainAnalysis()
                 new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
                                 false}};
-            lEventTimer->DrawProgressBar(0, "");
+            // lEventTimer->DrawProgressBar(0, "");
             for (int i{0}; i < numberOfEvents; i++)
             {
                 std::stringstream lSStrFoundEvents;
                 lSStrFoundEvents
                     << (synchCutFlow ? cutObj->numFound() : foundEvents);
-                lEventTimer->DrawProgressBar(
-                    i, ("Found " + lSStrFoundEvents.str() + " events."));
+                // lEventTimer->DrawProgressBar(
+                //     i, ("Found " + lSStrFoundEvents.str() + " events."));
+                std::cout << "\rFound:\t" << lSStrFoundEvents.str() << " events\tTime left:\t" << lEventTimer->GetLeftTime(i) << "      " << std::flush;
                 event.GetEntry(i);
                 // Do the systematics indicated by the systematic flag, oooor
                 // just do data if that's your thing. Whatevs.
@@ -1281,6 +1282,8 @@ void AnalysisAlgo::runMainAnalysis()
                     }
                 } // End systematics loop.
             } // end event loop
+
+            std::cout << std::endl;
 
             // If we're making post lepSel skims save the tree here
             if (makePostLepTree)

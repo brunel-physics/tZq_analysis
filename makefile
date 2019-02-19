@@ -9,9 +9,9 @@ EXECUTABLE_OBJECT_FILES = $(patsubst src/%.cxx,obj/%.o,${EXECUTABLE_SOURCES})
 EXECUTABLES = $(patsubst src/%.cxx,bin/%.exe,${EXECUTABLE_SOURCES})
 
 LIBRARY_PATH = 	-L$(shell root-config --libdir) \
-		-L/scratch/shared/lib \
 		-Llib \
-		-L/opt/rh/rh-mongodb34/root/usr/lib64 \
+		-L/scratch/shared/sw/yaml-cpp/0.6.2/x86_64-slc6-gcc82-opt/lib \
+		-L/cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-slc6-gcc8-opt/lib
 
 LIBRARIES = 	$(shell root-config --libs) \
 		-lLHAPDF \
@@ -23,12 +23,12 @@ LIBRARIES = 	$(shell root-config --libs) \
 		-lyaml-cpp \
 
 INCLUDE_PATH = 	-Iinclude  \
+		-isystem/cvmfs/sft.cern.ch/lcg/views/LCG_95/x86_64-slc6-gcc8-opt/include \
+		-isystem/scratch/shared/sw/yaml-cpp/0.6.2/x86_64-slc6-gcc82-opt/include \
 		-isystem/scratch/shared/include \
-		-isystem/opt/rh/rh-mongodb34/root/usr/include \
 		-isystem$(shell root-config --incdir) \
-		-isystem/opt/rh/rh-mongodb34/root/usr/include \
 
-CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
+CFLAGS = -std=c++17 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 	 -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wformat=2 -Winit-self \
 	 -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast \
 	 -Woverloaded-virtual -Wredundant-decls -Wshadow \
@@ -39,7 +39,7 @@ CFLAGS = -std=c++14 -march=native -mtune=native -g -O2 -pipe -Wall -Wextra \
 LINK_LIBRARY_FLAGS = -shared -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
 LINK_EXECUTABLE_FLAGS = -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
 			-lTQZanalysisTools \
-			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,-R/opt/rh/rh-mongodb34/root/usr/lib64,--enable-new-dtags
+			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,-R/scratch/shared/sw/yaml-cpp/0.6.2/x86_64-slc6-gcc82-opt/lib,--enable-new-dtags
 
 .PHONY: all _all clean _cleanall build _buildall install _installall rpm _rpmall test _testall spec_update
 
