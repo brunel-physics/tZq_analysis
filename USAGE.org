@@ -10,7 +10,7 @@ during his student days. The author takes no responsibility for any
 unintended consequences stemming from use of these instructions.
 
 If it is not covered in this document, your best bet is to run
-=analysisMain.exe --help= to display a help message displaying all the
+=./bin/analysisMain.exe --help= to display a help message displaying all the
 argument options. If that fails, my only advice is to prepare for some
 diving into code to find your answer...
 
@@ -34,16 +34,16 @@ When running any part of the analysis process, the executable needs a
 configuration file to use. The example configuration file =eeeConf.txt=
 is found in the directory =configs/= and the various example sub
 configuration files are found in the sub-directories noted in the
-example configuration file =eeeConf.txt=. The contents are:
+example configuration file =eeConf.txt=. The contents are:
 
 #+BEGIN_EXAMPLE
-    configuration file "eeeConf.txt". The contents are:
-    datasets = "configs/datasets/eeeDataAndMC.txt";
-    cuts = "configs/cuts/eeeCuts.txt";
+    configuration file "eeConf.txt". The contents are:
+    datasets = "configs/datasets/eeData.txt";
+    cuts = "configs/cuts/eeCuts.txt";
     plots = "configs/plots/plotConf.cfg";
-    outputFolder = "plots/eee/";
-    outputPostfix = "eee";
-    channelName = "eee";
+    outputFolder = "plots/ee/";
+    outputPostfix = "ee";
+    channelName = "ee";
 #+END_EXAMPLE
 
 -  datasets :: the location of the text file denoting each physics
@@ -80,11 +80,9 @@ nTupiliser). Hopefully the other contents should be self-explanatory.
 It is also worth noting that whilst the lepton channel is determined in
 the configuration file, there is an argument which overrides this:
 
--  =-k= : bit mask for lepton channel selection; 1 - eee, 2 - eeµ, 4 - eµµ, 8 -
-   µµµ, 16 -- eee (inverted), 32 - eeµ (inverted), 64 - eµµ (inverted), and 128
-   µµµ (inverted). To run multiple channels in the same session, add the digits
-   together, eg. 15 -- all lepton channels, 240 -- all inverted lepton channels,
-   255 -- all lepton channels and inverted lepton channels.
+-  =-k= : bit mask for lepton channel selection; 1 - ee, 2 - µµ, 4 - ee (same charge), 
+   8 - µµ (same charge), 16 -- eµ, 32 - eµ (same charge). To run multiple channels 
+   in the same session, add the digits together, eg. 15 -- all lepton channels.
 
 * Creating skims
 
@@ -107,7 +105,7 @@ The arguments are described as follows:
 To create the MC and post-trigger skims one uses the following command:
 
 #+BEGIN_SRC sh
-    ./analysisMain.exe -c <user-config-file> -g
+    ./analysisMain.exe -c <user-config-file> -g -k <channels> --2016 --dilepton
 #+END_SRC
 
 The arguments are described as follows:
@@ -115,6 +113,8 @@ The arguments are described as follows:
 -  =-c <user-config-file>=: see above.
 -  =-g=: make post-lepton selection trees (including b-tagging efficiency trees) in the skim files.
 -  =-k <bit-mask>=: see above (optional).
+-  =--2016=: Run in 2016 mode (SFs/corrections for 2016 used), in lieu of the default 2015 mode.
+-  =--dilepton=: Run in the dilepton search mode, in leiu of the default to run the trilepton search mode.
 
 * Creating mvaFiles
 
@@ -124,7 +124,8 @@ mva files. Before running this stage, the directories =mvaTest=,
 files one uses the following command:
 
 #+BEGIN_SRC sh
-    ./analysisMain.exe.exe -c <user-config-file> -u -v <SYST> -z
+    ./analysisMain.exe.exe -c <user-config-file> -k <channels to run over> -u -t -v <SYST> -z
+    --dilepton --2016 --mzCut 20. --mwCut 20. --mvaDir <mva skims output directory>
 #+END_SRC
 
 The arguments are described as follows:
@@ -134,8 +135,10 @@ The arguments are described as follows:
 -  =-v <SYST>=: do the desired systematic. This argument isn't required if one
   is running the program over systematic files, by their virtue of already being
   systematics! SYST is defined as 2^{Number of up and down systematics} - 1. So
-  for systematics for JES, JER, b-tagging, trigger, pileup and PDF, SYST =
-  (2^{6\times2} - 1) = 4095.
+  for systematics for trigger, JER, JES, pileup, b-tagging, PDFs, ME and alphaS,  SYST =
+  (2^{8\times2} - 1) = 65535. N.B. alphaS weights are currently set to unity, so while
+  they are processed for mva skims, they are currently not created for the mva inputs
+  (see below).
 -  =-z, --makeMVATree=: produce a tree after event selection for mva
    purposes.
 -  =-k <bit-mask>=: see above (optional).
@@ -148,48 +151,87 @@ The arguments are described as follows:
    (optional).
 -  =--mtwCut=: the cut on the W's transverse mass one wishes to use
    during the analysis (optional).
--  =--dilepton=: to search for a dilepton final state instead of the
-   default (trilepton).
+-  =--2016=: Run in 2016 mode (SFs/corrections for 2016 used), in lieu of the default 2015 mode.
+-  =--dilepton=: Run in the dilepton search mode, in leiu of the default to run the trilepton search mode.
 
-Following the creation of the mva files, the creation of the files used
-for the BDT tool involves the python script =scripts/makeMCAInput.py= (I
-am told that the script's name involves a typo). To run the script, one
-uses the following command:
+* Converting mva skims to mva inputs
 
+After the creation of the mva skims, they need converting to the format used
+by the mva tools. Previously this used a python script =scripts/legacy/makeMVAInputDilepton.py=
+that was based off the trilepton equivalent =scripts/makeMVAInput.py=. Since then,
+the script has been ported in stage to C++ in order to speed up processing samples.
+Currently the C++ program (=bin/makeMVAinputMain.exe=) is stable and gives consistent results with the old python
+script for data and MC, but is still buggy with respect to the non-prompt-lepton samples.
+
+The executable used to run the C++ code is =./bin/makeMVAinputMain.exe=, with the command arguements:
+
+-  =-h [--help]==: Prints a help message.
+-  =-d [--data]==: Runs in data processing mode. If this or NPL mode isn't set, runs in MC mode.
+-  =-n [--NPLs]==: Runs in NPL processing mode. If this or data mode isn't set, runs in MC mode.
+DO NOT USE EXCEPT FOR DEBUGGING - CURRENTLY BUGGY.
+-  =-m [--met]==: Use old MET uncertainity recipie for MCs sample (shouldn't be usually used).
+-  =--ttbar=: Runs in ttbar control region mode.
+-  =--zPlus=: Runs in the old Z+jets control region mode (i.e. zero b-jets).
+-  =-i=: The input directory where the mva skims are read in from.
+-  =-o=: The output directory where mva input files are written to.
+-  =-s=: Makes signal and sideband regions.
+
+Below are the standard recipes currently used to create mva inputs for data, MC and NPLs.
+
+For example, to create data mva inputs, one uses the following command:
 #+BEGIN_SRC sh
-    python ./scripts/makeMCAInput.py <channels> <MvaInputDir> <BdtOutputDir>
+    ./bin/makeMVAinputMain.exe -i <mva skims directory> -o <mva inputs output directory> --data
 #+END_SRC
 
-The arguments are described as follows:
+Creating MC mva inputs however, is less straightforward due to a number of processes having samples
+for different end states. This is an issue as during the mva tools (both ours and Strasbourg's)
+reads in samples for a whole process, e.g. WW which is composed of WW2l2nu and WW1l1nu, but if these
+samples are created separately then the output TTrees will have different names or if the file is updated,
+ROOT only reads the last written tree.
+To get around this, for samples such as WW, WZ, ZZ, ttH, ttbarH, etc, need processing individually before being
+merged using hadd.
+The author's approach is to write the ouputted mva inputs to a separate directory, rename them, and repeat until all
+component samples are made and then to "hadd" them and copy them to the intended mva inputs directory.
 
--  =<channels>=: Reads in the channel one is using. A list of channels
-   can be run over.
--  =<MvaInputDir>=: Directory where mva input files are read in from.
--  =<BdtOutputDir>=: Directory where BDT input files are outputted to.
+The list of samples that are not impacted by this merging issue are given in lines 322-327 in =src/common/makeMVAinputAlgo.cpp=
+and are uncommented by default. Dedicated theory samples required to evaluate theory systematic uncertainities are listed
+in commented out lines (and will need uncommenting and the code rebuilding to run).
 
-* Running mvaFiles to BDT python script
+Out of the box then, the majority of the MC samples can be simply processed by running the following command:
 
-The second stage of producing results involves the creating of mva files
-and BDT input files. Before running this stage, the directories
-=mvaTest=, =mvaDirs/inputs= and =mvaDirs/skims= need creating. To create
-the run the script to produce both the mva files and the BDT input
-files, one uses the following command:
+For example, to create data mva inputs, one uses the following command:
+#+BEGIN_SRC sh
+    ./bin/makeMVAinputMain.exe -i <mva skims directory> -o <mva inputs output directory>
+#+END_SRC
+
+Unfortunately, while the C++ code is stable for creating NPL mva inputs, currently it is considered buggy as
+it does not give consistent results with the original python script (unlike the data and MC). Therefore, it is
+currently recommended to use a stripped down version of the old python mva input creation script to create the
+NPL mva inputs. Thankfully this doesn't take too much time to run (unlike ttbar theory samples in the ttbar CR
+with the original python script).
+
+To create the NPL mva inputs one uses the following command:
 
 #+BEGIN_SRC sh
-    python ./scripts/runAnalToBDT.py <METcut> <mtwCut>
+    python ./scripts/runDilepton2016OutputToBDT_Fakes.py <METcut> <mtwCut>
 #+END_SRC
+
+This script feeds in the necessary command line arguements to =scripts/makeMVAInputDileptonFakes.py= in order
+to create the NPL mva inputs. If one wants to alter the output directory of these mva inputs, one can easily
+edit the script =scripts/runDilepton2016OutputToBDT_Fakes.py=.
 
 The arguments are described as follows:
 
 -  =<METcut>=: the cut on the MET one wishes to use during the analysis.
 -  =<mtwCut>=: the cut on the W's transverse mass one wishes to use
    during the analysis.
+   
 
 * Producing Plots
 
 An optional stage involves the creation of output plots. Before running
 this stage, the directory =plots/<channel-name>= (eg. =<channel-name>=
-could be =eemu=) needs creating. To create the plots one uses the
+could be =ee=) needs creating. To create the plots one uses the
 following command:
 
 #+BEGIN_SRC sh
@@ -198,7 +240,10 @@ following command:
 
 The arguments are described as follows:
 -  =-p=: makes all plots.
--  =-k <bit-mask>=: see above (optional).
+-  =-k=: <bit-mask>=: see above (optional).
+- =--NPLs=: for configs with the prefix "prompt" (where "histoName" and "label" in the configs have been set to
+specific strings that the code searches for when this flag is enabled) which run over both signal region and 
+same charge regions to produce plots with NPLs present.
 
 * Running the BDT
 
