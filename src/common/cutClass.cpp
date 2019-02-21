@@ -1450,7 +1450,9 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
 
     // non-DZ legs are prescaled for Run2016H
     // as non-muon datasets have not been reprocessed, only check the non-DZ legs for the mumu channel
-    if ( event->eventRun < 280919 && !isMC_ && channel == "mumu") {
+
+    // If data, non-DZ legs are prescaled for Run2016H, so only consider Runs B-G
+    if ( event->eventRun < 280919 && !isMC_ ) {
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v3 > 0 ) mumuTrig = true;
       if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v4 > 0 ) mumuTrig = true;
@@ -1470,10 +1472,10 @@ bool Cuts::triggerCuts(AnalysisEvent* event, float* eventWeight, int syst){
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v4 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true;
+    if ( event->HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v7 > 0 ) mumuTrig = true; // MC and data
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2 > 0 ) mumuTrig = true;
     if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v3 > 0 ) mumuTrig = true;
-    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true;
+    if ( event->HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v6 > 0 ) mumuTrig = true; // MC and data
 
   }
 
