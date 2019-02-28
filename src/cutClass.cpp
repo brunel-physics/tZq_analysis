@@ -1642,70 +1642,138 @@ std::pair<std::vector<int>, std::vector<float>>
 
         bool jetId{true};
 
-        // Jet ID == loose
         if (jetIDDo_ && isProper)
         {
-            if (std::abs(jetVec.Eta()) <= 2.7)
-            { // for cases where jet eta <= 2.7
-
-                // for all jets with eta <= 2.7
-                if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99)
-                {
-                    jetId = false;
-                }
-                if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.99)
-                {
-                    jetId = false;
-                }
-                if ((event.jetPF2PATChargedMultiplicity[i]
-                     + event.jetPF2PATNeutralMultiplicity[i])
-                    <= 1)
-                {
-                    jetId = false;
-                }
-
-                // for jets with eta <= 2.40
-                if (std::abs(jetVec.Eta()) <= 2.40)
-                {
-                    if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
-                    {
-                        jetId = false;
-                    }
-                    if (event.jetPF2PATChargedMultiplicity[i] <= 0.0)
-                    {
-                        jetId = false;
-                    }
-                    if (event.jetPF2PATChargedEmEnergyFraction[i] >= 0.99)
-                    {
-                        jetId = false;
-                    }
-                }
-            }
-            else if (std::abs(jetVec.Eta()) <= 3.0
-                     && std::abs(jetVec.Eta()) > 2.70)
+            if (is2016_)
             {
-                if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98)
-                {
-                    jetId = false;
+                // Jet ID == loose
+                if (std::abs(jetVec.Eta()) <= 2.7)
+                { // for cases where jet eta <= 2.7
+
+                    // for all jets with eta <= 2.7
+                    if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.99)
+                    {
+                        jetId = false;
+                    }
+                    if ((event.jetPF2PATChargedMultiplicity[i]
+                         + event.jetPF2PATNeutralMultiplicity[i])
+                        <= 1)
+                    {
+                        jetId = false;
+                    }
+
+                    // for jets with eta <= 2.40
+                    if (std::abs(jetVec.Eta()) <= 2.40)
+                    {
+                        if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
+                        {
+                            jetId = false;
+                        }
+                        if (event.jetPF2PATChargedMultiplicity[i] <= 0.0)
+                        {
+                            jetId = false;
+                        }
+                        if (event.jetPF2PATChargedEmEnergyFraction[i] >= 0.99)
+                        {
+                            jetId = false;
+                        }
+                    }
                 }
-                if (event.jetPF2PATNeutralEmEnergyFraction[i] <= 0.01)
+                else if (std::abs(jetVec.Eta()) <= 3.0
+                         && std::abs(jetVec.Eta()) > 2.70)
                 {
-                    jetId = false;
+                    if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] <= 0.01)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralMultiplicity[i] <= 2)
+                    {
+                        jetId = false;
+                    }
                 }
-                if (event.jetPF2PATNeutralMultiplicity[i] <= 2)
-                {
-                    jetId = false;
+                else if (std::abs(jetVec.Eta()) > 3.0)
+                { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralMultiplicity[i] <= 10)
+                    {
+                        jetId = false;
+                    }
                 }
             }
-            else if (std::abs(jetVec.Eta()) > 3.0)
-            { // for cases where jet eta > 3.0 and less than 5.0 (or max).
-                if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
-                {
-                    jetId = false;
+            else
+            {
+                // Jet ID == tight (loose is deprecated)
+                // https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
+                if (std::abs(jetVec.Eta()) <= 2.7)
+                { // for cases where jet eta <= 2.7
+
+                    // for all jets with eta <= 2.7
+                    if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.90)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
+                    {
+                        jetId = false;
+                    }
+                    if ((event.jetPF2PATChargedMultiplicity[i]
+                         + event.jetPF2PATNeutralMultiplicity[i])
+                        <= 1)
+                    {
+                        jetId = false;
+                    }
+
+                    // for jets with eta <= 2.40
+                    if (std::abs(jetVec.Eta()) <= 2.40)
+                    {
+                        if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
+                        {
+                            jetId = false;
+                        }
+                        if (event.jetPF2PATChargedMultiplicity[i] <= 0.0)
+                        {
+                            jetId = false;
+                        }
+                    }
                 }
-                if (event.jetPF2PATNeutralMultiplicity[i] <= 10)
+                else if (std::abs(jetVec.Eta()) <= 3.0
+                         && std::abs(jetVec.Eta()) > 2.70)
                 {
-                    jetId = false;
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] <= 0.02
+                        || event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.99)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralMultiplicity[i] <= 2)
+                    {
+                        jetId = false;
+                    }
+                }
+                else if (std::abs(jetVec.Eta()) > 3.0)
+                { // for cases where jet eta > 3.0 and less than 5.0 (or max).
+                    if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralHadronEnergyFraction[i] <= 0.02)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATNeutralMultiplicity[i] <= 10)
+                    {
+                        jetId = false;
+                    }
                 }
             }
         }
