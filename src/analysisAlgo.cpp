@@ -816,8 +816,8 @@ void AnalysisAlgo::runMainAnalysis()
             int wLepIndex{-1};
             int wQuark1Index{-1};
             int wQuark2Index{-1};
-            int jetInd[15]; // The index of the selected jets;
-            int bJetInd[10]; // Index of selected b-jets;
+            std::vector<size_t> jetInd{}; // The index of the selected jets;
+            std::vector<size_t> bJetInd{}; // Index of selected b-jets;
             float muonMomentumSF[3]{};
             float jetSmearValue[15]{};
             int isMC{dataset->isMC()}; // isMC flag for debug purposes
@@ -870,14 +870,14 @@ void AnalysisAlgo::runMainAnalysis()
                         "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
                     mvaTree[systIn]->Branch(
                         "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
-                    mvaTree[systIn]->Branch("jetInd", &jetInd, "jetInd[15]/I");
+                    mvaTree[systIn]->Branch("jetInd", &jetInd);
                     mvaTree[systIn]->Branch("muonMomentumSF",
                                             &muonMomentumSF,
                                             "muonMomentumSF[3]/F");
                     mvaTree[systIn]->Branch(
                         "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
                     mvaTree[systIn]->Branch(
-                        "bJetInd", &bJetInd, "bJetInd[10]/I");
+                        "bJetInd", &bJetInd);
                     mvaTree[systIn]->Branch("isMC", &isMC, "isMC/I");
                     if (systIn > 0)
                     {
@@ -1238,6 +1238,8 @@ void AnalysisAlgo::runMainAnalysis()
                     // Do the Zpt reweighting here
                     if (makeMVATree)
                     {
+                        jetInd.clear();
+                        bJetInd.clear();
                         zLep1Index = event.zPairIndex.first;
                         zLep2Index = event.zPairIndex.second;
                         muonMomentumSF[0] = event.muonMomentumSF[0];
@@ -1249,14 +1251,12 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             if (jetIndexIt < event.jetIndex.size())
                             {
-                                jetInd[jetIndexIt] =
-                                    event.jetIndex[jetIndexIt];
+                                jetInd.emplace_back(event.jetIndex[jetIndexIt]);
                                 jetSmearValue[jetIndexIt] =
                                     event.jetSmearValue[jetIndexIt];
                             }
                             else
                             {
-                                jetInd[jetIndexIt] = -1;
                                 jetSmearValue[jetIndexIt] = 0.0;
                             }
                         }
@@ -1264,11 +1264,7 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             if (bJetIt < event.bTagIndex.size())
                             {
-                                bJetInd[bJetIt] = event.bTagIndex[bJetIt];
-                            }
-                            else
-                            {
-                                bJetInd[bJetIt] = -1;
+                                bJetInd.emplace_back(event.bTagIndex[bJetIt]);
                             }
                         }
                         mvaTree[systInd]->Fill();
