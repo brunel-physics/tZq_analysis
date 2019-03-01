@@ -5,6 +5,7 @@
 #include "TH1F.h"
 #include "TH1I.h"
 #include "TH2D.h"
+#include "TMVA/Config.h"
 #include "TMVA/Timer.h"
 #include "TPad.h"
 #include "TH1D.h"
@@ -447,6 +448,8 @@ void AnalysisAlgo::setupPlots()
 
 void AnalysisAlgo::runMainAnalysis()
 {
+    TMVA::gConfig().SetDrawProgressBar(true);
+
     if (totalLumi == 0.)
     {
         totalLumi = usePreLumi;
@@ -929,15 +932,14 @@ void AnalysisAlgo::runMainAnalysis()
                 new TMVA::Timer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
                                 false}};
-            // lEventTimer->DrawProgressBar(0, "");
+            lEventTimer->DrawProgressBar(0, "");
             for (int i{0}; i < numberOfEvents; i++)
             {
                 std::stringstream lSStrFoundEvents;
                 lSStrFoundEvents
                     << (synchCutFlow ? cutObj->numFound() : foundEvents);
-                // lEventTimer->DrawProgressBar(
-                //     i, ("Found " + lSStrFoundEvents.str() + " events."));
-                std::cout << "\rFound:\t" << lSStrFoundEvents.str() << " events\tTime left:\t" << lEventTimer->GetLeftTime(i) << "      " << std::flush;
+                lEventTimer->DrawProgressBar(
+                    i, ("Found " + lSStrFoundEvents.str() + " events."));
                 event.GetEntry(i);
                 // Do the systematics indicated by the systematic flag, oooor
                 // just do data if that's your thing. Whatevs.
