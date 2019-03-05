@@ -1,7 +1,0 @@
-datasets = "configs/2016/datasets/mumuDataMC_part2.txt";
-cuts = "configs/2016/cuts/eeCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2016/mumu_part2/";
-outputPostfix = "mumu_part2";
-channelName = "mumu";
-
