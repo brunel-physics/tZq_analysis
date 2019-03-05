@@ -1,6 +1,0 @@
-datasets = "configs/2016/datasets/NPLs_mumu.txt";
-cuts = "configs/2016/cuts/eeCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2016/NPLs_mumu/";
-outputPostfix = "ee";
-channelName = "ee";

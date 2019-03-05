@@ -1,61 +1,31 @@
-[DYJetsToLL_Pt-0To50]
-fileName = configs/2016/datasets/fileLists/DYJetsPt0To50Files.txt
-totalEvents = 32734121
-crossSection = 5352.57924
+[DYToLL_0J]
+fileName = configs/2016/datasets/fileLists/DY0JetsFiles.txt
+totalEvents = 49579613
+crossSection = 4620.519036
 runType = mc
-histoName = zPlusJetsPtBinned_Pt-0To50
+histoName = zPlusJetsJetBinnedNLO
 colour = kBlue
-label = zPlusJets_Pt-0To50
+label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-50To100]
-fileName = configs/2016/datasets/fileLists/DYJetsPt50To100Files.txt
-totalEvents = 130582589
-crossSection = 363.81428
+[DYToLL_1J]
+fileName = configs/2016/datasets/fileLists/DY1JetsFiles.txt
+totalEvents = 49902571
+crossSection = 859.589402
 runType = mc
-histoName = zPlusJetsPtBinned_Pt-50To100
+histoName = zPlusJetsJetBinnedNLO
 colour = kBlue
-label = zPlusJets_Pt-50To100
+label = zPlusJets
 plotType = f
 
-[DYJetsToLL_Pt-100To250]
-fileName = configs/2016/datasets/fileLists/DYJetsPt100To250Files.txt
-totalEvents = 83686174
-crossSection = 84.014804
+[DYToLL_2J]
+fileName = configs/2016/datasets/fileLists/DY2JetsFiles.txt
+totalEvents = 90299356
+crossSection = 338.258531
 runType = mc
-histoName = zPlusJetsPtBinned_Pt-100To250
+histoName = zPlusJetsJetBinnedNLO
 colour = kBlue
-label = zPlusJets_Pt-100To250
-plotType = f
-
-[DYJetsToLL_Pt-250To400]
-fileName = configs/2016/datasets/fileLists/DYJetsPt250To400Files.txt
-totalEvents = 21185045
-crossSection = 3.2228256512
-runType = mc
-histoName = zPlusJetsPtBinned_Pt-250To400
-colour = kBlue
-label = zPlusJets_Pt-250To400
-plotType = f
-
-[DYJetsToLL_Pt-400To650]
-fileName = configs/2016/datasets/fileLists/DYJetsPt400To650Files.txt
-totalEvents = 1625936
-crossSection = 0.436041144
-runType = mc
-histoName = zPlusJetsPtBinned_Pt-400To650
-colour = kBlue
-label = zPlusJets_Pt-400To650
-plotType = f
-
-[DYJetsToLL_Pt-650ToInf]
-fileName = configs/2016/datasets/fileLists/DYJetsPt650ToInfFiles.txt
-totalEvents = 1627882
-crossSection = 0.040981055
-runType = mc
-histoName = zPlusJetsPtBinned_Pt-650ToInf
-colour = kBlue
-label = zPlusJets_Pt-650ToInf
+label = zPlusJets
 plotType = f
 
 [ttbarInclusivePowerheg]
@@ -75,7 +45,7 @@ crossSection = 0.07462
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [sChannel]
@@ -85,7 +55,7 @@ crossSection = 10.32
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tChannel]
@@ -95,7 +65,7 @@ crossSection = 136.02
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tbarChannel]
@@ -105,7 +75,7 @@ crossSection = 80.95
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [WZ1l1nu2q]
@@ -305,7 +275,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tbarWInclusive]
@@ -315,7 +285,7 @@ crossSection = 35.85
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tWZ]
@@ -325,7 +295,7 @@ crossSection = 0.01104
 runType = mc
 histoName = SingleTop
 colour = kMagenta
-label = Single Top
+label = SingleTop
 plotType = f
 
 [tZq]
@@ -338,9 +308,9 @@ colour = kYellow
 label = tZq
 plotType = f
 
-[eeRun2016]
-fileName = configs/2016/datasets/fileLists/eeRun2016Files.txt
-luminosity = 35858.984
+[mumuRun2016]
+fileName = configs/2016/datasets/fileLists/mumuRun2016Files.txt
+luminosity = 35860.066
 runType = data
 histoName = data
 label = Data

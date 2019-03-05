@@ -155,10 +155,6 @@ ls /scratch/data/tZqSkimsRun2016/DY4JetsToLL_M-50_madgraph/* -1d >> $TQZ_TOOLS_P
 
 ls /scratch/data/tZqSkimsRun2016/sChannel_4f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/sChannelFiles.txt
 ls /scratch/data/tZqSkimsRun2016/tWZ_5f/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/tWZ_ll_Files.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_madgraph/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_madgraph_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_aMCatNLO/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
-ls /scratch/data/tZqSkimsRun2016/ttbarDilepton_aMCatNLO_ext/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarDileptonAmcAtNloFiles.txt
 
 ls /scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ttbarInclusivePowerhegFiles.txt
 
@@ -225,43 +221,6 @@ ls /scratch/data/tZqSkimsRun2016/WWW/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datas
 ls /scratch/data/tZqSkimsRun2016/WWZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WWZFiles.txt
 ls /scratch/data/tZqSkimsRun2016/WZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/WZZFiles.txt
 ls /scratch/data/tZqSkimsRun2016/ZZZ/* -1d >> $TQZ_TOOLS_PATH/configs/2016/datasets/fileLists/ZZZFiles.txt
-
-# QCD samples
-
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-20to30/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-20to30Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-30to50/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-30to50_ext/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-30to50Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-50to80/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-50to80_ext/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-50to80Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-80to120/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-80to120_ext/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-80to120Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-120to170/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-120to170_ext/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-120to170Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-170to300/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-170to300Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_EMEnriched/Pt-300toInf/* -1d >> configs/2016/datasets/fileLists/QCD_EMEnriched_Pt-300toInfFiles.txt
-
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-15to20/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-15to20Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-20to30/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-20to30Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-30to50/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-30to50Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-50to80/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-50to80Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-80to120/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-80to120Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-80to120_ext/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-80to120Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-120to170/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-120to170Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-170to300/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-170to300Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-170to300_ext/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-170to300Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-300to470/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-300to470Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-300to470_ext1/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-300to470Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-300to470_ext2/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-300to470Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-470to600/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-470to600Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-470to600_ext1/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-470to600Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-470to600_ext2/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-470to600Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-600to800/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-600to800Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-600to800_ext/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-600to800Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-800to1000/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-800to1000Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-800to1000_ext1/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-800to1000Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-800to1000_ext2/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-800to1000Files.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-1000toInf/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-1000toInfFiles.txt
-ls /scratch/data/tZqSkimsRun2016/QCD_MuEnrichedPt5/Pt-1000toInf_ext/* -1d >> configs/2016/datasets/fileLists/QCD_MuEnriched_Pt-1000toInfFiles.txt
 
 # FCNC Datasets
 
