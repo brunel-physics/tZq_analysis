@@ -32,7 +32,7 @@ AnalysisAlgo::AnalysisAlgo():
   plotConfName{new std::string{}},
   readEventList{false},
   customJetRegion{false},
-  trileptonChannel_{true},
+  trileptonChannel_{false},
   is2016_{false},
   isFCNC_{false},
   isCtag_{false},
@@ -381,7 +381,7 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
     ("help,h", "Print this message.")
     ("config,c", po::value<std::string>(&config)->required(),
      "The configuration file to be used.")
-    ("dilepton", po::bool_switch(&trileptonChannel_),
+    ("trilepton", po::bool_switch(&trileptonChannel_),
      "Look for dilepton rather than trilepton final states.")
     ("2016", po::bool_switch(&is2016_), "Use 2016 conditions (SFs, et al.).")
     ("FCNC", po::bool_switch(&isFCNC_),
@@ -475,7 +475,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
 
     po::notify(vm);
 
-    trileptonChannel_ = !trileptonChannel_;
     if (vm.count("channels") && !vm.count("config"))
     {
       throw std::logic_error("--channels requires --config to be specified");
