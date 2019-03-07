@@ -347,25 +347,31 @@ bool Cuts::makeCuts(AnalysisEvent *event, float *eventWeight, std::map<std::stri
   // For smearing temp solution
   event->jetSmearValue = {1.0};
 
-  //If emu and dilepton - doing ttbar background estimation
-
-  if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ){
-     return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);
-  }
-
   if( !skipTrigger_ ) {
     if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger cuts
   }
 
   if (!metFilters(event)) return false;
 
+  //
   //Make lepton cuts. Does the inverted iso cuts if necessary.
+  //
+
+  // If trilepton channel and invert rel isolation on the third lepton
   if (invertLepCut_ && trileptonChannel_) {
      if ( !invertIsoCut(event,eventWeight, plotMap,cutFlow) ) return false;
   }
+
+  //If emu and dilepton - doing ttbar background estimation
+  else if ( !trileptonChannel_ && cutConfTrigLabel_.find("d") != std::string::npos ) {
+    if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun,true))) return false;
+  }
+  // Else, do nominal dilepton lepton selection
   else {
     if ( !makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun) ) return false;
   }
+
+  // End Lepton cutting
 
   std::pair< std::vector<int>, std::vector<float> > jetInfo;
   jetInfo = makeJetCuts(event, systToRun, eventWeight);
@@ -2160,56 +2166,6 @@ double Cuts::getChiSquared( double wMass, double topMass ){
   double topMassTerm = ( (topMass - 173.21) / 50.0 );
   double wMassTerm = ( (wMass - 80.3585 ) / 10.0 );
   return std::sqrt( topMassTerm*topMassTerm + wMassTerm*wMassTerm );
-}
-
-bool Cuts::ttbarCuts(AnalysisEvent* event, float *eventWeight, std::map<std::string,Plots*> plotMap, TH1D* cutFlow, int systToRun){
-
-  if( !skipTrigger_ ) {
-    if ( !is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger on MC and data for 2015
-    if ( is2016_ ) if (!triggerCuts(event, eventWeight, systToRun)) return false; // Do trigger for data and 2016, exclude MC.
-  }
-
-  if (!metFilters(event)) return false;
-
-  if (!(makeLeptonCuts(event,eventWeight,plotMap,cutFlow,systToRun,true))) return false;
-
-  std::pair< std::vector<int>, std::vector<float> > jetInfo;
-  jetInfo = makeJetCuts(event, systToRun, eventWeight);
-  event->jetIndex = jetInfo.first;
-  event->jetSmearValue = jetInfo.second;
-
-  if (event->jetIndex.size() < numJets_) return false;
-  if (event->jetIndex.size() > maxJets_) return false;
-
-  event->bTagIndex = makeBCuts(event,event->jetIndex, systToRun);
-
-  if (doPlots_||fillCutFlow_) cutFlow->Fill(2.5,*eventWeight);
-  if (doPlots_) plotMap["jetSel"]->fillAllPlots(event,*eventWeight);
-
-  if (event->bTagIndex.size() < numbJets_) return false;
-  if (event->bTagIndex.size() > maxbJets_) return false;
-
-  if (doPlots_) plotMap["bTag"]->fillAllPlots(event,*eventWeight);
-  if (doPlots_||fillCutFlow_) cutFlow->Fill(3.5,*eventWeight);
-
-  float invWmass{0.};
-  invWmass = getWbosonQuarksCand(event,event->jetIndex,systToRun);
-
-   // Debug chi2 cut
-//   float topMass = getTopMass(event);
-//   float topTerm = ( topMass-173.21 )/30.0;
-//   float wTerm = ( (event->wPairQuarks.first + event->wPairQuarks.second).M() - 80.3585 )/8.0;
-
-//   float chi2 = topTerm*topTerm + wTerm*wTerm;
-//   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
-//   if ( chi2 >= 2.0 ) return false; //signal region
-
-    if ( std::abs(invWmass) > invWMassCut_ ) return false;
-
-    if ( doPlots_ ) plotMap["wMass"]->fillAllPlots(event,*eventWeight);
-    if ( doPlots_ || fillCutFlow_ ) cutFlow->Fill(4.5,*eventWeight);
-
-  return true;
 }
 
 //For synchronisation I am dumping the lepton information here.

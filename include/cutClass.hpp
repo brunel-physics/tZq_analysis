@@ -58,9 +58,6 @@ class Cuts{
   std::vector<int> getSynchEles(AnalysisEvent* event);
   std::vector<int> getSynchMus(AnalysisEvent* event);
 
-  //Method to do ttbar cuts for the dilepton background estimation
-  bool ttbarCuts(AnalysisEvent* event, float*, std::map<std::string,Plots*>, TH1D*, int);
-
   //Simple deltaR function, because the reco namespace doesn't work or something
   double deltaR(float,float,float,float);
   void dumpToFile(AnalysisEvent * event, int);
