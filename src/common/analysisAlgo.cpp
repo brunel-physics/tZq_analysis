@@ -417,9 +417,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
      "Monte Carlo only mode. Ignores all data in the config file.")
     ("data,b", po::bool_switch(&skipMC),
      "Data only mode. Ignores all data in the config file.")
-    ("bTag,t", po::bool_switch(&usebTagWeight),
-     "Use b-tagging efficiencies to reweight the Monte Carlo. Currently "
-     "requires -u.")
     (",y", po::bool_switch(&dumpEventNumbers),
      "Produce event dumps for each stage of the synch. Requires --synch.")
     ("NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")
@@ -490,25 +487,20 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "-" << jetRegVars[2] << " jets, and " << jetRegVars[1] << "-" <<
         jetRegVars[3] << " b-jets" << std::endl;
     }
-    if (usebTagWeight && !usePostLepTree)
-    {
-      throw std::logic_error("Currently bTag weights can only be retrieved "
-          "from post lepton selection trees. Please set -u.");
-    }
     if (trileptonChannel_ && isFCNC_)
     {
       throw std::logic_error( "Code has not been setup to do a trilepton FCNC "
-          "search, only a dilepton one. Please use --dilepton argument.");
+          "search, only a dilepton one. Please DO NOT use --trilepton argument.");
     }
     if (!isFCNC_ && isCtag_)
     {
       throw std::logic_error("C-tagging is only used during an FCNC search. "
-          "Set --FCNC & --dilepton arguements.");
+          "Set --FCNC argument.");
     }
     if (doZplusCR_ && trileptonChannel_)
     {
       throw std::logic_error("Z+jets CR is only setup for the dilepton channel. "
-      "Set --dilepton arguement and --mwCut and --metCut to define CR region.");
+      "Set --mwCut and --metCut to define CR region.");
     }
   }
   catch (const std::logic_error& e)
@@ -823,8 +815,8 @@ void AnalysisAlgo::runMainAnalysis(){
 	}
 	cutObj->setBTagPlots(bTagEffPlots,true);
       }//end btag eff plots.
-      if (usePostLepTree && usebTagWeight && dataset->isMC()) {
-	//Get efficiency plots from the file. Will have to be from post-lep sel trees I guess.
+      if (usePostLepTree && dataset->isMC()) {
+	//Get b-tag efficiency plots from the file. Will have to be from post-lep sel trees I guess.
 	std::string inputPostfix{};
 	inputPostfix += postfix;
         if ( doNPLs_ && dataset->getPlotLabel() == "NPL" && !trileptonChannel_ ) inputPostfix += "invLep"; // If plotting non-prompt leptons for this dataset, be sure to read in the same sign lepton post lepton $

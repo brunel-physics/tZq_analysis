@@ -61,7 +61,6 @@ class AnalysisAlgo{
 	bool makePostLepTree;
 	bool makeMVATree;
 	bool usePostLepTree;
-	bool usebTagWeight;
 	int systToRun;
 	int channelsToRun;
 	bool skipTrig;
