@@ -1,6 +1,6 @@
 name: "ttZ2q"
 locations:
-    - "/scratch/data/tZqSkimsRun2017/ttZ2q/"
+    - "/scratch/data/tZqSkimsRun2017/ttZToqq/"
 total_events: 750000
 cross_section: 0.5104
 mc: true
