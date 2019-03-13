@@ -19,7 +19,7 @@ class Dataset
     std::string treeName_;
     std::vector<std::string> locations_;
     long long totalEvents_;
-    int colour_;
+    const int colour_;
     std::string plotLabel_;
     std::string plotType_;
     std::string triggerFlag_;

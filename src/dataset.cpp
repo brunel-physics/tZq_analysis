@@ -25,6 +25,7 @@ Dataset::Dataset(std::string name,
                  std::string plotLabel,
                  std::string plotType,
                  std::string triggerFlag)
+    : colour_{TColor::GetColor(colourHex.c_str())}
 {
     name_ = name;
     lumi_ = lumi;
@@ -35,7 +36,6 @@ Dataset::Dataset(std::string name,
     treeName_ = treeName;
     locations_ = locations;
     totalEvents_ = totalEvents;
-    colour_ = TColor::GetColor(colourHex.c_str());
     plotType_ = plotType;
     plotLabel_ = plotLabel;
     triggerFlag_ = triggerFlag;

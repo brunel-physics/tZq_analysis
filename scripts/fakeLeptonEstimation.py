@@ -22,14 +22,15 @@ def sortOutLeptons(tree,channel):
 
 def main():
 
-  era = "2016"
 
   weighted = True
 
-  mzCut = sys.argv[1]
+  era = sys.argv[1]
+
+  mzCut = sys.argv[2]
   mzStr = mzCut.split(".")[0]
 
-  mwCut = sys.argv[2]
+  mwCut = sys.argv[3]
   mwStr = mwCut.split(".")[0]
 
 ### Number of Same Sign no Fakes stuff
@@ -135,7 +136,10 @@ def main():
 #  listOfMCs = {"WW1l1nu2q":"WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarDilepton_aMCatNLO":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 
 #  listOfMCs = {"ttbarDilepton_aMCatNLO":"TT"}
-  listOfMCs = {"tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttZ2l2nu":"TTZ","wPlusJets":"Wjets","WZjets":"WZ"}
+  if era == "2016":
+    listOfMCs = {"tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttZ2l2nu":"TTZ","wPlusJets":"Wjets","WZjets":"WZ"}
+  else:
+    listOfMCs = {"tZq":"tZq","tHq":"THQ","ttWTolnu":"TTW","ttZToll":"TTZ","wPlusJets":"Wjets","WZ_3lnu":"WZ"}
 
 ### Number of SS events expected from data
 

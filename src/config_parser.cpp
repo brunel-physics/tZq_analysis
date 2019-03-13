@@ -40,7 +40,8 @@ void Parser::parse_config(const std::string conf,
                           std::string& plotConfName,
                           std::string& outFolder,
                           std::string& postfix,
-                          std::string& channel)
+                          std::string& channel,
+                          const bool NPL)
 {
     const YAML::Node root{YAML::LoadFile(conf)};
 
@@ -48,7 +49,7 @@ void Parser::parse_config(const std::string conf,
 
     try
     {
-        parse_files(datasetConfs, datasets, lumi);
+        parse_files(datasetConfs, datasets, lumi, NPL);
     }
     catch (const std::exception)
     {
@@ -101,7 +102,8 @@ void Parser::parse_config(const std::string conf,
 // For reading the file config.
 void Parser::parse_files(const std::vector<std::string> files,
                          std::vector<Dataset>& datasets,
-                         double& totalLumi)
+                         double& totalLumi,
+                         const bool NPL)
 {
     std::cerr << "Adding datasets:" << std::endl;
 
@@ -116,12 +118,30 @@ void Parser::parse_files(const std::vector<std::string> files,
                               root["locations"].as<std::vector<std::string>>(),
                               root["histogram"].as<std::string>(),
                               "tree",
-                              isMC ? root["total_events"].as<long>() : 0,
+                              isMC ? root["total_events"].as<long long>() : 0,
                               root["colour"].as<std::string>(),
                               root["label"].as<std::string>(),
                               root["plot_type"].as<std::string>(),
                               isMC ? ""
                                    : root["trigger_flag"].as<std::string>());
+
+        // If we are doing NPLs, add the NPL version of this dataset
+        if (NPL)
+        {
+            datasets.emplace_back(
+                root["name"].as<std::string>(),
+                0,
+                isMC,
+                isMC ? root["cross_section"].as<double>() : 0,
+                root["locations"].as<std::vector<std::string>>(),
+                "NPL",
+                "tree",
+                isMC ? root["total_events"].as<long long>() : 0,
+                "#000000",
+                "NPL",
+                "f",
+                isMC ? "" : root["trigger_flag"].as<std::string>());
+        }
 
         if (root["luminosity"])
         {

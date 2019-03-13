@@ -258,7 +258,8 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
                              plotConfName,
                              outFolder,
                              postfix,
-                             channel);
+                             channel,
+                             doNPLs_);
     }
     catch (const std::exception)
     {

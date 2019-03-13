@@ -757,9 +757,18 @@ bool Cuts::makeLeptonCuts(
         double eeWeight{1.0}, mumuWeight{1.0}, emuWeight{1.0};
         if (invZMassCut_ == 20. && invWMassCut_ == 20.)
         {
-            eeWeight = 0.926;
-            mumuWeight = 1.114;
-            emuWeight = 1.489;
+            if (is2016_)
+            {
+                eeWeight = 0.926;
+                mumuWeight = 1.114;
+                emuWeight = 1.489;
+            }
+            else
+            {
+                eeWeight = 1.177;
+                mumuWeight = 0.755;
+                emuWeight = 0.749;
+            }
         }
         if (invZMassCut_ == 20. && invWMassCut_ == 50.)
         {
