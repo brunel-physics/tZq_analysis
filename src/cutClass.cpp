@@ -765,9 +765,9 @@ bool Cuts::makeLeptonCuts(
             }
             else
             {
-                eeWeight = 1.177;
-                mumuWeight = 0.755;
-                emuWeight = 0.749;
+                eeWeight = 1.188;
+                mumuWeight = 1.131;
+                emuWeight = 1.197;
             }
         }
         if (invZMassCut_ == 20. && invWMassCut_ == 50.)
