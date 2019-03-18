@@ -2,9 +2,9 @@
 
 from ROOT import *
 import math
-import os
+import os 
 import sys
-import subprocess
+import subprocess 
 
 def sortOutLeptons(tree,channel):
     ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
@@ -22,10 +22,9 @@ def sortOutLeptons(tree,channel):
 
 def main():
 
+  era = sys.argv[1]
 
   weighted = True
-
-  era = sys.argv[1]
 
   mzCut = sys.argv[2]
   mzStr = mzCut.split(".")[0]
@@ -45,21 +44,27 @@ def main():
   oppSignDY_mumu = 0
 
 
-  infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eemvaOut.root")
-  infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumumvaOut.root")
+  if era == "2016":
+      infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnloeemvaOut.root")
+      infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnlomumumvaOut.root")
+      infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnloeeinvLepmvaOut.root")
+      infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnlomumuinvLepmvaOut.root")
+  else:
+      infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eemvaOut.root")
+      infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumumvaOut.root")
+      infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eeinvLepmvaOut.root")
+      infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumuinvLepmvaOut.root")
+
   tree_DY_ee = infile_DY_ee.Get("tree")
   tree_DY_mumu = infile_DY_mumu.Get("tree")
-
-  infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eeinvLepmvaOut.root")
-  infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumuinvLepmvaOut.root")
   tree_DY_SS_ee = infile_DY_SS_ee.Get("tree")
   tree_DY_SS_mumu = infile_DY_SS_mumu.Get("tree")
 
   ## DY Histos
 
-  DY_zMassSameOppHisto_ee = TH1D("DY_zMassOppSignHisto_ee","Z Mass Histo (ee) from Opposite Sign events", 300, 0.0, 300.0)
+  DY_zMassOppSignHisto_ee = TH1D("DY_zMassOppSignHisto_ee","Z Mass Histo (ee) from Opposite Sign events", 300, 0.0, 300.0)
   DY_zMassSameSignHisto_ee = TH1D("DY_zMassSameSignHisto_ee","Z Mass Histo from (ee) Same Sign events", 300, 0.0, 300.0)
-  DY_zMassSameOppHisto_mumu = TH1D("DY_zMassOppSignHisto_mumu","Z Mass Histo from (mumu) Opposite Sign events", 300, 0.0, 300.0)
+  DY_zMassOppSignHisto_mumu = TH1D("DY_zMassOppSignHisto_mumu","Z Mass Histo from (mumu) Opposite Sign events", 300, 0.0, 300.0)
   DY_zMassSameSignHisto_mumu = TH1D("DY_zMassSameSignHisto_mumu","Z Mass Histo from (mumu) Same Sign events", 300, 0.0, 300.0)
 
   for event in range ( tree_DY_SS_ee.GetEntries() ) :
@@ -206,7 +211,7 @@ def main():
 
       lep1_mumu = 0
       lep2_mumu = 0
-
+ 
       if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep1Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep1Index] == 1 ) : lep1_mumu = 1
       if (tree_MC_mumu.genMuonPF2PATPromptDecayed[tree_MC_mumu.zLep2Index] == 1 or tree_MC_mumu.genMuonPF2PATPromptFinalState[tree_MC_mumu.zLep2Index] == 1 ) : lep2_mumu = 1
 
@@ -230,7 +235,7 @@ def main():
 
       lep1_emu = 0
       lep2_emu = 0
-
+ 
       if (tree_MC_emu.genElePF2PATPromptDecayed[tree_MC_emu.zLep1Index] == 1 or tree_MC_emu.genElePF2PATPromptFinalState[tree_MC_emu.zLep1Index] == 1 ) : lep1_emu = 1
       if (tree_MC_emu.genMuonPF2PATPromptDecayed[tree_MC_emu.zLep2Index] == 1 or tree_MC_emu.genMuonPF2PATPromptFinalState[tree_MC_emu.zLep2Index] == 1 ) : lep2_emu = 1
 
