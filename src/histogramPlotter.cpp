@@ -514,13 +514,13 @@ void HistogramPlotter::setLabelTextSize(float size)
 void HistogramPlotter::setHistogramFolder(std::string histoDir)
 {
     histogramDirectory_ = histoDir;
-    boost::filesystem::create_directory(histogramDirectory_.c_str());
+    boost::filesystem::create_directories(histogramDirectory_.c_str());
 }
 
 void HistogramPlotter::setOutputFolder(std::string output)
 {
     outputFolder_ = output;
-    boost::filesystem::create_directory(outputFolder_.c_str());
+    boost::filesystem::create_directories(outputFolder_.c_str());
 }
 
 void HistogramPlotter::CMS_lumi(TPad* pad, int posX)

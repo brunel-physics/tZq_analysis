@@ -830,7 +830,7 @@ void AnalysisAlgo::runMainAnalysis()
 
             if (makeMVATree)
             {
-                boost::filesystem::create_directory(mvaDir);
+                boost::filesystem::create_directories(mvaDir);
                 std::string invPostFix{};
                 if (invertLepCut)
                 {
