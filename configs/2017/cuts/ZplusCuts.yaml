@@ -30,6 +30,7 @@ cuts:
         maxJets: 6
         numbJets: 0
         maxbJets: 0
+        maxbJetEta: 2.4
 
 trigLabel: "e"
 plotPostfix: "ee"

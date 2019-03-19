@@ -103,6 +103,7 @@ Cuts::Cuts(const bool doPlots,
     // B-discriminator cut
     numbJets_{1}
     , maxbJets_{2}
+    , maxbJetEta_{2.5}
     ,
     // bDiscCut_{0.9535}, // Tight cut
     bDiscCut_{is2016 ? 0.8484 : 0.8838}
@@ -419,6 +420,7 @@ void Cuts::parse_config(const std::string confName)
     maxJets_ = jets["maxJets"].as<unsigned>();
     numbJets_ = jets["numbJets"].as<unsigned>();
     maxbJets_ = jets["maxbJets"].as<unsigned>();
+    maxbJetEta_ = jets["maxbJetEta"].as<double>();
     // numcJets_ = jets["numcJets"].as<unsigned>();
     // maxcJets_ = jets["maxcJets"].as<unsigned>();
 
@@ -1962,7 +1964,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
         {
             continue;
         }
-        if (jetVec.Eta() >= 2.40)
+        if (jetVec.Eta() >= maxbJetEta_)
         {
             continue;
         }
@@ -1995,7 +1997,7 @@ std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent& event,
         {
             continue;
         }
-        if (jetVec.Eta() >= 2.40)
+        if (jetVec.Eta() >= maxbJetEta_)
         {
             continue;
         }
