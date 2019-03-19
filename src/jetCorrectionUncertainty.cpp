@@ -17,9 +17,6 @@ JetCorrectionUncertainty::JetCorrectionUncertainty(std::string dataFile)
 {
     std::ifstream jecFile;
     jecFile.open(dataFile, std::ifstream::in);
-    //    jecFile.open(
-    //    "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt",
-    //    std::ifstream::in );
     std::string line;
 
     if (!jecFile.is_open())

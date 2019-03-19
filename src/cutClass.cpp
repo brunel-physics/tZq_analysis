@@ -3908,7 +3908,7 @@ void Cuts::initialiseJECCors()
     if (!is2016_)
     {
         jecFile.open("scaleFactors/2017/"
-                     "Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt",
+                     "Fall17_17Nov2017_V32_MC_Uncertainty_AK4PFchs.txt",
                      std::ifstream::in);
     }
     else
