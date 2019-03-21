@@ -126,7 +126,8 @@ Cuts::Cuts(const bool doPlots,
     // cVsBDiscCut_{0.08}, // Medium level
     // cVsBDiscCut_{-0.17}, // Loose cut
 
-    rc_{"scaleFactors/2017/RoccoR2017v0.txt"}
+    rc_{is2016 ? "scaleFactors/2016/RoccoR2016.txt"
+               : "scaleFactors/2017/RoccoR2017.txt"}
     , tempSmearValue_{1.0}
     , // Temporary solution to smearing propagation bug fix. A more elegant
       // solution is needed!
@@ -703,14 +704,12 @@ bool Cuts::makeLeptonCuts(
         { // Only doing Rochester for 2016, method only applicable for pT < 200
             if (isMC_)
             {
-                tempSF = rc_.kScaleAndSmearMC(
+                tempSF = rc_.kSpreadMC(
                     event.muonPF2PATCharge[*muonIt],
                     event.muonPF2PATPt[*muonIt],
                     event.muonPF2PATEta[*muonIt],
                     event.muonPF2PATPhi[*muonIt],
-                    event.muonPF2PATTkLysWithMeasurements[*muonIt],
-                    gRandom->Rndm(),
-                    gRandom->Rndm(),
+                    event.genMuonPF2PATPT[*muonIt],
                     0,
                     0);
             }

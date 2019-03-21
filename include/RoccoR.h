@@ -63,13 +63,9 @@ struct CrystalBall
     {
         double d = (x - m) / s;
         if (d < -a)
-        {
             return NA * pow(B - d, -n);
-        }
         if (d > a)
-        {
             return NA * pow(B + d, -n);
-        }
         return N * exp(-d * d / 2);
     }
 
@@ -77,13 +73,9 @@ struct CrystalBall
     {
         double d = (x - m - dm) / (s * ks);
         if (d < -a)
-        {
             return NA / ks * pow(B - d, -n);
-        }
         if (d > a)
-        {
             return NA / ks * pow(B + d, -n);
-        }
         return N / ks * exp(-d * d / 2);
     }
 
@@ -91,26 +83,18 @@ struct CrystalBall
     {
         double d = (x - m) / s;
         if (d < -a)
-        {
             return NC / pow(F - s * d / G, n - 1);
-        }
         if (d > a)
-        {
             return NC * (C - pow(F + s * d / G, 1 - n));
-        }
         return Ns * (D - sqrtPiOver2 * erf(-d / sqrt2));
     }
 
     double invcdf(double u) const
     {
         if (u < cdfMa)
-        {
             return m + G * (F - pow(NC / u, k));
-        }
         if (u > cdfPa)
-        {
             return m - G * (F - pow(C - u / NC, -k));
-        }
         return m - sqrt2 * s * boost::math::erf_inv((D - u / Ns) / sqrtPiOver2);
     }
 };
@@ -154,10 +138,12 @@ struct RocRes
     double Sigma(double pt, int H, int F) const;
     double kSpread(
         double gpt, double rpt, double eta, int nlayers, double w) const;
+    double kSpread(double gpt, double rpt, double eta) const;
     double kSmear(double pt, double eta, TYPE type, double v, double u) const;
     double kSmear(
         double pt, double eta, TYPE type, double v, double u, int n) const;
     double kExtra(double pt, double eta, int nlayers, double u, double w) const;
+    double kExtra(double pt, double eta, int nlayers, double u) const;
 };
 
 class RoccoR
@@ -225,9 +211,6 @@ class RoccoR
     {
         return RC[s][m].RR.resol[H].kRes[T];
     }
-
-    double kScaleMC(
-        int Q, double pt, double eta, double phi, int s = 0, int m = 0) const;
     double kGenSmear(double pt,
                      double eta,
                      double v,
@@ -235,9 +218,34 @@ class RoccoR
                      RocRes::TYPE TT = RocRes::Data,
                      int s = 0,
                      int m = 0) const;
+    double kScaleMC(
+        int Q, double pt, double eta, double phi, int s = 0, int m = 0) const;
 
     double kScaleDT(
         int Q, double pt, double eta, double phi, int s = 0, int m = 0) const;
+    double kSpreadMC(int Q,
+                     double pt,
+                     double eta,
+                     double phi,
+                     double gt,
+                     int s = 0,
+                     int m = 0) const;
+    double kSmearMC(int Q,
+                    double pt,
+                    double eta,
+                    double phi,
+                    int n,
+                    double u,
+                    int s = 0,
+                    int m = 0) const;
+
+    double kScaleDTerror(int Q, double pt, double eta, double phi) const;
+    double kSpreadMCerror(
+        int Q, double pt, double eta, double phi, double gt) const;
+    double kSmearMCerror(
+        int Q, double pt, double eta, double phi, int n, double u) const;
+
+    // old, should only be used with 2017v0
     double kScaleFromGenMC(int Q,
                            double pt,
                            double eta,
@@ -256,8 +264,6 @@ class RoccoR
                             double w,
                             int s = 0,
                             int m = 0) const;
-
-    double kScaleDTerror(int Q, double pt, double eta, double phi) const;
     double kScaleFromGenMCerror(int Q,
                                 double pt,
                                 double eta,
