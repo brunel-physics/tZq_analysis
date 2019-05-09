@@ -1282,8 +1282,6 @@ void AnalysisAlgo::runMainAnalysis()
                 } // End systematics loop.
             } // end event loop
 
-            std::cout << std::endl;
-
             // If we're making post lepSel skims save the tree here
             if (makePostLepTree)
             {
@@ -1385,6 +1383,7 @@ void AnalysisAlgo::runMainAnalysis()
             std::cerr << "Found " << foundEventsNorm
                       << " after normalisation in " << dataset->name()
                       << std::endl;
+            std::cerr << "\n\n";
             // Delete generator level plot. Avoid memory leaks, kids.
             delete generatorWeightPlot;
             generatorWeightPlot = nullptr;
