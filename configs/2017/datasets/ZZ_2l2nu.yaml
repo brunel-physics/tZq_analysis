@@ -2,7 +2,7 @@ name: "ZZ_2l2nu"
 locations:
     - "/scratch/data/tZqSkimsRun2017/ZZ_2l2nu/"
 total_events:  8744768
-cross_section: 5.052
+cross_section: 0.5644
 mc: true
 histogram: "VV"
 colour: "#a65628"

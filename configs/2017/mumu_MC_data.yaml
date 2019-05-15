@@ -13,12 +13,22 @@ datasets:
   - "configs/2017/datasets/ttbar_hadronic.yaml"
   - "configs/2017/datasets/ttbar_semileptonic.yaml"
 # VV
+  - "configs/2017/datasets/WW_2l2nu.yaml"
+  - "configs/2017/datasets/WW_lnu2q.yaml"
   - "configs/2017/datasets/WZ_2l2q.yaml"
   - "configs/2017/datasets/WZ_3lnu.yaml"
   - "configs/2017/datasets/WZ_lnu2q.yaml"
   - "configs/2017/datasets/ZZ_2l2nu.yaml"
   - "configs/2017/datasets/ZZ_2l2q.yaml"
   - "configs/2017/datasets/ZZ_4l.yaml"
+# Single top
+  - "configs/2017/datasets/tHq.yaml"
+  - "configs/2017/datasets/t_s_channel.yaml"
+  - "configs/2017/datasets/t_t_channel.yaml"
+  - "configs/2017/datasets/tbar_t_channel.yaml"
+  - "configs/2017/datasets/tW.yaml"
+  - "configs/2017/datasets/tbarW.yaml"
+  - "configs/2017/datasets/tWZ.yaml"
 # W+jets
   - "configs/2017/datasets/wPlusJets.yaml"
 # ttV
@@ -33,9 +43,6 @@ datasets:
   - "configs/2017/datasets/WWZ.yaml"
   - "configs/2017/datasets/WZZ.yaml"
   - "configs/2017/datasets/ZZZ.yaml"
-# Single top
-  # - "configs/2017/datasets/tWZ.yaml"
-  - "configs/2017/datasets/tHq.yaml"
 # tZq
   - "configs/2017/datasets/tZq.yaml"
 # Data

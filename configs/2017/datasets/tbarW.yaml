@@ -1,0 +1,10 @@
+name: "tbarW"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/tbarW"
+total_events: 7745276
+cross_section: 34.97
+mc: true
+histogram: "SingleTop"
+colour: "#f781bf"
+label: "Single top"
+plot_type: "f"

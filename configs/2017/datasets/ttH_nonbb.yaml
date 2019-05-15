@@ -1,8 +1,9 @@
-ttH_nonbb:
+name: "ttH_nonbb"
 locations:
-    - "/scratch/data/tZqSkimsRun2017/ttH_nonbbFiles/"
-total_events:  7669336
-cross_section: 0.2123
+    # - "/scratch/data/tZqSkimsRun2017/ttH_nonbb/"
+    - "/scratch/data/tZqSkimsRun2017/ttH_nonbb_ext/"
+total_events: 8241489
+cross_section: 0.5638
 mc: true
 histogram: "ttV"
 colour: "#4daf4a"

@@ -1,8 +1,8 @@
 name: "ttZToll"
 locations:
     - "/scratch/data/tZqSkimsRun2017/ttZToll/"
-total_events: 250000
-cross_section: 0.0532
+total_events: 11092000
+cross_section: 0.2432
 mc: true
 histogram: "ttV"
 colour: "#4daf4a"

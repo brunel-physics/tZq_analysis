@@ -1,0 +1,10 @@
+name: "tW"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/tW"
+total_events: 7945242
+cross_section: 34.91
+mc: true
+histogram: "SingleTop"
+colour: "#f781bf"
+label: "Single top"
+plot_type: "f"

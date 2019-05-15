@@ -1,0 +1,9 @@
+name: "ttgamma"
+locations:
+total_events: 4642344
+cross_section: 0.5804
+mc: true
+histogram: "ttV"
+colour: "#4daf4a"
+label: "t#bar{t}V"
+plot_type: "f"

@@ -2,7 +2,7 @@ name: "ZZ_4l"
 locations:
     - "/scratch/data/tZqSkimsRun2017/ZZ_4l/"
 total_events:  6964071
-cross_section: 11.66
+cross_section: 1.325
 mc: true
 histogram: "VV"
 colour: "#a65628"

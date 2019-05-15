@@ -3,7 +3,7 @@ locations:
     - "/scratch/data/tZqSkimsRun2017/ZZ_2l2q/"
 mc: true
 total_events: 62172314
-cross_section: 6.331
+cross_section: 3.222
 histogram: "VV"
 colour: "#a65628"
 label: "VV"
