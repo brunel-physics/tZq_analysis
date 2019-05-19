@@ -37,7 +37,7 @@ class AnalysisEvent
     Float_t elePF2PATEta[NELECTRONSMAX];
     Float_t elePF2PATPT[NELECTRONSMAX];
     Int_t elePF2PATCharge[NELECTRONSMAX];
-    Float_t elePF2PATCutIdVeto[NELECTRONSMAX];
+    Int_t elePF2PATCutIdVeto[NELECTRONSMAX];
     Int_t elePF2PATCutIdLoose[NELECTRONSMAX];
     Int_t elePF2PATCutIdMedium[NELECTRONSMAX];
     Int_t elePF2PATCutIdTight[NELECTRONSMAX];
