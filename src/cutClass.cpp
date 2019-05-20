@@ -857,16 +857,6 @@ std::vector<int> Cuts::getTightEles(const AnalysisEvent& event) const
         // VID cut
         if (event.elePF2PATCutIdTight[i] < 1)
             continue;
-        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
-        // range
-        if ((std::abs(event.elePF2PATSCEta[i]) > 1.4442
-             && std::abs(event.elePF2PATSCEta[i]) < 1.566)
-            || std::abs(event.elePF2PATSCEta[i]) > 2.50)
-            continue;
-
-        // VID cut
-        if (!event.elePF2PATCutIdTight[i])
-            continue;
 
         // Cuts not part of the tuned ID
         if (std::abs(event.elePF2PATSCEta[i]) <= 1.479)
@@ -914,7 +904,7 @@ std::vector<int> Cuts::getLooseEles(const AnalysisEvent& event) const
             continue;
 
         // VID cut
-        if (!event.elePF2PATCutIdLoose[i])
+        if (!event.elePF2PATCutIdVeto[i])
             continue;
 
         // Cuts not part of the tuned ID
@@ -947,8 +937,8 @@ std::vector<int> Cuts::getTightMuons(const AnalysisEvent& event) const
                     && event.muonPF2PATPfIsoTight[i]
                     && std::abs(event.muonPF2PATEta[i]) <= tightMuonEta_)
         {
-            if (event.muonPF2PATPt[i] >= muons.empty() ? tightMuonPtLeading_
-                                                       : tightMuonPt_)
+            if (event.muonPF2PATPt[i] >= (muons.empty() ? tightMuonPtLeading_
+                                                        : tightMuonPt_))
             {
                 muons.emplace_back(i);
             }
@@ -962,12 +952,12 @@ std::vector<int> Cuts::getLooseMuons(const AnalysisEvent& event) const
     std::vector<int> muons;
     for (int i{0}; i < event.numMuonPF2PAT; i++)
     {
-        if (event.muonPF2PATLooseCutId[i] && event.muonPF2PATPfIsoLoose[i]
-                    && std::abs(event.muonPF2PATEta[i]) < looseMuonEta_
-                    && event.muonPF2PATPt[i] >= muons.empty())
+        if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATLooseCutId[i]
+                && event.muonPF2PATPfIsoLoose[i]
+                && std::abs(event.muonPF2PATEta[i]) < looseMuonEta_)
         {
-            if (event.muonPF2PATPt[i] >= muons.empty() ? tightMuonPtLeading_
-                                                       : tightMuonPt_)
+            if (event.muonPF2PATPt[i] >= (muons.empty() ? looseMuonPtLeading_
+                                                        : looseMuonPt_))
             {
                 muons.emplace_back(i);
             }
