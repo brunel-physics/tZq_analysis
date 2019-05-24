@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <random>
 #include <sstream>
 #include <yaml-cpp/yaml.h>
@@ -1279,7 +1280,7 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                                 const std::vector<int> jets,
                                 const int syst)
 {
-    float closestWmass{9999.};
+    float closestWmass{std::numeric_limits<float>::infinity()};
     if (jets.size() > 2)
     {
         for (unsigned k{0}; k < jets.size(); k++)
