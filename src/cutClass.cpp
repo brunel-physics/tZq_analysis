@@ -129,7 +129,6 @@ Cuts::Cuts(const bool doPlots,
 
     rc_{is2016 ? "scaleFactors/2016/RoccoR2016.txt"
                : "scaleFactors/2017/RoccoR2017.txt"}
-    , tempSmearValue_{1.0}
     , // Temporary solution to smearing propagation bug fix. A more elegant
       // solution is needed!
     lumiRunsBCDEF_{19713.888}
@@ -452,9 +451,6 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         return synchCuts(event, eventWeight);
     }
 
-    // For smearing temp solution
-    event.jetSmearValue = {1.0};
-
     // If emu and dilepton - doing ttbar background estimation
 
     if (cutConfTrigLabel_.find("d") != std::string::npos)
@@ -705,14 +701,13 @@ bool Cuts::makeLeptonCuts(
         { // Only doing Rochester for 2016, method only applicable for pT < 200
             if (isMC_)
             {
-                tempSF = rc_.kSpreadMC(
-                    event.muonPF2PATCharge[*muonIt],
-                    event.muonPF2PATPt[*muonIt],
-                    event.muonPF2PATEta[*muonIt],
-                    event.muonPF2PATPhi[*muonIt],
-                    event.genMuonPF2PATPT[*muonIt],
-                    0,
-                    0);
+                tempSF = rc_.kSpreadMC(event.muonPF2PATCharge[*muonIt],
+                                       event.muonPF2PATPt[*muonIt],
+                                       event.muonPF2PATEta[*muonIt],
+                                       event.muonPF2PATPhi[*muonIt],
+                                       event.genMuonPF2PATPT[*muonIt],
+                                       0,
+                                       0);
             }
             else
             {
@@ -743,7 +738,8 @@ bool Cuts::makeLeptonCuts(
 
     if (doPlots_ || fillCutFlow_)
     {
-        event.jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
+        std::tie(event.jetIndex, event.jetSmearValue) =
+            makeJetCuts(event, syst, eventWeight, false);
     }
     if (doPlots_)
     {
@@ -813,7 +809,8 @@ bool Cuts::makeLeptonCuts(
 
     if (doPlots_ || fillCutFlow_)
     {
-        event.jetIndex = makeJetCuts(event, syst, eventWeight, false).first;
+        std::tie(event.jetIndex, event.jetSmearValue) =
+            makeJetCuts(event, syst, eventWeight, false);
     }
     if (doPlots_)
     {
@@ -935,11 +932,11 @@ std::vector<int> Cuts::getTightMuons(const AnalysisEvent& event) const
     for (int i{0}; i < event.numMuonPF2PAT; i++)
     {
         if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATTightCutId[i]
-                    && event.muonPF2PATPfIsoTight[i]
-                    && std::abs(event.muonPF2PATEta[i]) <= tightMuonEta_)
+            && event.muonPF2PATPfIsoTight[i]
+            && std::abs(event.muonPF2PATEta[i]) <= tightMuonEta_)
         {
-            if (event.muonPF2PATPt[i] >= (muons.empty() ? tightMuonPtLeading_
-                                                        : tightMuonPt_))
+            if (event.muonPF2PATPt[i]
+                >= (muons.empty() ? tightMuonPtLeading_ : tightMuonPt_))
             {
                 muons.emplace_back(i);
             }
@@ -954,11 +951,11 @@ std::vector<int> Cuts::getLooseMuons(const AnalysisEvent& event) const
     for (int i{0}; i < event.numMuonPF2PAT; i++)
     {
         if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATLooseCutId[i]
-                && event.muonPF2PATPfIsoLoose[i]
-                && std::abs(event.muonPF2PATEta[i]) < looseMuonEta_)
+            && event.muonPF2PATPfIsoLoose[i]
+            && std::abs(event.muonPF2PATEta[i]) < looseMuonEta_)
         {
-            if (event.muonPF2PATPt[i] >= (muons.empty() ? looseMuonPtLeading_
-                                                        : looseMuonPt_))
+            if (event.muonPF2PATPt[i]
+                >= (muons.empty() ? looseMuonPtLeading_ : looseMuonPt_))
             {
                 muons.emplace_back(i);
             }
@@ -1285,6 +1282,7 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
     {
         for (unsigned k{0}; k < jets.size(); k++)
         {
+            TLorentzVector foo{getJetLVec(event, jets[k], syst, false).first};
             for (unsigned l{k + 1}; l < jets.size(); l++)
             {
                 // Now ensure that the leading b jet isn't one of these!
@@ -1308,8 +1306,10 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                             continue;
                     }
                 }
-                TLorentzVector jetVec1{getJetLVec(event, jets[k], syst, false)};
-                TLorentzVector jetVec2{getJetLVec(event, jets[l], syst, false)};
+                TLorentzVector jetVec1{
+                    getJetLVec(event, jets[k], syst, false).first};
+                TLorentzVector jetVec2{
+                    getJetLVec(event, jets[l], syst, false).first};
 
                 TLorentzVector wQuark1{
                     jetVec1.Px(), jetVec1.Py(), jetVec1.Pz(), jetVec1.E()};
@@ -1603,13 +1603,13 @@ float Cuts::getTopMass(const AnalysisEvent& event) const
 }
 
 std::pair<std::vector<int>, std::vector<float>>
-    Cuts::makeJetCuts(AnalysisEvent& event,
+    Cuts::makeJetCuts(const AnalysisEvent& event,
                       const int syst,
                       float& eventWeight,
                       const bool isProper)
 {
     std::vector<int> jets;
-    std::vector<float> SFs;
+    std::vector<float> smears;
 
     float mcTag{1.};
     float mcNoTag{1.};
@@ -1624,19 +1624,13 @@ std::pair<std::vector<int>, std::vector<float>>
     //  std::cout << event.eventNum << std::endl << "Jets: " << std::endl;
     for (int i{0}; i < event.numJetPF2PAT; i++)
     {
-        // Check η before retrieving TLorentzVector to prevent runtime error
-        // when trying to apply a SF for an out of range η
-        if (std::abs(event.jetPF2PATEta[i]) >= jetEta_)
-        {
-            continue;
-        }
-
         // if (std::sqrt(event.jetPF2PATPx[i] * event.jetPF2PATPx[i] +
         // event.jetPF2PATPy[i] * event.jetPF2PATPy[i]) < jetPt_) continue;
-        TLorentzVector jetVec{getJetLVec(event, i, syst, true)};
+        auto [jetVec, smear] = getJetLVec(event, i, syst, true);
+        smears.emplace_back(smear);
         // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy),
         // event.jetPF2PATEta[i],syst) << " " << syst << std::endl;
-        if (jetVec.Pt() <= jetPt_)
+        if (jetVec.Pt() <= jetPt_ || jetVec.Eta() >= jetEta_)
         {
             continue;
         }
@@ -1670,7 +1664,8 @@ std::pair<std::vector<int>, std::vector<float>>
                     // for jets with eta <= 2.40
                     if (std::abs(jetVec.Eta()) <= 2.40)
                     {
-                        if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
+                        if (event.jetPF2PATChargedHadronEnergyFraction[i]
+                            <= 0.0)
                         {
                             jetId = false;
                         }
@@ -1738,7 +1733,8 @@ std::pair<std::vector<int>, std::vector<float>>
                     // for jets with eta <= 2.40
                     if (std::abs(jetVec.Eta()) <= 2.40)
                     {
-                        if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
+                        if (event.jetPF2PATChargedHadronEnergyFraction[i]
+                            <= 0.0)
                         {
                             jetId = false;
                         }
@@ -1784,7 +1780,7 @@ std::pair<std::vector<int>, std::vector<float>>
             continue;
         }
 
-        double deltaLep{10000};
+        double deltaLep{std::numeric_limits<double>::infinity()};
 
         /*
             // Electron cleaning for synch
@@ -1886,9 +1882,6 @@ std::pair<std::vector<int>, std::vector<float>>
         }
 
         jets.emplace_back(i);
-        SFs.emplace_back(tempSmearValue_);
-        tempSmearValue_ = 1.0; // Reset temporary smear value. Need a cleaner
-                               // solution than this!
 
         if (getBTagWeight_)
         {
@@ -1929,7 +1922,7 @@ std::pair<std::vector<int>, std::vector<float>>
         eventWeight *= bWeight;
     }
 
-    return std::make_pair(jets, SFs);
+    return {jets, smears};
 }
 
 std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
@@ -1937,9 +1930,9 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
                                  const int syst)
 {
     std::vector<int> bJets;
-    for (unsigned int i = 0; i != jets.size(); i++)
+    for (unsigned int i = 0; i < jets.size(); i++)
     {
-        TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false)};
+        TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false).first};
         if (singleEventInfoDump_)
         {
             std::cout
@@ -1970,9 +1963,9 @@ std::vector<int> Cuts::makeLooseBCuts(AnalysisEvent& event,
 {
     std::vector<int> bJets;
 
-    for (unsigned int i = 0; i != jets.size(); i++)
+    for (unsigned int i = 0; i < jets.size(); i++)
     {
-        TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false)};
+        TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false).first};
         if (singleEventInfoDump_)
         {
             std::cout
@@ -3989,58 +3982,75 @@ float Cuts::getJECUncertainty(const float pt,
     return (syst == 4 ? a * pt + b : -(a * pt + b));
 }
 
-TLorentzVector Cuts::getJetLVec(AnalysisEvent& event,
-                                const int index,
-                                const int syst,
-                                const bool initialRun)
+std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
+                                                  const int index,
+                                                  const int syst,
+                                                  const bool initialRun)
 {
+    static constexpr double MIN_JET_ENERGY{1e-2};
     TLorentzVector returnJet;
     float newSmearValue{1.0};
 
     if (!initialRun)
     {
-        newSmearValue = event.jetSmearValue[index];
+        newSmearValue = event.jetSmearValue.at(index);
         returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
                              event.jetPF2PATPy[index],
                              event.jetPF2PATPz[index],
                              event.jetPF2PATE[index]);
         returnJet *= newSmearValue;
-        if (isMC_)
+
+        if (!isMC_)
         {
             float jerUncer{
                 getJECUncertainty(returnJet.Pt(), returnJet.Eta(), syst)};
             returnJet *= 1 + jerUncer;
         }
-        return returnJet;
+
+        return {returnJet, newSmearValue};
     }
 
     if (!isMC_)
     {
-        event.jetSmearValue.emplace_back(newSmearValue);
         returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
                              event.jetPF2PATPy[index],
                              event.jetPF2PATPz[index],
                              event.jetPF2PATE[index]);
-        return returnJet;
+        return {returnJet, newSmearValue};
     }
 
-    // data is dealt with above - only MC should be dealt with below
+    // Not initial run, smear must be calculated
 
-    float jerSF{1.};
-    float jerSigma{0.};
-    std::pair<float, float> jetSFs{};
-
-    if (!is2016_)
+    // TODO: Check this is correct
+    // For now, just leave jets of too large/small pT, large rho, or large η
+    // untouched
+    if (event.jetPF2PATPtRaw[index] < 15 || event.jetPF2PATPtRaw[index] > 3000
+        || event.elePF2PATRhoIso[0] > 42.52
+        || std::abs(event.jetPF2PATEta[index]) > 4.7)
     {
-        jetSFs = jet2017SFs(std::abs(event.jetPF2PATEta[index]));
-    }
-    else
-    {
-        jetSFs = jet2016SFs(std::abs(event.jetPF2PATEta[index]));
+        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                             event.jetPF2PATPy[index],
+                             event.jetPF2PATPz[index],
+                             event.jetPF2PATE[index]);
+        return {returnJet, newSmearValue};
     }
 
-    jerSF = jetSFs.first;
-    jerSigma = jetSFs.second;
+    // TODO: Should this be gen or reco level?
+    // I think reco because gen might not exist? (does not exist when smearing)
+    const double ptRes{jet2017PtSimRes(event.jetPF2PATPtRaw[index],
+                                       event.jetPF2PATEta[index],
+                                       event.elePF2PATRhoIso[0])};
+
+    const double dR{deltaR(event.genJetPF2PATEta[index],
+                           event.genJetPF2PATPhi[index],
+                           event.jetPF2PATEta[index],
+                           event.jetPF2PATPhi[index])};
+    const double dPt{event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[index]};
+    auto [jerSF, jerSigma] =
+        is2016_ ? jet2016SFs(std::abs(event.jetPF2PATEta[index]))
+                : jet2017SFs(std::abs(event.jetPF2PATEta[index]));
+    // const double
+    // ptRes{jet2016SFs(std::abs(event.jetPF2PATEta[index]).second};
 
     if (syst == 16)
     {
@@ -4051,68 +4061,34 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent& event,
         jerSF -= jerSigma;
     }
 
-    double dR = deltaR(event.genJetPF2PATEta[index],
-                       event.genJetPF2PATPhi[index],
-                       event.jetPF2PATEta[index],
-                       event.jetPF2PATPhi[index]);
-    double min_dR = std::numeric_limits<double>::infinity();
-    double dPt = event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[index];
-
-    if (dR > min_dR)
-    { // If dR is greater than infinity ... just return the unsmeared jet
-        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
-                             event.jetPF2PATPy[index],
-                             event.jetPF2PATPz[index],
-                             event.jetPF2PATE[index]);
-        return returnJet;
-    }
-
-    if (isMC_)
+    // If there is no matching gen jet, gen jet pT is -999;
+    if (event.genJetPF2PATPT[index] != -999.0 && dR < (0.4 / 2.0)
+        && std::abs(dPt) < 3.0 * ptRes * event.jetPF2PATPtRaw[index])
+    // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma,
+    // just scale
     {
-        if (event.genJetPF2PATPT[index] > 1e-2 && dR < (0.4 / 2.0)
-            && std::abs(dPt) < 3.0 * jerSigma * event.jetPF2PATPtRaw[index])
-        { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma,
-          // just scale, just scale
-            newSmearValue =
-                1. + (jerSF - 1.) * dPt / (event.jetPF2PATPtRaw[index]);
-            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
-                                 event.jetPF2PATPy[index],
-                                 event.jetPF2PATPz[index],
-                                 event.jetPF2PATE[index]);
-            returnJet *= newSmearValue;
-        }
-
-        else
-        { // If not matched to a gen jet, randomly smear
-            double sigma = jerSigma * std::sqrt(jerSF * jerSF - 1.0);
-            std::normal_distribution<> d(0, sigma);
-            std::mt19937 gen(rand());
-            newSmearValue = 1.0 + d(gen);
-            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
-                                 event.jetPF2PATPy[index],
-                                 event.jetPF2PATPz[index],
-                                 event.jetPF2PATE[index]);
-            returnJet *= newSmearValue;
-        }
-
-        if (returnJet.E() < 1e-2)
-        { // Negative or too small smearFactor. We would change direction of the
-          // jet
-            double newSmearFactor = 1e-2 / event.jetPF2PATE[index];
-            newSmearValue = newSmearFactor;
-            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
-                                 event.jetPF2PATPy[index],
-                                 event.jetPF2PATPz[index],
-                                 event.jetPF2PATE[index]);
-            returnJet *= newSmearValue;
-        }
+        newSmearValue =
+            std::max(1. + (jerSF - 1.) * dPt / event.jetPF2PATPtRaw[index], 0.);
+    }
+    else // If not matched to a gen jet, randomly smear
+    {
+        std::normal_distribution<> d(
+            0, ptRes * std::sqrt(std::max(jerSF * jerSF - 1, 0.)));
+        std::mt19937 gen(rand());
+        newSmearValue = 1.0 + d(gen);
     }
 
-    else
-        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
-                             event.jetPF2PATPy[index],
-                             event.jetPF2PATPz[index],
-                             event.jetPF2PATE[index]);
+    if (event.jetPF2PATE[index] * newSmearValue < MIN_JET_ENERGY)
+    // Negative or too small scale factor
+    {
+        newSmearValue = MIN_JET_ENERGY / event.jetPF2PATE[index];
+    }
+
+    returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                         event.jetPF2PATPy[index],
+                         event.jetPF2PATPz[index],
+                         event.jetPF2PATE[index]);
+    returnJet *= newSmearValue;
 
     if (isMC_)
     {
@@ -4121,11 +4097,234 @@ TLorentzVector Cuts::getJetLVec(AnalysisEvent& event,
         returnJet *= 1 + jerUncer;
     }
 
-    tempSmearValue_ = newSmearValue;
-    return returnJet;
+    return {returnJet, newSmearValue};
 }
 
-std::pair<float, float> Cuts::jet2016SFs(const float eta) const
+double Cuts::jet2017PtSimRes(const double pt,
+                             const double eta,
+                             const double rho) const
+{
+    if (pt < 15 || pt > 3000)
+    {
+        throw std::runtime_error("pT " + std::to_string(pt)
+                                 + " out of range to assign resolution");
+    }
+
+    static constexpr std::array<double, 14> etaBinEdges{
+        0, 0.5, 0.8, 1.1, 1.3, 1.7, 1.9, 2.1, 2.3, 2.5, 2.8, 3, 3.2, 4.7};
+    static constexpr std::array<double, 8> rhoBinEdges{
+        0, 6.37, 12.4, 18.42, 24.45, 30.47, 36.49, 42.52};
+    const auto res = [pt](const double p0,
+                          const double p1,
+                          const double p2,
+                          const double p3) {
+        return (std::sqrt(p0 * std::abs(p0) / (pt * pt)
+                          + p1 * p1 * std::pow(pt, p3) + p2 * p2));
+    };
+    const auto etaBin{std::distance(etaBinEdges.begin(),
+                                    std::upper_bound(etaBinEdges.begin(),
+                                                     etaBinEdges.end(),
+                                                     std::abs(eta)))};
+    const auto rhoBin{std::distance(
+        rhoBinEdges.begin(),
+        std::upper_bound(rhoBinEdges.begin(), rhoBinEdges.end(), rho))};
+
+    // https://github.com/cms-jet/JRDatabase/blob/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_PtResolution_AK4PF.txt
+    switch (etaBin)
+    {
+        case 1:
+            switch (rhoBin)
+            {
+                case 1: return res(0.2219, 0.6528, 0.03069, -0.8177);
+                case 2: return res(2.561, 0.6994, 0.03112, -0.8421);
+                case 3: return res(3.519, 0.7661, 0.03154, -0.8717);
+                case 4: return res(4.393, 0.7918, 0.03165, -0.882);
+                case 5: return res(5.158, 0.8365, 0.03186, -0.8984);
+                case 6: return res(5.771, 0.8938, 0.03207, -0.9182);
+                case 7: return res(6.315, 0.9692, 0.03227, -0.9414);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 2:
+            switch (rhoBin)
+            {
+                case 1: return res(1.52, 0.4603, 0.02756, -0.6952);
+                case 2: return res(2.975, 0.484, 0.02811, -0.7113);
+                case 3: return res(3.843, 0.5315, 0.02946, -0.7462);
+                case 4: return res(4.654, 0.5523, 0.02959, -0.7586);
+                case 5: return res(5.32, 0.604, 0.03038, -0.7884);
+                case 6: return res(5.932, 0.6271, 0.03077, -0.7997);
+                case 7: return res(6.416, 0.6823, 0.03098, -0.8249);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 3:
+            switch (rhoBin)
+            {
+                case 1: return res(1.642, 0.4859, 0.03535, -0.7101);
+                case 2: return res(2.902, 0.5124, 0.03556, -0.7264);
+                case 3: return res(3.767, 0.5547, 0.03671, -0.7556);
+                case 4: return res(4.492, 0.6036, 0.03727, -0.7821);
+                case 5: return res(5.201, 0.6034, 0.03674, -0.7777);
+                case 6: return res(5.755, 0.6417, 0.03702, -0.7945);
+                case 7: return res(6.187, 0.7263, 0.03816, -0.8379);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 4:
+            switch (rhoBin)
+            {
+                case 1: return res(0.9151, 0.7297, 0.04994, -0.847);
+                case 2: return res(2.699, 0.7325, 0.04927, -0.8412);
+                case 3: return res(3.454, 0.8175, 0.05047, -0.8812);
+                case 4: return res(4.07, 0.9098, 0.05066, -0.9135);
+                case 5: return res(5.068, 0.8488, 0.05008, -0.8833);
+                case 6: return res(5.336, 1.033, 0.05161, -0.9531);
+                case 7: return res(6.068, 0.9915, 0.05083, -0.9302);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 5:
+            switch (rhoBin)
+            {
+                case 1: return res(-3.251, 1.738, 0.05665, -1.203);
+                case 2: return res(-3.048, 2, 0.05759, -1.253);
+                case 3: return res(-2.064, 2.059, 0.05732, -1.254);
+                case 4: return res(0.8834, 2.116, 0.05735, -1.256);
+                case 5: return res(1.75, 2.379, 0.05828, -1.296);
+                case 6: return res(4.106, 1.934, 0.05572, -1.203);
+                case 7: return res(3.677, 2.399, 0.0572, -1.275);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 6:
+            switch (rhoBin)
+            {
+                case 1: return res(-2.203, 1.393, -0.03217, -1.131);
+                case 2: return res(1.102, 1.409, -0.03321, -1.135);
+                case 3: return res(1.774, 1.624, -0.03351, -1.182);
+                case 4: return res(2.296, 1.838, -0.03475, -1.223);
+                case 5: return res(3.541, 1.826, -0.0341, -1.216);
+                case 6: return res(2.67, 2.452, -0.03659, -1.319);
+                case 7: return res(-0.3526, 2.993, 0.03736, -1.377);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 7:
+            return res(-1.066, 1.835, -0.03267, -1.24);
+            switch (rhoBin)
+            {
+                case 1: return res(-2.528, 1.591, -0.03475, -1.215);
+                case 2: return res(-1.362, 1.571, -0.03228, -1.192);
+                case 3: return res(-1.066, 1.835, -0.03267, -1.24);
+                case 4: return res(-0.9215, 2.166, -0.03427, -1.297);
+                case 5: return res(2.119, 2.071, -0.03182, -1.262);
+                case 6: return res(1.717, 2.571, 0.03417, -1.341);
+                case 7: return res(-3.694, 3.636, 0.03391, -1.447);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 8:
+            switch (rhoBin)
+            {
+                case 1: return res(-4.688, 2.887, -0.0398, -1.453);
+                case 2: return res(-5.267, 3.392, -0.03859, -1.484);
+                case 3: return res(-7.486, 5.453, -0.04113, -1.636);
+                case 4: return res(-7.68, 5.674, -0.03997, -1.633);
+                case 5: return res(-8.179, 6.134, 0.03822, -1.642);
+                case 6: return res(-12.07, 9.833, 0.03918, -1.763);
+                case 7: return res(-21.68, 19.59, 0.04008, -1.893);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 9:
+            return res(-114.5, 114.1, 0.04377, -1.997);
+            switch (rhoBin)
+            {
+                case 1: return res(-85.96, 85.58, -0.04539, -1.996);
+                case 2: return res(-92, 91.58, -0.04383, -1.996);
+                case 3: return res(-114.5, 114.1, 0.04377, -1.997);
+                case 4: return res(-127.4, 127, 0.04242, -1.997);
+                case 5: return res(-100.1, 99.54, 0.04101, -1.995);
+                case 6: return res(-171.2, 170.9, 0.04004, -1.998);
+                case 7: return res(-125, 124.5, 0.03718, -1.996);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 10:
+            return res(-115.9, 115.5, 0.03881, -1.997);
+            switch (rhoBin)
+            {
+                case 1: return res(-80.86, 80.33, 0.04414, -1.994);
+                case 2: return res(-89.39, 88.88, 0.04186, -1.995);
+                case 3: return res(-115.9, 115.5, 0.03881, -1.997);
+                case 4: return res(-108.6, 108.2, 0.0389, -1.996);
+                case 5: return res(-135.7, 135.4, 0.03607, -1.997);
+                case 6: return res(-150.6, 150.3, -0.03642, -1.998);
+                case 7: return res(-137.8, 137.7, 0.03824, -1.998);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 11:
+            return res(-11.14, 8.098, -0.06207, -1.683);
+            switch (rhoBin)
+            {
+                case 1: return res(-3.681, 1.906, -0.0582, -1.186);
+                case 2: return res(-6.155, 3.845, 0.06349, -1.456);
+                case 3: return res(-11.14, 8.098, -0.06207, -1.683);
+                case 4: return res(-42.17, 40.57, -0.06272, -1.964);
+                case 5: return res(-73.19, 72.17, -0.06209, -1.987);
+                case 6: return res(-92.46, 91.64, -0.05969, -1.991);
+                case 7: return res(-38.08, 36.32, 0.06421, -1.949);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 12:
+            switch (rhoBin)
+            {
+                case 1: return res(-34.28, 33.8, 0.1526, -1.984);
+                case 2: return res(4.892, 0.3432, 0.0002247, -0.3053);
+                case 3: return res(-76.26, 75.99, 0.1548, -1.995);
+                case 4: return res(-90.46, 90.02, 0.1496, -1.995);
+                case 5: return res(-12.56, 10.87, 0.1495, -1.801);
+                case 6: return res(-23.44, 21.8, 0.1444, -1.913);
+                case 7: return res(7.064, 1.836, 0.1405, -1.217);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        case 13:
+            switch (rhoBin)
+            {
+                case 1: return res(-4.261, 4.085, 0.1075, -1.819);
+                case 2: return res(-15.95, 15.87, 0.1088, -1.978);
+                case 3: return res(3.137, 1.361, 0.1042, -1.42);
+                case 4: return res(-21.12, 21.25, 0.1075, -1.986);
+                case 5: return res(5.014, 0.2092, 5.362e-06, -0.2474);
+                case 6: return res(-29.77, 29.95, 0.1124, -1.992);
+                case 7: return res(5.756, 0.2217, 3.682e-05, -0.2657);
+                default:
+                    throw std::runtime_error("Rho " + std::to_string(rho)
+                                             + "out of range");
+            }
+        default:
+            throw std::runtime_error("Eta " + std::to_string(eta)
+                                     + " out of range");
+    }
+}
+
+std::pair<double, double> Cuts::jet2016SFs(const float eta) const
 {
     // JER Scaling Factors and uncertainities for 2016
     float jerSF{0.};

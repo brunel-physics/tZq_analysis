@@ -31,7 +31,7 @@ class Cuts
                       std::map<std::string, std::shared_ptr<Plots>>&,
                       TH1D&);
     std::pair<std::vector<int>, std::vector<float>>
-        makeJetCuts(AnalysisEvent& event,
+        makeJetCuts(const AnalysisEvent& event,
                     const int syst,
                     float& eventWeight,
                     const bool isProper = true);
@@ -197,11 +197,14 @@ class Cuts
     float getJECUncertainty(const float pt,
                             const float eta,
                             const int syst) const;
-    TLorentzVector getJetLVec(AnalysisEvent& event,
-                              const int index,
-                              const int syst,
-                              const bool initialRun);
-    std::pair<float, float> jet2016SFs(const float eta) const;
+    std::pair<TLorentzVector, float> getJetLVec(const AnalysisEvent& event,
+                                                const int index,
+                                                const int syst,
+                                                const bool initialRun);
+    double jet2017PtSimRes(const double pt,
+                           const double eta,
+                           const double rho) const;
+    std::pair<double, double> jet2016SFs(const float eta) const;
     std::pair<double, double> jet2017SFs(const double eta) const;
 
     // Histogram to be used in synchronisation.
