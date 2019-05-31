@@ -2,10 +2,11 @@
 #define _cutClass_hpp_
 
 #include "AnalysisEvent.hpp"
-#include "BTagCalibrationStandalone.hpp"
 #include "RoccoR.h"
-#include "TLorentzVector.h"
 #include "plots.hpp"
+
+#include <TLorentzVector.h>
+#include <TH1F.h>
 
 #include <fstream>
 #include <map>
@@ -178,16 +179,9 @@ class Cuts
     std::vector<TH2D*> bTagEffPlots_;
     bool getBTagWeight_;
 
-    // bTag callibration for SFs
-    BTagCalibration calib2016;
-    BTagCalibration calib2017;
-    BTagCalibrationReader lightReader;
-    BTagCalibrationReader charmReader;
-    BTagCalibrationReader beautyReader;
-
-    double getBweight_backup(const int flavour,
-                             const int type,
-                             const double pt) const;
+    double getBSF(const int flavour,
+                  const int type,
+                  const double pt) const;
 
     void getBWeight(const AnalysisEvent& event,
                     const TLorentzVector jet,

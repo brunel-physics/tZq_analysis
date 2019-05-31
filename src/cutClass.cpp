@@ -215,39 +215,6 @@ Cuts::Cuts(const bool doPlots,
             "TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
         std::cout << "Got 2016 muon SFs!\n" << std::endl;
     }
-
-    // Setup bTag calibration code (2016/2017)
-    // bTag calib code
-    calib2016 = BTagCalibration("CSVv2", "scaleFactors/2016/CSVv2.csv");
-    calib2017 =
-        BTagCalibration("CSVv2", "scaleFactors/2017/CSVv2_94XSF_V2_B_F.csv");
-
-    // udsg jets
-    lightReader = BTagCalibrationReader(
-        BTagEntry::OP_TIGHT, "central", {"up", "down"}); // operating point
-    // c/b jets
-    charmReader = BTagCalibrationReader(
-        BTagEntry::OP_TIGHT, "central", {"up", "down"}); // central
-    beautyReader = BTagCalibrationReader(
-        BTagEntry::OP_TIGHT, "central", {"up", "down"}); // central
-
-    // if doing bTag SFs, load stuff here ...
-    // N.B. 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
-    if (getBTagWeight_)
-    {
-        if (!is2016_)
-        {
-            lightReader.load(calib2017, BTagEntry::FLAV_UDSG, "incl");
-            charmReader.load(calib2017, BTagEntry::FLAV_C, "mujets");
-            beautyReader.load(calib2017, BTagEntry::FLAV_B, "mujets");
-        }
-        else
-        {
-            lightReader.load(calib2016, BTagEntry::FLAV_UDSG, "incl");
-            charmReader.load(calib2016, BTagEntry::FLAV_C, "mujets");
-            beautyReader.load(calib2016, BTagEntry::FLAV_B, "mujets");
-        }
-    }
 }
 
 Cuts::~Cuts()
@@ -2653,14 +2620,9 @@ void Cuts::getBWeight(const AnalysisEvent& event,
             jetPt = maxBjetPt;
             doubleUncertainty = true;
         }
-        // jet_scalefactor = beautyReader.eval_auto_bounds("central",
-        // BTagEntry::FLAV_B, jet.Eta(), jetPt); jet_scalefactor_up =
-        // beautyReader.eval_auto_bounds("up", BTagEntry::FLAV_B, jet.Eta(),
-        // jetPt); jet_scalefactor_do = beautyReader.eval_auto_bounds("down",
-        // BTagEntry::FLAV_B, jet.Eta(), jetPt);
-        jet_scalefactor = getBweight_backup(0, 0, jetPt);
-        jet_scalefactor_up = getBweight_backup(0, 1, jetPt);
-        jet_scalefactor_do = getBweight_backup(0, -1, jetPt);
+        jet_scalefactor = getBSF(0, 0, jetPt);
+        jet_scalefactor_up = getBSF(0, 1, jetPt);
+        jet_scalefactor_do = getBSF(0, -1, jetPt);
     }
 
     else if (partonFlavour == 4)
@@ -2670,14 +2632,9 @@ void Cuts::getBWeight(const AnalysisEvent& event,
             jetPt = maxBjetPt;
             doubleUncertainty = true;
         }
-        // jet_scalefactor = charmReader.eval_auto_bounds("central",
-        // BTagEntry::FLAV_C, jet.Eta(), jetPt); jet_scalefactor_up =
-        // charmReader.eval_auto_bounds("up", BTagEntry::FLAV_C, jet.Eta(),
-        // jetPt); jet_scalefactor_do = charmReader.eval_auto_bounds("down",
-        // BTagEntry::FLAV_C, jet.Eta(), jetPt);
-        jet_scalefactor = getBweight_backup(1, 0, jetPt);
-        jet_scalefactor_up = getBweight_backup(1, 1, jetPt);
-        jet_scalefactor_do = getBweight_backup(1, -1, jetPt);
+        jet_scalefactor = getBSF(1, 0, jetPt);
+        jet_scalefactor_up = getBSF(1, 1, jetPt);
+        jet_scalefactor_do = getBSF(1, -1, jetPt);
     }
 
     // Light jets
@@ -2688,14 +2645,9 @@ void Cuts::getBWeight(const AnalysisEvent& event,
             jetPt = maxLjetPt;
             doubleUncertainty = true;
         }
-        // jet_scalefactor = lightReader.eval_auto_bounds("central",
-        // BTagEntry::FLAV_UDSG, jet.Eta(), jetPt); jet_scalefactor_up =
-        // lightReader.eval_auto_bounds("up", BTagEntry::FLAV_UDSG, jet.Eta(),
-        // jetPt); jet_scalefactor_do = lightReader.eval_auto_bounds("down",
-        // BTagEntry::FLAV_UDSG, jet.Eta(), jetPt);
-        jet_scalefactor = getBweight_backup(2, 0, jetPt);
-        jet_scalefactor_up = getBweight_backup(2, 1, jetPt);
-        jet_scalefactor_do = getBweight_backup(2, -1, jetPt);
+        jet_scalefactor = getBSF(2, 0, jetPt);
+        jet_scalefactor_up = getBSF(2, 1, jetPt);
+        jet_scalefactor_do = getBSF(2, -1, jetPt);
     }
 
     if (doubleUncertainty)
@@ -2746,9 +2698,9 @@ void Cuts::getBWeight(const AnalysisEvent& event,
 // Backup temporary method to do Btag Scale Factors whilst debugging is ongoing.
 // TODO: F1X TH1S
 
-double Cuts::getBweight_backup(const int flavour,
-                               const int type,
-                               const double pt) const
+double Cuts::getBSF(const int flavour,
+                    const int type,
+                    const double pt) const
 {
     double sf{1.0};
     const double& x{pt};
