@@ -355,10 +355,8 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         return false;
     }
 
-    std::pair<std::vector<int>, std::vector<float>> jetInfo;
-    jetInfo = makeJetCuts(event, systToRun, eventWeight);
-    event.jetIndex = jetInfo.first;
-    event.jetSmearValue = jetInfo.second;
+    std::tie(event.jetIndex, event.jetSmearValue) =
+        makeJetCuts(event, systToRun, eventWeight, false);
 
     if (event.jetIndex.size() < numJets_)
     {
