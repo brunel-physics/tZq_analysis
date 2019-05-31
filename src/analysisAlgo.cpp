@@ -32,8 +32,6 @@ AnalysisAlgo::AnalysisAlgo()
     , plotConfName{}
     , customJetRegion{false}
     , is2016_{false}
-    , isFCNC_{false}
-    , isCtag_{false}
     , doNPLs_{false}
     , doZplusCR_{false}
 {
@@ -62,15 +60,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "2016",
         po::bool_switch(&is2016_),
         "Use 2016 conditions (SFs, et al.).")(
-        "FCNC",
-        po::bool_switch(&isFCNC_),
-        "Look for FCNC dilepton final states.")(
-        "cTag",
-        po::bool_switch(&isCtag_),
-        "Look for FCNC dilepton final states using "
-        "cTagging.")(",n",
-                     po::value<long>(&nEvents)->default_value(0),
-                     "The number of events to be run over. All if set to 0.")(
+        ",n",
+        po::value<long>(&nEvents)->default_value(0),
+        "The number of events to be run over. All if set to 0.")(
         "allPlots,p", po::bool_switch(&plots), "Make all plots")(
         "makeHistos",
         po::bool_switch(&makeHistos),
@@ -197,12 +189,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
             throw std::logic_error(
                 "Currently bTag weights can only be retrieved "
                 "from post lepton selection trees. Please set -u.");
-        }
-        if (!isFCNC_ && isCtag_)
-        {
-            throw std::logic_error(
-                "C-tagging is only used during an FCNC search. "
-                "Set --FCNC & --dilepton arguements.");
         }
     }
     catch (const std::logic_error& e)
@@ -374,9 +360,7 @@ void AnalysisAlgo::setupCuts()
     cutObj = new Cuts{plots,
                       plots,
                       invertLepCut,
-                      is2016_,
-                      isFCNC_,
-                      isCtag_};
+                      is2016_};
 
     try
     {
@@ -412,16 +396,7 @@ void AnalysisAlgo::setupPlots()
     stageNames.emplace_back(std::make_pair("zMass", "Z Mass Cuts"));
     stageNames.emplace_back(std::make_pair("jetSel", "Jet Cuts"));
     stageNames.emplace_back(std::make_pair("bTag", "b-tag Cuts"));
-    if (!isFCNC_)
-    {
-        stageNames.emplace_back(std::make_pair("wMass", "W Mass Cuts"));
-    }
-    //  if ( !trileptonChannel_ && !isFCNC_ && !(channelsToRun & 16) )
-    //  {stageNames.emplace_back( std::make_pair ("wMass","W Mass Cuts") );}
-    if (isFCNC_ && isCtag_)
-    {
-        stageNames.emplace_back(std::make_pair("cTag", "c-tag Cuts"));
-    }
+    stageNames.emplace_back(std::make_pair("wMass", "W Mass Cuts"));
 }
 
 void AnalysisAlgo::runMainAnalysis()
@@ -438,7 +413,7 @@ void AnalysisAlgo::runMainAnalysis()
 
     const std::string postLepSelSkimDir{
         std::string{"/scratch/data/TopPhysics/postLepSelSkims"}
-        + (is2016_ ? "2016" : "2017") + (isFCNC_ ? "_FCNC" : "") + "/"};
+        + (is2016_ ? "2016" : "2017") + "/"};
 
     // Begin to loop over all datasets
     for (auto dataset = datasets.begin(); dataset != datasets.end(); ++dataset)

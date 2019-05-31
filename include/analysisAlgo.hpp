@@ -63,8 +63,6 @@ class AnalysisAlgo
     float mzCut;
     float mwCut;
     bool is2016_;
-    bool isFCNC_;
-    bool isCtag_;
     bool doNPLs_;
     bool doZplusCR_;
 

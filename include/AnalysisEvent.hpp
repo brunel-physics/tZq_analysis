@@ -1540,7 +1540,6 @@ class AnalysisEvent
 
     std::vector<float> muonMomentumSF;
     std::vector<float> jetSmearValue;
-    std::vector<int> cTagIndex;
 
     std::vector<int> electronIndexTight;
     std::vector<int> electronIndexLoose;

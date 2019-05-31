@@ -76,8 +76,6 @@ class Cuts
     bool fillCutFlow_; // Fill cut flows
     bool invertLepCut_; // For background estimation
     bool makeEventDump_;
-    const bool isFCNC_;
-    const bool isCtag_;
     const bool is2016_;
 
     // Tight electron cuts
@@ -233,9 +231,7 @@ class Cuts
     Cuts(const bool doPlots,
          const bool fillCutFlows,
          const bool invertLepCut,
-         const bool is2016,
-         const bool isFCNC,
-         const bool isCtag);
+         const bool is2016);
     ~Cuts();
     bool makeCuts(AnalysisEvent& event,
                   float& eventWeight,

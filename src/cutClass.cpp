@@ -20,14 +20,10 @@
 Cuts::Cuts(const bool doPlots,
            const bool fillCutFlows,
            const bool invertLepCut,
-           const bool is2016,
-           const bool isFCNC,
-           const bool isCtag)
+           const bool is2016)
     : doPlots_{doPlots}
     , fillCutFlow_{fillCutFlows}
     , invertLepCut_{invertLepCut}
-    , isFCNC_{isFCNC}
-    , isCtag_{isCtag}
     , is2016_{is2016}
 
     , numTightEle_{3}
@@ -401,78 +397,48 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         cutFlow.Fill(3.5, eventWeight);
     }
 
-    if (!isFCNC_)
-    { // Do wMass stuff
-        float invWmass{0.};
-        invWmass = getWbosonQuarksCand(event, event.jetIndex, systToRun);
+    // Do wMass stuff
+    float invWmass{0.};
+    invWmass = getWbosonQuarksCand(event, event.jetIndex, systToRun);
 
-        // Debug chi2 cut
-        //   float topMass = getTopMass(event);
-        //   float topTerm = ( topMass-173.21 )/30.0;
-        //   float wTerm = ( (event.wPairQuarks.first +
-        //   event.wPairQuarks.second).M() - 80.3585 )/8.0;
+    // Debug chi2 cut
+    //   float topMass = getTopMass(event);
+    //   float topTerm = ( topMass-173.21 )/30.0;
+    //   float wTerm = ( (event.wPairQuarks.first +
+    //   event.wPairQuarks.second).M() - 80.3585 )/8.0;
 
-        //   float chi2 = topTerm*topTerm + wTerm*wTerm;
-        //   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
-        //   if ( chi2 >= 2.0 ) return false; //signal region
+    //   float chi2 = topTerm*topTerm + wTerm*wTerm;
+    //   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
+    //   if ( chi2 >= 2.0 ) return false; //signal region
 
-        // Signal Region W mass cut
-        if (!isZplusCR_)
-        {
-            if (std::abs(invWmass) > invWMassCut_)
-            {
-                return false;
-            }
-        }
-        // Z+jets Control Region
-        else
-        {
-            if (std::abs(invWmass) <= invWMassCut_)
-            {
-                return false;
-            }
-            if (event.metPF2PATEt >= metDileptonCut_)
-            {
-                return false;
-            }
-        }
-
-        if (doPlots_)
-        {
-            plotMap["wMass"]->fillAllPlots(event, eventWeight);
-        }
-        if (doPlots_ || fillCutFlow_)
-        {
-            cutFlow.Fill(4.5, eventWeight);
-        }
-    }
-
-    if (isFCNC_) // Do FCNC stuff
+    // Signal Region W mass cut
+    if (!isZplusCR_)
     {
-        // Leading jet cannot be b-tagged
-        if (event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[0]
-            > bDiscCut_)
+        if (std::abs(invWmass) > invWMassCut_)
         {
             return false;
         }
-
-        if (isCtag_) // Do cTagging
+    }
+    // Z+jets Control Region
+    else
+    {
+        if (std::abs(invWmass) <= invWMassCut_)
         {
-            if (event.cTagIndex.size() < numcJets_
-                || event.cTagIndex.size() > maxJets_)
-            {
-                return false;
-            }
-            if (doPlots_ || fillCutFlow_)
-            {
-                if (doPlots_)
-                {
-                    plotMap["cTag"]->fillAllPlots(event, eventWeight);
-                }
-
-                cutFlow.Fill(4.5, eventWeight);
-            }
+            return false;
         }
+        if (event.metPF2PATEt >= metDileptonCut_)
+        {
+            return false;
+        }
+    }
+
+    if (doPlots_)
+    {
+        plotMap["wMass"]->fillAllPlots(event, eventWeight);
+    }
+    if (doPlots_ || fillCutFlow_)
+    {
+        cutFlow.Fill(4.5, eventWeight);
     }
 
     TLorentzVector tempMet;
