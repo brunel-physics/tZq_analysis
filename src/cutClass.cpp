@@ -63,7 +63,7 @@ Cuts::Cuts(const bool doPlots,
     , maxbJets_{2}
     , maxbJetEta_{2.5}
 
-    , bDiscCut_{is2016 ? 0.8484 : 0.8838}
+    , bDiscCut_{is2016 ? 0.8484f : 0.8838f}
 
     , numcJets_{1}
 
