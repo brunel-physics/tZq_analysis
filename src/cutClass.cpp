@@ -1759,7 +1759,6 @@ float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
     return leptonWeight;
 }
 
-
 float Cuts::eleSF(const double pt, const double eta, const int syst) const
 {
     double maxPt{h_eleSFs->GetYaxis()->GetXmax() - 0.1};
@@ -2698,9 +2697,7 @@ void Cuts::getBWeight(const AnalysisEvent& event,
 // Backup temporary method to do Btag Scale Factors whilst debugging is ongoing.
 // TODO: F1X TH1S
 
-double Cuts::getBSF(const int flavour,
-                    const int type,
-                    const double pt) const
+double Cuts::getBSF(const int flavour, const int type, const double pt) const
 {
     double sf{1.0};
     const double& x{pt};

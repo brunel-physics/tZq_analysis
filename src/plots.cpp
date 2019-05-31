@@ -143,8 +143,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
              }
              else
              {
-                 return event
-                     .muonPF2PATComRelIsodBeta[event.muonIndexTight[0]];
+                 return event.muonPF2PATComRelIsodBeta[event.muonIndexTight[0]];
              }
          }},
         {"lep2RelIso",
@@ -156,8 +155,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
              }
              else
              {
-                 return event
-                     .muonPF2PATComRelIsodBeta[event.muonIndexTight[1]];
+                 return event.muonPF2PATComRelIsodBeta[event.muonIndexTight[1]];
              }
          }},
         {"lep1Phi",
@@ -221,7 +219,9 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
         {"met",
          [](const AnalysisEvent& event) -> float { return event.metPF2PATEt; }},
         {"numbJets",
-         [](const AnalysisEvent& event) -> float { return event.jetIndex.size(); }},
+         [](const AnalysisEvent& event) -> float {
+             return event.jetIndex.size();
+         }},
         {"totalJetMass",
          [](const AnalysisEvent& event) -> float {
              TLorentzVector totalJet;
@@ -591,7 +591,9 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
              }
          }},
         {"numbBJets",
-         [](const AnalysisEvent& event) -> float { return event.bTagIndex.size(); }},
+         [](const AnalysisEvent& event) -> float {
+             return event.bTagIndex.size();
+         }},
         {"bTagDisc",
          [](const AnalysisEvent& event) -> float {
              if (event.bTagIndex.size() > 0)
@@ -636,19 +638,16 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"zPairMass",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .M();
+             return (event.zPairLeptons.first + event.zPairLeptons.second).M();
          }},
         {"zPairPt",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .Pt();
+             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
          }},
         {"zPairEta",
          [](const AnalysisEvent& event) -> float {
              return std::abs(
-                 (event.zPairLeptons.first + event.zPairLeptons.second)
-                     .Eta());
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Eta());
          }},
         {"zPairPhi",
          [](const AnalysisEvent& event) -> float {
@@ -769,8 +768,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          [](const AnalysisEvent& event) -> float {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (
-                     event.elePF2PATTrackDBD0[event.electronIndexTight[0]]);
+                 return (event.elePF2PATTrackDBD0[event.electronIndexTight[0]]);
              }
              else
              {
@@ -781,8 +779,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          [](const AnalysisEvent& event) -> float {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (
-                     event.elePF2PATTrackDBD0[event.electronIndexTight[1]]);
+                 return (event.elePF2PATTrackDBD0[event.electronIndexTight[1]]);
              }
              else
              {
@@ -841,12 +838,11 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"wTransverseMass",
          [](const AnalysisEvent& event) -> float {
-             return std::sqrt(
-                 2 * event.wPairQuarks.first.Pt()
-                 * event.wPairQuarks.second.Pt()
-                 * (1
-                    - std::cos(event.wPairQuarks.first.Phi()
-                               - event.wPairQuarks.second.Phi())));
+             return std::sqrt(2 * event.wPairQuarks.first.Pt()
+                              * event.wPairQuarks.second.Pt()
+                              * (1
+                                 - std::cos(event.wPairQuarks.first.Phi()
+                                            - event.wPairQuarks.second.Phi())));
          }},
         {"jjDelR",
          [](const AnalysisEvent& event) -> float {
@@ -906,8 +902,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
              {
                  return -1.;
              }
-             return event.wPairQuarks.first.DeltaPhi(
-                 event.wPairQuarks.second);
+             return event.wPairQuarks.first.DeltaPhi(event.wPairQuarks.second);
          }},
         {"lbDelR",
          [](const AnalysisEvent& event) -> float {
@@ -950,13 +945,12 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"zLepDelPhi",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first.DeltaPhi(
-                 event.zPairLeptons.second));
+             return (
+                 event.zPairLeptons.first.DeltaPhi(event.zPairLeptons.second));
          }},
         {"zLep1Quark1DelR",
          [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaR(event.wPairQuarks.first));
+             return (event.zPairLeptons.first.DeltaR(event.wPairQuarks.first));
          }},
         {"zLep1Quark1DelPhi",
          [](const AnalysisEvent& event) -> float {
@@ -965,8 +959,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"zLep1Quark2DelR",
          [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaR(event.wPairQuarks.second));
+             return (event.zPairLeptons.first.DeltaR(event.wPairQuarks.second));
          }},
         {"zLep1Quark2DelPhi",
          [](const AnalysisEvent& event) -> float {
@@ -975,8 +968,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"zLep2Quark1DelR",
          [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.second.DeltaR(event.wPairQuarks.first));
+             return (event.zPairLeptons.second.DeltaR(event.wPairQuarks.first));
          }},
         {"zLep2Quark1DelPhi",
          [](const AnalysisEvent& event) -> float {
@@ -990,8 +982,8 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"zLep2Quark2DelPhi",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.second.DeltaPhi(
-                 event.wPairQuarks.second));
+             return (
+                 event.zPairLeptons.second.DeltaPhi(event.wPairQuarks.second));
          }},
         {"zLep1BjetDelR",
          [](const AnalysisEvent& event) -> float {
@@ -1063,13 +1055,11 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }},
         {"lepHt",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .Pt();
+             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
          }},
         {"wQuarkHt",
          [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .Pt();
+             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
          }},
         {"jetHt",
          [](const AnalysisEvent& event) -> float {
@@ -1240,8 +1230,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
         {"wzDelPhi",
          [](const AnalysisEvent& event) -> float {
              return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.first
-                           + event.wPairQuarks.second);
+                 .DeltaPhi(event.wPairQuarks.first + event.wPairQuarks.second);
          }},
         {"zQuark1DelR",
          [](const AnalysisEvent& event) -> float {

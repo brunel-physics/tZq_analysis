@@ -1,13 +1,13 @@
 #ifndef _jetCorrectionUncertainty_hpp_
 #define _jetCorrectionUncertainty_hpp_
 
+#include "MvaEvent.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <vector>
-
-#include "MvaEvent.hpp"
 
 class JetCorrectionUncertainty
 {

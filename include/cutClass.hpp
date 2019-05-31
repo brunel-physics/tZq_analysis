@@ -5,9 +5,8 @@
 #include "RoccoR.h"
 #include "plots.hpp"
 
-#include <TLorentzVector.h>
 #include <TH1F.h>
-
+#include <TLorentzVector.h>
 #include <fstream>
 #include <map>
 #include <vector>
@@ -179,9 +178,7 @@ class Cuts
     std::vector<TH2D*> bTagEffPlots_;
     bool getBTagWeight_;
 
-    double getBSF(const int flavour,
-                  const int type,
-                  const double pt) const;
+    double getBSF(const int flavour, const int type, const double pt) const;
 
     void getBWeight(const AnalysisEvent& event,
                     const TLorentzVector jet,

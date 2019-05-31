@@ -4,8 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 #include <yaml-cpp/yaml.h>
 
 void Parser::parse_config(const std::string conf,
@@ -62,7 +62,7 @@ void Parser::parse_config(const std::string conf,
         cutsConfName = root["cuts"].as<std::string>();
     }
     if (plotConfName == "") // If you haven't already chosen the plots to use,
-                             // use the ones here.
+                            // use the ones here.
     {
         plotConfName = root["plots"].as<std::string>();
     }
@@ -107,7 +107,7 @@ void Parser::parse_files(const std::vector<std::string> files,
 {
     std::cerr << "Adding datasets:" << std::endl;
 
-    for (const auto& file: files)
+    for (const auto& file : files)
     {
         const YAML::Node root{YAML::LoadFile(file)};
         const bool isMC{root["mc"].as<bool>()};

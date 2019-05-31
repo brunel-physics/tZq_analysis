@@ -2,13 +2,13 @@
 
 #include "AnalysisEvent.hpp"
 #include "TCanvas.h"
+#include "TH1D.h"
 #include "TH1F.h"
 #include "TH1I.h"
 #include "TH2D.h"
 #include "TMVA/Config.h"
 #include "TMVA/Timer.h"
 #include "TPad.h"
-#include "TH1D.h"
 #include "TTree.h"
 #include "config_parser.hpp"
 
@@ -88,10 +88,9 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "plotConf",
         po::value<std::string>(&plotConfName),
         "Override the plot configuration given in the config file. Sets "
-        "--allPlots.")
-        ("invert,i",
-        po::bool_switch(&invertLepCut),
-        "Inverts the different charge cut for leptons.")(
+        "--allPlots.")("invert,i",
+                       po::bool_switch(&invertLepCut),
+                       "Inverts the different charge cut for leptons.")(
         "MC,m",
         po::bool_switch(&skipData),
         "Monte Carlo only mode. Ignores all data in the config file.")(
@@ -357,10 +356,7 @@ void AnalysisAlgo::setupCuts()
 {
     // Make cuts object. The methods in it should perhaps just be i nthe
     // AnalysisEvent class....
-    cutObj = new Cuts{plots,
-                      plots,
-                      invertLepCut,
-                      is2016_};
+    cutObj = new Cuts{plots, plots, invertLepCut, is2016_};
 
     try
     {
@@ -826,8 +822,7 @@ void AnalysisAlgo::runMainAnalysis()
                                             "muonMomentumSF[3]/F");
                     mvaTree[systIn]->Branch(
                         "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
-                    mvaTree[systIn]->Branch(
-                        "bJetInd", &bJetInd);
+                    mvaTree[systIn]->Branch("bJetInd", &bJetInd);
                     mvaTree[systIn]->Branch("isMC", &isMC, "isMC/I");
                     if (systIn > 0)
                     {
@@ -883,8 +878,7 @@ void AnalysisAlgo::runMainAnalysis()
             for (int i{0}; i < numberOfEvents; i++)
             {
                 std::stringstream lSStrFoundEvents;
-                lSStrFoundEvents
-                    << foundEvents;
+                lSStrFoundEvents << foundEvents;
                 lEventTimer->DrawProgressBar(
                     i, ("Found " + lSStrFoundEvents.str() + " events."));
                 event.GetEntry(i);
@@ -959,8 +953,7 @@ void AnalysisAlgo::runMainAnalysis()
                         if (systMask == 128)
                         {
                             pileupWeight = puSystDown->GetBinContent(
-                                puSystDown->GetXaxis()->FindBin(
-                                    event.numVert));
+                                puSystDown->GetXaxis()->FindBin(event.numVert));
                         }
                         eventWeight *= pileupWeight;
                         // std::cout << "pileupWeight: " <<  pileupWeight <<
@@ -1141,13 +1134,13 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             eventWeight *=
                                 event.weight_alphaMin; // Max, but incorrectly
-                                                        // named branch
+                                                       // named branch
                         }
                         if (systMask == 32768)
                         {
                             eventWeight *=
                                 event.weight_alphaMax; // Min, but incorrectly
-                                                        // named branch
+                                                       // named branch
                         }
                     }
 

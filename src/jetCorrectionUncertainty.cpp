@@ -115,11 +115,8 @@ double JetCorrectionUncertainty::getUncertainty(const double pt,
     return a * pt + b;
 }
 
-std::pair<double, double>
-    JetCorrectionUncertainty::getMetAfterJESUnc(double metPx,
-                                                double metPy,
-                                                const MvaEvent& tree,
-                                                const int jesUD) const
+std::pair<double, double> JetCorrectionUncertainty::getMetAfterJESUnc(
+    double metPx, double metPy, const MvaEvent& tree, const int jesUD) const
 {
     for (int i{0}; i != tree.numJetPF2PAT; i++)
     {

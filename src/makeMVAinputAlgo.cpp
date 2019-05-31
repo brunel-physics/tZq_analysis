@@ -6,12 +6,11 @@
 #include "TTree.h"
 #include "config_parser.hpp"
 
-#include <limits>
-#include <memory>
-
 #include <boost/filesystem.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
+#include <limits>
+#include <memory>
 
 MakeMvaInputs::MakeMvaInputs()
     : jetUnc(JetCorrectionUncertainty(
@@ -76,79 +75,79 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
-     std::map<std::string, std::string> listOfMCs = {
-         {"ttHTobb", "ttH"},
-         {"ttHToNonbb", "ttH"},
-         {"WWW", "WWW"},
-         {"WWZ", "WWZ"},
-         {"WZZ", "WZZ"},
-         {"ZZZ", "ZZZ"},
-         {"WW1l1nu2q", "WW"},
-         {"WW2l2nu", "WW"},
-         {"ZZ4l", "ZZ"},
-         {"ZZ2l2nu", "ZZ"},
-         {"ZZ2l2q", "ZZ"},
-         {"WZjets", "WZ"},
-         {"WZ2l2q", "WZ"},
-         {"WZ1l1nu2q", "WZ"},
-         {"sChannel", "TsChan"},
-         {"tChannel", "TtChan"},
-         {"tbarChannel", "TbartChan"},
-         {"tWInclusive", "TtW"},
-         {"tbarWInclusive", "TbartW"},
-         {"tZq", "tZq"},
-         {"tHq", "THQ"},
-         {"ttWlnu", "TTW"},
-         {"ttW2q", "TTW"},
-         {"ttZ2l2nu", "TTZ"},
-         {"ttZ2q", "TTZ"},
-         {"ttbarInclusivePowerheg", "TT"},
-         {"tWZ", "TWZ"},
-         {"wPlusJets", "Wjets"},
-         {"DYJetsToLL_M-10To50", "DYToLL_M10To50"},
-         {"DYJetsToLL_M-50", "DYToLL_M50"}};
+    std::map<std::string, std::string> listOfMCs = {
+        {"ttHTobb", "ttH"},
+        {"ttHToNonbb", "ttH"},
+        {"WWW", "WWW"},
+        {"WWZ", "WWZ"},
+        {"WZZ", "WZZ"},
+        {"ZZZ", "ZZZ"},
+        {"WW1l1nu2q", "WW"},
+        {"WW2l2nu", "WW"},
+        {"ZZ4l", "ZZ"},
+        {"ZZ2l2nu", "ZZ"},
+        {"ZZ2l2q", "ZZ"},
+        {"WZjets", "WZ"},
+        {"WZ2l2q", "WZ"},
+        {"WZ1l1nu2q", "WZ"},
+        {"sChannel", "TsChan"},
+        {"tChannel", "TtChan"},
+        {"tbarChannel", "TbartChan"},
+        {"tWInclusive", "TtW"},
+        {"tbarWInclusive", "TbartW"},
+        {"tZq", "tZq"},
+        {"tHq", "THQ"},
+        {"ttWlnu", "TTW"},
+        {"ttW2q", "TTW"},
+        {"ttZ2l2nu", "TTZ"},
+        {"ttZ2q", "TTZ"},
+        {"ttbarInclusivePowerheg", "TT"},
+        {"tWZ", "TWZ"},
+        {"wPlusJets", "Wjets"},
+        {"DYJetsToLL_M-10To50", "DYToLL_M10To50"},
+        {"DYJetsToLL_M-50", "DYToLL_M50"}};
 
-     const auto channels{[=]() -> std::vector<std::string> {
-         if (ttbarControlRegion)
-         {
-             return {"emu"};
-         }
-         else
-         {
-             return {"ee", "mumu"};
-         }
-     }()};
+    const auto channels{[=]() -> std::vector<std::string> {
+        if (ttbarControlRegion)
+        {
+            return {"emu"};
+        }
+        else
+        {
+            return {"ee", "mumu"};
+        }
+    }()};
 
-     const std::vector<std::string> systs = {"",
-                                             "__trig__plus",
-                                             "__trig__minus",
-                                             "__jer__plus",
-                                             "__jer__minus",
-                                             "__jes__plus",
-                                             "__jes__minus",
-                                             "__pileup__plus",
-                                             "__pileup__minus",
-                                             "__bTag__plus",
-                                             "__bTag__minus",
-                                             "__met__plus",
-                                             "__met__minus",
-                                             "__pdf__plus",
-                                             "__pdf__minus",
-                                             "__ME__plus",
-                                             "__ME__minus"};
+    const std::vector<std::string> systs = {"",
+                                            "__trig__plus",
+                                            "__trig__minus",
+                                            "__jer__plus",
+                                            "__jer__minus",
+                                            "__jes__plus",
+                                            "__jes__minus",
+                                            "__pileup__plus",
+                                            "__pileup__minus",
+                                            "__bTag__plus",
+                                            "__bTag__minus",
+                                            "__met__plus",
+                                            "__met__minus",
+                                            "__pdf__plus",
+                                            "__pdf__minus",
+                                            "__ME__plus",
+                                            "__ME__minus"};
 
-     if (doMC)
-     {
-         standardAnalysis(listOfMCs, systs, channels, useSidebandRegion);
-     }
-     if (doData)
-     {
-         dataAnalysis(channels, useSidebandRegion);
-     }
-     if (doFakes)
-     {
-         sameSignAnalysis(listOfMCs, channels, useSidebandRegion);
-     }
+    if (doMC)
+    {
+        standardAnalysis(listOfMCs, systs, channels, useSidebandRegion);
+    }
+    if (doData)
+    {
+        dataAnalysis(channels, useSidebandRegion);
+    }
+    if (doFakes)
+    {
+        sameSignAnalysis(listOfMCs, channels, useSidebandRegion);
+    }
 }
 
 void MakeMvaInputs::standardAnalysis(
@@ -293,10 +292,9 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                           ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
             setupBranches(outTreeSdBnd);
         }
-        auto outFile{new TFile{
-            (outputDir + "histofile_" + outChan + ".root")
-                .c_str(),
-            "RECREATE"}};
+        auto outFile{
+            new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
+                      "RECREATE"}};
         auto dataChain{new TChain{"tree"}};
         dataChain->Add(
             (inputDir + channel + "Run2016" + channel + "mvaOut.root").c_str());
@@ -310,12 +308,7 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
         {
             lEventTimer.DrawProgressBar(i);
             event->GetEntry(i);
-            fillTree(outTreeSig,
-                     outTreeSdBnd,
-                     event,
-                     outChan,
-                     channel,
-                     false);
+            fillTree(outTreeSig, outTreeSdBnd, event, outChan, channel, false);
         }
         outFile->cd();
         outFile->Write();
@@ -334,8 +327,8 @@ void MakeMvaInputs::sameSignAnalysis(
     const bool useSidebandRegion)
 {
     std::vector<std::string> outFakeChannels{"FakeEG", "FakeMu"};
-    std::unordered_map<std::string, std::string> outFakeChanToData{{"FakeEG", "ee"},
-                                                         {"FakeMu", "mumu"}};
+    std::unordered_map<std::string, std::string> outFakeChanToData{
+        {"FakeEG", "ee"}, {"FakeMu", "mumu"}};
     std::unordered_map<std::string, std::string> chanMap{
         {"ee", "eeRun2016"}, {"mumu", "mumuRun2016"}};
 
@@ -359,7 +352,7 @@ void MakeMvaInputs::sameSignAnalysis(
         {
             const std::string sample{mc.first};
 
-        // std::cout << "Doing SS fakes " << sample << std::endl;
+            // std::cout << "Doing SS fakes " << sample << std::endl;
             if (!dataChain->Add(
                     (inputDir + sample + chan + "invLepmvaOut.root").c_str()))
                 abort();
@@ -369,7 +362,6 @@ void MakeMvaInputs::sameSignAnalysis(
                 (inputDir + chanMap.at(chan) + chan + "invLepmvaOut.root")
                     .c_str()))
             abort();
-
 
         auto outFile{
             new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
@@ -412,8 +404,7 @@ void MakeMvaInputs::sameSignAnalysis(
                 continue;
             }
 
-            fillTree(
-                outTreeSig, outTreeSdBnd, event, outChan, chan, true);
+            fillTree(outTreeSig, outTreeSdBnd, event, outChan, chan, true);
         } // end event loop
 
         outFile->cd();
@@ -971,7 +962,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("secJetbTag") = NaN;
     inputVars.at("secJetPt") = NaN;
     inputVars.at("secJetEta") = NaN;
-    inputVars.at("secJetPhi") =  NaN;
+    inputVars.at("secJetPhi") = NaN;
     inputVars.at("thirdJetbTag") = NaN;
     inputVars.at("thirdJetPt") = NaN;
     inputVars.at("thirdJetEta") = NaN;

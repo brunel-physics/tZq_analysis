@@ -7,6 +7,8 @@
 #ifndef _MvaEvent_hpp_
 #define _MvaEvent_hpp_
 
+#include "AnalysisEvent.hpp"
+
 #include <TChain.h>
 #include <TFile.h>
 #include <TLorentzVector.h>
@@ -14,8 +16,6 @@
 #include <array>
 #include <iostream>
 #include <string>
-
-#include "AnalysisEvent.hpp"
 
 // Header file for the classes stored in the TTree if any.
 
@@ -101,7 +101,8 @@ inline MvaEvent::MvaEvent(bool isMC,
     fChain->SetBranchAddress("wQuark2Index", &wQuark2Index, &b_wQuark2Index);
     fChain->SetBranchAddress("jetInd", jetInd, &b_jetInd);
     fChain->SetBranchAddress("bJetInd", bJetInd, &b_bJetInd);
-    fChain->SetBranchAddress("muonMomentumSF", muonMomentumSF, &b_muonMomentumSF);
+    fChain->SetBranchAddress(
+        "muonMomentumSF", muonMomentumSF, &b_muonMomentumSF);
     fChain->SetBranchAddress("jetSmearValue", jetSmearValue, &b_jetSmearValue);
 }
 
