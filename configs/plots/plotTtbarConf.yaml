@@ -311,3 +311,43 @@ plots:
       fillExp: "totM"
       xAxisLabel: "mass_{total}"
       cutStage: 2
+    - title: "Invariant W Mass"
+      name: "wPairMass"
+      xMin: 0.
+      xMax: 200.
+      nBins: 25
+      fillExp: "wPairMass"
+      xAxisLabel: "m_{jj'} (GeV)"
+      cutStage: 3
+    - title: "Third Jet p_{T}"
+      name: "thirdJetPt"
+      xMin: 0.
+      xMax: 300.
+      nBins: 35
+      fillExp: "thirdJetPt"
+      xAxisLabel: "p_{T} third jet (GeV/c)"
+      cutStage: 0
+    - title: "Third Jet #eta"
+      name: "thirdJetEta"
+      xMin: 0.
+      xMax: 5.
+      nBins: 25
+      fillExp: "thirdJetEta"
+      xAxisLabel: "#eta third jet"
+      cutStage: 0
+    - title: "Fourth Jet p_{T}"
+      name: "fourthJetPt"
+      xMin: 0.
+      xMax: 300.
+      nBins: 35
+      fillExp: "fourthJetPt"
+      xAxisLabel: "p_{T} fourth jet (GeV/c)"
+      cutStage: 0
+    - title: "Fourth Jet #eta"
+      name: "fourthJetEta"
+      xMin: 0.
+      xMax: 5.
+      nBins: 25
+      fillExp: "fourthJetEta"
+      xAxisLabel: "#eta fourth jet"
+      cutStage: 0
