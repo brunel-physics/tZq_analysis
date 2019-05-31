@@ -43,17 +43,13 @@ class AnalysisAlgo
     std::string histoDir;
     std::string postfix;
     std::string channel;
-    bool infoDump;
     bool invertLepCut; // For z+jets background estimation
-    bool synchCutFlow; // For synch
     bool skipData; // utility stuff. True if flags are set and will skip either
                    // data or mc.
     bool skipMC;
     std::string cutConfName;
     std::string plotConfName;
     int numFiles;
-    bool readEventList;
-    bool dumpEventNumbers;
     bool makePostLepTree;
     bool makeMVATree;
     bool usePostLepTree;

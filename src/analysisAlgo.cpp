@@ -30,7 +30,6 @@ AnalysisAlgo::AnalysisAlgo()
     , channel{}
     , cutConfName{}
     , plotConfName{}
-    , readEventList{false}
     , customJetRegion{false}
     , is2016_{false}
     , isFCNC_{false}
@@ -90,23 +89,17 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         "Set postfix for plots. Overrides the config file.")(
         "lumi,l",
         po::value<double>(&usePreLumi)->default_value(35860.066),
-        "Lumi to scale MC plots to.")("dump,d",
-                                      po::bool_switch(&infoDump),
-                                      "Dump event info, currently only the "
-                                      "yield at each stage. Sets all event "
-                                      "weights to 1.")(
+        "Lumi to scale MC plots to.")(
         "cutConf,x",
         po::value<std::string>(&cutConfName),
         "Override the cut configuration given in the config file.")(
         "plotConf",
         po::value<std::string>(&plotConfName),
         "Override the plot configuration given in the config file. Sets "
-        "--allPlots.")("invert,i",
-                       po::bool_switch(&invertLepCut),
-                       "Inverts the different charge cut for leptons.")(
-        "synch,a",
-        po::bool_switch(&synchCutFlow),
-        "Make lepton selection cutflows for synchronisation exercises.")(
+        "--allPlots.")
+        ("invert,i",
+        po::bool_switch(&invertLepCut),
+        "Inverts the different charge cut for leptons.")(
         "MC,m",
         po::bool_switch(&skipData),
         "Monte Carlo only mode. Ignores all data in the config file.")(
@@ -117,9 +110,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         po::bool_switch(&usebTagWeight),
         "Use b-tagging efficiencies to reweight the Monte Carlo. Currently "
         "requires -u.")(
-        ",y",
-        po::bool_switch(&dumpEventNumbers),
-        "Produce event dumps for each stage of the synch. Requires --synch.")(
         "NPLs", po::bool_switch(&doNPLs_), "Make or use NPL shapes")(
         "zPlus",
         po::bool_switch(&doZplusCR_),
@@ -222,17 +212,6 @@ void AnalysisAlgo::parseCommandLineArguements(int argc, char* argv[])
         std::exit(1);
     }
 
-    if (vm.count("events"))
-    {
-        readEventList = true;
-    }
-    if (dumpEventNumbers && !vm.count("synch"))
-    {
-        std::cerr
-            << "WARNING: Using -y without --synch will result in empty dump "
-               "files"
-            << std::endl;
-    }
     if (vm.count("plotConf"))
     {
         plots = true;
@@ -393,10 +372,8 @@ void AnalysisAlgo::setupCuts()
     // Make cuts object. The methods in it should perhaps just be i nthe
     // AnalysisEvent class....
     cutObj = new Cuts{plots,
-                      plots || infoDump,
+                      plots,
                       invertLepCut,
-                      synchCutFlow,
-                      dumpEventNumbers,
                       is2016_,
                       isFCNC_,
                       isCtag_};
@@ -493,7 +470,7 @@ void AnalysisAlgo::runMainAnalysis()
                 continue;
             }
 
-            if (plots || infoDump)
+            if (plots)
             { // Initialise a load of stuff that's required by the plotting
               // macro.
 
@@ -587,8 +564,7 @@ void AnalysisAlgo::runMainAnalysis()
                 continue;
             }
 
-            // If making either plots or doing the event dump, make cut flow
-            // object.
+            // If making either plots, make cut flow object.
             std::cerr << "Processing dataset " << dataset->name() << std::endl;
             if (!usePostLepTree)
             {
@@ -641,7 +617,6 @@ void AnalysisAlgo::runMainAnalysis()
             }
 
             cutObj->setMC(dataset->isMC());
-            cutObj->setEventInfoFlag(readEventList);
             cutObj->setTriggerFlag(dataset->getTriggerFlag());
             std::cout << "Trigger flag: " << dataset->getTriggerFlag()
                       << std::endl;
@@ -767,10 +742,6 @@ void AnalysisAlgo::runMainAnalysis()
             // (lumi*crossSection)/(totalEvents), data = 1.0
             float datasetWeight{dataset->getDatasetWeight(totalLumi)};
 
-            if (infoDump)
-            {
-                datasetWeight = 1;
-            }
             std::cout << datasetChain->GetEntries()
                       << " number of items in tree. Dataset weight: "
                       << datasetWeight << std::endl;
@@ -938,7 +909,7 @@ void AnalysisAlgo::runMainAnalysis()
             {
                 std::stringstream lSStrFoundEvents;
                 lSStrFoundEvents
-                    << (synchCutFlow ? cutObj->numFound() : foundEvents);
+                    << foundEvents;
                 lEventTimer->DrawProgressBar(
                     i, ("Found " + lSStrFoundEvents.str() + " events."));
                 event.GetEntry(i);
@@ -964,8 +935,7 @@ void AnalysisAlgo::runMainAnalysis()
 
                     // apply generator weights here.
                     double generatorWeight{1.0};
-                    if (dataset->isMC() && sumNegativeWeights_ >= 0
-                        && !synchCutFlow)
+                    if (dataset->isMC() && sumNegativeWeights_ >= 0)
                     {
                         if (systMask == 4096)
                         {
@@ -1002,7 +972,7 @@ void AnalysisAlgo::runMainAnalysis()
                     }
                     eventWeight *= generatorWeight;
                     // apply pileup weights here.
-                    if (dataset->isMC() && !synchCutFlow)
+                    if (dataset->isMC())
                     { // no weights applied for synchronisation
                         double pileupWeight{puReweight->GetBinContent(
                             puReweight->GetXaxis()->FindBin(event.numVert))};
@@ -1021,38 +991,9 @@ void AnalysisAlgo::runMainAnalysis()
                         // std::cout << "pileupWeight: " <<  pileupWeight <<
                         // std::endl;
                     }
-                    if (infoDump)
-                    {
-                        eventWeight = 1;
-                    }
-                    if (readEventList)
-                    {
-                        bool tempBool{false};
-                        for (unsigned j{0}; j < eventNumbers.size(); j++)
-                        {
-                            if (eventNumbers[j] == event.eventNum)
-                            {
-                                tempBool = true;
-                                break;
-                            }
-                        }
-                        if (!tempBool)
-                        {
-                            continue;
-                        }
-                        std::cout << event.eventNum << " " << event.eventRun
-                                  << " " << event.eventLumiblock << " "
-                                  << datasetChain->GetFile()->GetName()
-                                  << std::endl;
-                        cutObj->dumpLooseLepInfo(event);
-                        cutObj->dumpLeptonInfo(event);
-                    }
 
-                    if (!synchCutFlow)
-                    {
-                        eventWeight *= datasetWeight; // If not synch, scale
-                                                      // according to lumi
-                    }
+                    // Scale according to lumi
+                    eventWeight *= datasetWeight;
 
                     // apply negative weighting for SameSign MC lepton samples
                     // so that further downstream
@@ -1234,10 +1175,7 @@ void AnalysisAlgo::runMainAnalysis()
                                                         // named branch
                         }
                     }
-                    //      if (synchCutFlow){
-                    //	std::cout << event.eventNum << " " << event.eventRun
-                    //<< " " << event.eventLumiblock << " " << std::endl;
-                    //}
+
                     // Do the Zpt reweighting here
                     if (makeMVATree)
                     {
@@ -1363,21 +1301,6 @@ void AnalysisAlgo::runMainAnalysis()
                 }
                 mvaOutFile->Close();
             }
-            if (infoDump)
-            {
-                std::cout << "In dataset " << dataset->getFillHisto()
-                          << " the cut flow looks like:" << std::endl;
-                for (int i{0};
-                     i < cutFlowMap[dataset->getFillHisto()]->GetNbinsX();
-                     i++)
-                {
-                    std::cout
-                        << stageNames[i].first << "\t"
-                        << cutFlowMap[dataset->getFillHisto()]->GetBinContent(
-                               i + 1)
-                        << std::endl;
-                }
-            }
             std::cerr << "\nFound " << foundEvents << " in " << dataset->name()
                       << std::endl;
             std::cerr << "Found " << foundEventsNorm
@@ -1408,7 +1331,7 @@ void AnalysisAlgo::savePlots()
 
     // Now test out the histogram plotter class I just wrote.
     // Make the plotting object.
-    if (plots || infoDump)
+    if (plots)
     {
         HistogramPlotter plotObj =
             HistogramPlotter(legOrder, plotOrder, datasetInfos, is2016_);
@@ -1472,31 +1395,10 @@ void AnalysisAlgo::savePlots()
                 cutFlowMap, "data/MC Yield", "cutFlow", cutFlowLabels);
         }
     }
-    if (synchCutFlow)
-    {
-        cutObj->getSynchCutFlow();
-    }
 
     // Delete all the plot objects.
 
     std::cerr << "Gets to the delete bit" << std::endl;
-    /*  if (plots || infoDump){
-        std::string histoName { dataset->getFillHisto() };
-        for (auto dataset = datasets.begin(); dataset!=datasets.end();
-      ++dataset){ if (cutFlowMap.find( histoName ) == cutFlowMap.end())
-      continue; delete cutFlowMap[ histoName ]; if (!plots) continue; for
-      (unsigned j = 0; j < stageNames.size(); j++){ int systMask = 1; for
-      (unsigned systInd = 0; systInd < systNames.size(); systInd++){ if (systInd
-      > 0 && !(systInd & systMask)) { systMask = systMask << 1; continue;
-          }
-          delete plotsMap[systNames[systInd]][ histoName ][stageNames[j].first];
-          if (systInd > 0) systMask = systMask << 1;
-        }
-          }
-        }
-      }
-    */
-
     std::cerr << "But not past it" << std::endl;
 }
 

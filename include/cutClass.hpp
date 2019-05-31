@@ -26,33 +26,19 @@ class Cuts
                         TH1D& cutFlow,
                         const int syst,
                         const bool isControl = false);
-    bool invertIsoCut(AnalysisEvent&,
-                      float&,
-                      std::map<std::string, std::shared_ptr<Plots>>&,
-                      TH1D&);
     std::pair<std::vector<int>, std::vector<float>>
         makeJetCuts(const AnalysisEvent& event,
                     const int syst,
                     float& eventWeight,
                     const bool isProper = true);
-    std::vector<int> makeMetCuts(AnalysisEvent&);
     std::vector<int> makeBCuts(AnalysisEvent& event,
                                const std::vector<int> jets,
                                const int syst = 0);
-    std::vector<int> makeLooseBCuts(AnalysisEvent& event,
-                                    const std::vector<int> jets,
-                                    const int syst);
-    std::vector<int> makeCCuts(AnalysisEvent&, std::vector<int>);
 
     std::vector<int> getTightEles(const AnalysisEvent& event) const;
-    std::vector<int> getInvIsoEles(const AnalysisEvent& event) const;
     std::vector<int> getLooseEles(const AnalysisEvent& event) const;
     std::vector<int> getTightMuons(const AnalysisEvent& event) const;
-    std::vector<int> getInvIsoMuons(const AnalysisEvent& event) const;
     std::vector<int> getLooseMuons(const AnalysisEvent& event) const;
-    float getTrileptonZCand(AnalysisEvent& event,
-                            const std::vector<int> electrons,
-                            const std::vector<int> muons) const;
     bool getDileptonZCand(AnalysisEvent& event,
                           const std::vector<int> electrons,
                           const std::vector<int> muons) const;
@@ -60,26 +46,11 @@ class Cuts
                               const std::vector<int> jets,
                               const int syst);
 
-    std::vector<std::pair<int, int>>
-        getSynchDileptonCandidates(const AnalysisEvent& event,
-                                   const std::vector<int> eles,
-                                   const std::vector<int> mus) const;
-
     float getTopMass(const AnalysisEvent& event) const;
     bool triggerCuts(const AnalysisEvent& event,
                      float& eventWeight,
                      const int syst = 0) const;
     bool metFilters(const AnalysisEvent& event) const;
-
-    // Method for running the synchronisation with Jeremy.
-    bool synchCuts(AnalysisEvent& event, float& eventWeight);
-    int getLooseLepsNum(
-        const AnalysisEvent& event) const; // Mimic preselection skims
-    int getLooseElecs(const AnalysisEvent& event) const;
-    int getLooseMus(const AnalysisEvent& event) const;
-    // Methods for running tW synch
-    std::vector<int> getSynchEles(const AnalysisEvent& event) const;
-    std::vector<int> getSynchMus(const AnalysisEvent& event) const;
 
     // Method to do ttbar cuts for the dilepton background estimation
     bool ttbarCuts(AnalysisEvent& event,
@@ -94,7 +65,6 @@ class Cuts
                   const float phi1,
                   const float eta2,
                   const float phi2) const;
-    void dumpToFile(AnalysisEvent& event, const int step);
 
     // Function to get lepton SF
     float getLeptonWeight(const AnalysisEvent& event, const int syst) const;
@@ -105,8 +75,6 @@ class Cuts
     bool doPlots_;
     bool fillCutFlow_; // Fill cut flows
     bool invertLepCut_; // For background estimation
-    bool synchCutFlow_; // For synch
-    bool singleEventInfoDump_; // For dropping info on event for synching.
     bool makeEventDump_;
     const bool isFCNC_;
     const bool isCtag_;
@@ -117,12 +85,6 @@ class Cuts
     double tightElePt_;
     double tightElePtLeading_;
     double tightEleEta_;
-    double tightEled0_;
-    int tightEleMissLayers_;
-    bool tightEleCheckPhotonVeto_;
-    float tightEleMVA0_;
-    float tightEleMVA1_;
-    float tightEleMVA2_;
     double tightEleRelIso_;
 
     // Loose electron cuts
@@ -130,9 +92,6 @@ class Cuts
     double looseElePt_;
     double looseElePtLeading_;
     double looseEleEta_;
-    float looseEleMVA0_;
-    float looseEleMVA1_;
-    float looseEleMVA2_;
     double looseEleRelIso_;
 
     // Tight muon cuts
@@ -158,7 +117,6 @@ class Cuts
     unsigned maxJets_;
     double jetPt_;
     double jetEta_;
-    int jetNConsts_;
     bool jetIDDo_;
 
     // B-Disc cut
@@ -166,21 +124,12 @@ class Cuts
     unsigned maxbJets_;
     float maxbJetEta_;
     float bDiscCut_;
-    float bLooseDiscCut_;
-    float bDiscSynchCut_;
 
     // C-Disc cut
     unsigned numcJets_;
-    unsigned maxcJets_;
-    float cVsLDiscCut_;
-    float cVsBDiscCut_;
 
     // Rochester Corrections
     RoccoR rc_;
-
-    // Temporary jet smearing prop varaible until a more elegant solution is
-    // done.
-    float tempSmearValue_;
 
     // lumi for pre-hip and post-hip era
     float lumiRunsBCDEF_;
@@ -207,19 +156,6 @@ class Cuts
     std::pair<double, double> jet2016SFs(const float eta) const;
     std::pair<double, double> jet2017SFs(const double eta) const;
 
-    // Histogram to be used in synchronisation.
-    TH1D* synchCutFlowHist_;
-    TH1I* synchNumEles_;
-    TH1I* synchNumMus_;
-    TH1I* synchMuonCutFlow_;
-    TH1F* synchCutTopMassHist_;
-
-    std::ofstream topMassEventDump_;
-    std::ofstream step0EventDump_;
-    std::ofstream step2EventDump_;
-    std::ofstream step4EventDump_;
-    std::ofstream step6EventDump_;
-    std::ofstream step9EventDump_;
     // Sets whether to do MC or data cuts. Set every time a new dataset is
     // processed in the main loop.
     bool isMC_;
@@ -230,13 +166,6 @@ class Cuts
     bool isNPL_;
     // Set the flag used to use the Z+jets CR
     bool isZplusCR_;
-    // Set flag and vars for gen level cuts
-    bool doGenMassCuts_;
-    bool doGenPtCuts_;
-    float minGenMassCut_;
-    float maxGenMassCut_;
-    float minGenPtCut_;
-    float maxGenPtCut_;
 
     // For producing post-lepsel skims
     TTree* postLepSelTree_;
@@ -275,13 +204,7 @@ class Cuts
                     float& err4) const;
 
     // met and mtw cut values
-    float metCut_;
     float metDileptonCut_;
-    float mTWCutSynch_;
-
-    // top mass cut values
-    float TopMassCutLower_;
-    float TopMassCutUpper_;
 
     // Sets trigger from config file
     std::string cutConfTrigLabel_;
@@ -310,8 +233,6 @@ class Cuts
     Cuts(const bool doPlots,
          const bool fillCutFlows,
          const bool invertLepCut,
-         const bool lepCutFlow,
-         const bool dumpEventNumber,
          const bool is2016,
          const bool isFCNC,
          const bool isCtag);
@@ -360,7 +281,6 @@ class Cuts
     }
     void setMetCut(float cut)
     {
-        metCut_ = cut;
         metDileptonCut_ = cut;
     }
     void setMWCut(float cut)
@@ -379,17 +299,6 @@ class Cuts
         maxbJets_ = maxBJets;
     }
     void parse_config(const std::string confName);
-    void dumpLeptonInfo(AnalysisEvent& event);
-    void dumpLooseLepInfo(const AnalysisEvent& event) const;
-    TH1D* getSynchCutFlow() const;
-    int numFound()
-    {
-        return synchCutFlowHist_->GetBinContent(4);
-    }
-    void setEventInfoFlag(bool flag)
-    {
-        singleEventInfoDump_ = flag;
-    }
     void setNplFlag(bool isNPL)
     {
         isNPL_ = isNPL;
@@ -397,29 +306,6 @@ class Cuts
     void setZplusControlRegionFlag(bool isZplusCR)
     {
         isZplusCR_ = isZplusCR;
-    }
-
-    void setGenMassCuts(float minCut)
-    {
-        doGenMassCuts_ = true;
-        minGenMassCut_ = minCut;
-    }
-    void setGenMassCuts(float minCut, float maxCut)
-    {
-        doGenMassCuts_ = true;
-        minGenMassCut_ = minCut;
-        maxGenMassCut_ = maxCut;
-    }
-    void setGenPtCuts(float minCut)
-    {
-        doGenPtCuts_ = true;
-        minGenPtCut_ = minCut;
-    }
-    void setGenPtCuts(float minCut, float maxCut)
-    {
-        doGenMassCuts_ = true;
-        minGenPtCut_ = minCut;
-        maxGenPtCut_ = maxCut;
     }
 };
 
