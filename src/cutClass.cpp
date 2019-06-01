@@ -1,5 +1,3 @@
-#include "cutClass.hpp"
-
 #include "TGraphAsymmErrors.h"
 #include "TH1F.h"
 #include "TH2D.h"
@@ -7,6 +5,7 @@
 #include "TH3D.h"
 #include "TLorentzVector.h"
 #include "TRandom.h"
+#include "cutClass.hpp"
 
 #include <cmath>
 #include <fstream>
@@ -2699,349 +2698,89 @@ void Cuts::getBWeight(const AnalysisEvent& event,
 
 double Cuts::getBSF(const int flavour, const int type, const double pt) const
 {
-    double sf{1.0};
-    const double& x{pt};
-
     if (!is2016_)
     { // is 2017
         // MEDIUM
+
+        static constexpr std::array<double, 10> ptBinEdges{
+            20, 30, 50, 70, 100, 140, 200, 300, 600, 1000};
+        const auto ptBin{std::distance(
+            ptBinEdges.begin(),
+            std::upper_bound(ptBinEdges.begin(), ptBinEdges.end(), pt))};
+        const auto mujets_sf = [pt, type](const double p0) {
+            return (0.941966 * ((1 + 0.24108 * pt) / (1 + 0.248776 * pt)))
+                   + type * p0;
+        };
+        const auto incl_sf = [pt, type]() {
+            return (0.949449 + 0.000516201 * pt + 7.13398e-08 * pt * pt
+                    + -3.55644e-10 * pt * pt * pt)
+                   * (1 + type * 0.082197);
+        };
+
         switch (flavour)
         {
             case 0: // B flavour
-                switch (type)
+                if (type == 0)
                 {
-                    case 0: // central
-                        if (pt > 20 && pt < 1000)
-                        {
-                            return 0.941966
-                                   * ((1. + (0.0241018 * x))
-                                      / (1. + (0.0248776 * x)));
-                        }
-                        else
-                        {
+                    return mujets_sf(0);
+                }
+                else if (std::abs(type) == 1)
+                {
+                    switch (ptBin)
+                    {
+                        case 1: return mujets_sf(0.051529459655284882);
+                        case 2: return mujets_sf(0.017671864479780197);
+                        case 3: return mujets_sf(0.022306634113192558);
+                        case 4: return mujets_sf(0.023042259737849236);
+                        case 5: return mujets_sf(0.039661582559347153);
+                        case 6: return mujets_sf(0.061514820903539658);
+                        case 7: return mujets_sf(0.071018315851688385);
+                        case 8: return mujets_sf(0.054169680923223495);
+                        case 9: return mujets_sf(0.063008971512317657);
+                        default:
                             throw std::runtime_error(
                                 "pT out of range of b tag SFs");
-                        }
-                    case 1: // up
-                        if (pt > 20 && pt < 30)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.051529459655284882;
-                        }
-                        else if (pt < 50)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.017671864479780197;
-                        }
-                        else if (pt < 70)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.022306634113192558;
-                        }
-                        else if (pt < 100)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.023042259737849236;
-                        }
-                        else if (pt < 140)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.039661582559347153;
-                        }
-                        else if (pt < 200)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.061514820903539658;
-                        }
-                        else if (pt < 300)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.071018315851688385;
-                        }
-                        else if (pt < 600)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.054169680923223495;
-                        }
-                        else if (pt < 1000)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.063008971512317657;
-                        }
-                        else
-                        {
-                            throw std::runtime_error(
-                                "pT out of range of b tag SFs");
-                        }
-                    case -1: // down
-                        if (pt > 20 && pt < 30)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.051529459655284882;
-                        }
-                        else if (pt < 50)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.017671864479780197;
-                        }
-                        else if (pt < 70)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.022306634113192558;
-                        }
-                        else if (pt < 100)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.023042259737849236;
-                        }
-                        else if (pt < 140)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.039661582559347153;
-                        }
-                        else if (pt < 200)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.061514820903539658;
-                        }
-                        else if (pt < 300)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.071018315851688385;
-                        }
-                        else if (pt < 600)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.054169680923223495;
-                        }
-                        else if (pt < 1000)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.063008971512317657;
-                        }
-                        else
-                        {
-                            throw std::runtime_error(
-                                "pT out of range of b tag SFs");
-                        }
-                    default:
-                        throw std::runtime_error(
-                            "Unknown b tag systematic type");
+                    }
+                }
+                else
+                {
+                    throw std::runtime_error("Unknown b tag systematic type");
                 }
             case 1: // C flavour
-                switch (type)
+                if (type == 0)
                 {
-                    case 0: // central
-                        if (pt > 20 && pt < 1000)
-                        {
-                            return 0.941966
-                                   * ((1. + (0.0241018 * x))
-                                      / (1. + (0.0248776 * x)));
-                        }
-                        else
-                        {
+                    return mujets_sf(0);
+                }
+                else if (std::abs(type) == 1)
+                {
+                    switch (ptBin)
+                    {
+                        case 1: return mujets_sf(0.15458837151527405);
+                        case 2: return mujets_sf(0.053015593439340591);
+                        case 3: return mujets_sf(0.066919900476932526);
+                        case 4: return mujets_sf(0.069126777350902557);
+                        case 5: return mujets_sf(0.11898474395275116);
+                        case 6: return mujets_sf(0.18454445898532867);
+                        case 7: return mujets_sf(0.21305495500564575);
+                        case 8: return mujets_sf(0.16250903904438019);
+                        case 9: return mujets_sf(0.18902692198753357);
+                        default:
                             throw std::runtime_error(
                                 "pT out of range of b tag SFs");
-                        }
-                    case 1: // up
-                        if (pt > 20 && pt < 30)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.15458837151527405;
-                        }
-                        else if (pt < 50)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.053015593439340591;
-                        }
-                        else if (pt < 70)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.066919900476932526;
-                        }
-                        else if (pt < 100)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.069126777350902557;
-                        }
-                        else if (pt < 140)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.11898474395275116;
-                        }
-                        else if (pt < 200)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.18454445898532867;
-                        }
-                        else if (pt < 300)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.21305495500564575;
-                        }
-                        else if (pt < 600)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.16250903904438019;
-                        }
-                        else if (pt < 1000)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   + 0.18902692198753357;
-                        }
-                        else
-                        {
-                            throw std::runtime_error(
-                                "pT out of range of b tag SFs");
-                        }
-                    case -1: // down
-                        if (pt > 20 && pt < 30)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.15458837151527405;
-                        }
-                        else if (pt < 50)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.053015593439340591;
-                        }
-                        else if (pt < 70)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.066919900476932526;
-                        }
-                        else if (pt < 100)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.069126777350902557;
-                        }
-                        else if (pt < 140)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.11898474395275116;
-                        }
-                        else if (pt < 200)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.18454445898532867;
-                        }
-                        else if (pt < 300)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.21305495500564575;
-                        }
-                        else if (pt < 600)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.16250903904438019;
-                        }
-                        else if (pt < 1000)
-                        {
-                            return (0.941966
-                                    * ((1. + (0.0241018 * x))
-                                       / (1. + (0.0248776 * x))))
-                                   - 0.18902692198753357;
-                        }
-                        else
-                        {
-                            throw std::runtime_error(
-                                "pT out of range of b tag SFs");
-                        }
-                    default:
-                        throw std::runtime_error(
-                            "Unknown b tag systematic type");
+                    }
+                }
+                else
+                {
+                    throw std::runtime_error("Unknown b tag systematic type");
                 }
             case 2: // UDSG flavour
-                switch (type)
+                if (std::abs(type) <= 1)
                 {
-                    case 0: // central
-                        return 0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
-                               + -3.55644e-10 * x * x * x;
-                    case 1: // up
-                        return (0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
-                                + -3.55644e-10 * x * x * x)
-                               * (1
-                                  + (0.115123 + 0.000153114 * x
-                                     + -1.72111e-07 * x * x));
-                    case -1: // down
-                        return (0.949449 + 0.000516201 * x + 7.13398e-08 * x * x
-                                + -3.55644e-10 * x * x * x)
-                               * (1
-                                  - (0.115123 + 0.000153114 * x
-                                     + -1.72111e-07 * x * x));
-                    default:
-                        throw std::runtime_error(
-                            "Unknown b tag systematic type");
+                    return incl_sf();
+                }
+                else
+                {
+                    throw std::runtime_error("Unknown b tag systematic type");
                 }
             default:
                 throw std::runtime_error("Unknown b tag systematic flavour");
@@ -3049,6 +2788,10 @@ double Cuts::getBSF(const int flavour, const int type, const double pt) const
     }
     else
     { // is 2016
+
+        double sf{1.0};
+        const double& x{pt};
+
         // MEDIUM
         if (flavour == 0)
         { // B flavour
@@ -3234,7 +2977,7 @@ double Cuts::getBSF(const int flavour, const int type, const double pt) const
                      + 2.20966e-10 * x * x * x)
                     * (1 - (0.100485 + 3.95509e-05 * x + -4.90326e-08 * x * x));
         }
-    }
 
-    return sf;
+        return sf;
+    }
 }
