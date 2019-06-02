@@ -1184,29 +1184,6 @@ std::pair<std::vector<int>, std::vector<float>>
 
         double deltaLep{std::numeric_limits<double>::infinity()};
 
-        /*
-            // Electron cleaning for synch
-            for ( unsigned int lep = 0; lep < event.electronIndexTight.size();
-           lep++ ) { TLorentzVector tempVec{
-           event.elePF2PATPX[event.electronIndexTight[lep]],
-           event.elePF2PATPY[event.electronIndexTight[lep]],
-           event.elePF2PATPZ[event.electronIndexTight[lep]],
-           event.elePF2PATE[event.electronIndexTight[lep]] }; if (deltaLep >
-           deltaR( tempVec.Eta(), tempVec.Phi(), jetVec.Eta(),jetVec.Phi() ) )
-                deltaLep = deltaR( tempVec.Eta(), tempVec.Phi(),
-           jetVec.Eta(),jetVec.Phi());
-            }
-
-            // Muon cleaning for synch
-            for	( unsigned int lep {0}; lep < event.muonIndexTight.size();
-           lep++ ) { TLorentzVector tempVec{
-           event.muonPF2PATPX[event.muonIndexTight[lep]],event.muonPF2PATPY[event.muonIndexTight[lep]],event.muonPF2PATPZ[event.muonIndexTight[lep]],event.muonPF2PATE[event.muonIndexTight[lep]]
-           }; if (deltaLep > deltaR( tempVec.Eta(), tempVec.Phi(),
-           jetVec.Eta(),jetVec.Phi())) deltaLep = deltaR( tempVec.Eta(),
-           tempVec.Phi(), jetVec.Eta(),jetVec.Phi());
-            }
-        */
-
         if (deltaLep > deltaR(event.zPairLeptons.first.Eta(),
                               event.zPairLeptons.first.Phi(),
                               jetVec.Eta(),
@@ -1378,9 +1355,6 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
 
     // single muon triggers
     const bool muTrig{event.muTrig()};
-
-    // TRIGGER SFs
-    // NB, Synch logic doesn't allow for them to be applied currently
 
     std::string channel = "";
 
