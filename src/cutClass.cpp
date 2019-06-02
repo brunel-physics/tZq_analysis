@@ -2674,6 +2674,7 @@ double Cuts::getBSF(const int flavour, const int type, const double pt) const
 {
     if (!is2016_)
     { // is 2017
+        // https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X
         // MEDIUM
 
         static constexpr std::array<double, 10> ptBinEdges{
