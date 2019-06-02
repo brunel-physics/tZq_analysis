@@ -1,5 +1,3 @@
-#include "analysisAlgo.hpp"
-
 #include "AnalysisEvent.hpp"
 #include "TCanvas.h"
 #include "TH1D.h"
@@ -10,6 +8,7 @@
 #include "TMVA/Timer.h"
 #include "TPad.h"
 #include "TTree.h"
+#include "analysisAlgo.hpp"
 #include "config_parser.hpp"
 
 #include <LHAPDF/LHAPDF.h>
@@ -297,43 +296,44 @@ void AnalysisAlgo::setupSystematics()
     { // If 2017 mode, get 2017 PU
         // Make pileupReweighting stuff here
         dataPileupFile = new TFile{"pileup/2017/truePileupTest.root", "READ"};
-        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        dataPU = dynamic_cast<TH1D*>(dataPileupFile->Get("pileup")->Clone());
         mcPileupFile = new TFile{"pileup/2017/pileupMC.root", "READ"};
-        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+        mcPU = dynamic_cast<TH1D*>(mcPileupFile->Get("pileup")->Clone());
 
         // Get systematic files too.
         systUpFile = new TFile{"pileup/2017/truePileupUp.root", "READ"};
-        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        pileupUpHist = dynamic_cast<TH1D*>(systUpFile->Get("pileup")->Clone());
         systDownFile = new TFile{"pileup/2017/truePileupDown.root", "READ"};
-        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+        pileupDownHist =
+            dynamic_cast<TH1D*>(systDownFile->Get("pileup")->Clone());
     }
     else
     {
         // Make pileupReweighting stuff here
         dataPileupFile = new TFile{"pileup/2016/truePileupTest.root", "READ"};
-        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        dataPU = (TH1D*)(dataPileupFile->Get("pileup")->Clone());
         mcPileupFile = new TFile{"pileup/2016/pileupMC.root", "READ"};
-        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+        mcPU = (TH1D*)(mcPileupFile->Get("pileup")->Clone());
 
         // Get systematic files too.
         systUpFile = new TFile{"pileup/2016/truePileupUp.root", "READ"};
-        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        pileupUpHist = (TH1D*)(systUpFile->Get("pileup")->Clone());
         systDownFile = new TFile{"pileup/2016/truePileupDown.root", "READ"};
-        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+        pileupDownHist = (TH1D*)(systDownFile->Get("pileup")->Clone());
     }
 
-    puReweight = (TH1F*)(dataPU->Clone());
+    puReweight = static_cast<TH1D*>(dataPU->Clone());
     puReweight->Scale(1.0 / puReweight->Integral());
     mcPU->Scale(1.0 / mcPU->Integral());
     puReweight->Divide(mcPU);
     puReweight->SetDirectory(nullptr);
 
     /// And do the same for systematic sampl
-    puSystUp = (TH1F*)(pileupUpHist->Clone());
+    puSystUp = static_cast<TH1D*>(pileupUpHist->Clone());
     puSystUp->Scale(1.0 / puSystUp->Integral());
     puSystUp->Divide(mcPU);
     puSystUp->SetDirectory(nullptr);
-    puSystDown = (TH1F*)(pileupDownHist->Clone());
+    puSystDown = static_cast<TH1D*>(pileupDownHist->Clone());
     puSystDown->Scale(1.0 / puSystDown->Integral());
     puSystDown->Divide(mcPU);
     puSystDown->SetDirectory(nullptr);

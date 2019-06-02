@@ -103,16 +103,16 @@ class AnalysisAlgo
     // Making a vector of strings that will give systematics name.
     std::vector<std::string> systNames;
     TFile* dataPileupFile;
-    TH1F* dataPU;
+    TH1D* dataPU;
     TFile* mcPileupFile;
-    TH1F* mcPU;
+    TH1D* mcPU;
     TFile* systUpFile;
-    TH1F* pileupUpHist;
+    TH1D* pileupUpHist;
     TFile* systDownFile;
-    TH1F* pileupDownHist;
-    TH1F* puReweight;
-    TH1F* puSystUp;
-    TH1F* puSystDown;
+    TH1D* pileupDownHist;
+    TH1D* puReweight;
+    TH1D* puSystUp;
+    TH1D* puSystDown;
 
     // MC weight stuff
     double sumPositiveWeights_;
