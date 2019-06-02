@@ -25,7 +25,7 @@ class Cuts
                         std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                         TH1D& cutFlow,
                         const int syst,
-                        const bool isControl = false);
+                        const bool skipZCut = false);
     std::pair<std::vector<int>, std::vector<float>>
         makeJetCuts(const AnalysisEvent& event,
                     const int syst,
@@ -51,13 +51,6 @@ class Cuts
                      float& eventWeight,
                      const int syst = 0) const;
     bool metFilters(const AnalysisEvent& event) const;
-
-    // Method to do ttbar cuts for the dilepton background estimation
-    bool ttbarCuts(AnalysisEvent& event,
-                   float& eventWeight,
-                   std::map<std::string, std::shared_ptr<Plots>>& plotMap,
-                   TH1D& cutFlow,
-                   const int systToRun);
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something

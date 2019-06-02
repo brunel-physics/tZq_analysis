@@ -289,13 +289,6 @@ bool Cuts::makeCuts(AnalysisEvent& event,
                     TH1D& cutFlow,
                     const int systToRun)
 {
-    // If emu and dilepton - doing ttbar background estimation
-
-    if (cutConfTrigLabel_.find("d") != std::string::npos)
-    {
-        return ttbarCuts(event, eventWeight, plotMap, cutFlow, systToRun);
-    }
-
     if (!skipTrigger_)
     {
         if (!triggerCuts(event, eventWeight, systToRun))
@@ -309,7 +302,8 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         return false;
     }
 
-    // Make lepton cuts. Does the inverted iso cuts if necessary.
+    // Make lepton cuts. If the trigLabel contains d, we are in the ttbar CR
+    // so the Z mass cut is skipped
     if (!makeLeptonCuts(event, eventWeight, plotMap, cutFlow, systToRun))
     {
         return false;
@@ -409,7 +403,7 @@ bool Cuts::makeLeptonCuts(
     std::map<std::string, std::shared_ptr<Plots>>& plotMap,
     TH1D& cutFlow,
     const int syst,
-    const bool isControl)
+    const bool skipZCut)
 {
     ////Do lepton selection.
 
@@ -588,11 +582,7 @@ bool Cuts::makeLeptonCuts(
     if (std::abs((event.zPairLeptons.first + event.zPairLeptons.second).M()
                  - 91.1)
             > invZMassCut_
-        && !isControl)
-    {
-        return false;
-    }
-    if (std::abs(invZmass) < 106 && isControl)
+        && !skipZCut)
     {
         return false;
     }
@@ -1516,101 +1506,6 @@ bool Cuts::metFilters(const AnalysisEvent& event) const
             || event.Flag_ecalBadCalibFilter <= 0))
     {
         return false;
-    }
-
-    return true;
-}
-
-bool Cuts::ttbarCuts(AnalysisEvent& event,
-                     float& eventWeight,
-                     std::map<std::string, std::shared_ptr<Plots>>& plotMap,
-                     TH1D& cutFlow,
-                     const int systToRun)
-{
-    if (!skipTrigger_ && !triggerCuts(event, eventWeight, systToRun))
-    {
-        return false;
-    }
-
-    if (!metFilters(event))
-    {
-        return false;
-    }
-
-    if (!(makeLeptonCuts(
-            event, eventWeight, plotMap, cutFlow, systToRun, true)))
-    {
-        return false;
-    }
-
-    std::pair<std::vector<int>, std::vector<float>> jetInfo;
-    jetInfo = makeJetCuts(event, systToRun, eventWeight);
-    event.jetIndex = jetInfo.first;
-    event.jetSmearValue = jetInfo.second;
-
-    if (event.jetIndex.size() < numJets_)
-    {
-        return false;
-    }
-    if (event.jetIndex.size() > maxJets_)
-    {
-        return false;
-    }
-
-    event.bTagIndex = makeBCuts(event, event.jetIndex, systToRun);
-
-    if (doPlots_ || fillCutFlow_)
-    {
-        cutFlow.Fill(2.5, eventWeight);
-    }
-    if (doPlots_)
-    {
-        plotMap["jetSel"]->fillAllPlots(event, eventWeight);
-    }
-
-    if (event.bTagIndex.size() < numbJets_)
-    {
-        return false;
-    }
-    if (event.bTagIndex.size() > maxbJets_)
-    {
-        return false;
-    }
-
-    if (doPlots_)
-    {
-        plotMap["bTag"]->fillAllPlots(event, eventWeight);
-    }
-    if (doPlots_ || fillCutFlow_)
-    {
-        cutFlow.Fill(3.5, eventWeight);
-    }
-
-    float invWmass{0.};
-    invWmass = getWbosonQuarksCand(event, event.jetIndex, systToRun);
-
-    // Debug chi2 cut
-    //   float topMass = getTopMass(event);
-    //   float topTerm = ( topMass-173.21 )/30.0;
-    //   float wTerm = ( (event.wPairQuarks.first +
-    //   event.wPairQuarks.second).M() - 80.3585 )/8.0;
-
-    //   float chi2 = topTerm*topTerm + wTerm*wTerm;
-    //   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
-    //   if ( chi2 >= 2.0 ) return false; //signal region
-
-    if (std::abs(invWmass) > invWMassCut_)
-    {
-        return false;
-    }
-
-    if (doPlots_)
-    {
-        plotMap["wMass"]->fillAllPlots(event, eventWeight);
-    }
-    if (doPlots_ || fillCutFlow_)
-    {
-        cutFlow.Fill(4.5, eventWeight);
     }
 
     return true;
