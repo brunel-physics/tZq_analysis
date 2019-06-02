@@ -1475,9 +1475,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
     if (channel == "mumu")
     {
         // Trigger logic for double + single triggers
-        if ((mumuTrig || muTrig)
-            && !(eeTrig || muEGTrig
-                 || eTrig))
+        if ((mumuTrig || muTrig) && !(eeTrig || muEGTrig || eTrig))
         {
             if (isMC_)
             {
