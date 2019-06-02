@@ -399,12 +399,6 @@ bool Cuts::makeCuts(AnalysisEvent& event,
         cutFlow.Fill(4.5, eventWeight);
     }
 
-    TLorentzVector tempMet;
-    tempMet.SetPtEtaPhiE(
-        event.metPF2PATPt, 0, event.metPF2PATPhi, event.metPF2PATEt);
-    double mtw{
-        std::sqrt(2 * event.metPF2PATPt * event.wLepton.Pt()
-                  * (1 - std::cos(event.metPF2PATPhi - event.wLepton.Phi())))};
     return true;
 }
 
