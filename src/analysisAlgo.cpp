@@ -759,7 +759,6 @@ void AnalysisAlgo::runMainAnalysis()
             int zLep1Index{
                 -1}; // Addresses in elePF2PATWhatever of the z lepton
             int zLep2Index{-1};
-            int wLepIndex{-1};
             int wQuark1Index{-1};
             int wQuark2Index{-1};
             std::vector<size_t> jetInd{}; // The index of the selected jets;

@@ -513,8 +513,6 @@ bool Cuts::makeLeptonCuts(
 
     // FINISH ROCHESTER CORRECTIONS BIT
 
-    // Should I make it return which leptons are the zMass candidate? Probably.
-    float invZmass{9999.};
     if (!getDileptonZCand(
             event, event.electronIndexTight, event.muonIndexTight))
     {
@@ -539,7 +537,10 @@ bool Cuts::makeLeptonCuts(
 
     if (isNPL_)
     { // if is NPL channel
-        double eeWeight{1.0}, mumuWeight{1.0}, emuWeight{1.0};
+        double eeWeight{1.0};
+        double mumuWeight{1.0};
+        double emuWeight{1.0};
+
         if (invZMassCut_ == 20. && invWMassCut_ == 20.)
         {
             if (is2016_)
@@ -772,11 +773,11 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
             }
         }
 
-        TLorentzVector lepton1{event.elePF2PATPX[electrons[0]],
+        const TLorentzVector lepton1{event.elePF2PATPX[electrons[0]],
                                event.elePF2PATPY[electrons[0]],
                                event.elePF2PATPZ[electrons[0]],
                                event.elePF2PATE[electrons[0]]};
-        TLorentzVector lepton2{event.elePF2PATPX[electrons[1]],
+        const TLorentzVector lepton2{event.elePF2PATPX[electrons[1]],
                                event.elePF2PATPY[electrons[1]],
                                event.elePF2PATPZ[electrons[1]],
                                event.elePF2PATE[electrons[1]]};
@@ -898,7 +899,6 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
     {
         for (unsigned k{0}; k < jets.size(); k++)
         {
-            TLorentzVector foo{getJetLVec(event, jets[k], syst, false).first};
             for (unsigned l{k + 1}; l < jets.size(); l++)
             {
                 // Now ensure that the leading b jet isn't one of these!
@@ -922,27 +922,23 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                             continue;
                     }
                 }
-                TLorentzVector jetVec1{
+                const TLorentzVector jetVec1{
                     getJetLVec(event, jets[k], syst, false).first};
-                TLorentzVector jetVec2{
+                const TLorentzVector jetVec2{
                     getJetLVec(event, jets[l], syst, false).first};
 
-                TLorentzVector wQuark1{
-                    jetVec1.Px(), jetVec1.Py(), jetVec1.Pz(), jetVec1.E()};
-                TLorentzVector wQuark2{
-                    jetVec2.Px(), jetVec2.Py(), jetVec2.Pz(), jetVec2.E()};
-                double invWbosonMass{(wQuark1 + wQuark2).M() - 80.385};
+                double invWbosonMass{(jetVec1 + jetVec2).M() - 80.385};
 
                 if (std::abs(invWbosonMass) < std::abs(closestWmass))
                 {
                     event.wPairQuarks.first =
-                        wQuark1.Pt() > wQuark2.Pt() ? wQuark1 : wQuark2;
+                        jetVec1.Pt() > jetVec2.Pt() ? jetVec1 : jetVec2;
                     event.wPairIndex.first =
-                        wQuark1.Pt() > wQuark2.Pt() ? jets[k] : jets[l];
+                        jetVec1.Pt() > jetVec2.Pt() ? jets[k] : jets[l];
                     event.wPairQuarks.second =
-                        wQuark1.Pt() > wQuark2.Pt() ? wQuark2 : wQuark1;
+                        jetVec1.Pt() > jetVec2.Pt() ? jetVec2 : jetVec1;
                     event.wPairIndex.second =
-                        wQuark1.Pt() > wQuark2.Pt() ? jets[l] : jets[k];
+                        jetVec1.Pt() > jetVec2.Pt() ? jets[l] : jets[k];
                     closestWmass = invWbosonMass;
                 }
             }
@@ -953,15 +949,11 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
 
 float Cuts::getTopMass(const AnalysisEvent& event) const
 {
-    TLorentzVector metVec{
-        event.metPF2PATPx, event.metPF2PATPy, 0, event.metPF2PATEt};
     TLorentzVector bVec(event.jetPF2PATPx[event.jetIndex[event.bTagIndex[0]]],
                         event.jetPF2PATPy[event.jetIndex[event.bTagIndex[0]]],
                         event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                         event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
-    float topMass{-1.0};
-    topMass = (bVec + event.wPairQuarks.first + event.wPairQuarks.second).M();
-    return topMass;
+    return (bVec + event.wPairQuarks.first + event.wPairQuarks.second).M();
 }
 
 std::pair<std::vector<int>, std::vector<float>>
@@ -1226,7 +1218,7 @@ std::pair<std::vector<int>, std::vector<float>>
         {
             bWeight = 1.;
         }
-        float bWeightErr{float(
+        const float bWeightErr{float(
             std::sqrt(pow(err1 + err2, 2) + pow(err3 + err4, 2)) * bWeight)};
         if (syst == 256)
         {
@@ -1250,7 +1242,7 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
     std::vector<int> bJets;
     for (unsigned int i = 0; i < jets.size(); i++)
     {
-        TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false).first};
+        const TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false).first};
         if (event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]]
             <= bDiscCut_)
         {
@@ -1560,9 +1552,10 @@ float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
 
 float Cuts::eleSF(const double pt, const double eta, const int syst) const
 {
-    double maxPt{h_eleSFs->GetYaxis()->GetXmax() - 0.1};
-    double minRecoPt{h_eleReco->GetYaxis()->GetXmin() + 0.1};
-    unsigned bin1{0}, bin2{0};
+    const double maxPt{h_eleSFs->GetYaxis()->GetXmax() - 0.1};
+    const double minRecoPt{h_eleReco->GetYaxis()->GetXmin() + 0.1};
+    unsigned bin1{0};
+    unsigned bin2{0};
 
     // If cut-based, std::abs eta, else just eta
     if (pt <= maxPt)
@@ -1859,13 +1852,13 @@ float Cuts::getJECUncertainty(const float pt,
         }
     }
 
-    float lowFact{syst == 4 ? jecSFUp_[etaBin][ptBin]
+    const float lowFact{syst == 4 ? jecSFUp_[etaBin][ptBin]
                             : jecSFDown_[etaBin][ptBin]};
-    float hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
+    const float hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
                            : jecSFDown_[etaBin][ptBin + 1]};
     // Now do some interpolation
-    float a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
-    float b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
+    const float a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
+    const float b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
             / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
     return (syst == 4 ? a * pt + b : -(a * pt + b));
 }
@@ -1937,8 +1930,6 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
     auto [jerSF, jerSigma] =
         is2016_ ? jet2016SFs(std::abs(event.jetPF2PATEta[index]))
                 : jet2017SFs(std::abs(event.jetPF2PATEta[index]));
-    // const double
-    // ptRes{jet2016SFs(std::abs(event.jetPF2PATEta[index]).second};
 
     if (syst == 16)
     {
@@ -1962,7 +1953,7 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
     {
         std::normal_distribution<> d(
             0, ptRes * std::sqrt(std::max(jerSF * jerSF - 1, 0.)));
-        std::mt19937 gen(rand());
+        static std::mt19937 gen(rand());
         newSmearValue = 1.0 + d(gen);
     }
 
@@ -2394,8 +2385,8 @@ void Cuts::getBWeight(const AnalysisEvent& event,
 
     float SFerr{0.};
     float jetPt = jet.Pt();
-    float maxBjetPt{670};
-    float maxLjetPt{1000.0};
+    constexpr float maxBjetPt{670};
+    constexpr float maxLjetPt{1000.0};
     bool doubleUncertainty{false};
     // Do some things if it's a b or c
 
