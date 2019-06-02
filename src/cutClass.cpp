@@ -1148,33 +1148,18 @@ std::pair<std::vector<int>, std::vector<float>>
             continue;
         }
 
-        double deltaLep{std::numeric_limits<double>::infinity()};
-
-        if (deltaLep > deltaR(event.zPairLeptons.first.Eta(),
-                              event.zPairLeptons.first.Phi(),
-                              jetVec.Eta(),
-                              jetVec.Phi()))
-        {
-            deltaLep = deltaR(event.zPairLeptons.first.Eta(),
-                              event.zPairLeptons.first.Phi(),
-                              jetVec.Eta(),
-                              jetVec.Phi());
-        }
-        if (deltaLep > deltaR(event.zPairLeptons.second.Eta(),
-                              event.zPairLeptons.second.Phi(),
-                              jetVec.Eta(),
-                              jetVec.Phi()))
-        {
-            deltaLep = deltaR(event.zPairLeptons.second.Eta(),
-                              event.zPairLeptons.second.Phi(),
-                              jetVec.Eta(),
-                              jetVec.Phi());
-        }
+        const double deltaLep{std::min(deltaR(event.zPairLeptons.first.Eta(),
+                                              event.zPairLeptons.first.Phi(),
+                                              jetVec.Eta(),
+                                              jetVec.Phi()),
+                                       deltaR(event.zPairLeptons.second.Eta(),
+                                              event.zPairLeptons.second.Phi(),
+                                              jetVec.Eta(),
+                                              jetVec.Phi()))};
 
         if (deltaLep < 0.4 && isProper)
         {
-            continue; // Only start rejecting things when actually making the
-                      // jet cuts!
+            continue;
         }
 
         //    if (event.jetPF2PATdRClosestLepton[i] < 0.5) continue;
