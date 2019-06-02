@@ -1616,18 +1616,18 @@ bool Cuts::ttbarCuts(AnalysisEvent& event,
     return true;
 }
 
-double Cuts::deltaR(const float eta1,
-                    const float phi1,
-                    const float eta2,
-                    const float phi2) const
+float Cuts::deltaPhi(const float phi1, const float phi2) const
 {
-    double dEta{eta1 - eta2};
-    double dPhi{phi1 - phi2};
-    while (std::abs(dPhi) > M_PI)
-    {
-        dPhi += (dPhi > 0. ? -2 * M_PI : 2 * M_PI);
-    }
-    return std::sqrt((dEta * dEta) + (dPhi * dPhi));
+    return std::atan2(std::sin(phi1 - phi2), std::cos(phi1 - phi2));
+}
+
+float Cuts::deltaR(const float eta1,
+                   const float phi1,
+                   const float eta2,
+                   const float phi2) const
+{
+    return std::sqrt(std::pow(eta1 - eta2, 2)
+                     + std::pow(deltaPhi(phi1, phi2), 2));
 }
 
 float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const

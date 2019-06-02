@@ -61,10 +61,11 @@ class Cuts
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
-    double deltaR(const float eta1,
-                  const float phi1,
-                  const float eta2,
-                  const float phi2) const;
+    [[gnu::const]] float deltaR(const float eta1,
+                                const float phi1,
+                                const float eta2,
+                                const float phi2) const;
+    [[gnu::const]] float deltaPhi(const float phi1, const float phi2) const;
 
     // Function to get lepton SF
     float getLeptonWeight(const AnalysisEvent& event, const int syst) const;
