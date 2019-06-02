@@ -443,12 +443,7 @@ bool Cuts::makeLeptonCuts(
 
     // If making NPL shape postLepSkim, MC leptons must BOTH be prompt
     if (isNPL_ && numTightEle_ == 2 && isMC_)
-    { // if ee channel
-        //        std::cout << "Is ele 1/2 prompt? : " <<
-        //        event.genElePF2PATPromptFinalState[event.zPairIndex.first]
-        //        << "/" <<
-        //        event.genElePF2PATPromptFinalState[event.zPairIndex.second]
-        //        << std::endl;
+    {
         eventWeight *= -1.0;
         if (!event.genElePF2PATPromptFinalState[event.zPairIndex.first])
         {
@@ -603,9 +598,6 @@ bool Cuts::makeLeptonCuts(
     {
         return false;
     }
-    //  if (std::abs( (event.zPairLeptons.first +
-    //  event.zPairLeptons.second).M() -91.1 ) <= invZMassCut_ && !isControl)
-    //  return false;
     if (std::abs(invZmass) < 106 && isControl)
     {
         return false;
@@ -805,11 +797,6 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
                                event.elePF2PATPZ[electrons[1]],
                                event.elePF2PATE[electrons[1]]};
 
-        // TLorentzVector
-        // lepton1{event.elePF2PATGsfPx[electrons[0]],event.elePF2PATGsfPy[electrons[0]],event.elePF2PATGsfPz[electrons[0]],event.elePF2PATGsfE[electrons[0]]};
-        // TLorentzVector
-        // lepton2{event.elePF2PATGsfPx[electrons[1]],event.elePF2PATGsfPy[electrons[1]],event.elePF2PATGsfPz[electrons[1]],event.elePF2PATGsfE[electrons[1]]};
-
         event.zPairLeptons.first =
             lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
         event.zPairIndex.first =
@@ -972,11 +959,6 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                         wQuark1.Pt() > wQuark2.Pt() ? wQuark2 : wQuark1;
                     event.wPairIndex.second =
                         wQuark1.Pt() > wQuark2.Pt() ? jets[l] : jets[k];
-                    // 	    std::cout << "wQuarks pT: " <<
-                    // event.wPairQuarks.first.Pt() << "/" <<
-                    // event.wPairQuarks.second.Pt() << std::endl;
-                    //	    std::cout << "closestMass/invWmass: " <<
-                    // closestWmass << "/" << invWbosonMass << std::endl;
                     closestWmass = invWbosonMass;
                 }
             }
@@ -1017,15 +999,11 @@ std::pair<std::vector<int>, std::vector<float>>
     float err3{0.};
     float err4{0.};
 
-    //  std::cout << event.eventNum << std::endl << "Jets: " << std::endl;
     for (int i{0}; i < event.numJetPF2PAT; i++)
     {
-        // if (std::sqrt(event.jetPF2PATPx[i] * event.jetPF2PATPx[i] +
-        // event.jetPF2PATPy[i] * event.jetPF2PATPy[i]) < jetPt_) continue;
         auto [jetVec, smear] = getJetLVec(event, i, syst, true);
         smears.emplace_back(smear);
-        // std::cout << getJECUncertainty(sqrt(jetPx*jetPx + jetPy*jetPy),
-        // event.jetPF2PATEta[i],syst) << " " << syst << std::endl;
+
         if (jetVec.Pt() <= jetPt_ || jetVec.Eta() >= jetEta_)
         {
             continue;
@@ -1199,8 +1177,6 @@ std::pair<std::vector<int>, std::vector<float>>
                               jetVec.Phi());
         }
 
-        // std::cout << event.jetPF2PATPtRaw[i] << " " << deltaLep <<
-        // std::endl;
         if (deltaLep < 0.4 && isProper)
         {
             continue; // Only start rejecting things when actually making the
@@ -1315,7 +1291,6 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
         {
             continue;
         }
-        //    if (event.jetPF2PATEta[ jets[i] ] >= 2.40) continue;
         bJets.emplace_back(i);
     }
     return bJets;
@@ -1460,12 +1435,6 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
                 {
                     twgt -= 0.01;
                 }
-
-                //        if (syst == 1) twgt += ( 0.00016 * lumiRunsBCDEF_ +
-                //        0.00016 * lumiRunsGH_ ) / ( lumiRunsBCDEF_ +
-                //        lumiRunsGH_ + 1.0e-06 ); if (syst == 2) twgt -= (
-                //        0.00016 * lumiRunsBCDEF_ + 0.00016 * lumiRunsGH_ ) /
-                //        ( lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06 );
             }
         }
         else if (channel == "emu")
@@ -1526,13 +1495,10 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
 
     if (channel == "mumu")
     {
-        //    if ( mumuTrig && !(eeTrig || muEGTrig) ) // Original trigger
-        //    logic, for double triggers only
+        // Trigger logic for double + single triggers
         if ((mumuTrig || muTrig)
             && !(eeTrig || muEGTrig
-                 || eTrig)) // Trigger logic for double + single triggers
-        //    if ( (muTrig) && !(eeTrig || muEGTrig || eTrig) ) // Single
-        //    trigger only whilst in debug mode
+                 || eTrig))
         {
             if (isMC_)
             {
@@ -1706,12 +1672,6 @@ float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
         leptonWeight *= eleSF(event.zPairLeptons.second.Pt(),
                               event.elePF2PATSCEta[event.zPairIndex.second],
                               syst);
-        // Double + Single trigger SFs
-        /*
-            // Leading lepton is always above 25 GeV, no need to do logic
-           for that if ( event.zPairLeptons.second.Pt() < 20 ) leptonWeight
-           *= 0.97869; else leptonWeight *= 0.98845;
-        */
     }
 
     else if (numTightMu_ == 2)
@@ -1895,10 +1855,6 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
         muonPFisoSF = (h_muonPFiso1->GetBinContent(binIso1) * lumiRunsBCDEF_
                        + h_muonPFiso2->GetBinContent(binIso2) * lumiRunsGH_)
                       / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
-        //    muonIdSF = ( h_muonIDs1->GetBinContent(binId1) );
-        //    muonPFisoSF = ( h_muonPFiso1->GetBinContent(binIso1) );
-        //    muonIdSF = ( h_muonIDs2->GetBinContent(binId2) );
-        //    muonPFisoSF = ( h_muonPFiso2->GetBinContent(binIso2) );
 
         if (syst == 1)
         {
@@ -1919,10 +1875,6 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
                      + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
                         / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
                     + 0.005;
-                //      muonIdSF += ( h_muonIDs1->GetBinError(binId1) );
-                //      muonPFisoSF += ( h_muonPFiso1->GetBinError(binIso1) );
-                //      muonIdSF += ( h_muonIDs2->GetBinError(binId2) );
-                //      muonPFisoSF += ( h_muonPFiso2->GetBinError(binIso2) );
             }
         }
         else if (syst == 2)
@@ -1944,10 +1896,6 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
                      + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
                         / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
                     - 0.005;
-                //      muonIdSF -= ( h_muonIDs1->GetBinError(binId1) );
-                //      muonPFisoSF -= ( h_muonPFiso1->GetBinError(binIso1) );
-                //      muonIdSF -= ( h_muonIDs2->GetBinError(binId2) );
-                //      muonPFisoSF -= ( h_muonPFiso2->GetBinError(binIso2) );
             }
         }
 
