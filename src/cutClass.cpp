@@ -90,29 +90,29 @@ Cuts::Cuts(const bool doPlots,
     , metDileptonCut_{50.0}
 
 {
-    // Space here in case other stuff needs to be done.
-
-    std::cout << "lumi set for Runs B-F: " << lumiRunsBCDEF_ << std::endl;
-    std::cout << "lumi set for Runs G-H: " << lumiRunsGH_ << std::endl;
-
     std::cout << "\nInitialises fine" << std::endl;
     initialiseJECCors();
     std::cout << "Gets past JEC Cors" << std::endl;
 
     if (!is2016_)
     {
+        std::cout << "lumi set for Runs B-F: " << lumiRunsBCDEF_ << std::endl;
+        std::cout << "lumi set for Runs G-H: " << lumiRunsGH_ << std::endl;
+
         std::cout << "\nLoad 2017 electron SFs from root file ... "
                   << std::endl;
-        electronSFsFile =
-            new TFile("scaleFactors/2017/"
-                      "egammaEffi.txt_EGM2D_runBCDEF_"
-                      "passingTight94X.root"); // Electron cut-based
-                                               // Tight ID
+
+        // Electron tight cut-based tight ID
+        electronSFsFile = new TFile("scaleFactors/2017/"
+                                    "egammaEffi.txt_EGM2D_runBCDEF_"
+                                    "passingTight94X.root");
+
+        // Electron reco SF
         h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
         electronRecoFile = new TFile{
             "scaleFactors/2017/"
             "egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root"}; // Electron Reco
-                                                               // SF
+
         h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
         std::cout << "Got 2017 electron SFs!\n" << std::endl;
 
@@ -121,97 +121,91 @@ Cuts::Cuts(const bool doPlots,
             "scaleFactors/2017/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
         muonIDsFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ID.root"};
         muonIsoFile1 = new TFile{"scaleFactors/2017/Muon_RunBCDEF_SF_ISO.root"};
-        muonHltFile1->cd("IsoMu27_PtEtaBins"); // Single Muon HLT SF
-        h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
-            "IsoMu27_PtEtaBins/abseta_pt_ratio")); // Single Muon
-                                                   // HLT SF
-        h_muonIDs1 = dynamic_cast<TH2D*>(muonIDsFile1->Get(
-            "NUM_TightID_DEN_genTracks_pt_abseta")); // Tight ID
-        h_muonPFiso1 = dynamic_cast<TH2D*>(muonIsoFile1->Get(
-            "NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta")); // Tight ID
+
+        // Single muon HLT SF
+        muonHltFile1->cd("IsoMu27_PtEtaBins");
+        h_muonHlt1 = dynamic_cast<TH2F*>(
+            muonHltFile1->Get("IsoMu27_PtEtaBins/abseta_pt_ratio"));
+
+        // Tight ID
+        h_muonIDs1 = dynamic_cast<TH2D*>(
+            muonIDsFile1->Get("NUM_TightID_DEN_genTracks_pt_abseta"));
+        h_muonPFiso1 = dynamic_cast<TH2D*>(
+            muonIsoFile1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"));
         std::cout << "Got 2017 muon SFs!\n" << std::endl;
     }
     else
     {
         std::cout << "\nLoad 2016 electron SFs from root file ... "
                   << std::endl;
-        electronHltFile = new TFile(
-            "scaleFactors/2016/"
-            "HLT_Ele32_eta2p1_WPTight_Gsf_FullRunRange.root"); // Single
-                                                               // Electron
-                                                               // HLT SF
+
+        // Single electron HLT SF
+        electronHltFile =
+            new TFile("scaleFactors/2016/"
+                      "HLT_Ele32_eta2p1_WPTight_Gsf_FullRunRange.root");
+
+        // Electron cut-based ID
         h_eleHlt = dynamic_cast<TH2F*>(electronHltFile->Get("SF"));
-        electronSFsFile = new TFile(
-            "scaleFactors/2016/egammaEffi_Tight_80X.txt_EGM2D.root"); // Electron
-                                                                      // cut-based
-                                                                      // Tight
-                                                                      // ID
+        electronSFsFile =
+            new TFile("scaleFactors/2016/egammaEffi_Tight_80X.txt_EGM2D.root");
         h_eleSFs = dynamic_cast<TH2F*>(electronSFsFile->Get("EGamma_SF2D"));
-        electronRecoFile = new TFile{
-            "scaleFactors/2016/egammaRecoEffi.txt_EGM2D.root"}; // Electron Reco
-                                                                // SF
+
+        // Electron reco SF
+        electronRecoFile =
+            new TFile{"scaleFactors/2016/egammaRecoEffi.txt_EGM2D.root"};
         h_eleReco = dynamic_cast<TH2F*>(electronRecoFile->Get("EGamma_SF2D"));
         std::cout << "Got 2016 electron SFs!\n" << std::endl;
 
         std::cout << "Load 2016 muon SFs from root file ... " << std::endl;
-        muonHltFile1 =
-            new TFile{"scaleFactors/2016/"
-                      "HLT_Mu24_EfficienciesAndSF_RunBtoF.root"}; // RunsB-F
-                                                                  // -
-                                                                  // pre-HIP
-                                                                  // fix
-        muonHltFile2 =
-            new TFile{"scaleFactors/2016/"
-                      "HLT_Mu24_EfficienciesAndSF_RunGtoH.root"}; // RunsB-F
-                                                                  // -
-                                                                  // pre-HIP
-                                                                  // fix
-        muonIDsFile1 = new TFile{
-            "scaleFactors/2016/MuonID_EfficienciesAndSF_BCDEF.root"}; // RunsB-F
-                                                                      // -
-                                                                      // pre-HIP
-                                                                      // fix
-        muonIDsFile2 = new TFile{
-            "scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"}; // RunsG-H -
-                                                                   // post-HIP
-                                                                   // fix
-        muonIsoFile1 = new TFile{
-            "scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"}; // RunsB-F
-                                                                       // -
-                                                                       // pre-HIP
-                                                                       // fix
-        muonIsoFile2 = new TFile{
-            "scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"}; // RunsG-H -
-                                                                    // post-HIP
-                                                                    // fix
 
-        muonHltFile1->cd(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
-        muonHltFile2->cd(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
+        // Runs B-F (pre-HIP fix)
+        muonHltFile1 = new TFile{"scaleFactors/2016/"
+                                 "HLT_Mu24_EfficienciesAndSF_RunBtoF.root"};
+        // Runs G-H (post-HIP fix)
+        muonHltFile2 = new TFile{"scaleFactors/2016/"
+                                 "HLT_Mu24_EfficienciesAndSF_RunGtoH.root"};
+
+        // Runs B-F (pre-HIP fix)
+        muonIDsFile1 =
+            new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_BCDEF.root"};
+        // Runs G-H (post-HIP fix)
+        muonIDsFile2 =
+            new TFile{"scaleFactors/2016/MuonID_EfficienciesAndSF_GH.root"};
+
+        // Runs B-F (pre-HIP fix)
+        muonIsoFile1 =
+            new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_BCDEF.root"};
+        // Runs G-H (post-HIP fix)
+        muonIsoFile2 =
+            new TFile{"scaleFactors/2016/MuonISO_EfficienciesAndSF_GH.root"};
+
+        // Single Muon HLT SF
+        muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins");
+        muonHltFile2->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins");
         h_muonHlt1 = dynamic_cast<TH2F*>(muonHltFile1->Get(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon
-                                                                // HLT SF
+            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio"));
         h_muonHlt2 = dynamic_cast<TH2F*>(muonHltFile2->Get(
-            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio")); // Single Muon
-                                                                // HLT SF
-        muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
-        muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
+            "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio"));
+
+        // Tight ID
+        muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta");
+        muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta");
         dynamic_cast<TH2F*>(
             muonIDsFile1->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
                               "abseta_pt_ratio"))
-            ->Copy(*h_muonIDs1); // Tight ID
+            ->Copy(*h_muonIDs1);
         h_muonIDs2 = dynamic_cast<TH2F*>(
             muonIDsFile2->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
-                              "abseta_pt_ratio")); // Tight
-                                                   // ID
-        muonIsoFile1->cd("TightISO_TightID_pt_eta"); // Tight Iso
-        muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
+                              "abseta_pt_ratio"));
+
+        // Tight Iso
+        muonIsoFile1->cd("TightISO_TightID_pt_eta");
+        muonIsoFile2->cd("TightISO_TightID_pt_eta");
         dynamic_cast<TH2F*>(
             muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"))
-            ->Copy(*h_muonPFiso1); // Tight Iso
-        h_muonPFiso2 = dynamic_cast<TH2F*>(muonIsoFile2->Get(
-            "TightISO_TightID_pt_eta/abseta_pt_ratio")); // Tight Iso
+            ->Copy(*h_muonPFiso1);
+        h_muonPFiso2 = dynamic_cast<TH2F*>(
+            muonIsoFile2->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"));
         std::cout << "Got 2016 muon SFs!\n" << std::endl;
     }
 }
