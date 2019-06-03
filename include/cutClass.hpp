@@ -30,27 +30,31 @@ class Cuts
         makeJetCuts(const AnalysisEvent& event,
                     const int syst,
                     float& eventWeight,
-                    const bool isProper = true);
-    std::vector<int> makeBCuts(AnalysisEvent& event,
-                               const std::vector<int> jets,
-                               const int syst = 0);
+                    const bool isProper = true) const;
+    [[gnu::pure]] std::vector<int> makeBCuts(const AnalysisEvent& event,
+                                             const std::vector<int> jets,
+                                             const int syst = 0) const;
 
-    std::vector<int> getTightEles(const AnalysisEvent& event) const;
-    std::vector<int> getLooseEles(const AnalysisEvent& event) const;
-    std::vector<int> getTightMuons(const AnalysisEvent& event) const;
-    std::vector<int> getLooseMuons(const AnalysisEvent& event) const;
+    [[gnu::pure]] std::vector<int>
+        getTightEles(const AnalysisEvent& event) const;
+    [[gnu::pure]] std::vector<int>
+        getLooseEles(const AnalysisEvent& event) const;
+    [[gnu::pure]] std::vector<int>
+        getTightMuons(const AnalysisEvent& event) const;
+    [[gnu::pure]] std::vector<int>
+        getLooseMuons(const AnalysisEvent& event) const;
     bool getDileptonZCand(AnalysisEvent& event,
                           const std::vector<int> electrons,
                           const std::vector<int> muons) const;
     float getWbosonQuarksCand(AnalysisEvent& event,
                               const std::vector<int> jets,
-                              const int syst);
+                              const int syst) const;
 
-    float getTopMass(const AnalysisEvent& event) const;
+    [[gnu::pure]] float getTopMass(const AnalysisEvent& event) const;
     bool triggerCuts(const AnalysisEvent& event,
                      float& eventWeight,
                      const int syst = 0) const;
-    bool metFilters(const AnalysisEvent& event) const;
+    [[gnu::const]] bool metFilters(const AnalysisEvent& event) const;
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
@@ -141,12 +145,12 @@ class Cuts
     std::pair<TLorentzVector, float> getJetLVec(const AnalysisEvent& event,
                                                 const int index,
                                                 const int syst,
-                                                const bool initialRun);
-    double jet2017PtSimRes(const double pt,
-                           const double eta,
-                           const double rho) const;
+                                                const bool initialRun) const;
+    [[gnu::const]] double jet2017PtSimRes(const double pt,
+                                          const double eta,
+                                          const double rho) const;
     std::pair<double, double> jet2016SFs(const float eta) const;
-    std::pair<double, double> jet2017SFs(const double eta) const;
+    [[gnu::const]] std::pair<double, double> jet2017SFs(const double eta) const;
 
     // Sets whether to do MC or data cuts. Set every time a new dataset is
     // processed in the main loop.
@@ -172,7 +176,8 @@ class Cuts
     std::vector<TH2D*> bTagEffPlots_;
     bool getBTagWeight_;
 
-    double getBSF(const int flavour, const int type, const double pt) const;
+    [[gnu::const]] double
+        getBSF(const int flavour, const int type, const double pt) const;
 
     void getBWeight(const AnalysisEvent& event,
                     const TLorentzVector jet,

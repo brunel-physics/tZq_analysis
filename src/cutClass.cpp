@@ -900,7 +900,7 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
 
 float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                                 const std::vector<int> jets,
-                                const int syst)
+                                const int syst) const
 {
     float closestWmass{std::numeric_limits<float>::infinity()};
     if (jets.size() > 2)
@@ -968,7 +968,7 @@ std::pair<std::vector<int>, std::vector<float>>
     Cuts::makeJetCuts(const AnalysisEvent& event,
                       const int syst,
                       float& eventWeight,
-                      const bool isProper)
+                      const bool isProper) const
 {
     std::vector<int> jets;
     std::vector<float> smears;
@@ -1243,9 +1243,9 @@ std::pair<std::vector<int>, std::vector<float>>
     return {jets, smears};
 }
 
-std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
+std::vector<int> Cuts::makeBCuts(const AnalysisEvent& event,
                                  const std::vector<int> jets,
-                                 const int syst)
+                                 const int syst) const
 {
     std::vector<int> bJets;
     for (unsigned int i = 0; i < jets.size(); i++)
@@ -1875,7 +1875,7 @@ float Cuts::getJECUncertainty(const float pt,
 std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
                                                   const int index,
                                                   const int syst,
-                                                  const bool initialRun)
+                                                  const bool initialRun) const
 {
     static constexpr double MIN_JET_ENERGY{1e-2};
     TLorentzVector returnJet;
