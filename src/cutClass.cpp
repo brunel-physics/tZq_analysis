@@ -1512,7 +1512,7 @@ bool Cuts::metFilters(const AnalysisEvent& event) const
     return true;
 }
 
-float Cuts::deltaPhi(const float phi1, const float phi2) const
+float Cuts::deltaPhi(const float phi1, const float phi2)
 {
     return std::atan2(std::sin(phi1 - phi2), std::cos(phi1 - phi2));
 }
@@ -1520,7 +1520,7 @@ float Cuts::deltaPhi(const float phi1, const float phi2) const
 float Cuts::deltaR(const float eta1,
                    const float phi1,
                    const float eta2,
-                   const float phi2) const
+                   const float phi2)
 {
     return std::sqrt(std::pow(eta1 - eta2, 2)
                      + std::pow(deltaPhi(phi1, phi2), 2));
@@ -1988,9 +1988,8 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
     return {returnJet, newSmearValue};
 }
 
-double Cuts::jet2017PtSimRes(const double pt,
-                             const double eta,
-                             const double rho) const
+double
+    Cuts::jet2017PtSimRes(const double pt, const double eta, const double rho)
 {
     if (pt < 15 || pt > 3000)
     {
@@ -2212,7 +2211,7 @@ double Cuts::jet2017PtSimRes(const double pt,
     }
 }
 
-std::pair<double, double> Cuts::jet2016SFs(const float eta) const
+std::pair<double, double> Cuts::jet2016SFs(const float eta)
 {
     // JER Scaling Factors and uncertainities for 2016
     float jerSF{0.};
@@ -2287,7 +2286,7 @@ std::pair<double, double> Cuts::jet2016SFs(const float eta) const
     return std::make_pair(jerSF, jerSigma);
 }
 
-std::pair<double, double> Cuts::jet2017SFs(const double eta) const
+std::pair<double, double> Cuts::jet2017SFs(const double eta)
 {
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Uncertainty
     constexpr std::array<double, 14> etaBinEdges{0,

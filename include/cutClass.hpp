@@ -58,11 +58,11 @@ class Cuts
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
-    [[gnu::const]] float deltaR(const float eta1,
-                                const float phi1,
-                                const float eta2,
-                                const float phi2) const;
-    [[gnu::const]] float deltaPhi(const float phi1, const float phi2) const;
+    [[gnu::const]] static float deltaR(const float eta1,
+                                       const float phi1,
+                                       const float eta2,
+                                       const float phi2);
+    [[gnu::const]] static float deltaPhi(const float phi1, const float phi2);
 
     // Function to get lepton SF
     float getLeptonWeight(const AnalysisEvent& event, const int syst) const;
@@ -146,11 +146,11 @@ class Cuts
                                                 const int index,
                                                 const int syst,
                                                 const bool initialRun) const;
-    [[gnu::const]] double jet2017PtSimRes(const double pt,
-                                          const double eta,
-                                          const double rho) const;
-    std::pair<double, double> jet2016SFs(const float eta) const;
-    [[gnu::const]] std::pair<double, double> jet2017SFs(const double eta) const;
+    [[gnu::const]] static double
+        jet2017PtSimRes(const double pt, const double eta, const double rho);
+    [[gnu::const]] static std::pair<double, double> jet2016SFs(const float eta);
+    [[gnu::const]] static std::pair<double, double>
+        jet2017SFs(const double eta);
 
     // Sets whether to do MC or data cuts. Set every time a new dataset is
     // processed in the main loop.
