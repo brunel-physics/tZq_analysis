@@ -6,16 +6,12 @@
 #include "plots.hpp"
 
 #include <TH1F.h>
+#include <TH2D.h>
+#include <TH2F.h>
 #include <TLorentzVector.h>
 #include <fstream>
 #include <map>
 #include <vector>
-
-class TH1D;
-class TH2F;
-class TH2D;
-class TH3D;
-class TGraphAsymmErrors;
 
 class Cuts
 {

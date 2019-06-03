@@ -276,44 +276,9 @@ int main(int argc, char* argv[])
                 {
                     // check eTrigger for emu first
                     // clang-format off
-                    const bool eTrig{is2016 ? event.HLT_Ele32_eta2p1_WPTight_Gsf_v2 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v3 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v4 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v5 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v6 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v7 > 0
-                                                  || event.HLT_Ele32_eta2p1_WPTight_Gsf_v8 > 0
-                                            : event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v1 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v2 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v3 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v4 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v5 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v6 > 0
-                                                  || event.HLT_Ele32_WPTight_Gsf_L1DoubleEG_v7 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v1 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v2 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v3 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v4 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v5 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v6 > 0
-                                                  || event.HLT_Ele35_WPTight_Gsf_v7 > 0};
+                    const bool eTrig{event.eTrig()};
                     // then check muTrigger for emu
-                    const bool muTrig{is2016
-                                          ? event.HLT_IsoMu24_v1 > 0
-                                                || event.HLT_IsoMu24_v2 > 0
-                                                || event.HLT_IsoMu24_v3 > 0
-                                                || event.HLT_IsoMu24_v4 > 0
-                                                || event.HLT_IsoTkMu24_v1 > 0
-                                                || event.HLT_IsoTkMu24_v2 > 0
-                                                || event.HLT_IsoTkMu24_v3 > 0
-                                                || event.HLT_IsoTkMu24_v4 > 0
-                                          : event.HLT_IsoMu27_v8 > 0
-                                                || event.HLT_IsoMu27_v9 > 0
-                                                || event.HLT_IsoMu27_v10 > 0
-                                                || event.HLT_IsoMu27_v11 > 0
-                                                || event.HLT_IsoMu27_v12 > 0
-                                                || event.HLT_IsoMu27_v13 > 0
-                                                || event.HLT_IsoMu27_v14 > 0};
+                    const bool muTrig{event.muTrig()};
                     // clang-format on
 
                     // If either single lepton  triggered fired, check to see if
