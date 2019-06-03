@@ -1412,9 +1412,33 @@ bool TriggerScaleFactors::metTriggerCut(AnalysisEvent* event)
 
 bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC)
 {
-    return event->Flag_HBHENoiseFilter > 0 || event->Flag_HBHENoiseIsoFilter > 0
-           || event->Flag_EcalDeadCellTriggerPrimitiveFilter > 0
-           || event->Flag_goodVertices > 0 || event->Flag_eeBadScFilter > 0;
+    if (event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0
+        || event->Flag_globalTightHalo2016Filter <= 0
+        || event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0
+        || event->Flag_goodVertices <= 0
+        || (!isMC && event->Flag_eeBadScFilter <= 0))
+    {
+        return false;
+    }
+
+    if (is2016_
+        && (event->Flag_ecalLaserCorrFilter <= 0
+            || event->Flag_chargedHadronTrackResolutionFilter <= 0
+            || event->Flag_muonBadTrackFilter <= 0 || event->Flag_badMuons <= 0
+            || event->Flag_duplicateMuons <= 0 || event->Flag_noBadMuons))
+    {
+        return false;
+    }
+
+    if (!is2016_
+        && (event->Flag_BadPFMuonFilter <= 0
+            || event->Flag_BadChargedCandidateFilter <= 0
+            || event->Flag_ecalBadCalibFilter <= 0))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
