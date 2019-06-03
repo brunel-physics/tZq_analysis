@@ -477,34 +477,42 @@ bool Cuts::makeLeptonCuts(
     }
 
     // DO ROCHESTER CORRECTIONS HERE
-    std::vector<float> SFs = {1.0};
+    std::vector<float> SFs{};
 
     for (auto muonIt = event.muonIndexTight.begin();
          muonIt != event.muonIndexTight.end();
          muonIt++)
     {
         float tempSF{1.0};
-        if (event.muonPF2PATPt[*muonIt] < 200.)
-        { // Only doing Rochester for 2016, method only applicable for pT < 200
-            if (isMC_)
+        if (isMC_)
+        {
+            if (event.genMuonPF2PATPT[*muonIt] > 0) // matched gen muon
             {
                 tempSF = rc_.kSpreadMC(event.muonPF2PATCharge[*muonIt],
                                        event.muonPF2PATPt[*muonIt],
                                        event.muonPF2PATEta[*muonIt],
                                        event.muonPF2PATPhi[*muonIt],
-                                       event.genMuonPF2PATPT[*muonIt],
-                                       0,
-                                       0);
+                                       event.genMuonPF2PATPT[*muonIt]);
             }
             else
             {
-                tempSF = rc_.kScaleDT(event.muonPF2PATCharge[*muonIt],
-                                      event.muonPF2PATPt[*muonIt],
-                                      event.muonPF2PATEta[*muonIt],
-                                      event.muonPF2PATPhi[*muonIt],
-                                      0,
-                                      0);
+                static std::uniform_real_distribution<> u{0, 1};
+                static std::mt19937 gen(rand());
+                tempSF =
+                    rc_.kSmearMC(event.muonPF2PATCharge[*muonIt],
+                                 event.muonPF2PATPt[*muonIt],
+                                 event.muonPF2PATEta[*muonIt],
+                                 event.muonPF2PATPhi[*muonIt],
+                                 event.muonPF2PATTkLysWithMeasurements[*muonIt],
+                                 u(gen));
             }
+        }
+        else
+        {
+            tempSF = rc_.kScaleDT(event.muonPF2PATCharge[*muonIt],
+                                  event.muonPF2PATPt[*muonIt],
+                                  event.muonPF2PATEta[*muonIt],
+                                  event.muonPF2PATPhi[*muonIt]);
         }
         SFs.emplace_back(tempSF);
     }
@@ -774,13 +782,13 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
         }
 
         const TLorentzVector lepton1{event.elePF2PATPX[electrons[0]],
-                               event.elePF2PATPY[electrons[0]],
-                               event.elePF2PATPZ[electrons[0]],
-                               event.elePF2PATE[electrons[0]]};
+                                     event.elePF2PATPY[electrons[0]],
+                                     event.elePF2PATPZ[electrons[0]],
+                                     event.elePF2PATE[electrons[0]]};
         const TLorentzVector lepton2{event.elePF2PATPX[electrons[1]],
-                               event.elePF2PATPY[electrons[1]],
-                               event.elePF2PATPZ[electrons[1]],
-                               event.elePF2PATE[electrons[1]]};
+                                     event.elePF2PATPY[electrons[1]],
+                                     event.elePF2PATPZ[electrons[1]],
+                                     event.elePF2PATE[electrons[1]]};
 
         event.zPairLeptons.first =
             lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
@@ -832,8 +840,8 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
                                event.muonPF2PATPZ[muons[1]],
                                event.muonPF2PATE[muons[1]]};
 
-        lepton1 *= event.muonMomentumSF[0];
-        lepton2 *= event.muonMomentumSF[1];
+        lepton1 *= event.muonMomentumSF.at(0);
+        lepton2 *= event.muonMomentumSF.at(1);
 
         event.zPairLeptons.first =
             lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
@@ -878,7 +886,7 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
                                event.muonPF2PATPZ[muons[0]],
                                event.muonPF2PATE[muons[0]]};
 
-        lepton2 *= event.muonMomentumSF[0];
+        lepton2 *= event.muonMomentumSF.at(0);
 
         event.zPairLeptons.first = lepton1;
         event.zPairLeptons.second = lepton2;
@@ -1242,7 +1250,8 @@ std::vector<int> Cuts::makeBCuts(AnalysisEvent& event,
     std::vector<int> bJets;
     for (unsigned int i = 0; i < jets.size(); i++)
     {
-        const TLorentzVector jetVec{getJetLVec(event, jets[i], syst, false).first};
+        const TLorentzVector jetVec{
+            getJetLVec(event, jets[i], syst, false).first};
         if (event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[i]]
             <= bDiscCut_)
         {
@@ -1853,13 +1862,13 @@ float Cuts::getJECUncertainty(const float pt,
     }
 
     const float lowFact{syst == 4 ? jecSFUp_[etaBin][ptBin]
-                            : jecSFDown_[etaBin][ptBin]};
+                                  : jecSFDown_[etaBin][ptBin]};
     const float hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
-                           : jecSFDown_[etaBin][ptBin + 1]};
+                                 : jecSFDown_[etaBin][ptBin + 1]};
     // Now do some interpolation
     const float a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
     const float b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
-            / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
+                  / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
     return (syst == 4 ? a * pt + b : -(a * pt + b));
 }
 
