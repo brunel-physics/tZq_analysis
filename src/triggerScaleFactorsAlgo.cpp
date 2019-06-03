@@ -1,5 +1,3 @@
-#include "triggerScaleFactorsAlgo.hpp"
-
 #include "AnalysisEvent.hpp"
 #include "TCanvas.h"
 #include "TEfficiency.h"
@@ -11,6 +9,7 @@
 #include "TRandom.h"
 #include "TTree.h"
 #include "config_parser.hpp"
+#include "triggerScaleFactorsAlgo.hpp"
 
 #include <boost/program_options.hpp>
 #include <cmath>
@@ -408,43 +407,45 @@ void TriggerScaleFactors::runMainAnalysis()
     {
         // Make pileupReweighting stuff here
         dataPileupFile = new TFile("pileup/2017/truePileupTest.root", "READ");
-        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        dataPU = dynamic_cast<TH1D*>(dataPileupFile->Get("pileup")->Clone());
         mcPileupFile = new TFile("pileup/2017/pileupMC.root", "READ");
-        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+        mcPU = dynamic_cast<TH1D*>(mcPileupFile->Get("pileup")->Clone());
 
         // Get systematic files too.
         systUpFile = new TFile("pileup/2017/truePileupUp.root", "READ");
-        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        pileupUpHist = dynamic_cast<TH1D*>(systUpFile->Get("pileup")->Clone());
         systDownFile = new TFile("pileup/2017/truePileupDown.root", "READ");
-        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+        pileupDownHist =
+            dynamic_cast<TH1D*>(systDownFile->Get("pileup")->Clone());
     }
     else
     {
         // Make pileupReweighting stuff here
         dataPileupFile = new TFile("pileup/2016/truePileupTest.root", "READ");
-        dataPU = (TH1F*)(dataPileupFile->Get("pileup")->Clone());
+        dataPU = dynamic_cast<TH1D*>(dataPileupFile->Get("pileup")->Clone());
         mcPileupFile = new TFile("pileup/2016/pileupMC.root", "READ");
-        mcPU = (TH1F*)(mcPileupFile->Get("pileup")->Clone());
+        mcPU = dynamic_cast<TH1D*>(mcPileupFile->Get("pileup")->Clone());
 
         // Get systematic files too.
         systUpFile = new TFile("pileup/2016/truePileupUp.root", "READ");
-        pileupUpHist = (TH1F*)(systUpFile->Get("pileup")->Clone());
+        pileupUpHist = dynamic_cast<TH1D*>(systUpFile->Get("pileup")->Clone());
         systDownFile = new TFile("pileup/2016/truePileupDown.root", "READ");
-        pileupDownHist = (TH1F*)(systDownFile->Get("pileup")->Clone());
+        pileupDownHist =
+            dynamic_cast<TH1D*>(systDownFile->Get("pileup")->Clone());
     }
 
-    puReweight = (TH1F*)(dataPU->Clone());
+    puReweight = dynamic_cast<TH1D*>(dataPU->Clone());
     puReweight->Scale(1.0 / puReweight->Integral());
     mcPU->Scale(1.0 / mcPU->Integral());
     puReweight->Divide(mcPU);
     puReweight->SetDirectory(nullptr);
 
     /// And do the same for systematic sampl
-    puSystUp = (TH1F*)(pileupUpHist->Clone());
+    puSystUp = dynamic_cast<TH1D*>(pileupUpHist->Clone());
     puSystUp->Scale(1.0 / puSystUp->Integral());
     puSystUp->Divide(mcPU);
     puSystUp->SetDirectory(nullptr);
-    puSystDown = (TH1F*)(pileupDownHist->Clone());
+    puSystDown = dynamic_cast<TH1D*>(pileupDownHist->Clone());
     puSystDown->Scale(1.0 / puSystDown->Integral());
     puSystDown->Divide(mcPU);
     puSystDown->SetDirectory(nullptr);
@@ -957,12 +958,52 @@ void TriggerScaleFactors::runMainAnalysis()
 std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event)
 {
     std::vector<int> electrons;
+
     for (int i{0}; i < event->numElePF2PAT; i++)
     {
-        if (event->elePF2PATCutIdTight[i])
+        if (!event->elePF2PATIsGsf[i])
+            continue;
+        const TLorentzVector tempVec{event->elePF2PATPX[i],
+                                     event->elePF2PATPY[i],
+                                     event->elePF2PATPZ[i],
+                                     event->elePF2PATE[i]};
+
+        if (electrons.size() < 1 && tempVec.Pt() <= 38)
+            continue;
+        else if (electrons.size() >= 1 && tempVec.Pt() <= 15)
+            continue;
+
+        if (std::abs(event->elePF2PATSCEta[i]) > 2.5)
+            continue;
+
+        // Ensure we aren't in the barrel/endcap gap and below the max safe eta
+        // range
+        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
+             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
+            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
+            continue;
+
+        // VID cut
+        if (event->elePF2PATCutIdTight[i] < 1)
+            continue;
+
+        // Cuts not part of the tuned ID
+        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
         {
-            electrons.emplace_back(i);
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
+                continue;
         }
+        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
+                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
+        {
+            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
+                continue;
+            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
+                continue;
+        }
+        electrons.emplace_back(i);
     }
     return electrons;
 }
@@ -972,9 +1013,14 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event)
     std::vector<int> muons;
     for (int i{0}; i < event->numMuonPF2PAT; i++)
     {
-        if (event->muonPF2PATTightCutId[i])
+        if (event->muonPF2PATIsPFMuon[i] && event->muonPF2PATTightCutId[i]
+            && event->muonPF2PATPfIsoTight[i]
+            && std::abs(event->muonPF2PATEta[i]) <= 2.4)
         {
-            muons.emplace_back(i);
+            if (event->muonPF2PATPt[i] >= (muons.empty() ? 29 : 20))
+            {
+                muons.emplace_back(i);
+            }
         }
     }
     return muons;
