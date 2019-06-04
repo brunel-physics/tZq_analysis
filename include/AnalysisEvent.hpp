@@ -1564,10 +1564,10 @@ class AnalysisEvent
 
     AnalysisEvent(bool isMC, TTree* tree, bool is2016);
     virtual ~AnalysisEvent();
-    virtual Int_t GetEntry(const Long64_t entry);
-    virtual Long64_t LoadTree(const Long64_t entry);
-    virtual void Loop();
-    virtual void Show(const Long64_t entry = -1) const;
+    Int_t GetEntry(const Long64_t entry);
+    Long64_t LoadTree(const Long64_t entry);
+    void Loop();
+    void Show(const Long64_t entry = -1) const;
     bool eTrig() const;
     bool muTrig() const;
     bool eeTrig() const;
