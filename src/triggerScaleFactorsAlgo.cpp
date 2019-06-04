@@ -390,7 +390,7 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
     {
         Parser::parse_config(config, datasets, totalLumi);
     }
-    catch (const std::exception)
+    catch (const std::exception&)
     {
         std::cerr << "ERROR Problem with a confugration file, see previous "
                      "errors for more details. If this is the only error, the "
@@ -574,15 +574,15 @@ void TriggerScaleFactors::runMainAnalysis()
             // Create electron index
             event->electronIndexTight = getTightElectrons(event);
             bool passDoubleElectronSelection(passDileptonSelection(event, 2)
-                                             * passJetSelection);
+                                             && passJetSelection);
             // Does this event pass tight muon cut?
             // Create muon index
             event->muonIndexTight = getTightMuons(event);
             bool passDoubleMuonSelection(passDileptonSelection(event, 0)
-                                         * passJetSelection);
+                                         && passJetSelection);
 
             bool passMuonElectronSelection(passDileptonSelection(event, 1)
-                                           * passJetSelection);
+                                           && passJetSelection);
 
             // Triggering stuff
             int triggerDoubleEG(0), triggerDoubleMuon(0),
@@ -1186,15 +1186,8 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
             return true;
         }
     }
-    else
-    {
-        return false;
-    }
-}
 
-bool TriggerScaleFactors::doubleMuonTriggerCut(AnalysisEvent* event, bool isMC)
-{
-    return event->muTrig() || event->mumuTrig();
+    return false;
 }
 
 bool TriggerScaleFactors::metTriggerCut(AnalysisEvent* event)
