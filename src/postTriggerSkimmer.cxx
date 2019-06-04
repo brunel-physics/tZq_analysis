@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
 
             boost::progress_display progress{
                 numberOfEvents, std::cout, outFilePath + "\n"};
-            AnalysisEvent event{false, "", &datasetChain, is2016};
+            AnalysisEvent event{false, &datasetChain, is2016};
 
             for (long long int i{0}; i < numberOfEvents; i++)
             {
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
 
             boost::progress_display progress{
                 numberOfEvents, std::cout, outFilePath + "\n"};
-            AnalysisEvent event{false, "", &datasetChain, is2016};
+            AnalysisEvent event{false, &datasetChain, is2016};
 
             for (long long int i{0}; i < numberOfEvents; i++)
             {

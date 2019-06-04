@@ -223,7 +223,7 @@ void MakeMvaInputs::standardAnalysis(
 
                 std::cout << systName << " : " << tree->GetEntries()
                           << std::endl;
-                auto event{new MvaEvent{true, "", tree, true}};
+                auto event{new MvaEvent{true, tree, true}};
 
                 const long long numberOfEvents{tree->GetEntries()};
                 TMVA::Timer lEventTimer{
@@ -299,7 +299,7 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
         dataChain->Add(
             (inputDir + channel + "Run2016" + channel + "mvaOut.root").c_str());
 
-        auto event{new MvaEvent{true, "", dataChain, true}};
+        auto event{new MvaEvent{true, dataChain, true}};
         const long long numberOfEvents{dataChain->GetEntries()};
         TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
@@ -378,7 +378,7 @@ void MakeMvaInputs::sameSignAnalysis(
                           ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
             setupBranches(outTreeSdBnd);
         }
-        auto event{new MvaEvent{true, "", dataChain, true}};
+        auto event{new MvaEvent{true, dataChain, true}};
 
         const long long numberOfEvents{dataChain->GetEntries()};
         TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),

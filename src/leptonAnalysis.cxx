@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
          lIt != inputTrees.end();
          ++lIt)
     {
-        AnalysisEvent* lEvent{new AnalysisEvent{true, "null", *lIt, is2016}};
+        AnalysisEvent* lEvent{new AnalysisEvent{true, *lIt, is2016}};
 
         Long64_t lNumEvents{(*lIt)->GetEntries()};
         totalEvents += lNumEvents;

@@ -54,17 +54,15 @@ class MvaEvent : public AnalysisEvent
     TBranch* b_jetSmearValue; //!
 
     MvaEvent(bool isMC = true,
-             std::string triggerFlag = "",
              TTree* tree = nullptr,
              bool is2016 = false);
     virtual ~MvaEvent();
 };
 
 inline MvaEvent::MvaEvent(bool isMC,
-                          std::string triggerFlag,
                           TTree* tree,
                           bool is2016)
-    : AnalysisEvent{isMC, triggerFlag, tree, is2016}
+    : AnalysisEvent{isMC, tree, is2016}
 {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.

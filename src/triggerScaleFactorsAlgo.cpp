@@ -519,7 +519,7 @@ void TriggerScaleFactors::runMainAnalysis()
         std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
         AnalysisEvent* event = new AnalysisEvent(
-            dataset->isMC(), dataset->getTriggerFlag(), datasetChain, is2016_);
+            dataset->isMC(), datasetChain, is2016_);
 
         double eventWeight = 1.0;
 

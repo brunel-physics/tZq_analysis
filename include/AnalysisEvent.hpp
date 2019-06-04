@@ -1562,7 +1562,7 @@ class AnalysisEvent
     Int_t numVert;
     TBranch* b_numVert;
 
-    AnalysisEvent(bool isMC, std::string triggerFlag, TTree* tree, bool is2016);
+    AnalysisEvent(bool isMC, TTree* tree, bool is2016);
     virtual ~AnalysisEvent();
     virtual Int_t GetEntry(const Long64_t entry);
     virtual Long64_t LoadTree(const Long64_t entry);
@@ -1576,7 +1576,6 @@ class AnalysisEvent
 };
 
 inline AnalysisEvent::AnalysisEvent(const bool isMC,
-                                    const std::string triggerFlag,
                                     TTree* tree,
                                     const bool is2016)
     : fChain{nullptr}, isMC_{isMC}, is2016_{is2016}

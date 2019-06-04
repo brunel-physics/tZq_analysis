@@ -722,7 +722,6 @@ void AnalysisAlgo::runMainAnalysis()
                 continue;
             }
             AnalysisEvent event{dataset->isMC(),
-                                dataset->getTriggerFlag(),
                                 datasetChain,
                                 is2016_};
 
