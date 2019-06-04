@@ -1,5 +1,3 @@
 datasets:
   - "configs/2017/datasets/ttbar_2l2v.yaml"
-  - "configs/2017/datasets/ttbar_hadronic.yaml"
-  - "configs/2017/datasets/ttbar_semileptonic.yaml"
   - "configs/2017/datasets/metRun2017.yaml"
