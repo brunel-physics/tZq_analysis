@@ -3,6 +3,7 @@
 #include "TEfficiency.h"
 #include "TFile.h"
 #include "TH1.h"
+#include "TMVA/Config.h"
 #include "TMVA/Timer.h"
 #include "TProfile.h"
 #include "TProfile2D.h"
@@ -401,8 +402,9 @@ void TriggerScaleFactors::parseCommandLineArguements(int argc, char* argv[])
 
 void TriggerScaleFactors::runMainAnalysis()
 {
-    // PU reweighting
+    TMVA::gConfig().SetDrawProgressBar(true);
 
+    // PU reweighting
     if (!is2016_)
     {
         // Make pileupReweighting stuff here
