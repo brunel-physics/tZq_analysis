@@ -135,18 +135,17 @@ class Cuts
     std::vector<std::vector<float>> jecSFUp_;
     std::vector<std::vector<float>> jecSFDown_;
     void initialiseJECCors();
-    float getJECUncertainty(const float pt,
-                            const float eta,
-                            const int syst) const;
+    [[gnu::pure]] float getJECUncertainty(const float pt,
+                                          const float eta,
+                                          const int syst) const;
     std::pair<TLorentzVector, float> getJetLVec(const AnalysisEvent& event,
                                                 const int index,
                                                 const int syst,
                                                 const bool initialRun) const;
-    [[gnu::const]] static double
+    static double
         jet2017PtSimRes(const double pt, const double eta, const double rho);
     [[gnu::const]] static std::pair<double, double> jet2016SFs(const float eta);
-    [[gnu::const]] static std::pair<double, double>
-        jet2017SFs(const double eta);
+    static std::pair<double, double> jet2017SFs(const double eta);
 
     // Sets whether to do MC or data cuts. Set every time a new dataset is
     // processed in the main loop.
