@@ -1315,18 +1315,19 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
 
     if (!is2016_ && isMC_)
     {
+        // Lepton SFs obtained from triggerScaleFactorsAlgo
         if (channel == "ee")
         {
             if (eTrig || eeTrig)
             {
-                twgt = 0.92656;
+                twgt = 0.93845;
                 if (syst == 1)
                 {
-                    twgt += 0.00148;
+                    twgt += 0.00224;
                 }
                 else if (syst == 2)
                 {
-                    twgt += 0.00148;
+                    twgt -= 0.00148;
                 }
             }
         }
@@ -1334,14 +1335,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muTrig || mumuTrig)
             {
-                twgt = 0.98991;
+                twgt = 0.99278;
                 if (syst == 1)
                 {
-                    twgt += 0.00025;
+                    twgt += 0.00012;
                 }
                 else if (syst == 2)
                 {
-                    twgt += 0.00025;
+                    twgt -= 0.0012;
                 }
             }
         }
@@ -1349,14 +1350,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muEGTrig)
             {
-                twgt = 0.84604;
+                twgt = 0.96118;
                 if (syst == 1)
                 {
-                    twgt += 0.00148;
+                    twgt += 0.00498;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00148;
+                    twgt -= 0.00498;
                 }
             }
         }
