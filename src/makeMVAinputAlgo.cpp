@@ -915,7 +915,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("wQuark2Eta") = wQuark2.Eta();
     inputVars.at("wQuark2Phi") = wQuark2.Phi();
 
-    const float wPairMass{(wQuark1 + wQuark2).M()};
+    const double wPairMass{(wQuark1 + wQuark2).M()};
     inputVars.at("wPairMass") = wPairMass;
     inputVars.at("wPairPt") = (wQuark1 + wQuark2).Pt();
     inputVars.at("wPairEta") = (wQuark1 + wQuark2).Eta();
@@ -996,7 +996,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars.at("fourthJetbTag") = tree->jetPF2PATBDiscriminator[jets[3]];
     }
 
-    const float topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
+    const double topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
     inputVars.at("topMass") = topMass;
     inputVars.at("topPt") = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
     inputVars.at("topEta") = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
@@ -1083,7 +1083,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("zlb2DelR") = zLep2.DeltaR(bJetVecs[0]);
     inputVars.at("zlb2DelPhi") = zLep2.DeltaPhi(bJetVecs[0]);
 
-    const float lepHt{zLep1.Pt() + zLep2.Pt()};
+    const double lepHt{zLep1.Pt() + zLep2.Pt()};
 
     inputVars.at("lepHt") = lepHt;
     inputVars.at("jetHt") = jetHt;
@@ -1118,8 +1118,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     constexpr double W_SIGMA{8};
     constexpr double TOP_SIGMA{30};
 
-    const float wChi2Term{(wPairMass - W_MASS) / W_SIGMA};
-    const float topChi2Term{(topMass - TOP_MASS) / TOP_SIGMA};
+    const double wChi2Term{(wPairMass - W_MASS) / W_SIGMA};
+    const double topChi2Term{(topMass - TOP_MASS) / TOP_SIGMA};
     inputVars.at("chi2") = std::pow(wChi2Term, 2) + std::pow(topChi2Term, 2);
 
     constexpr double MIN_SIDEBAND_CHI2{40};

@@ -6,6 +6,7 @@
 #include <array>
 #include <boost/filesystem.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
 #include <boost/progress.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -120,7 +121,9 @@ int main(int argc, char* argv[])
             const long long int numberOfEvents{datasetChain.GetEntries()};
 
             boost::progress_display progress{
-                numberOfEvents, std::cout, outFilePath + "\n"};
+                boost::numeric_cast<unsigned long>(numberOfEvents),
+                std::cout,
+                outFilePath + "\n"};
             AnalysisEvent event{false, &datasetChain, is2016};
 
             for (long long int i{0}; i < numberOfEvents; i++)
@@ -215,7 +218,9 @@ int main(int argc, char* argv[])
             const long long int numberOfEvents{datasetChain.GetEntries()};
 
             boost::progress_display progress{
-                numberOfEvents, std::cout, outFilePath + "\n"};
+                boost::numeric_cast<unsigned long>(numberOfEvents),
+                std::cout,
+                outFilePath + "\n"};
             AnalysisEvent event{false, &datasetChain, is2016};
 
             for (long long int i{0}; i < numberOfEvents; i++)

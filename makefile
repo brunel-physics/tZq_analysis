@@ -1,4 +1,4 @@
-CXX = g++
+CXX ?= g++
 
 LIBRARY_SOURCES = $(wildcard src/*.cpp)
 LIBRARY_OBJECT_FILES = $(patsubst src/%.cpp,obj/%.o,${LIBRARY_SOURCES})

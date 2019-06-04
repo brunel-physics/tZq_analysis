@@ -62,7 +62,8 @@ int main(int argc, char* argv[])
             std::distance(boost::filesystem::directory_iterator{inputDir},
                           boost::filesystem::directory_iterator())};
 
-        TMVA::Timer lTimer{count, "Attaching files to TTree", false};
+        TMVA::Timer lTimer{
+            boost::numeric_cast<int>(count), "Attaching files to TTree", false};
         Int_t lCounter{1};
 
         lTimer.DrawProgressBar(0, "");
