@@ -1343,7 +1343,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
          }}};
 }
 
-void Plots::fillAllPlots(const AnalysisEvent& event, const float eventWeight)
+void Plots::fillAllPlots(const AnalysisEvent& event, const double eventWeight)
 {
     for (unsigned i{0}; i < plotPoint.size(); i++)
     {

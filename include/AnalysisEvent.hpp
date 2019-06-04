@@ -1538,8 +1538,8 @@ class AnalysisEvent
     bool isMC_{};
     const bool is2016_{};
 
-    std::vector<float> muonMomentumSF;
-    std::vector<float> jetSmearValue;
+    std::vector<double> muonMomentumSF;
+    std::vector<double> jetSmearValue;
 
     std::vector<int> electronIndexTight;
     std::vector<int> electronIndexLoose;

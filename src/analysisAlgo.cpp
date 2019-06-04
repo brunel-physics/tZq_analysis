@@ -754,7 +754,7 @@ void AnalysisAlgo::runMainAnalysis()
             std::vector<TTree*> mvaTree;
             // Add a few variables into the MVA tree for easy access of stuff
             // like lepton index etc
-            float eventWeight{0.};
+            double eventWeight{0.};
             int zLep1Index{
                 -1}; // Addresses in elePF2PATWhatever of the z lepton
             int zLep2Index{-1};

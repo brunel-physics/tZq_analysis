@@ -29,7 +29,7 @@ class Plots
           const unsigned thisCutStage,
           const std::string postfixName);
     ~Plots();
-    void fillAllPlots(const AnalysisEvent& event, const float eventWeight);
+    void fillAllPlots(const AnalysisEvent& event, const double eventWeight);
     void saveAllPlots();
     void fillOnePlot(std::string, AnalysisEvent&, float);
     void saveOnePlots(int);

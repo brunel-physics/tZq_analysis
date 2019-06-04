@@ -17,15 +17,15 @@ class Cuts
 {
     private:
     bool makeLeptonCuts(AnalysisEvent& event,
-                        float& eventWeight,
+                        double& eventWeight,
                         std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                         TH1D& cutFlow,
                         const int syst,
                         const bool skipZCut = false);
-    std::pair<std::vector<int>, std::vector<float>>
+    std::pair<std::vector<int>, std::vector<double>>
         makeJetCuts(const AnalysisEvent& event,
                     const int syst,
-                    float& eventWeight,
+                    double& eventWeight,
                     const bool isProper = true) const;
     [[gnu::pure]] std::vector<int> makeBCuts(const AnalysisEvent& event,
                                              const std::vector<int> jets,
@@ -42,28 +42,28 @@ class Cuts
     bool getDileptonZCand(AnalysisEvent& event,
                           const std::vector<int> electrons,
                           const std::vector<int> muons) const;
-    float getWbosonQuarksCand(AnalysisEvent& event,
-                              const std::vector<int> jets,
-                              const int syst) const;
+    double getWbosonQuarksCand(AnalysisEvent& event,
+                               const std::vector<int> jets,
+                               const int syst) const;
 
-    [[gnu::pure]] float getTopMass(const AnalysisEvent& event) const;
+    [[gnu::const]] double getTopMass(const AnalysisEvent& event) const;
     bool triggerCuts(const AnalysisEvent& event,
-                     float& eventWeight,
+                     double& eventWeight,
                      const int syst = 0) const;
     [[gnu::const]] bool metFilters(const AnalysisEvent& event) const;
 
     // Simple deltaR function, because the reco namespace doesn't work or
     // something
-    [[gnu::const]] static float deltaR(const float eta1,
-                                       const float phi1,
-                                       const float eta2,
-                                       const float phi2);
-    [[gnu::const]] static float deltaPhi(const float phi1, const float phi2);
+    [[gnu::const]] static double deltaR(const double eta1,
+                                        const double phi1,
+                                        const double eta2,
+                                        const double phi2);
+    [[gnu::const]] static double deltaPhi(const double phi1, const double phi2);
 
     // Function to get lepton SF
-    float getLeptonWeight(const AnalysisEvent& event, const int syst) const;
-    float eleSF(const double pt, const double eta, const int syst) const;
-    float muonSF(const double pt, const double eta, const int syst) const;
+    double getLeptonWeight(const AnalysisEvent& event, const int syst) const;
+    double eleSF(const double pt, const double eta, const int syst) const;
+    double muonSF(const double pt, const double eta, const int syst) const;
 
     // set to true to fill in histograms/spit out other info
     bool doPlots_;
@@ -101,8 +101,8 @@ class Cuts
     double looseMuonRelIso_;
 
     // z and w inv cuts
-    float invZMassCut_;
-    float invWMassCut_;
+    double invZMassCut_;
+    double invWMassCut_;
 
     // Tight jet cuts
     unsigned numJets_;
@@ -114,8 +114,8 @@ class Cuts
     // B-Disc cut
     unsigned numbJets_;
     unsigned maxbJets_;
-    float maxbJetEta_;
-    float bDiscCut_;
+    double maxbJetEta_;
+    double bDiscCut_;
 
     // C-Disc cut
     unsigned numcJets_;
@@ -124,27 +124,27 @@ class Cuts
     RoccoR rc_;
 
     // lumi for pre-hip and post-hip era
-    float lumiRunsBCDEF_;
-    float lumiRunsGH_;
+    double lumiRunsBCDEF_;
+    double lumiRunsGH_;
 
     // Some things that will be used for JEC uncertainties.
-    std::vector<float> ptMinJEC_;
-    std::vector<float> ptMaxJEC_;
-    std::vector<float> etaMinJEC_;
-    std::vector<float> etaMaxJEC_;
-    std::vector<std::vector<float>> jecSFUp_;
-    std::vector<std::vector<float>> jecSFDown_;
+    std::vector<double> ptMinJEC_;
+    std::vector<double> ptMaxJEC_;
+    std::vector<double> etaMinJEC_;
+    std::vector<double> etaMaxJEC_;
+    std::vector<std::vector<double>> jecSFUp_;
+    std::vector<std::vector<double>> jecSFDown_;
     void initialiseJECCors();
-    [[gnu::pure]] float getJECUncertainty(const float pt,
-                                          const float eta,
-                                          const int syst) const;
-    std::pair<TLorentzVector, float> getJetLVec(const AnalysisEvent& event,
-                                                const int index,
-                                                const int syst,
-                                                const bool initialRun) const;
+    [[gnu::pure]] double getJECUncertainty(const double pt,
+                                           const double eta,
+                                           const int syst) const;
+    std::pair<TLorentzVector, double> getJetLVec(const AnalysisEvent& event,
+                                                 const int index,
+                                                 const int syst,
+                                                 const bool initialRun) const;
     static double
         jet2017PtSimRes(const double pt, const double eta, const double rho);
-    [[gnu::const]] static std::pair<double, double> jet2016SFs(const float eta);
+    [[gnu::const]] static std::pair<double, double> jet2016SFs(const double eta);
     static std::pair<double, double> jet2017SFs(const double eta);
 
     // Sets whether to do MC or data cuts. Set every time a new dataset is
@@ -177,17 +177,17 @@ class Cuts
     void getBWeight(const AnalysisEvent& event,
                     const TLorentzVector jet,
                     const int index,
-                    float& mcTag,
-                    float& mcNoTag,
-                    float& dataTag,
-                    float& dataNoTag,
-                    float& err1,
-                    float& err2,
-                    float& err3,
-                    float& err4) const;
+                    double& mcTag,
+                    double& mcNoTag,
+                    double& dataTag,
+                    double& dataNoTag,
+                    double& err1,
+                    double& err2,
+                    double& err3,
+                    double& err4) const;
 
     // met and mtw cut values
-    float metDileptonCut_;
+    double metDileptonCut_;
 
     // Sets trigger from config file
     std::string cutConfTrigLabel_;
@@ -219,7 +219,7 @@ class Cuts
          const bool is2016);
     ~Cuts();
     bool makeCuts(AnalysisEvent& event,
-                  float& eventWeight,
+                  double& eventWeight,
                   std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                   TH1D& cutFlow,
                   const int systToRun);
@@ -231,7 +231,10 @@ class Cuts
     {
         postLepSelTree_ = tree;
     }
-    void setNumLeps(int tightMu, int looseMu, int tightEle, int looseEle)
+    void setNumLeps(const unsigned tightMu,
+                    const unsigned looseMu,
+                    const unsigned tightEle,
+                    const unsigned looseEle)
     {
         numTightEle_ = tightEle;
         numLooseEle_ = looseEle;
@@ -260,19 +263,22 @@ class Cuts
     {
         skipTrigger_ = skip;
     }
-    void setMetCut(float cut)
+    void setMetCut(double cut)
     {
         metDileptonCut_ = cut;
     }
-    void setMWCut(float cut)
+    void setMWCut(double cut)
     {
         invWMassCut_ = cut;
     }
-    void setMZCut(float cut)
+    void setMZCut(double cut)
     {
         invZMassCut_ = cut;
     }
-    void setJetRegion(int nJets, int nBets, int maxJets, int maxBJets)
+    void setJetRegion(const unsigned nJets,
+                      const unsigned nBets,
+                      const unsigned maxJets,
+                      const unsigned maxBJets)
     {
         numJets_ = nJets;
         numbJets_ = nBets;

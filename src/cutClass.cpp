@@ -284,7 +284,7 @@ void Cuts::parse_config(const std::string confName)
 }
 
 bool Cuts::makeCuts(AnalysisEvent& event,
-                    float& eventWeight,
+                    double& eventWeight,
                     std::map<std::string, std::shared_ptr<Plots>>& plotMap,
                     TH1D& cutFlow,
                     const int systToRun)
@@ -350,16 +350,16 @@ bool Cuts::makeCuts(AnalysisEvent& event,
     }
 
     // Do wMass stuff
-    float invWmass{0.};
+    double invWmass{0.};
     invWmass = getWbosonQuarksCand(event, event.jetIndex, systToRun);
 
     // Debug chi2 cut
-    //   float topMass = getTopMass(event);
-    //   float topTerm = ( topMass-173.21 )/30.0;
-    //   float wTerm = ( (event.wPairQuarks.first +
+    //   double topMass = getTopMass(event);
+    //   double topTerm = ( topMass-173.21 )/30.0;
+    //   double wTerm = ( (event.wPairQuarks.first +
     //   event.wPairQuarks.second).M() - 80.3585 )/8.0;
 
-    //   float chi2 = topTerm*topTerm + wTerm*wTerm;
+    //   double chi2 = topTerm*topTerm + wTerm*wTerm;
     //   if ( chi2 < 2.0 && chi2 > 7.0 ) return false; // control region
     //   if ( chi2 >= 2.0 ) return false; //signal region
 
@@ -399,7 +399,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
 // Make lepton cuts. Will become customisable in a config later on.
 bool Cuts::makeLeptonCuts(
     AnalysisEvent& event,
-    float& eventWeight,
+    double& eventWeight,
     std::map<std::string, std::shared_ptr<Plots>>& plotMap,
     TH1D& cutFlow,
     const int syst,
@@ -477,13 +477,13 @@ bool Cuts::makeLeptonCuts(
     }
 
     // DO ROCHESTER CORRECTIONS HERE
-    std::vector<float> SFs{};
+    std::vector<double> SFs{};
 
     for (auto muonIt = event.muonIndexTight.begin();
          muonIt != event.muonIndexTight.end();
          muonIt++)
     {
-        float tempSF{1.0};
+        double tempSF{1.0};
         if (isMC_)
         {
             if (event.genMuonPF2PATPT[*muonIt] > 0) // matched gen muon
@@ -898,11 +898,11 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
     }
 }
 
-float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
-                                const std::vector<int> jets,
-                                const int syst) const
+double Cuts::getWbosonQuarksCand(AnalysisEvent& event,
+                                 const std::vector<int> jets,
+                                 const int syst) const
 {
-    float closestWmass{std::numeric_limits<float>::infinity()};
+    auto closestWmass{std::numeric_limits<double>::infinity()};
     if (jets.size() > 2)
     {
         for (unsigned k{0}; k < jets.size(); k++)
@@ -955,7 +955,7 @@ float Cuts::getWbosonQuarksCand(AnalysisEvent& event,
     return closestWmass;
 }
 
-float Cuts::getTopMass(const AnalysisEvent& event) const
+double Cuts::getTopMass(const AnalysisEvent& event) const
 {
     TLorentzVector bVec(event.jetPF2PATPx[event.jetIndex[event.bTagIndex[0]]],
                         event.jetPF2PATPy[event.jetIndex[event.bTagIndex[0]]],
@@ -964,24 +964,24 @@ float Cuts::getTopMass(const AnalysisEvent& event) const
     return (bVec + event.wPairQuarks.first + event.wPairQuarks.second).M();
 }
 
-std::pair<std::vector<int>, std::vector<float>>
+std::pair<std::vector<int>, std::vector<double>>
     Cuts::makeJetCuts(const AnalysisEvent& event,
                       const int syst,
-                      float& eventWeight,
+                      double& eventWeight,
                       const bool isProper) const
 {
     std::vector<int> jets;
-    std::vector<float> smears;
+    std::vector<double> smears;
 
-    float mcTag{1.};
-    float mcNoTag{1.};
-    float dataTag{1.};
-    float dataNoTag{1.};
+    double mcTag{1.};
+    double mcNoTag{1.};
+    double dataTag{1.};
+    double dataNoTag{1.};
     // b-tagging errors
-    float err1{0.};
-    float err2{0.};
-    float err3{0.};
-    float err4{0.};
+    double err1{0.};
+    double err2{0.};
+    double err3{0.};
+    double err4{0.};
 
     for (int i{0}; i < event.numJetPF2PAT; i++)
     {
@@ -1219,15 +1219,15 @@ std::pair<std::vector<int>, std::vector<float>>
     // Evaluate b-tag weight for event here.
     if (getBTagWeight_ && isProper)
     {
-        float bWeight{(dataNoTag * dataTag) / (mcNoTag * mcTag)};
+        double bWeight{(dataNoTag * dataTag) / (mcNoTag * mcTag)};
         if (mcNoTag == 0 || mcTag == 0 || dataNoTag == 0 || dataTag == 0
             || mcNoTag != mcNoTag || mcTag != mcTag || dataTag != dataTag
             || dataNoTag != dataNoTag)
         {
             bWeight = 1.;
         }
-        const float bWeightErr{float(
-            std::sqrt(pow(err1 + err2, 2) + pow(err3 + err4, 2)) * bWeight)};
+        const double bWeightErr{
+            std::sqrt(pow(err1 + err2, 2) + pow(err3 + err4, 2)) * bWeight};
         if (syst == 256)
         {
             bWeight += bWeightErr;
@@ -1267,7 +1267,7 @@ std::vector<int> Cuts::makeBCuts(const AnalysisEvent& event,
 }
 
 bool Cuts::triggerCuts(const AnalysisEvent& event,
-                       float& eventWeight,
+                       double& eventWeight,
                        const int syst) const
 {
     if (skipTrigger_)
@@ -1311,7 +1311,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         channel = "mumu";
     }
 
-    float twgt{1.0};
+    double twgt{1.0};
 
     if (!is2016_ && isMC_)
     {
@@ -1513,21 +1513,21 @@ bool Cuts::metFilters(const AnalysisEvent& event) const
     return true;
 }
 
-float Cuts::deltaPhi(const float phi1, const float phi2)
+double Cuts::deltaPhi(const double phi1, const double phi2)
 {
     return std::atan2(std::sin(phi1 - phi2), std::cos(phi1 - phi2));
 }
 
-float Cuts::deltaR(const float eta1,
-                   const float phi1,
-                   const float eta2,
-                   const float phi2)
+double Cuts::deltaR(const double eta1,
+                    const double phi1,
+                    const double eta2,
+                    const double phi2)
 {
     return std::sqrt(std::pow(eta1 - eta2, 2)
                      + std::pow(deltaPhi(phi1, phi2), 2));
 }
 
-float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
+double Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
 {
     // If number of electrons is > 1  then both z pair are electrons, so get
     // their weight
@@ -1536,7 +1536,7 @@ float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
         return 1.;
     }
 
-    float leptonWeight{1.};
+    double leptonWeight{1.};
 
     if (numTightEle_ == 2)
     {
@@ -1560,12 +1560,12 @@ float Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
     return leptonWeight;
 }
 
-float Cuts::eleSF(const double pt, const double eta, const int syst) const
+double Cuts::eleSF(const double pt, const double eta, const int syst) const
 {
     const double maxPt{h_eleSFs->GetYaxis()->GetXmax() - 0.1};
     const double minRecoPt{h_eleReco->GetYaxis()->GetXmin() + 0.1};
-    unsigned bin1{0};
-    unsigned bin2{0};
+    int bin1{0};
+    int bin2{0};
 
     // If cut-based, std::abs eta, else just eta
     if (pt <= maxPt)
@@ -1587,8 +1587,8 @@ float Cuts::eleSF(const double pt, const double eta, const int syst) const
         bin2 = h_eleReco->FindBin(eta, maxPt);
     }
 
-    float eleIdSF = h_eleSFs->GetBinContent(bin1);
-    float eleRecoSF = h_eleReco->GetBinContent(bin2);
+    double eleIdSF{h_eleSFs->GetBinContent(bin1)};
+    double eleRecoSF{h_eleReco->GetBinContent(bin2)};
 
     if (syst == 1)
     {
@@ -1613,7 +1613,7 @@ float Cuts::eleSF(const double pt, const double eta, const int syst) const
     return eleIdSF * eleRecoSF;
 }
 
-float Cuts::muonSF(const double pt, const double eta, const int syst) const
+double Cuts::muonSF(const double pt, const double eta, const int syst) const
 {
     if (!is2016_)
     {
@@ -1628,7 +1628,7 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
                 {{{0.9924252719877384, 0.0077859527402420020}, {0.9890884461284933, 0.0149053560477533670}, {0.9946469069883841, 0.0124242236899199730}, {0.9926528825155183, 0.00993167811549696700}, {0.9906364222943529, 0.0009713213798502730}, {0.9920464322143979, 0.0021353964567237746}}},  // η 1.2-2.1111
                 {{{0.9758095839531763, 0.0043993151217841040}, {0.9745153594179884, 0.0027111009825340473}, {0.9787410500158746, 0.0010035577872014160}, {0.9781891229195010, 0.00112306059413853970}, {0.9673568416097894, 0.0037006525169638958}, {0.9766311856731202, 0.0086266646688285500}}},  // η 2.1+
             }};
-        static constexpr std::array<std::array<std::pair<float, float>, 6>, 4> muonIsoSFs{{
+        static constexpr std::array<std::array<std::pair<double, double>, 6>, 4> muonIsoSFs{{
                 {{{0.9931118153898082f, 0.0023961047801277897f}, {0.9963959301142516f, 0.0011130262628559282f}, {0.9983181988469478f, 0.00028317863248081760f}, {0.9994347636372417f, 0.00011232714693801277f}, {0.9997680258722230f, 0.00021161394350289537f}, {1.0002119715073154f, 0.00034548765287024270f}}}, // η 0-0.9
                 {{{0.9956674008369976f, 0.0040757770757467080f}, {0.9932947173775393f, 0.0020402913397330540f}, {0.9976914943066302f, 0.00052908143248948090f}, {0.9990342041383322f, 0.00020372497501125323f}, {0.9994155529201356f, 0.00041662994217661376f}, {1.0002046210970306f, 0.00066202613921456840f}}}, // η 0.9-1.2
                 {{{0.9967414270112102f, 0.0016604845648881112f}, {0.9988489100332861f, 0.0009332375024769512f}, {0.9988826842051872f, 0.00028173209377228390f}, {0.9993872934568914f, 0.00011049799288742951f}, {0.9997410091519127f, 0.00024619498190323770f}, {1.0004725402685148f, 0.00041307624612303565f}}}, // η 1.2-2.1
@@ -1669,8 +1669,8 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
         double minIdPt{h_muonIDs1->GetYaxis()->GetXmin() + 0.1};
         double minIsoPt{h_muonPFiso1->GetYaxis()->GetXmin() + 0.1};
 
-        unsigned binId1{0}, binIso1{0};
-        unsigned binId2{0}, binIso2{0};
+        int binId1{0}, binIso1{0};
+        int binId2{0}, binIso2{0};
 
         if (pt > maxIdPt)
         {
@@ -1722,8 +1722,8 @@ float Cuts::muonSF(const double pt, const double eta, const int syst) const
             binIso2 = h_muonPFiso2->FindBin(std::abs(eta), pt);
         }
 
-        float muonIdSF{1.0};
-        float muonPFisoSF{1.0};
+        double muonIdSF{1.0};
+        double muonPFisoSF{1.0};
         muonIdSF = (h_muonIDs1->GetBinContent(binId1) * lumiRunsBCDEF_
                     + h_muonIDs2->GetBinContent(binId2) * lumiRunsGH_)
                    / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
@@ -1811,8 +1811,8 @@ void Cuts::initialiseJECCors()
         {
             tempVec.emplace_back(item);
         }
-        std::vector<float> tempUp;
-        std::vector<float> tempDown;
+        std::vector<double> tempUp;
+        std::vector<double> tempDown;
 
         etaMinJEC_.emplace_back(std::stof(tempVec[0]));
         etaMaxJEC_.emplace_back(std::stof(tempVec[1]));
@@ -1835,9 +1835,9 @@ void Cuts::initialiseJECCors()
     }
 }
 
-float Cuts::getJECUncertainty(const float pt,
-                              const float eta,
-                              const int syst) const
+double Cuts::getJECUncertainty(const double pt,
+                               const double eta,
+                               const int syst) const
 {
     if (!(syst == 4 || syst == 8))
     {
@@ -1862,25 +1862,25 @@ float Cuts::getJECUncertainty(const float pt,
         }
     }
 
-    const float lowFact{syst == 4 ? jecSFUp_[etaBin][ptBin]
-                                  : jecSFDown_[etaBin][ptBin]};
-    const float hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
-                                 : jecSFDown_[etaBin][ptBin + 1]};
+    const double lowFact{syst == 4 ? jecSFUp_[etaBin][ptBin]
+                                   : jecSFDown_[etaBin][ptBin]};
+    const double hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
+                                  : jecSFDown_[etaBin][ptBin + 1]};
     // Now do some interpolation
-    const float a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
-    const float b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
-                  / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
+    const double a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
+    const double b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
+                   / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
     return (syst == 4 ? a * pt + b : -(a * pt + b));
 }
 
-std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
-                                                  const int index,
-                                                  const int syst,
-                                                  const bool initialRun) const
+std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
+                                                   const int index,
+                                                   const int syst,
+                                                   const bool initialRun) const
 {
     static constexpr double MIN_JET_ENERGY{1e-2};
     TLorentzVector returnJet;
-    float newSmearValue{1.0};
+    double newSmearValue{1.0};
 
     if (!initialRun)
     {
@@ -1893,7 +1893,7 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
 
         if (!isMC_)
         {
-            float jerUncer{
+            double jerUncer{
                 getJECUncertainty(returnJet.Pt(), returnJet.Eta(), syst)};
             returnJet *= 1 + jerUncer;
         }
@@ -1932,10 +1932,10 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
                                        event.jetPF2PATEta[index],
                                        event.elePF2PATRhoIso[0])};
 
-    const double dR{deltaR(event.genJetPF2PATEta[index],
-                           event.genJetPF2PATPhi[index],
-                           event.jetPF2PATEta[index],
-                           event.jetPF2PATPhi[index])};
+    const auto dR{deltaR(event.genJetPF2PATEta[index],
+                         event.genJetPF2PATPhi[index],
+                         event.jetPF2PATEta[index],
+                         event.jetPF2PATPhi[index])};
     const double dPt{event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[index]};
     auto [jerSF, jerSigma] =
         is2016_ ? jet2016SFs(std::abs(event.jetPF2PATEta[index]))
@@ -1981,7 +1981,7 @@ std::pair<TLorentzVector, float> Cuts::getJetLVec(const AnalysisEvent& event,
 
     if (isMC_)
     {
-        float jerUncer{
+        double jerUncer{
             getJECUncertainty(returnJet.Pt(), returnJet.Eta(), syst)};
         returnJet *= 1 + jerUncer;
     }
@@ -2212,11 +2212,11 @@ double
     }
 }
 
-std::pair<double, double> Cuts::jet2016SFs(const float eta)
+std::pair<double, double> Cuts::jet2016SFs(const double eta)
 {
     // JER Scaling Factors and uncertainities for 2016
-    float jerSF{0.};
-    float jerSigma{0.};
+    double jerSF{0.};
+    double jerSigma{0.};
 
     if (eta <= 0.5)
     {
@@ -2331,18 +2331,18 @@ std::pair<double, double> Cuts::jet2017SFs(const double eta)
 void Cuts::getBWeight(const AnalysisEvent& event,
                       const TLorentzVector jet,
                       const int index,
-                      float& mcTag,
-                      float& mcNoTag,
-                      float& dataTag,
-                      float& dataNoTag,
-                      float& err1,
-                      float& err2,
-                      float& err3,
-                      float& err4) const
+                      double& mcTag,
+                      double& mcNoTag,
+                      double& dataTag,
+                      double& dataNoTag,
+                      double& err1,
+                      double& err2,
+                      double& err3,
+                      double& err4) const
 {
     // Use b-tagging efficiencies and scale factors.
     // Firstly get efficiency for pt/eta bin here.
-    float eff{1.};
+    double eff{1.};
     int partonFlavour{std::abs(event.jetPF2PATPID[index])};
 
     if (partonFlavour == 0)
@@ -2392,10 +2392,10 @@ void Cuts::getBWeight(const AnalysisEvent& event,
     double jet_scalefactor_up{1.};
     double jet_scalefactor_do{1.};
 
-    float SFerr{0.};
-    float jetPt = jet.Pt();
-    constexpr float maxBjetPt{670};
-    constexpr float maxLjetPt{1000.0};
+    double SFerr{0.};
+    double jetPt{jet.Pt()};
+    constexpr double maxBjetPt{670};
+    constexpr double maxLjetPt{1000.0};
     bool doubleUncertainty{false};
     // Do some things if it's a b or c
 
