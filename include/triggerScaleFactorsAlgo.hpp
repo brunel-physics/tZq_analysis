@@ -4,9 +4,9 @@
 #include "TCanvas.h"
 #include "TPad.h"
 #include "dataset.hpp"
-#include <TH1D.h>
 
 #include <LHAPDF/LHAPDF.h>
+#include <TH1D.h>
 #include <map>
 #include <vector>
 
@@ -64,9 +64,14 @@ class TriggerScaleFactors
     std::vector<double> electronCutsVars;
     std::vector<double> muonCutsVars;
 
-    bool makeJetCuts(AnalysisEvent* event, bool isMC);
-    TLorentzVector getJetLVec(AnalysisEvent* event, int index, bool isMC);
-    double deltaR(float eta1, float phi1, float eta2, float phi2);
+    bool makeJetCuts(AnalysisEvent& event, const bool isMC) const;
+    TLorentzVector getJetLVec(AnalysisEvent& event,
+                              const int index,
+                              const bool isMC) const;
+    double deltaR(const float eta1,
+                  const float phi1,
+                  const float eta2,
+                  const float phi2) const;
 
     // PU reweighting
     TFile* dataPileupFile;
@@ -82,13 +87,14 @@ class TriggerScaleFactors
     TH1D* puSystDown;
 
     // lepton selection
-    std::vector<int> getTightElectrons(AnalysisEvent*);
-    std::vector<int> getTightMuons(AnalysisEvent*);
-    bool passDileptonSelection(AnalysisEvent*, int);
+    std::vector<int> getTightElectrons(const AnalysisEvent& event) const;
+    std::vector<int> getTightMuons(const AnalysisEvent& event) const;
+    bool passDileptonSelection(AnalysisEvent& event,
+                               const int nElectrons) const;
 
     // trigger cuts
-    bool metTriggerCut(AnalysisEvent*);
-    bool metFilters(AnalysisEvent*, bool);
+    bool metTriggerCut(const AnalysisEvent& event) const;
+    bool metFilters(const AnalysisEvent& event, const bool isMC) const;
 
     // Efficiencies
     double numberPassedElectrons[2];

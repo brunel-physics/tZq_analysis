@@ -518,13 +518,12 @@ void TriggerScaleFactors::runMainAnalysis()
 
         std::cout << "Trigger flag: " << dataset->getTriggerFlag() << std::endl;
 
-        AnalysisEvent* event = new AnalysisEvent(
-            dataset->isMC(), datasetChain, is2016_);
+        AnalysisEvent event{dataset->isMC(), datasetChain, is2016_};
 
         double eventWeight = 1.0;
 
         double pileupWeight = puReweight->GetBinContent(
-            puReweight->GetXaxis()->FindBin(event->numVert));
+            puReweight->GetXaxis()->FindBin(event.numVert));
         std::cout << "pileupWeight: " << pileupWeight << std::endl;
         if (dataset->isMC())
         {
@@ -543,18 +542,18 @@ void TriggerScaleFactors::runMainAnalysis()
         for (int i = 0; i < numberOfEvents; i++)
         {
             lEventTimer->DrawProgressBar(i);
-            event->GetEntry(i);
+            event.GetEntry(i);
 
             //      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
 
             if (is2016_)
             {
-                if (HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC())
+                if (HIP_ERA && event.eventRun >= 278820 && !(dataset->isMC())
                     && DO_HIPS)
                 {
                     continue;
                 }
-                if (!HIP_ERA && event->eventRun < 278820 && !(dataset->isMC())
+                if (!HIP_ERA && event.eventRun < 278820 && !(dataset->isMC())
                     && DO_HIPS)
                 {
                     continue;
@@ -574,12 +573,12 @@ void TriggerScaleFactors::runMainAnalysis()
 
             // Does this event pass tight electron cut?
             // Create electron index
-            event->electronIndexTight = getTightElectrons(event);
+            event.electronIndexTight = getTightElectrons(event);
             bool passDoubleElectronSelection(passDileptonSelection(event, 2)
                                              && passJetSelection);
             // Does this event pass tight muon cut?
             // Create muon index
-            event->muonIndexTight = getTightMuons(event);
+            event.muonIndexTight = getTightMuons(event);
             bool passDoubleMuonSelection(passDileptonSelection(event, 0)
                                          && passJetSelection);
 
@@ -602,14 +601,14 @@ void TriggerScaleFactors::runMainAnalysis()
             // selection?
             if (passDoubleElectronSelection)
             {
-                triggerDoubleEG = event->eTrig() && event->eeTrig();
+                triggerDoubleEG = event.eTrig() && event.eeTrig();
                 triggerMetDoubleEG = triggerDoubleEG && metTriggerCut(event);
             }
             // Does event pass Single/Double Muon trigger and the muon
             // selection?
             if (passDoubleMuonSelection)
             {
-                triggerDoubleMuon = event->muTrig() || event->mumuTrig();
+                triggerDoubleMuon = event.muTrig() || event.mumuTrig();
                 triggerMetDoubleMuon =
                     triggerDoubleMuon && metTriggerCut(event);
             }
@@ -617,7 +616,7 @@ void TriggerScaleFactors::runMainAnalysis()
             // the muon selection?
             if (passMuonElectronSelection)
             {
-                triggerMuonElectron = event->muEGTrig();
+                triggerMuonElectron = event.muEGTrig();
                 triggerMetMuonElectron =
                     triggerMuonElectron && metTriggerCut(event);
             }
@@ -648,8 +647,8 @@ void TriggerScaleFactors::runMainAnalysis()
                     double minSfPt = h_muonHlt1->GetYaxis()->GetXmin() + 0.1;
                     unsigned binSf1{0};
 
-                    double pt = event->zPairLeptons.first.Pt();
-                    double eta = event->zPairLeptons.first.Eta();
+                    double pt = event.zPairLeptons.first.Pt();
+                    double eta = event.zPairLeptons.first.Eta();
 
                     if (pt > maxSfPt)
                     {
@@ -746,56 +745,56 @@ void TriggerScaleFactors::runMainAnalysis()
                 if (triggerMetElectronSelection > 0)
                 { // If passed event selection, then will want to add to
                   // denominator
-                    p_electron1_pT_MC->Fill(event->zPairLeptons.first.Pt(),
+                    p_electron1_pT_MC->Fill(event.zPairLeptons.first.Pt(),
                                             triggerMetDoubleEG
                                                 / triggerMetElectronSelection);
-                    p_electron1_eta_MC->Fill(event->zPairLeptons.first.Eta(),
+                    p_electron1_eta_MC->Fill(event.zPairLeptons.first.Eta(),
                                              triggerMetDoubleEG
                                                  / triggerMetElectronSelection);
-                    p_electron2_pT_MC->Fill(event->zPairLeptons.second.Pt(),
+                    p_electron2_pT_MC->Fill(event.zPairLeptons.second.Pt(),
                                             triggerMetDoubleEG
                                                 / triggerMetElectronSelection);
-                    p_electron2_eta_MC->Fill(event->zPairLeptons.second.Eta(),
+                    p_electron2_eta_MC->Fill(event.zPairLeptons.second.Eta(),
                                              triggerMetDoubleEG
                                                  / triggerMetElectronSelection);
 
-                    p_electrons_pT_MC->Fill(event->zPairLeptons.first.Pt(),
-                                            event->zPairLeptons.second.Pt(),
+                    p_electrons_pT_MC->Fill(event.zPairLeptons.first.Pt(),
+                                            event.zPairLeptons.second.Pt(),
                                             triggerMetDoubleEG
                                                 / triggerMetElectronSelection);
-                    p_electrons_eta_MC->Fill(event->zPairLeptons.first.Eta(),
-                                             event->zPairLeptons.second.Eta(),
+                    p_electrons_eta_MC->Fill(event.zPairLeptons.first.Eta(),
+                                             event.zPairLeptons.second.Eta(),
                                              triggerMetDoubleEG
                                                  / triggerMetElectronSelection);
                 }
                 if (triggerMetMuonSelection > 0)
                 { // If passed event selection, then will want to add to
                   // denominator
-                    p_muon1_pT_MC->Fill(event->zPairLeptons.first.Pt(),
+                    p_muon1_pT_MC->Fill(event.zPairLeptons.first.Pt(),
                                         triggerMetDoubleMuon * SF
                                             / triggerMetMuonSelection);
-                    if (event->zPairLeptons.first.Pt() > 30.)
+                    if (event.zPairLeptons.first.Pt() > 30.)
                     {
-                        p_muon1_eta_MC->Fill(event->zPairLeptons.first.Eta(),
+                        p_muon1_eta_MC->Fill(event.zPairLeptons.first.Eta(),
                                              triggerMetDoubleMuon * SF
                                                  / triggerMetMuonSelection);
                     }
-                    p_muon2_pT_MC->Fill(event->zPairLeptons.second.Pt(),
+                    p_muon2_pT_MC->Fill(event.zPairLeptons.second.Pt(),
                                         triggerMetDoubleMuon * SF
                                             / triggerMetMuonSelection);
-                    if (event->zPairLeptons.second.Pt() > 30.)
+                    if (event.zPairLeptons.second.Pt() > 30.)
                     {
-                        p_muon2_eta_MC->Fill(event->zPairLeptons.second.Eta(),
+                        p_muon2_eta_MC->Fill(event.zPairLeptons.second.Eta(),
                                              triggerMetDoubleMuon * SF
                                                  / triggerMetMuonSelection);
                     }
 
-                    p_muons_pT_MC->Fill(event->zPairLeptons.first.Pt(),
-                                        event->zPairLeptons.second.Pt(),
+                    p_muons_pT_MC->Fill(event.zPairLeptons.first.Pt(),
+                                        event.zPairLeptons.second.Pt(),
                                         triggerMetDoubleMuon * SF
                                             / triggerMetMuonSelection);
-                    p_muons_eta_MC->Fill(event->zPairLeptons.first.Eta(),
-                                         event->zPairLeptons.second.Eta(),
+                    p_muons_eta_MC->Fill(event.zPairLeptons.first.Eta(),
+                                         event.zPairLeptons.second.Eta(),
                                          triggerMetDoubleMuon * SF
                                              / triggerMetMuonSelection);
                 }
@@ -803,30 +802,30 @@ void TriggerScaleFactors::runMainAnalysis()
                 { // If passed event selection, then will want to add to
                   // denominator
                     p_muonElectron1_pT_MC->Fill(
-                        event->zPairLeptons.first.Pt(),
+                        event.zPairLeptons.first.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron1_eta_MC->Fill(
-                        event->zPairLeptons.first.Eta(),
+                        event.zPairLeptons.first.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron2_pT_MC->Fill(
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron2_eta_MC->Fill(
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
 
                     p_muonElectrons_pT_MC->Fill(
-                        event->zPairLeptons.first.Pt(),
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.first.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectrons_eta_MC->Fill(
-                        event->zPairLeptons.first.Eta(),
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.first.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                 }
@@ -869,55 +868,55 @@ void TriggerScaleFactors::runMainAnalysis()
                 { // If passed event selection, then will want to add to
                   // denominator
                     p_electron1_pT_data->Fill(
-                        event->zPairLeptons.first.Pt(),
+                        event.zPairLeptons.first.Pt(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
                     p_electron1_eta_data->Fill(
-                        event->zPairLeptons.first.Eta(),
+                        event.zPairLeptons.first.Eta(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
                     p_electron2_pT_data->Fill(
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
                     p_electron2_eta_data->Fill(
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
 
                     p_electrons_pT_data->Fill(
-                        event->zPairLeptons.first.Pt(),
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.first.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
                     p_electrons_eta_data->Fill(
-                        event->zPairLeptons.first.Eta(),
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.first.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetDoubleEG / triggerMetElectronSelection);
                 }
                 if (triggerMetMuonSelection > 0)
                 { // If passed event selection, then will want to add to
                   // denominator
-                    p_muon1_pT_data->Fill(event->zPairLeptons.first.Pt(),
+                    p_muon1_pT_data->Fill(event.zPairLeptons.first.Pt(),
                                           triggerMetDoubleMuon
                                               / triggerMetMuonSelection);
-                    if (event->zPairLeptons.first.Pt() > 30.)
+                    if (event.zPairLeptons.first.Pt() > 30.)
                     {
-                        p_muon1_eta_data->Fill(event->zPairLeptons.first.Eta(),
+                        p_muon1_eta_data->Fill(event.zPairLeptons.first.Eta(),
                                                triggerMetDoubleMuon
                                                    / triggerMetMuonSelection);
                     }
-                    p_muon2_pT_data->Fill(event->zPairLeptons.second.Pt(),
+                    p_muon2_pT_data->Fill(event.zPairLeptons.second.Pt(),
                                           triggerMetDoubleMuon
                                               / triggerMetMuonSelection);
-                    if (event->zPairLeptons.second.Pt() > 30.)
+                    if (event.zPairLeptons.second.Pt() > 30.)
                     {
-                        p_muon2_eta_data->Fill(event->zPairLeptons.second.Eta(),
+                        p_muon2_eta_data->Fill(event.zPairLeptons.second.Eta(),
                                                triggerMetDoubleMuon
                                                    / triggerMetMuonSelection);
                     }
 
-                    p_muons_pT_data->Fill(event->zPairLeptons.first.Pt(),
-                                          event->zPairLeptons.second.Pt(),
+                    p_muons_pT_data->Fill(event.zPairLeptons.first.Pt(),
+                                          event.zPairLeptons.second.Pt(),
                                           triggerMetDoubleMuon
                                               / triggerMetMuonSelection);
-                    p_muons_eta_data->Fill(event->zPairLeptons.first.Eta(),
-                                           event->zPairLeptons.second.Eta(),
+                    p_muons_eta_data->Fill(event.zPairLeptons.first.Eta(),
+                                           event.zPairLeptons.second.Eta(),
                                            triggerMetDoubleMuon
                                                / triggerMetMuonSelection);
                 }
@@ -925,30 +924,30 @@ void TriggerScaleFactors::runMainAnalysis()
                 { // If passed event selection, then will want to add to
                   // denominator
                     p_muonElectron1_pT_data->Fill(
-                        event->zPairLeptons.first.Pt(),
+                        event.zPairLeptons.first.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron1_eta_data->Fill(
-                        event->zPairLeptons.first.Eta(),
+                        event.zPairLeptons.first.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron2_pT_data->Fill(
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectron2_eta_data->Fill(
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
 
                     p_muonElectrons_pT_data->Fill(
-                        event->zPairLeptons.first.Pt(),
-                        event->zPairLeptons.second.Pt(),
+                        event.zPairLeptons.first.Pt(),
+                        event.zPairLeptons.second.Pt(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                     p_muonElectrons_eta_data->Fill(
-                        event->zPairLeptons.first.Eta(),
-                        event->zPairLeptons.second.Eta(),
+                        event.zPairLeptons.first.Eta(),
+                        event.zPairLeptons.second.Eta(),
                         triggerMetMuonElectron
                             / triggerMetMuonElectronSelection);
                 }
@@ -959,52 +958,53 @@ void TriggerScaleFactors::runMainAnalysis()
     } // end dataset loop
 }
 
-std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event)
+std::vector<int>
+    TriggerScaleFactors::getTightElectrons(const AnalysisEvent& event) const
 {
     std::vector<int> electrons;
 
-    for (int i{0}; i < event->numElePF2PAT; i++)
+    for (int i{0}; i < event.numElePF2PAT; i++)
     {
-        if (!event->elePF2PATIsGsf[i])
+        if (!event.elePF2PATIsGsf[i])
             continue;
-        const TLorentzVector tempVec{event->elePF2PATPX[i],
-                                     event->elePF2PATPY[i],
-                                     event->elePF2PATPZ[i],
-                                     event->elePF2PATE[i]};
+        const TLorentzVector tempVec{event.elePF2PATPX[i],
+                                     event.elePF2PATPY[i],
+                                     event.elePF2PATPZ[i],
+                                     event.elePF2PATE[i]};
 
         if (electrons.size() < 1 && tempVec.Pt() <= 38)
             continue;
         else if (electrons.size() >= 1 && tempVec.Pt() <= 15)
             continue;
 
-        if (std::abs(event->elePF2PATSCEta[i]) > 2.5)
+        if (std::abs(event.elePF2PATSCEta[i]) > 2.5)
             continue;
 
         // Ensure we aren't in the barrel/endcap gap and below the max safe eta
         // range
-        if ((std::abs(event->elePF2PATSCEta[i]) > 1.4442
-             && std::abs(event->elePF2PATSCEta[i]) < 1.566)
-            || std::abs(event->elePF2PATSCEta[i]) > 2.50)
+        if ((std::abs(event.elePF2PATSCEta[i]) > 1.4442
+             && std::abs(event.elePF2PATSCEta[i]) < 1.566)
+            || std::abs(event.elePF2PATSCEta[i]) > 2.50)
             continue;
 
         // VID cut
-        if (event->elePF2PATCutIdTight[i] < 1)
+        if (event.elePF2PATCutIdTight[i] < 1)
             continue;
 
         // Cuts not part of the tuned ID
-        if (std::abs(event->elePF2PATSCEta[i]) <= 1.479)
+        if (std::abs(event.elePF2PATSCEta[i]) <= 1.479)
         {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.05)
+            if (std::abs(event.elePF2PATD0PV[i]) >= 0.05)
                 continue;
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.10)
+            if (std::abs(event.elePF2PATDZPV[i]) >= 0.10)
                 continue;
         }
-        else if (std::abs(event->elePF2PATSCEta[i]) > 1.479
-                 && std::abs(event->elePF2PATSCEta[i]) < 2.50)
+        else if (std::abs(event.elePF2PATSCEta[i]) > 1.479
+                 && std::abs(event.elePF2PATSCEta[i]) < 2.50)
         {
-            if (std::abs(event->elePF2PATD0PV[i]) >= 0.10)
+            if (std::abs(event.elePF2PATD0PV[i]) >= 0.10)
                 continue;
-            if (std::abs(event->elePF2PATDZPV[i]) >= 0.20)
+            if (std::abs(event.elePF2PATDZPV[i]) >= 0.20)
                 continue;
         }
         electrons.emplace_back(i);
@@ -1012,16 +1012,17 @@ std::vector<int> TriggerScaleFactors::getTightElectrons(AnalysisEvent* event)
     return electrons;
 }
 
-std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event)
+std::vector<int>
+    TriggerScaleFactors::getTightMuons(const AnalysisEvent& event) const
 {
     std::vector<int> muons;
-    for (int i{0}; i < event->numMuonPF2PAT; i++)
+    for (int i{0}; i < event.numMuonPF2PAT; i++)
     {
-        if (event->muonPF2PATIsPFMuon[i] && event->muonPF2PATTightCutId[i]
-            && event->muonPF2PATPfIsoTight[i]
-            && std::abs(event->muonPF2PATEta[i]) <= 2.4)
+        if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATTightCutId[i]
+            && event.muonPF2PATPfIsoTight[i]
+            && std::abs(event.muonPF2PATEta[i]) <= 2.4)
         {
-            if (event->muonPF2PATPt[i] >= (muons.empty() ? 29 : 20))
+            if (event.muonPF2PATPt[i] >= (muons.empty() ? 29 : 20))
             {
                 muons.emplace_back(i);
             }
@@ -1030,8 +1031,8 @@ std::vector<int> TriggerScaleFactors::getTightMuons(AnalysisEvent* event)
     return muons;
 }
 
-bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
-                                                int nElectrons)
+bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent& event,
+                                                const int nElectrons) const
 {
     // Check if there are at least two electrons first. Otherwise use muons.
 
@@ -1042,35 +1043,35 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
 
     if (nElectrons == 2)
     {
-        std::vector<int> leptons = event->electronIndexTight;
+        std::vector<int> leptons = event.electronIndexTight;
         for (unsigned i = 0; i < leptons.size(); i++)
         {
             for (unsigned j = i + 1; j < leptons.size(); j++)
             {
-                if (event->elePF2PATCharge[leptons[i]]
-                        * event->elePF2PATCharge[leptons[j]]
+                if (event.elePF2PATCharge[leptons[i]]
+                        * event.elePF2PATCharge[leptons[j]]
                     >= 0)
                     continue; // check electron pair have correct charge.
                 TLorentzVector lepton1 =
-                    TLorentzVector(event->elePF2PATPX[leptons[i]],
-                                   event->elePF2PATPY[leptons[i]],
-                                   event->elePF2PATPZ[leptons[i]],
-                                   event->elePF2PATE[leptons[i]]);
+                    TLorentzVector(event.elePF2PATPX[leptons[i]],
+                                   event.elePF2PATPY[leptons[i]],
+                                   event.elePF2PATPZ[leptons[i]],
+                                   event.elePF2PATE[leptons[i]]);
                 TLorentzVector lepton2 =
-                    TLorentzVector(event->elePF2PATPX[leptons[j]],
-                                   event->elePF2PATPY[leptons[j]],
-                                   event->elePF2PATPZ[leptons[j]],
-                                   event->elePF2PATE[leptons[j]]);
+                    TLorentzVector(event.elePF2PATPX[leptons[j]],
+                                   event.elePF2PATPY[leptons[j]],
+                                   event.elePF2PATPZ[leptons[j]],
+                                   event.elePF2PATE[leptons[j]]);
                 float candidateMass = (lepton1 + lepton2).M();
                 if (std::abs((lepton1 + lepton2).Pt()) > std::abs(pT))
                 {
-                    event->zPairLeptons.first =
+                    event.zPairLeptons.first =
                         lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
-                    event->zPairIndex.first =
+                    event.zPairIndex.first =
                         lepton1.Pt() > lepton2.Pt() ? leptons[i] : leptons[j];
-                    event->zPairLeptons.second =
+                    event.zPairLeptons.second =
                         lepton1.Pt() > lepton2.Pt() ? lepton2 : lepton1;
-                    event->zPairIndex.second =
+                    event.zPairIndex.second =
                         lepton1.Pt() > lepton2.Pt() ? leptons[j] : leptons[i];
                     invMass = candidateMass;
                     pT = (lepton1 + lepton2).Pt();
@@ -1082,37 +1083,37 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
     // DoubleMuon
     else if (nElectrons == 0)
     {
-        std::vector<int> leptons = event->muonIndexTight;
+        std::vector<int> leptons = event.muonIndexTight;
         for (unsigned i = 0; i < leptons.size(); i++)
         {
             for (unsigned j = i + 1; j < leptons.size(); j++)
             {
-                if (event->muonPF2PATCharge[leptons[i]]
-                        * event->muonPF2PATCharge[leptons[j]]
+                if (event.muonPF2PATCharge[leptons[i]]
+                        * event.muonPF2PATCharge[leptons[j]]
                     >= 0)
                 {
                     continue;
                 }
                 TLorentzVector lepton1 =
-                    TLorentzVector(event->muonPF2PATPX[leptons[i]],
-                                   event->muonPF2PATPY[leptons[i]],
-                                   event->muonPF2PATPZ[leptons[i]],
-                                   event->muonPF2PATE[leptons[i]]);
+                    TLorentzVector(event.muonPF2PATPX[leptons[i]],
+                                   event.muonPF2PATPY[leptons[i]],
+                                   event.muonPF2PATPZ[leptons[i]],
+                                   event.muonPF2PATE[leptons[i]]);
                 TLorentzVector lepton2 =
-                    TLorentzVector(event->muonPF2PATPX[leptons[j]],
-                                   event->muonPF2PATPY[leptons[j]],
-                                   event->muonPF2PATPZ[leptons[j]],
-                                   event->muonPF2PATE[leptons[j]]);
+                    TLorentzVector(event.muonPF2PATPX[leptons[j]],
+                                   event.muonPF2PATPY[leptons[j]],
+                                   event.muonPF2PATPZ[leptons[j]],
+                                   event.muonPF2PATE[leptons[j]]);
                 float candidateMass = (lepton1 + lepton2).M();
                 if (std::abs((lepton1 + lepton2).Pt()) > std::abs(pT))
                 {
-                    event->zPairLeptons.first =
+                    event.zPairLeptons.first =
                         lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
-                    event->zPairIndex.first =
+                    event.zPairIndex.first =
                         lepton1.Pt() > lepton2.Pt() ? leptons[i] : leptons[j];
-                    event->zPairLeptons.second =
+                    event.zPairLeptons.second =
                         lepton1.Pt() > lepton2.Pt() ? lepton2 : lepton1;
-                    event->zPairIndex.second =
+                    event.zPairIndex.second =
                         lepton1.Pt() > lepton2.Pt() ? leptons[j] : leptons[i];
                     invMass = candidateMass;
                     pT = (lepton1 + lepton2).Pt();
@@ -1124,8 +1125,8 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
     // MuonEG
     else if (nElectrons == 1)
     {
-        std::vector<int> electrons = event->electronIndexTight;
-        std::vector<int> muons = event->muonIndexTight;
+        std::vector<int> electrons = event.electronIndexTight;
+        std::vector<int> muons = event.muonIndexTight;
         if (electrons.size() != 1 && muons.size() != 1)
         {
             return false;
@@ -1134,33 +1135,33 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
         {
             for (unsigned j = 0; j < muons.size(); j++)
             {
-                if (!(event->elePF2PATCharge[electrons[i]]
-                          * event->muonPF2PATCharge[muons[j]]
+                if (!(event.elePF2PATCharge[electrons[i]]
+                          * event.muonPF2PATCharge[muons[j]]
                       >= 0))
                 {
                     continue; // check muon-electron pair have correct (same)
                     // charge.
                 }
                 TLorentzVector lepton1 =
-                    TLorentzVector(event->elePF2PATPX[electrons[i]],
-                                   event->elePF2PATPY[electrons[i]],
-                                   event->elePF2PATPZ[electrons[i]],
-                                   event->elePF2PATE[electrons[i]]);
+                    TLorentzVector(event.elePF2PATPX[electrons[i]],
+                                   event.elePF2PATPY[electrons[i]],
+                                   event.elePF2PATPZ[electrons[i]],
+                                   event.elePF2PATE[electrons[i]]);
                 TLorentzVector lepton2 =
-                    TLorentzVector(event->muonPF2PATPX[muons[j]],
-                                   event->muonPF2PATPY[muons[j]],
-                                   event->muonPF2PATPZ[muons[j]],
-                                   event->muonPF2PATE[muons[j]]);
+                    TLorentzVector(event.muonPF2PATPX[muons[j]],
+                                   event.muonPF2PATPY[muons[j]],
+                                   event.muonPF2PATPZ[muons[j]],
+                                   event.muonPF2PATE[muons[j]]);
                 float candidateMass = (lepton1 + lepton2).M();
                 if (std::abs((lepton1 + lepton2).Pt()) > std::abs(pT))
                 {
-                    event->zPairLeptons.first =
+                    event.zPairLeptons.first =
                         lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
-                    event->zPairIndex.first =
+                    event.zPairIndex.first =
                         lepton1.Pt() > lepton2.Pt() ? electrons[i] : muons[j];
-                    event->zPairLeptons.second =
+                    event.zPairLeptons.second =
                         lepton1.Pt() > lepton2.Pt() ? lepton2 : lepton1;
-                    event->zPairIndex.second =
+                    event.zPairIndex.second =
                         lepton1.Pt() > lepton2.Pt() ? muons[j] : electrons[i];
                     invMass = candidateMass;
                     pT = (lepton1 + lepton2).Pt();
@@ -1192,245 +1193,246 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
     return false;
 }
 
-bool TriggerScaleFactors::metTriggerCut(AnalysisEvent* event)
+bool TriggerScaleFactors::metTriggerCut(const AnalysisEvent& event) const
 {
     // clang-format off
     return is2016_
-               ? event->HLT_MET200_v1 > 0 || event->HLT_MET200_v2 > 0
-                     || event->HLT_MET200_v3 > 0 || event->HLT_MET200_v4 > 0
-                     || event->HLT_MET200_v5 > 0 || event->HLT_MET250_v1 > 0
-                     || event->HLT_MET250_v2 > 0 || event->HLT_MET250_v3 > 0
-                     || event->HLT_MET250_v4 > 0 || event->HLT_MET250_v5 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v2 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v3 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v4 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v5 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v6 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v7 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v8 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v2 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v3 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v4 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v5 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v6 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v7 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v8 > 0
-                     || event->HLT_PFMET170_HBHECleaned_v9 > 0
-                     || event->HLT_PFHT300_PFMET100_v1 > 0
-                     || event->HLT_PFHT300_PFMET100_v2 > 0
-                     || event->HLT_PFHT300_PFMET100_v3 > 0
-                     || event->HLT_PFHT300_PFMET100_v4 > 0
-                     || event->HLT_PFHT300_PFMET110_v4 > 0
-                     || event->HLT_PFHT300_PFMET110_v5 > 0
-                     || event->HLT_PFHT300_PFMET110_v6 > 0
-               : event->HLT_MET105_IsoTrk50_v1 > 0
-                     || event->HLT_MET105_IsoTrk50_v3 > 0
-                     || event->HLT_MET105_IsoTrk50_v4 > 0
-                     || event->HLT_MET105_IsoTrk50_v5 > 0
-                     || event->HLT_MET105_IsoTrk50_v6 > 0
-                     || event->HLT_MET105_IsoTrk50_v7 > 0
-                     || event->HLT_MET105_IsoTrk50_v8 > 0
-                     || event->HLT_MET120_IsoTrk50_v1 > 0
-                     || event->HLT_MET120_IsoTrk50_v3 > 0
-                     || event->HLT_MET120_IsoTrk50_v4 > 0
-                     || event->HLT_MET120_IsoTrk50_v5 > 0
-                     || event->HLT_MET120_IsoTrk50_v6 > 0
-                     || event->HLT_MET120_IsoTrk50_v7 > 0
-                     || event->HLT_MET120_IsoTrk50_v8 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v10 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v11 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v5 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v6 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v8 > 0
-                     || event->HLT_HT430_DisplacedDijet40_DisplacedTrack_v9 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v10 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v11 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v5 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v6 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v8 > 0
-                     || event->HLT_HT430_DisplacedDijet60_DisplacedTrack_v9 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v10 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v11 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v5 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v6 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v8 > 0
-                     || event->HLT_HT430_DisplacedDijet80_DisplacedTrack_v9 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v10 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v11 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v5 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v6 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v8 > 0
-                     || event->HLT_HT650_DisplacedDijet60_Inclusive_v9 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v10 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v11 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v12 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v6 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v7 > 0
-                     || event->HLT_HT650_DisplacedDijet80_Inclusive_v9 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v10 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v11 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v12 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v6 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v7 > 0
-                     || event->HLT_HT750_DisplacedDijet80_Inclusive_v9 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_HFCleaned_v1 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_HFCleaned_v2 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_L1ETMnoHF_v10 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_HFCleaned_v1 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_HFCleaned_v2 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v2 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v3 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v4 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v5 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v6 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_PFHT60_v7 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v11 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v13 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v14 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v15 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v16 > 0
-                     || event->HLT_PFMET120_PFMHT120_IDTight_v9 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v11 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v13 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v14 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v15 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v16 > 0
-                     || event->HLT_PFMET130_PFMHT130_IDTight_v9 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v11 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v13 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v14 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v15 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v16 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v17 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v18 > 0
-                     || event->HLT_PFMET140_PFMHT140_IDTight_v9 > 0
-                     || event->HLT_PFMET200_HBHE_BeamHaloCleaned_v5 > 0
-                     || event->HLT_PFMET200_HBHE_BeamHaloCleaned_v6 > 0
-                     || event->HLT_PFMET200_HBHE_BeamHaloCleaned_v7 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v2 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v3 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v4 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v5 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v6 > 0
-                     || event->HLT_PFMET250_HBHECleaned_v7 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v2 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v3 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v4 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v5 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v6 > 0
-                     || event->HLT_PFMET300_HBHECleaned_v7 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_HFCleaned_v1 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_HFCleaned_v2 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_L1ETMnoHF_v10 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v2 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v3 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v4 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v5 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v6 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v7 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v11 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v13 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v14 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v15 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v16 > 0
-                     || event->HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v9 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v10 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v12 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v13 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v14 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v15 > 0
-                     || event->HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v9 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v10 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v12 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v13 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v14 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v15 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v16 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v17 > 0
-                     || event->HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v9 > 0
-                     || event->HLT_PFHT1050_v11 > 0
-                     || event->HLT_PFHT1050_v12 > 0
-                     || event->HLT_PFHT1050_v13 > 0
-                     || event->HLT_PFHT1050_v14 > 0
-                     || event->HLT_PFHT1050_v15 > 0
-                     || event->HLT_PFHT1050_v16 > 0
-                     || event->HLT_PFHT1050_v7 > 0 || event->HLT_PFHT1050_v9 > 0
-                     || event->HLT_PFHT180_v7 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v1 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v10 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v3 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v5 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v6 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v7 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v8 > 0
-                     || event->HLT_PFHT500_PFMET100_PFMHT100_IDTight_v9 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v1 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v10 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v3 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v5 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v6 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v7 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v8 > 0
-                     || event->HLT_PFHT500_PFMET110_PFMHT110_IDTight_v9 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v1 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v10 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v3 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v5 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v6 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v7 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v8 > 0
-                     || event->HLT_PFHT700_PFMET85_PFMHT85_IDTight_v9 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v1 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v10 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v3 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v5 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v6 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v7 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v8 > 0
-                     || event->HLT_PFHT700_PFMET95_PFMHT95_IDTight_v9 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v1 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v10 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v3 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v5 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v6 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v7 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v8 > 0
-                     || event->HLT_PFHT800_PFMET75_PFMHT75_IDTight_v9 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v1 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v10 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v3 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v5 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v6 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v7 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v8 > 0
-                     || event->HLT_PFHT800_PFMET85_PFMHT85_IDTight_v9 > 0;
+               ? event.HLT_MET200_v1 > 0 || event.HLT_MET200_v2 > 0
+                     || event.HLT_MET200_v3 > 0 || event.HLT_MET200_v4 > 0
+                     || event.HLT_MET200_v5 > 0 || event.HLT_MET250_v1 > 0
+                     || event.HLT_MET250_v2 > 0 || event.HLT_MET250_v3 > 0
+                     || event.HLT_MET250_v4 > 0 || event.HLT_MET250_v5 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v2 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v3 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v4 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v5 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v6 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v7 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v8 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v2 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v3 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v4 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v5 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v6 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v7 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v8 > 0
+                     || event.HLT_PFMET170_HBHECleaned_v9 > 0
+                     || event.HLT_PFHT300_PFMET100_v1 > 0
+                     || event.HLT_PFHT300_PFMET100_v2 > 0
+                     || event.HLT_PFHT300_PFMET100_v3 > 0
+                     || event.HLT_PFHT300_PFMET100_v4 > 0
+                     || event.HLT_PFHT300_PFMET110_v4 > 0
+                     || event.HLT_PFHT300_PFMET110_v5 > 0
+                     || event.HLT_PFHT300_PFMET110_v6 > 0
+               : event.HLT_MET105_IsoTrk50_v1 > 0
+                     || event.HLT_MET105_IsoTrk50_v3 > 0
+                     || event.HLT_MET105_IsoTrk50_v4 > 0
+                     || event.HLT_MET105_IsoTrk50_v5 > 0
+                     || event.HLT_MET105_IsoTrk50_v6 > 0
+                     || event.HLT_MET105_IsoTrk50_v7 > 0
+                     || event.HLT_MET105_IsoTrk50_v8 > 0
+                     || event.HLT_MET120_IsoTrk50_v1 > 0
+                     || event.HLT_MET120_IsoTrk50_v3 > 0
+                     || event.HLT_MET120_IsoTrk50_v4 > 0
+                     || event.HLT_MET120_IsoTrk50_v5 > 0
+                     || event.HLT_MET120_IsoTrk50_v6 > 0
+                     || event.HLT_MET120_IsoTrk50_v7 > 0
+                     || event.HLT_MET120_IsoTrk50_v8 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v10 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v11 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v5 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v6 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v8 > 0
+                     || event.HLT_HT430_DisplacedDijet40_DisplacedTrack_v9 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v10 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v11 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v5 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v6 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v8 > 0
+                     || event.HLT_HT430_DisplacedDijet60_DisplacedTrack_v9 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v10 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v11 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v5 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v6 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v8 > 0
+                     || event.HLT_HT430_DisplacedDijet80_DisplacedTrack_v9 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v10 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v11 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v5 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v6 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v8 > 0
+                     || event.HLT_HT650_DisplacedDijet60_Inclusive_v9 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v10 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v11 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v12 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v6 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v7 > 0
+                     || event.HLT_HT650_DisplacedDijet80_Inclusive_v9 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v10 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v11 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v12 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v6 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v7 > 0
+                     || event.HLT_HT750_DisplacedDijet80_Inclusive_v9 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_HFCleaned_v1 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_HFCleaned_v2 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_L1ETMnoHF_v10 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_HFCleaned_v1 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_HFCleaned_v2 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v2 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v3 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v4 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v5 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v6 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_PFHT60_v7 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v11 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v13 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v14 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v15 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v16 > 0
+                     || event.HLT_PFMET120_PFMHT120_IDTight_v9 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v11 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v13 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v14 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v15 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v16 > 0
+                     || event.HLT_PFMET130_PFMHT130_IDTight_v9 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v11 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v13 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v14 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v15 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v16 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v17 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v18 > 0
+                     || event.HLT_PFMET140_PFMHT140_IDTight_v9 > 0
+                     || event.HLT_PFMET200_HBHE_BeamHaloCleaned_v5 > 0
+                     || event.HLT_PFMET200_HBHE_BeamHaloCleaned_v6 > 0
+                     || event.HLT_PFMET200_HBHE_BeamHaloCleaned_v7 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v2 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v3 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v4 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v5 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v6 > 0
+                     || event.HLT_PFMET250_HBHECleaned_v7 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v2 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v3 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v4 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v5 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v6 > 0
+                     || event.HLT_PFMET300_HBHECleaned_v7 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_HFCleaned_v1 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_HFCleaned_v2 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_L1ETMnoHF_v10 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v2 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v3 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v4 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v5 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v6 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v7 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v11 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v13 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v14 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v15 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v16 > 0
+                     || event.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v9 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v10 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v12 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v13 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v14 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v15 > 0
+                     || event.HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v9 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v10 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v12 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v13 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v14 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v15 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v16 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v17 > 0
+                     || event.HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v9 > 0
+                     || event.HLT_PFHT1050_v11 > 0
+                     || event.HLT_PFHT1050_v12 > 0
+                     || event.HLT_PFHT1050_v13 > 0
+                     || event.HLT_PFHT1050_v14 > 0
+                     || event.HLT_PFHT1050_v15 > 0
+                     || event.HLT_PFHT1050_v16 > 0
+                     || event.HLT_PFHT1050_v7 > 0 || event.HLT_PFHT1050_v9 > 0
+                     || event.HLT_PFHT180_v7 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v1 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v10 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v3 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v5 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v6 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v7 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v8 > 0
+                     || event.HLT_PFHT500_PFMET100_PFMHT100_IDTight_v9 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v1 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v10 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v3 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v5 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v6 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v7 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v8 > 0
+                     || event.HLT_PFHT500_PFMET110_PFMHT110_IDTight_v9 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v1 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v10 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v3 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v5 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v6 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v7 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v8 > 0
+                     || event.HLT_PFHT700_PFMET85_PFMHT85_IDTight_v9 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v1 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v10 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v3 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v5 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v6 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v7 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v8 > 0
+                     || event.HLT_PFHT700_PFMET95_PFMHT95_IDTight_v9 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v1 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v10 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v3 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v5 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v6 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v7 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v8 > 0
+                     || event.HLT_PFHT800_PFMET75_PFMHT75_IDTight_v9 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v1 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v10 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v3 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v5 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v6 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v7 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v8 > 0
+                     || event.HLT_PFHT800_PFMET85_PFMHT85_IDTight_v9 > 0;
     // clang-format on
 }
 
-bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC)
+bool TriggerScaleFactors::metFilters(const AnalysisEvent& event,
+                                     const bool isMC) const
 {
-    if (event->Flag_HBHENoiseFilter <= 0 || event->Flag_HBHENoiseIsoFilter <= 0
-        || event->Flag_globalTightHalo2016Filter <= 0
-        || event->Flag_EcalDeadCellTriggerPrimitiveFilter <= 0
-        || event->Flag_goodVertices <= 0
-        || (!isMC && event->Flag_eeBadScFilter <= 0))
+    if (event.Flag_HBHENoiseFilter <= 0 || event.Flag_HBHENoiseIsoFilter <= 0
+        || event.Flag_globalTightHalo2016Filter <= 0
+        || event.Flag_EcalDeadCellTriggerPrimitiveFilter <= 0
+        || event.Flag_goodVertices <= 0
+        || (!isMC && event.Flag_eeBadScFilter <= 0))
     {
         return false;
     }
 
     if (is2016_
-        && (event->Flag_ecalLaserCorrFilter <= 0
-            || event->Flag_chargedHadronTrackResolutionFilter <= 0
-            || event->Flag_muonBadTrackFilter <= 0 || event->Flag_badMuons <= 0
-            || event->Flag_duplicateMuons <= 0 || event->Flag_noBadMuons))
+        && (event.Flag_ecalLaserCorrFilter <= 0
+            || event.Flag_chargedHadronTrackResolutionFilter <= 0
+            || event.Flag_muonBadTrackFilter <= 0 || event.Flag_badMuons <= 0
+            || event.Flag_duplicateMuons <= 0 || event.Flag_noBadMuons))
     {
         return false;
     }
 
     if (!is2016_
-        && (event->Flag_BadPFMuonFilter <= 0
-            || event->Flag_BadChargedCandidateFilter <= 0
-            || event->Flag_ecalBadCalibFilter <= 0))
+        && (event.Flag_BadPFMuonFilter <= 0
+            || event.Flag_BadChargedCandidateFilter <= 0
+            || event.Flag_ecalBadCalibFilter <= 0))
     {
         return false;
     }
@@ -1438,13 +1440,14 @@ bool TriggerScaleFactors::metFilters(AnalysisEvent* event, bool isMC)
     return true;
 }
 
-bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
+bool TriggerScaleFactors::makeJetCuts(AnalysisEvent& event,
+                                      const bool isMC) const
 {
     std::vector<int> jets;
-    for (int i{0}; i < event->numJetPF2PAT; i++)
+    for (int i{0}; i < event.numJetPF2PAT; i++)
     {
-        // if (std::sqrt(event->jetPF2PATPx[i] * event->jetPF2PATPx[i] +
-        // event->jetPF2PATPy[i] * event->jetPF2PATPy[i]) < jetPt_) continue;
+        // if (std::sqrt(event.jetPF2PATPx[i] * event.jetPF2PATPx[i] +
+        // event.jetPF2PATPy[i] * event.jetPF2PATPy[i]) < jetPt_) continue;
         TLorentzVector jetVec{getJetLVec(event, i, isMC)};
         if (jetVec.Pt() <= 30.)
         {
@@ -1461,16 +1464,16 @@ bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
         if (std::abs(jetVec.Eta()) <= 2.7)
         { // for cases where jet eta <= 2.7
             // for all jets with eta <= 2.7
-            if (event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99)
+            if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.99)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.99)
+            if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.99)
             {
                 jetId = false;
             }
-            if ((event->jetPF2PATChargedMultiplicity[i]
-                 + event->jetPF2PATNeutralMultiplicity[i])
+            if ((event.jetPF2PATChargedMultiplicity[i]
+                 + event.jetPF2PATNeutralMultiplicity[i])
                 <= 1)
             {
                 jetId = false;
@@ -1479,41 +1482,41 @@ bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
         // for jets with eta <= 2.40
         if (std::abs(jetVec.Eta()) <= 2.40)
         {
-            if (event->jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
+            if (event.jetPF2PATChargedHadronEnergyFraction[i] <= 0.0)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATChargedMultiplicity[i] <= 0.0)
+            if (event.jetPF2PATChargedMultiplicity[i] <= 0.0)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATChargedEmEnergyFraction[i] >= 0.99)
+            if (event.jetPF2PATChargedEmEnergyFraction[i] >= 0.99)
             {
                 jetId = false;
             }
         }
         else if (std::abs(jetVec.Eta()) <= 3.0 && std::abs(jetVec.Eta()) > 2.70)
         {
-            if (event->jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98)
+            if (event.jetPF2PATNeutralHadronEnergyFraction[i] >= 0.98)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATNeutralEmEnergyFraction[i] <= 0.01)
+            if (event.jetPF2PATNeutralEmEnergyFraction[i] <= 0.01)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATNeutralMultiplicity[i] <= 2)
+            if (event.jetPF2PATNeutralMultiplicity[i] <= 2)
             {
                 jetId = false;
             }
         }
         else if (std::abs(jetVec.Eta()) > 3.0)
         { // for cases where jet eta > 3.0 and less than 5.0 (or max).
-            if (event->jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
+            if (event.jetPF2PATNeutralEmEnergyFraction[i] >= 0.90)
             {
                 jetId = false;
             }
-            if (event->jetPF2PATNeutralMultiplicity[i] <= 10)
+            if (event.jetPF2PATNeutralMultiplicity[i] <= 10)
             {
                 jetId = false;
             }
@@ -1525,23 +1528,23 @@ bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
         }
         double deltaLep{10000};
 
-        if (deltaLep > deltaR(event->zPairLeptons.first.Eta(),
-                              event->zPairLeptons.first.Phi(),
+        if (deltaLep > deltaR(event.zPairLeptons.first.Eta(),
+                              event.zPairLeptons.first.Phi(),
                               jetVec.Eta(),
                               jetVec.Phi()))
         {
-            deltaLep = deltaR(event->zPairLeptons.first.Eta(),
-                              event->zPairLeptons.first.Phi(),
+            deltaLep = deltaR(event.zPairLeptons.first.Eta(),
+                              event.zPairLeptons.first.Phi(),
                               jetVec.Eta(),
                               jetVec.Phi());
         }
-        if (deltaLep > deltaR(event->zPairLeptons.second.Eta(),
-                              event->zPairLeptons.second.Phi(),
+        if (deltaLep > deltaR(event.zPairLeptons.second.Eta(),
+                              event.zPairLeptons.second.Phi(),
                               jetVec.Eta(),
                               jetVec.Phi()))
         {
-            deltaLep = deltaR(event->zPairLeptons.second.Eta(),
-                              event->zPairLeptons.second.Phi(),
+            deltaLep = deltaR(event.zPairLeptons.second.Eta(),
+                              event.zPairLeptons.second.Phi(),
                               jetVec.Eta(),
                               jetVec.Phi());
         }
@@ -1570,7 +1573,7 @@ bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
         for (unsigned int i = 0; i != jets.size(); i++)
         {
             TLorentzVector jetVec{getJetLVec(event, i, isMC)};
-            if (event->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+            if (event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
                     [jets[i]]
                 <= 0.8484)
             {
@@ -1595,24 +1598,25 @@ bool TriggerScaleFactors::makeJetCuts(AnalysisEvent* event, bool isMC)
     return true;
 }
 
-TLorentzVector
-    TriggerScaleFactors::getJetLVec(AnalysisEvent* event, int index, bool isMC_)
+TLorentzVector TriggerScaleFactors::getJetLVec(AnalysisEvent& event,
+                                               const int index,
+                                               const bool isMC_) const
 {
     TLorentzVector returnJet;
     float newSmearValue{1.0};
     if (!isMC_)
     {
-        event->jetSmearValue.emplace_back(newSmearValue);
-        returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                             event->jetPF2PATPy[index],
-                             event->jetPF2PATPz[index],
-                             event->jetPF2PATE[index]);
+        event.jetSmearValue.emplace_back(newSmearValue);
+        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                             event.jetPF2PATPy[index],
+                             event.jetPF2PATPz[index],
+                             event.jetPF2PATE[index]);
         return returnJet;
     }
     float jerSF{0.};
     float jerSigma{0.};
 
-    double eta = std::abs(event->jetPF2PATEta[index]);
+    double eta = std::abs(event.jetPF2PATEta[index]);
 
     if (eta <= 0.5)
     {
@@ -1680,34 +1684,34 @@ TLorentzVector
         jerSigma = 0.029;
     }
 
-    double dR = deltaR(event->genJetPF2PATEta[index],
-                       event->genJetPF2PATPhi[index],
-                       event->jetPF2PATEta[index],
-                       event->jetPF2PATPhi[index]);
+    double dR = deltaR(event.genJetPF2PATEta[index],
+                       event.genJetPF2PATPhi[index],
+                       event.jetPF2PATEta[index],
+                       event.jetPF2PATPhi[index]);
     double min_dR = std::numeric_limits<double>::infinity();
-    double dPt = event->jetPF2PATPtRaw[index] - event->genJetPF2PATPT[index];
+    double dPt = event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[index];
 
     if (dR > min_dR)
     { // If dR is greater than infinity ... just return the unsmeared jet
-        returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                             event->jetPF2PATPy[index],
-                             event->jetPF2PATPz[index],
-                             event->jetPF2PATE[index]);
+        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                             event.jetPF2PATPy[index],
+                             event.jetPF2PATPz[index],
+                             event.jetPF2PATE[index]);
         return returnJet;
     }
 
     if (isMC_)
     {
-        if (event->genJetPF2PATPT[index] > 1e-2 && dR < (0.4 / 2.0)
-            && std::abs(dPt) < 3.0 * jerSigma * event->jetPF2PATPtRaw[index])
+        if (event.genJetPF2PATPT[index] > 1e-2 && dR < (0.4 / 2.0)
+            && std::abs(dPt) < 3.0 * jerSigma * event.jetPF2PATPtRaw[index])
         { // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma,
           // just scale, just scale
             newSmearValue =
-                1. + (jerSF - 1.) * dPt / (event->jetPF2PATPtRaw[index]);
-            returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                                 event->jetPF2PATPy[index],
-                                 event->jetPF2PATPz[index],
-                                 event->jetPF2PATE[index]);
+                1. + (jerSF - 1.) * dPt / (event.jetPF2PATPtRaw[index]);
+            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                                 event.jetPF2PATPy[index],
+                                 event.jetPF2PATPz[index],
+                                 event.jetPF2PATE[index]);
             returnJet *= newSmearValue;
         }
 
@@ -1717,37 +1721,39 @@ TLorentzVector
             std::normal_distribution<> d(0, sigma);
             std::mt19937 gen(rand());
             newSmearValue = 1.0 + d(gen);
-            returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                                 event->jetPF2PATPy[index],
-                                 event->jetPF2PATPz[index],
-                                 event->jetPF2PATE[index]);
+            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                                 event.jetPF2PATPy[index],
+                                 event.jetPF2PATPz[index],
+                                 event.jetPF2PATE[index]);
             returnJet *= newSmearValue;
         }
 
         if (returnJet.E() < 1e-2)
         { // Negative or too small smearFactor. We would change direction of the
           // jet
-            double newSmearFactor = 1e-2 / event->jetPF2PATE[index];
+            double newSmearFactor = 1e-2 / event.jetPF2PATE[index];
             newSmearValue = newSmearFactor;
-            returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                                 event->jetPF2PATPy[index],
-                                 event->jetPF2PATPz[index],
-                                 event->jetPF2PATE[index]);
+            returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                                 event.jetPF2PATPy[index],
+                                 event.jetPF2PATPz[index],
+                                 event.jetPF2PATE[index]);
             returnJet *= newSmearValue;
         }
     }
 
     else
-        returnJet.SetPxPyPzE(event->jetPF2PATPx[index],
-                             event->jetPF2PATPy[index],
-                             event->jetPF2PATPz[index],
-                             event->jetPF2PATE[index]);
+        returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
+                             event.jetPF2PATPy[index],
+                             event.jetPF2PATPz[index],
+                             event.jetPF2PATE[index]);
 
     return returnJet;
 }
 
-double
-    TriggerScaleFactors::deltaR(float eta1, float phi1, float eta2, float phi2)
+double TriggerScaleFactors::deltaR(const float eta1,
+                                   const float phi1,
+                                   const float eta2,
+                                   const float phi2) const
 {
     double dEta{eta1 - eta2};
     double dPhi{phi1 - phi2};
