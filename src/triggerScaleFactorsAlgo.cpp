@@ -1176,7 +1176,7 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent* event,
         exit(888);
     }
 
-    if (!zCuts_ && invMass > 20.0)
+    if (!zCuts_ && invMass > 0.0)
     {
         return true;
     }
