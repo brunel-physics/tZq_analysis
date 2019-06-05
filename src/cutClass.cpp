@@ -1320,14 +1320,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (eTrig || eeTrig)
             {
-                twgt = 0.93845;
+                twgt = 0.93316;
                 if (syst == 1)
                 {
-                    twgt += 0.00224;
+                    twgt += 0.00251;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00148;
+                    twgt -= 0.00251;
                 }
             }
         }
@@ -1335,14 +1335,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muTrig || mumuTrig)
             {
-                twgt = 0.99278;
+                twgt = 0.96754;
                 if (syst == 1)
                 {
-                    twgt += 0.00012;
+                    twgt += 0.00024;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.0012;
+                    twgt -= 0.00024;
                 }
             }
         }
@@ -1350,14 +1350,14 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muEGTrig)
             {
-                twgt = 0.96118;
+                twgt = 0.95266;
                 if (syst == 1)
                 {
-                    twgt += 0.00498;
+                    twgt += 0.00515;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00498;
+                    twgt -= 0.00515;
                 }
             }
         }
