@@ -547,22 +547,24 @@ void TriggerScaleFactors::runMainAnalysis()
 
             //      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
 
-            if (HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC())
-                && DO_HIPS)
+            if (is2016_)
             {
-                continue;
-            }
-            if (!HIP_ERA && event->eventRun < 278820 && !(dataset->isMC())
-                && DO_HIPS)
-            {
-                continue;
+                if (HIP_ERA && event->eventRun >= 278820 && !(dataset->isMC())
+                    && DO_HIPS)
+                {
+                    continue;
+                }
+                if (!HIP_ERA && event->eventRun < 278820 && !(dataset->isMC())
+                    && DO_HIPS)
+                {
+                    continue;
+                }
             }
 
             if (!metFilters(event, dataset->isMC()))
             {
                 continue;
             }
-
             // If checking impact of jet and bjet cuts add this bool ...
             bool passJetSelection = true;
             if (jetCuts_)
