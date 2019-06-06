@@ -520,17 +520,6 @@ void TriggerScaleFactors::runMainAnalysis()
 
         AnalysisEvent event{dataset->isMC(), datasetChain, is2016_};
 
-        double eventWeight = 1.0;
-
-        double pileupWeight = puReweight->GetBinContent(
-            puReweight->GetXaxis()->FindBin(event.numVert));
-        std::cout << "pileupWeight: " << pileupWeight << std::endl;
-        if (dataset->isMC())
-        {
-            eventWeight *= pileupWeight;
-        }
-        std::cout << "eventWeight: " << eventWeight << std::endl;
-
         int numberOfEvents = datasetChain->GetEntries();
         if (nEvents && nEvents < numberOfEvents)
         {
@@ -543,6 +532,15 @@ void TriggerScaleFactors::runMainAnalysis()
         {
             lEventTimer->DrawProgressBar(i);
             event.GetEntry(i);
+
+            double pileupWeight = puReweight->GetBinContent(
+                    puReweight->GetXaxis()->FindBin(event.numVert));
+            double eventWeight = 1.0;
+            if (dataset->isMC())
+            {
+                eventWeight *= pileupWeight;
+            }
+
 
             //      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
 
@@ -1127,7 +1125,7 @@ bool TriggerScaleFactors::passDileptonSelection(AnalysisEvent& event,
     {
         std::vector<int> electrons = event.electronIndexTight;
         std::vector<int> muons = event.muonIndexTight;
-        if (electrons.size() != 1 && muons.size() != 1)
+        if (electrons.empty() || muons.empty())
         {
             return false;
         }
