@@ -397,6 +397,67 @@ bool Cuts::makeCuts(AnalysisEvent& event,
     return true;
 }
 
+std::vector<double> Cuts::getRochesterSFs(const AnalysisEvent& event) const
+{
+    std::vector<double> SFs{};
+
+    for (auto muonIt = event.muonIndexTight.begin();
+         muonIt != event.muonIndexTight.end();
+         muonIt++)
+    {
+        double tempSF{1.0};
+        if (isMC_)
+        {
+            if (event.genMuonPF2PATPT[*muonIt] > 0) // matched gen muon
+            {
+                tempSF = rc_.kSpreadMC(event.muonPF2PATCharge[*muonIt],
+                                       event.muonPF2PATPt[*muonIt],
+                                       event.muonPF2PATEta[*muonIt],
+                                       event.muonPF2PATPhi[*muonIt],
+                                       event.genMuonPF2PATPT[*muonIt]);
+            }
+            else
+            {
+                static std::uniform_real_distribution<> u{0, 1};
+
+                // We need a uniformly distributed "random" number, but this
+                // should be the same every time, e.g. when we are looking at
+                // systematics. So we will seed the random number generator
+                // with a hash combining the properties of the muon (and make
+                // the hopefully safe assumption no two muons have EXACTLY
+                // the same properties
+                size_t seed{0};
+                boost::hash_combine(seed, event.muonPF2PATCharge[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATPt[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATEta[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATPhi[*muonIt]);
+                boost::hash_combine(
+                    seed, event.muonPF2PATTkLysWithMeasurements[*muonIt]);
+
+                std::mt19937 gen(seed);
+
+                tempSF =
+                    rc_.kSmearMC(event.muonPF2PATCharge[*muonIt],
+                                 event.muonPF2PATPt[*muonIt],
+                                 event.muonPF2PATEta[*muonIt],
+                                 event.muonPF2PATPhi[*muonIt],
+                                 event.muonPF2PATTkLysWithMeasurements[*muonIt],
+                                 u(gen));
+            }
+        }
+        else
+        {
+            tempSF = rc_.kScaleDT(event.muonPF2PATCharge[*muonIt],
+                                  event.muonPF2PATPt[*muonIt],
+                                  event.muonPF2PATEta[*muonIt],
+                                  event.muonPF2PATPhi[*muonIt]);
+        }
+        SFs.emplace_back(tempSF);
+    }
+
+    return SFs;
+}
+
 // Make lepton cuts. Will become customisable in a config later on.
 bool Cuts::makeLeptonCuts(
     AnalysisEvent& event,
@@ -477,66 +538,7 @@ bool Cuts::makeLeptonCuts(
         postLepSelTree_->Fill();
     }
 
-    // DO ROCHESTER CORRECTIONS HERE
-    std::vector<double> SFs{};
-
-    for (auto muonIt = event.muonIndexTight.begin();
-         muonIt != event.muonIndexTight.end();
-         muonIt++)
-    {
-        double tempSF{1.0};
-        if (isMC_)
-        {
-            if (event.genMuonPF2PATPT[*muonIt] > 0) // matched gen muon
-            {
-                tempSF = rc_.kSpreadMC(event.muonPF2PATCharge[*muonIt],
-                                       event.muonPF2PATPt[*muonIt],
-                                       event.muonPF2PATEta[*muonIt],
-                                       event.muonPF2PATPhi[*muonIt],
-                                       event.genMuonPF2PATPT[*muonIt]);
-            }
-            else
-            {
-                static std::uniform_real_distribution<> u{0, 1};
-
-                // We need a uniformly distributed "random" number, but this
-                // should be the same every time, e.g. when we are looking at
-                // systematics. So we will seed the random number generator
-                // with a hash combining the properties of the muon (and make
-                // the hopefully safe assumption no two muons have EXACTLY
-                // the same properties
-                size_t seed{0};
-                boost::hash_combine(seed, event.muonPF2PATCharge[*muonIt]);
-                boost::hash_combine(seed, event.muonPF2PATPt[*muonIt]);
-                boost::hash_combine(seed, event.muonPF2PATEta[*muonIt]);
-                boost::hash_combine(seed, event.muonPF2PATPhi[*muonIt]);
-                boost::hash_combine(
-                    seed, event.muonPF2PATTkLysWithMeasurements[*muonIt]);
-
-                std::mt19937 gen(seed);
-
-                tempSF =
-                    rc_.kSmearMC(event.muonPF2PATCharge[*muonIt],
-                                 event.muonPF2PATPt[*muonIt],
-                                 event.muonPF2PATEta[*muonIt],
-                                 event.muonPF2PATPhi[*muonIt],
-                                 event.muonPF2PATTkLysWithMeasurements[*muonIt],
-                                 u(gen));
-            }
-        }
-        else
-        {
-            tempSF = rc_.kScaleDT(event.muonPF2PATCharge[*muonIt],
-                                  event.muonPF2PATPt[*muonIt],
-                                  event.muonPF2PATEta[*muonIt],
-                                  event.muonPF2PATPhi[*muonIt]);
-        }
-        SFs.emplace_back(tempSF);
-    }
-
-    event.muonMomentumSF = SFs;
-
-    // FINISH ROCHESTER CORRECTIONS BIT
+    event.muonMomentumSF = getRochesterSFs(event);
 
     if (!getDileptonZCand(
             event, event.electronIndexTight, event.muonIndexTight))

@@ -60,6 +60,7 @@ class Cuts
                                         const double phi2);
     [[gnu::const]] static double deltaPhi(const double phi1, const double phi2);
 
+    std::vector<double> getRochesterSFs(const AnalysisEvent& event) const;
     // Function to get lepton SF
     double getLeptonWeight(const AnalysisEvent& event, const int syst) const;
     double eleSF(const double pt, const double eta, const int syst) const;
