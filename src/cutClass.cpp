@@ -7,6 +7,7 @@
 #include "TRandom.h"
 #include "cutClass.hpp"
 
+#include <boost/functional/hash.hpp>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
@@ -497,7 +498,23 @@ bool Cuts::makeLeptonCuts(
             else
             {
                 static std::uniform_real_distribution<> u{0, 1};
-                static std::mt19937 gen(rand());
+
+                // We need a uniformly distributed "random" number, but this
+                // should be the same every time, e.g. when we are looking at
+                // systematics. So we will seed the random number generator
+                // with a hash combining the properties of the muon (and make
+                // the hopefully safe assumption no two muons have EXACTLY
+                // the same properties
+                size_t seed{0};
+                boost::hash_combine(seed, event.muonPF2PATCharge[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATPt[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATEta[*muonIt]);
+                boost::hash_combine(seed, event.muonPF2PATPhi[*muonIt]);
+                boost::hash_combine(
+                    seed, event.muonPF2PATTkLysWithMeasurements[*muonIt]);
+
+                std::mt19937 gen(seed);
+
                 tempSF =
                     rc_.kSmearMC(event.muonPF2PATCharge[*muonIt],
                                  event.muonPF2PATPt[*muonIt],
@@ -1963,7 +1980,16 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
     {
         std::normal_distribution<> d(
             0, ptRes * std::sqrt(std::max(jerSF * jerSF - 1, 0.)));
-        static std::mt19937 gen(rand());
+
+        // Like with the Rochester corrections, seed the random number generator
+        // with event (jet) properties so that each jet is smeared the same
+        // way every time it is processed
+        size_t seed{0};
+        boost::hash_combine(seed, event.jetPF2PATPtRaw[index]);
+        boost::hash_combine(seed, event.jetPF2PATEta[index]);
+        boost::hash_combine(seed, event.jetPF2PATPhi[index]);
+        std::mt19937 gen(rand());
+
         newSmearValue = 1.0 + d(gen);
     }
 
