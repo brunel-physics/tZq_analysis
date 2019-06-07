@@ -28,8 +28,8 @@ INCLUDE_PATH = 	-Iinclude  \
 		-isystem/scratch/shared/include \
 		-isystem$(shell root-config --incdir) \
 
-CFLAGS = ${INCLUDE_PATH} -std=c++17 -MMD -MP -std=c++17 -march=native \
-                         -mtune=native -pipe -O3 -fPIC -m64 -pthread
+CFLAGS = ${INCLUDE_PATH} -std=c++17 -MMD -MP -march=native \
+		 -mtune=native -pipe -O3 -fPIC -m64 -pthread
 
 ifeq ($(CXX),g++)
   CFLAGS += -Wall -Wextra -Wpedantic -Wcast-align -Wcast-qual \
