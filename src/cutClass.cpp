@@ -809,22 +809,27 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
                                      event.elePF2PATPZ[electrons[1]],
                                      event.elePF2PATE[electrons[1]]};
 
-        event.zPairLeptons.first =
-            lepton1.Pt() > lepton2.Pt() ? lepton1 : lepton2;
-        event.zPairIndex.first =
-            lepton1.Pt() > lepton2.Pt() ? electrons[0] : electrons[1];
+        if (lepton1.Pt() > lepton2.Pt())
+        {
+            event.zPairLeptons.first = lepton1;
+            event.zPairIndex.first = electrons[0];
+
+            event.zPairLeptons.second = lepton2;
+            event.zPairIndex.second = electrons[1];
+        }
+        else
+        {
+            event.zPairLeptons.first = lepton2;
+            event.zPairIndex.first = electrons[1];
+
+            event.zPairLeptons.second = lepton1;
+            event.zPairIndex.second = electrons[0];
+        }
+
         event.zPairRelIso.first =
-            lepton1.Pt() > lepton2.Pt()
-                ? event.elePF2PATComRelIsoRho[electrons[0]]
-                : event.elePF2PATComRelIsoRho[electrons[1]];
-        event.zPairLeptons.second =
-            lepton1.Pt() > lepton2.Pt() ? lepton2 : lepton1;
+            event.elePF2PATComRelIsoRho[event.zPairIndex.first];
         event.zPairRelIso.second =
-            lepton1.Pt() > lepton2.Pt()
-                ? event.elePF2PATComRelIsoRho[electrons[1]]
-                : event.elePF2PATComRelIsoRho[electrons[0]];
-        event.zPairIndex.second =
-            lepton1.Pt() > lepton2.Pt() ? electrons[1] : electrons[0];
+            event.elePF2PATComRelIsoRho[event.zPairIndex.second];
 
         return true;
     } // end electron if
