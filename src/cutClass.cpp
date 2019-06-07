@@ -1350,7 +1350,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (muEGTrig)
             {
-                twgt = 0.94875
+                twgt = 0.94875;
                 if (syst == 1)
                 {
                     twgt += 0.00425;
