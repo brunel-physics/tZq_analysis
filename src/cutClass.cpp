@@ -1890,6 +1890,7 @@ double Cuts::getJECUncertainty(const double pt,
                                    : jecSFDown_[etaBin][ptBin]};
     const double hiFact{syst == 4 ? jecSFUp_[etaBin][ptBin + 1]
                                   : jecSFDown_[etaBin][ptBin + 1]};
+
     // Now do some interpolation
     const double a{(hiFact - lowFact) / (ptMaxJEC_[ptBin] - ptMinJEC_[ptBin])};
     const double b{(lowFact * (ptMaxJEC_[ptBin]) - hiFact * ptMinJEC_[ptBin])
@@ -1915,7 +1916,7 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
                              event.jetPF2PATE[index]);
         returnJet *= newSmearValue;
 
-        if (!isMC_)
+        if (isMC_)
         {
             double jerUncer{
                 getJECUncertainty(returnJet.Pt(), returnJet.Eta(), syst)};
