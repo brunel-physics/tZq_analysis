@@ -2420,6 +2420,13 @@ void Cuts::getBWeight(const AnalysisEvent& event,
                     bTagEffPlots_[3]->GetYaxis()->FindBin(std::abs(jet.Eta())));
     }
 
+    if (std::isnan(eff))
+    {
+        std::cerr << "WARN: NaN encountered calcualting bTag efficiency, "
+                     "check efficiency plots."
+                  << std::endl;
+    }
+
     // Get SF
     // Initalise variables.
     double jet_scalefactor{1.};
