@@ -311,7 +311,7 @@ bool Cuts::makeCuts(AnalysisEvent& event,
     }
 
     std::tie(event.jetIndex, event.jetSmearValue) =
-        makeJetCuts(event, systToRun, eventWeight, false);
+        makeJetCuts(event, systToRun, eventWeight, true);
 
     if (event.jetIndex.size() < numJets_)
     {
