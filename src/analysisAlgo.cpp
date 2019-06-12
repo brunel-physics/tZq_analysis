@@ -344,7 +344,7 @@ void AnalysisAlgo::setupSystematics()
     systDownFile->Close();
 
     // Initialise PDFs
-    if (systToRun & 1024 || systToRun & 2048)
+    if ((systToRun & 1024 || systToRun & 2048) && is2016_)
     {
         LHAPDF::initPDFSet(1, "NNPDF30_nlo_nf_5_pdfas.LHgrid");
         //    LHAPDF::initPDFSet(1, "cteq6ll.LHpdf");
@@ -470,8 +470,7 @@ void AnalysisAlgo::runMainAnalysis()
                                 .c_str(),
                             boost::numeric_cast<int>(numCutFlowBins),
                             0,
-                            boost::numeric_cast<double>(
-                                numCutFlowBins)};
+                            boost::numeric_cast<double>(numCutFlowBins)};
                         if (systInd == 0
                             && datasetInfos.find(histoName)
                                    == datasetInfos.end())
@@ -717,9 +716,7 @@ void AnalysisAlgo::runMainAnalysis()
                 std::cout << "No entries in tree, skipping..." << std::endl;
                 continue;
             }
-            AnalysisEvent event{dataset->isMC(),
-                                datasetChain,
-                                is2016_};
+            AnalysisEvent event{dataset->isMC(), datasetChain, is2016_};
 
             // Adding in some stuff here to make a skim file out of post lep sel
             // stuff
@@ -1023,12 +1020,14 @@ void AnalysisAlgo::runMainAnalysis()
                     // weights
                     if (systMask == 1024 || systMask == 2048)
                     {
-                        if (dataset->name() == "tWInclusive"
-                            || dataset->name() == "tbarWInclusive"
-                            || dataset->name() == "tWInclusive_scaleup"
-                            || dataset->name() == "tWInclusive_scaledown"
-                            || dataset->name() == "tbarWInclusive_scaleup"
-                            || dataset->name() == "tbarWInclusive_scaledown")
+                        if (is2016_
+                            && (dataset->name() == "tWInclusive"
+                                || dataset->name() == "tbarWInclusive"
+                                || dataset->name() == "tWInclusive_scaleup"
+                                || dataset->name() == "tWInclusive_scaledown"
+                                || dataset->name() == "tbarWInclusive_scaleup"
+                                || dataset->name()
+                                       == "tbarWInclusive_scaledown"))
                         {
                             // std::cout << std::setprecision(15) << eventWeight
                             // << " ";
