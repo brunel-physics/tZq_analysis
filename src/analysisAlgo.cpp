@@ -322,18 +322,18 @@ void AnalysisAlgo::setupSystematics()
         pileupDownHist = (TH1D*)(systDownFile->Get("pileup")->Clone());
     }
 
-    puReweight = static_cast<TH1D*>(dataPU->Clone());
+    puReweight = dynamic_cast<TH1D*>(dataPU->Clone());
     puReweight->Scale(1.0 / puReweight->Integral());
     mcPU->Scale(1.0 / mcPU->Integral());
     puReweight->Divide(mcPU);
     puReweight->SetDirectory(nullptr);
 
     /// And do the same for systematic sampl
-    puSystUp = static_cast<TH1D*>(pileupUpHist->Clone());
+    puSystUp = dynamic_cast<TH1D*>(pileupUpHist->Clone());
     puSystUp->Scale(1.0 / puSystUp->Integral());
     puSystUp->Divide(mcPU);
     puSystUp->SetDirectory(nullptr);
-    puSystDown = static_cast<TH1D*>(pileupDownHist->Clone());
+    puSystDown = dynamic_cast<TH1D*>(pileupDownHist->Clone());
     puSystDown->Scale(1.0 / puSystDown->Integral());
     puSystDown->Divide(mcPU);
     puSystDown->SetDirectory(nullptr);
