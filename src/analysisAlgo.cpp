@@ -471,11 +471,7 @@ void AnalysisAlgo::runMainAnalysis()
                             boost::numeric_cast<int>(numCutFlowBins),
                             0,
                             boost::numeric_cast<double>(
-                                numCutFlowBins)}; // Hopefully make this
-                                                  // configurable later on. Same
-                                                  // deal as the rest of the
-                                                  // plots I guess, work out
-                                                  // libconfig.
+                                numCutFlowBins)};
                         if (systInd == 0
                             && datasetInfos.find(histoName)
                                    == datasetInfos.end())
