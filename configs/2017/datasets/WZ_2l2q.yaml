@@ -5,6 +5,6 @@ total_events:  27582164
 cross_section: 6.331
 mc: true
 histogram: "VV"
-colour: "#ff7f00"
+colour: "#ff9933"
 label: "VV"
 plot_type: "f"

@@ -5,6 +5,6 @@ total_events: 750000
 cross_section: 0.5104
 mc: true
 histogram: "ttV"
-colour: "#4daf4a"
+colour: "#339933"
 label: "t#bar{t}V"
 plot_type: "f"

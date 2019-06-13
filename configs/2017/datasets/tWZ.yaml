@@ -5,6 +5,6 @@ total_events: 986000
 cross_section: 0.01103
 mc: true
 histogram: "SingleTop"
-colour: "#f781bf"
+colour: "#ff99cc"
 label: "Single top"
 plot_type: "f"
