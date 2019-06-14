@@ -2423,8 +2423,9 @@ void Cuts::getBWeight(const AnalysisEvent& event,
     if (std::isnan(eff))
     {
         std::cerr << "WARN: NaN encountered calculating bTag efficiency, "
-                     "check efficiency plots."
+                     "setting to 1.0. Check efficiency plots."
                   << std::endl;
+        eff = 1;
     }
 
     // Get SF
