@@ -7,6 +7,14 @@ datasets:
 # Z+jets
   - "configs/2017/datasets/DYJetsToLL_M-10to50.yaml"
   - "configs/2017/datasets/DYJetsToLL_M-50.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-70to100.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-100to200.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-200to400.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-400to600.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-600to800.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-800to1200.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-1200to2500.yaml"
+#   - "configs/2017/datasets/DYJetsToLL_M-50_HT-2500toInf.yaml"
 # ttbar
   # - "configs/2017/datasets/ttjets.yaml"
   - "configs/2017/datasets/ttbar_2l2v.yaml"
@@ -45,5 +53,7 @@ datasets:
   - "configs/2017/datasets/ZZZ.yaml"
 # tZq
   - "configs/2017/datasets/tZq.yaml"
+# Other
+  - "configs/2017/datasets/WG_lnug.yaml"
 # Data
   - "configs/2017/datasets/mumuRun2017.yaml"

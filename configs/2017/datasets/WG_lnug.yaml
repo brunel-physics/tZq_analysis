@@ -1,0 +1,10 @@
+name: "WG_lnug"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/WG_lnug/"
+total_events: 6283083
+cross_section: 405.271
+mc: true
+histogram: "VG"
+colour: "#003300"
+label: "VG"
+plot_type: "f"
