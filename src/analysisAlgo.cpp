@@ -291,6 +291,10 @@ void AnalysisAlgo::setupSystematics()
     systNames.emplace_back("__ME__minus");
     systNames.emplace_back("__alphaS__plus");
     systNames.emplace_back("__alphaS__minus");
+    systNames.emplace_back("__isr__plus");
+    systNames.emplace_back("__isr__minus");
+    systNames.emplace_back("__fsr__plus");
+    systNames.emplace_back("__fsr__minus");
 
     if (!is2016_)
     { // If 2017 mode, get 2017 PU
@@ -1133,6 +1137,24 @@ void AnalysisAlgo::runMainAnalysis()
                                 event.weight_alphaMax; // Min, but incorrectly
                                                        // named branch
                         }
+                    }
+
+                    // PSWeights
+                    if (systMask == 65536)
+                    {
+                        eventWeight *= event.isrDefLo;
+                    }
+                    if (systMask == 131072)
+                    {
+                        eventWeight *= event.isrDefHi;
+                    }
+                    if (systMask == 262144)
+                    {
+                        eventWeight *= event.fsrDefLo;
+                    }
+                    if (systMask == 524288)
+                    {
+                        eventWeight *= event.fsrDefHi;
                     }
 
                     // Do the Zpt reweighting here
