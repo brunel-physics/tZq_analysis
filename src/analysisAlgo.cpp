@@ -755,7 +755,7 @@ void AnalysisAlgo::runMainAnalysis()
             int wQuark2Index{-1};
             std::vector<size_t> jetInd{}; // The index of the selected jets;
             std::vector<size_t> bJetInd{}; // Index of selected b-jets;
-            float muonMomentumSF[3]{};
+            std::vector<double> muonMomentumSF{};
             float jetSmearValue[15]{};
             int isMC{dataset->isMC()}; // isMC flag for debug purposes
             event.isMC_ = (dataset->isMC());
@@ -808,9 +808,7 @@ void AnalysisAlgo::runMainAnalysis()
                     mvaTree[systIn]->Branch(
                         "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
                     mvaTree[systIn]->Branch("jetInd", &jetInd);
-                    mvaTree[systIn]->Branch("muonMomentumSF",
-                                            &muonMomentumSF,
-                                            "muonMomentumSF[3]/F");
+                    mvaTree[systIn]->Branch("muonMomentumSF", &muonMomentumSF);
                     mvaTree[systIn]->Branch(
                         "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
                     mvaTree[systIn]->Branch("bJetInd", &bJetInd);
@@ -1144,8 +1142,7 @@ void AnalysisAlgo::runMainAnalysis()
                         bJetInd.clear();
                         zLep1Index = event.zPairIndex.first;
                         zLep2Index = event.zPairIndex.second;
-                        muonMomentumSF[0] = event.muonMomentumSF[0];
-                        muonMomentumSF[1] = event.muonMomentumSF[1];
+                        muonMomentumSF = event.muonMomentumSF;
                         wQuark1Index = event.wPairIndex.first;
                         wQuark2Index = event.wPairIndex.second;
                         for (unsigned jetIndexIt{0}; jetIndexIt < 15;
