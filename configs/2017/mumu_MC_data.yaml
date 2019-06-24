@@ -55,5 +55,6 @@ datasets:
   - "configs/2017/datasets/tZq.yaml"
 # Other
   - "configs/2017/datasets/WG_lnug.yaml"
+  - "configs/2017/datasets/ZG_llg.yaml"
 # Data
   - "configs/2017/datasets/mumuRun2017.yaml"

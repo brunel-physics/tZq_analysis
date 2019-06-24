@@ -1,0 +1,10 @@
+name: "ZG_lnug"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ZG_llg"
+total_events: 30490034
+cross_section: 51.5
+mc: true
+histogram: "VG"
+colour: "#003300"
+label: "VG"
+plot_type: "f"
