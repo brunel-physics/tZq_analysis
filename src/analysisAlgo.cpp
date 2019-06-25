@@ -1,4 +1,5 @@
 #include "AnalysisEvent.hpp"
+#include "Compression.h"
 #include "TCanvas.h"
 #include "TH1D.h"
 #include "TH1F.h"
@@ -420,6 +421,7 @@ void AnalysisAlgo::runMainAnalysis()
     {
         datasetFilled = false;
         TChain* datasetChain{new TChain{dataset->treeName().c_str()}};
+        datasetChain->SetAutoSave(0);
         unsigned channelIndMax{256};
 
         const std::hash<std::string> hasher;
@@ -778,6 +780,7 @@ void AnalysisAlgo::runMainAnalysis()
                                         + "mvaOut.root")
                                            .c_str(),
                                        "RECREATE"};
+                mvaOutFile->SetCompressionSettings(ROOT::CompressionSettings(ROOT::kLZ4, 4));
                 if (!mvaOutFile->IsOpen())
                 {
                     throw std::runtime_error(
@@ -1254,7 +1257,7 @@ void AnalysisAlgo::runMainAnalysis()
                     std::cout << systNames[systInd] << ": "
                               << mvaTree[systInd]->GetEntriesFast() << " "
                               << std::flush;
-                    mvaTree[systInd]->Write();
+                    mvaTree[systInd]->FlushBaskets();
                     if (systInd > 0)
                     {
                         systMask = systMask << 1;
