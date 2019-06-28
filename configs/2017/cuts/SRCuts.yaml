@@ -12,7 +12,7 @@ cuts:
         relIso: 0.25
         number: 0
     tightElectrons:
-        pt: 15
+        pt: 25
         ptLeading: 38
         eta: 2.5
         relIso: 0.107587
