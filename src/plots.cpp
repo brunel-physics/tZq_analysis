@@ -1,7 +1,7 @@
-#include "plots.hpp"
-
 #include "TH1D.h"
 #include "TLorentzVector.h"
+#include "cutClass.hpp"
+#include "plots.hpp"
 
 #include <boost/numeric/conversion/cast.hpp>
 #include <cmath>
@@ -376,6 +376,31 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  return -10;
              }
          }},
+        {"leadingJetDeltaRLep",
+         [](const AnalysisEvent& event) -> float {
+             if (event.jetIndex.size() > 0)
+             {
+                 TLorentzVector tempJet;
+                 float smearValue = event.jetSmearValue[event.jetIndex[0]];
+                 tempJet.SetPxPyPzE(event.jetPF2PATPx[event.jetIndex[0]],
+                                    event.jetPF2PATPy[event.jetIndex[0]],
+                                    event.jetPF2PATPz[event.jetIndex[0]],
+                                    event.jetPF2PATE[event.jetIndex[0]]);
+                 tempJet *= smearValue;
+                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                              event.zPairLeptons.first.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()),
+                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                              event.zPairLeptons.second.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()));
+             }
+             else
+             {
+                 return -10;
+             }
+         }},
         {"leadingJetBDisc",
          [](const AnalysisEvent& event) -> float {
              if (event.jetIndex.size() > 0)
@@ -456,6 +481,31 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  return -10;
              }
          }},
+        {"secondJetDeltaRLep",
+         [](const AnalysisEvent& event) -> float {
+             if (event.jetIndex.size() > 1)
+             {
+                 TLorentzVector tempJet;
+                 float smearValue = event.jetSmearValue[event.jetIndex[1]];
+                 tempJet.SetPxPyPzE(event.jetPF2PATPx[event.jetIndex[1]],
+                                    event.jetPF2PATPy[event.jetIndex[1]],
+                                    event.jetPF2PATPz[event.jetIndex[1]],
+                                    event.jetPF2PATE[event.jetIndex[1]]);
+                 tempJet *= smearValue;
+                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                              event.zPairLeptons.first.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()),
+                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                              event.zPairLeptons.second.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()));
+             }
+             else
+             {
+                 return -10;
+             }
+         }},
         {"thirdJetPt",
          [](const AnalysisEvent& event) -> float {
              if (event.jetIndex.size() > 2)
@@ -523,6 +573,31 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  return -10;
              }
          }},
+        {"thirdJetDeltaRLep",
+         [](const AnalysisEvent& event) -> float {
+             if (event.jetIndex.size() > 2)
+             {
+                 TLorentzVector tempJet;
+                 float smearValue = event.jetSmearValue[event.jetIndex[2]];
+                 tempJet.SetPxPyPzE(event.jetPF2PATPx[event.jetIndex[2]],
+                                    event.jetPF2PATPy[event.jetIndex[2]],
+                                    event.jetPF2PATPz[event.jetIndex[2]],
+                                    event.jetPF2PATE[event.jetIndex[2]]);
+                 tempJet *= smearValue;
+                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                              event.zPairLeptons.first.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()),
+                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                              event.zPairLeptons.second.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()));
+             }
+             else
+             {
+                 return -10;
+             }
+         }},
         {"fourthJetPt",
          [](const AnalysisEvent& event) -> float {
              if (event.jetIndex.size() > 3)
@@ -584,6 +659,31 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  return event
                      .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
                          [event.jetIndex[3]];
+             }
+             else
+             {
+                 return -10;
+             }
+         }},
+        {"fourthJetDeltaRLep",
+         [](const AnalysisEvent& event) -> float {
+             if (event.jetIndex.size() > 1)
+             {
+                 TLorentzVector tempJet;
+                 float smearValue = event.jetSmearValue[event.jetIndex[1]];
+                 tempJet.SetPxPyPzE(event.jetPF2PATPx[event.jetIndex[1]],
+                                    event.jetPF2PATPy[event.jetIndex[1]],
+                                    event.jetPF2PATPz[event.jetIndex[1]],
+                                    event.jetPF2PATE[event.jetIndex[1]]);
+                 tempJet *= smearValue;
+                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                              event.zPairLeptons.first.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()),
+                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                              event.zPairLeptons.second.Phi(),
+                                              tempJet.Eta(),
+                                              tempJet.Phi()));
              }
              else
              {

@@ -127,6 +127,14 @@ plots:
     fillExp: "leadingJetEta"
     xAxisLabel: "#eta leading jet"
     cutStage: 0
+  - title: "Min #Delta R with lepton"
+    name: "leadingJetDeltaRLep"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "leadingJetDeltaRLep"
+    xAxisLabel: "text"
+    cutStage: 1
   - title: "Second Jet p_{T}"
     name: "secondJetPt"
     xMin: 0.
@@ -143,6 +151,14 @@ plots:
     fillExp: "secondJetEta"
     xAxisLabel: "#eta second jet"
     cutStage: 0
+  - title: "Min #Delta R with lepton"
+    name: "secondJetDeltaRLep"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "secondJetDeltaRLep"
+    xAxisLabel: "text"
+    cutStage: 1
   - title: "Third Jet p_{T}"
     name: "thirdJetPt"
     xMin: 0.
@@ -159,6 +175,14 @@ plots:
     fillExp: "thirdJetEta"
     xAxisLabel: "#eta third jet"
     cutStage: 0
+  - title: "Min #Delta R with lepton"
+    name: "thirdJetDeltaRLep"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "thirdJetDeltaRLep"
+    xAxisLabel: "text"
+    cutStage: 1
   - title: "Fourth Jet p_{T}"
     name: "fourthJetPt"
     xMin: 0.
@@ -175,6 +199,14 @@ plots:
     fillExp: "fourthJetEta"
     xAxisLabel: "#eta fourth jet"
     cutStage: 0
+  - title: "Min #Delta R with lepton"
+    name: "fourthJetDeltaRLep"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "fourthJetDeltaRLep"
+    xAxisLabel: "text"
+    cutStage: 1
   - title: "Leading Jet #phi"
     name: "leadingJetPhi"
     xMin: -3.2
