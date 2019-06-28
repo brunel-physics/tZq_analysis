@@ -52,14 +52,6 @@ class Cuts
                      const int syst = 0) const;
     [[gnu::const]] bool metFilters(const AnalysisEvent& event) const;
 
-    // Simple deltaR function, because the reco namespace doesn't work or
-    // something
-    [[gnu::const]] static double deltaR(const double eta1,
-                                        const double phi1,
-                                        const double eta2,
-                                        const double phi2);
-    [[gnu::const]] static double deltaPhi(const double phi1, const double phi2);
-
     std::vector<double> getRochesterSFs(const AnalysisEvent& event) const;
     // Function to get lepton SF
     double getLeptonWeight(const AnalysisEvent& event, const int syst) const;
@@ -295,6 +287,15 @@ class Cuts
     {
         isZplusCR_ = isZplusCR;
     }
+
+    // Simple deltaR function, because the reco namespace doesn't work or
+    // something
+    [[gnu::const]] static double deltaR(const double eta1,
+                                        const double phi1,
+                                        const double eta2,
+                                        const double phi2);
+    [[gnu::const]] static double deltaPhi(const double phi1, const double phi2);
+
 };
 
 #endif
