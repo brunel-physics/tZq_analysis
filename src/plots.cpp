@@ -50,12 +50,13 @@ Plots::~Plots()
     }
 }
 
-std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
+std::unordered_map<std::string,
+                   std::function<std::vector<float>(const AnalysisEvent&)>>
     Plots::getFncMap() const
 {
     return {
         {"lep1Pt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
                  TLorentzVector tempVec{
@@ -63,7 +64,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.elePF2PATPY[event.electronIndexTight[0]],
                      event.elePF2PATPZ[event.electronIndexTight[0]],
                      event.elePF2PATE[event.electronIndexTight[0]]};
-                 return tempVec.Pt();
+                 return {tempVec.Pt()};
              }
              else
              {
@@ -73,15 +74,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[0]],
                      event.muonPF2PATE[event.muonIndexTight[0]]};
                  tempVec *= event.muonMomentumSF[0];
-                 return tempVec.Pt();
+                 return {tempVec.Pt()};
              }
          }},
         {"lep1Eta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return std::abs(
-                     event.elePF2PATSCEta[event.electronIndexTight[0]]);
+                 return {std::abs(
+                     event.elePF2PATSCEta[event.electronIndexTight[0]])};
              }
              else
              {
@@ -91,11 +92,11 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[0]],
                      event.muonPF2PATE[event.muonIndexTight[0]]};
                  tempVec *= event.muonMomentumSF[0];
-                 return tempVec.Eta();
+                 return {tempVec.Eta()};
              }
          }},
         {"lep2Pt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
                  TLorentzVector tempVec{
@@ -103,7 +104,7 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.elePF2PATPY[event.electronIndexTight[1]],
                      event.elePF2PATPZ[event.electronIndexTight[1]],
                      event.elePF2PATE[event.electronIndexTight[1]]};
-                 return tempVec.Pt();
+                 return {tempVec.Pt()};
              }
              else
              {
@@ -113,15 +114,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[1]],
                      event.muonPF2PATE[event.muonIndexTight[1]]};
                  tempVec *= event.muonMomentumSF[1];
-                 return tempVec.Pt();
+                 return {tempVec.Pt()};
              }
          }},
         {"lep2Eta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return std::abs(
-                     event.elePF2PATSCEta[event.electronIndexTight[1]]);
+                 return {std::abs(
+                     event.elePF2PATSCEta[event.electronIndexTight[1]])};
              }
              else
              {
@@ -131,38 +132,40 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[1]],
                      event.muonPF2PATE[event.muonIndexTight[1]]};
                  tempVec *= event.muonMomentumSF[1];
-                 return tempVec.Pt();
+                 return {tempVec.Pt()};
              }
          }},
         {"lep1RelIso",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return event
-                     .elePF2PATComRelIsoRho[event.electronIndexTight[0]];
+                 return {
+                     event.elePF2PATComRelIsoRho[event.electronIndexTight[0]]};
              }
              else
              {
-                 return event.muonPF2PATComRelIsodBeta[event.muonIndexTight[0]];
+                 return {
+                     event.muonPF2PATComRelIsodBeta[event.muonIndexTight[0]]};
              }
          }},
         {"lep2RelIso",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return event
-                     .elePF2PATComRelIsoRho[event.electronIndexTight[1]];
+                 return {
+                     event.elePF2PATComRelIsoRho[event.electronIndexTight[1]]};
              }
              else
              {
-                 return event.muonPF2PATComRelIsodBeta[event.muonIndexTight[1]];
+                 return {
+                     event.muonPF2PATComRelIsodBeta[event.muonIndexTight[1]]};
              }
          }},
         {"lep1Phi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATPhi[event.electronIndexTight[0]]);
+                 return {event.elePF2PATPhi[event.electronIndexTight[0]]};
              }
              else
              {
@@ -172,14 +175,14 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[0]],
                      event.muonPF2PATE[event.muonIndexTight[0]]};
                  tempVec *= event.muonMomentumSF[0];
-                 return tempVec.Phi();
+                 return {tempVec.Phi()};
              }
          }},
         {"lep2Phi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATPhi[event.electronIndexTight[1]]);
+                 return {event.elePF2PATPhi[event.electronIndexTight[1]]};
              }
              else
              {
@@ -189,41 +192,43 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.muonPF2PATPZ[event.muonIndexTight[1]],
                      event.muonPF2PATE[event.muonIndexTight[1]]};
                  tempVec *= event.muonMomentumSF[1];
-                 return tempVec.Phi();
+                 return {tempVec.Phi()};
              }
          }},
         {"wQuark1Pt",
-         [](const AnalysisEvent& event) -> float {
-             return event.wPairQuarks.first.Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.wPairQuarks.first.Pt()};
          }},
         {"wQuark1Eta",
-         [](const AnalysisEvent& event) -> float {
-             return event.wPairQuarks.first.Eta();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.wPairQuarks.first.Eta()};
          }},
         {"wQuark1Phi",
-         [](const AnalysisEvent& event) -> float {
-             return event.wPairQuarks.first.Phi();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.wPairQuarks.first.Phi()};
          }},
         {"wQuark2Pt",
-         [](const AnalysisEvent& event) -> float {
-             return event.wPairQuarks.second.Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.wPairQuarks.second.Pt()};
          }},
         {"wQuark2Eta",
-         [](const AnalysisEvent& event) -> float {
-             return std::abs(event.wPairQuarks.second.Eta());
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {std::abs(event.wPairQuarks.second.Eta())};
          }},
         {"wQuark2Phi",
-         [](const AnalysisEvent& event) -> float {
-             return event.wPairQuarks.second.Phi();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.wPairQuarks.second.Phi()};
          }},
         {"met",
-         [](const AnalysisEvent& event) -> float { return event.metPF2PATEt; }},
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.metPF2PATEt};
+         }},
         {"numbJets",
-         [](const AnalysisEvent& event) -> float {
-             return event.jetIndex.size();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.jetIndex.size()};
          }},
         {"totalJetMass",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totalJet;
              if (event.jetIndex.size() > 0)
              {
@@ -240,15 +245,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      tempJet *= smearValue;
                      totalJet += tempJet;
                  }
-                 return totalJet.M();
+                 return {totalJet.M()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"totalJetPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totalJet;
              if (event.jetIndex.size() > 0)
              {
@@ -265,15 +270,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      tempJet *= smearValue;
                      totalJet += tempJet;
                  }
-                 return totalJet.Pt();
+                 return {totalJet.Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"totalJetEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totalJet;
              if (event.jetIndex.size() > 0)
              {
@@ -290,15 +295,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      tempJet *= smearValue;
                      totalJet += tempJet;
                  }
-                 return totalJet.Eta();
+                 return {totalJet.Eta()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"totalJetPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totalJet;
              if (event.jetIndex.size() > 0)
              {
@@ -315,15 +320,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      tempJet *= smearValue;
                      totalJet += tempJet;
                  }
-                 return totalJet.Phi();
+                 return {totalJet.Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"leadingJetPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 0)
              {
                  TLorentzVector tempJet;
@@ -333,15 +338,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[0]],
                                     event.jetPF2PATE[event.jetIndex[0]]);
                  tempJet *= smearValue;
-                 return tempJet.Pt();
+                 return {tempJet.Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"leadingJetEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 0)
              {
                  TLorentzVector tempJet;
@@ -351,15 +356,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[0]],
                                     event.jetPF2PATE[event.jetIndex[0]]);
                  tempJet *= smearValue;
-                 return tempJet.Eta();
+                 return {tempJet.Eta()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"leadingJetPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 0)
              {
                  TLorentzVector tempJet;
@@ -369,15 +374,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[0]],
                                     event.jetPF2PATE[event.jetIndex[0]]);
                  tempJet *= smearValue;
-                 return tempJet.Phi();
+                 return {tempJet.Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"leadingJetDeltaRLep",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 0)
              {
                  TLorentzVector tempJet;
@@ -387,35 +392,35 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[0]],
                                     event.jetPF2PATE[event.jetIndex[0]]);
                  tempJet *= smearValue;
-                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
-                                              event.zPairLeptons.first.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()),
-                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
-                                              event.zPairLeptons.second.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()));
+                 return {std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                               event.zPairLeptons.first.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()),
+                                  Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                               event.zPairLeptons.second.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()))};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"leadingJetBDisc",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 0)
              {
-                 return event
-                     .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                         [event.jetIndex[0]];
+                 return {
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [event.jetIndex[0]]};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"secondJetPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
                  TLorentzVector tempJet;
@@ -425,15 +430,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[1]],
                                     event.jetPF2PATE[event.jetIndex[1]]);
                  tempJet *= smearValue;
-                 return tempJet.Pt();
+                 return {tempJet.Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"secondJetEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
                  TLorentzVector tempJet;
@@ -443,15 +448,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[1]],
                                     event.jetPF2PATE[event.jetIndex[1]]);
                  tempJet *= smearValue;
-                 return tempJet.Eta();
+                 return {tempJet.Eta()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"secondJetPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
                  TLorentzVector tempJet;
@@ -461,28 +466,28 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[1]],
                                     event.jetPF2PATE[event.jetIndex[1]]);
                  tempJet *= smearValue;
-                 return tempJet.Phi();
+                 return {tempJet.Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"secondJetBDisc",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
-                 return event
-                     .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                         [event.jetIndex[1]];
+                 return {
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [event.jetIndex[1]]};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"secondJetDeltaRLep",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
                  TLorentzVector tempJet;
@@ -492,22 +497,22 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[1]],
                                     event.jetPF2PATE[event.jetIndex[1]]);
                  tempJet *= smearValue;
-                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
-                                              event.zPairLeptons.first.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()),
-                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
-                                              event.zPairLeptons.second.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()));
+                 return {std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                               event.zPairLeptons.first.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()),
+                                  Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                               event.zPairLeptons.second.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()))};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"thirdJetPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 2)
              {
                  TLorentzVector tempJet;
@@ -517,15 +522,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[2]],
                                     event.jetPF2PATE[event.jetIndex[2]]);
                  tempJet *= smearValue;
-                 return tempJet.Pt();
+                 return {tempJet.Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"thirdJetEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 2)
              {
                  TLorentzVector tempJet;
@@ -535,15 +540,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[2]],
                                     event.jetPF2PATE[event.jetIndex[2]]);
                  tempJet *= smearValue;
-                 return tempJet.Eta();
+                 return {tempJet.Eta()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"thirdJetPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 2)
              {
                  TLorentzVector tempJet;
@@ -553,28 +558,28 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[2]],
                                     event.jetPF2PATE[event.jetIndex[2]]);
                  tempJet *= smearValue;
-                 return tempJet.Phi();
+                 return {tempJet.Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"thirdJetBDisc",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 2)
              {
-                 return event
-                     .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                         [event.jetIndex[2]];
+                 return {
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [event.jetIndex[2]]};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"thirdJetDeltaRLep",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 2)
              {
                  TLorentzVector tempJet;
@@ -584,22 +589,22 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[2]],
                                     event.jetPF2PATE[event.jetIndex[2]]);
                  tempJet *= smearValue;
-                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
-                                              event.zPairLeptons.first.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()),
-                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
-                                              event.zPairLeptons.second.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()));
+                 return {std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                               event.zPairLeptons.first.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()),
+                                  Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                               event.zPairLeptons.second.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()))};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"fourthJetPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 3)
              {
                  TLorentzVector tempJet;
@@ -609,15 +614,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[3]],
                                     event.jetPF2PATE[event.jetIndex[3]]);
                  tempJet *= smearValue;
-                 return tempJet.Pt();
+                 return {tempJet.Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"fourthJetEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 3)
              {
                  TLorentzVector tempJet;
@@ -627,15 +632,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[3]],
                                     event.jetPF2PATE[event.jetIndex[3]]);
                  tempJet *= smearValue;
-                 return tempJet.Eta();
+                 return {tempJet.Eta()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"fourthJetPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 3)
              {
                  TLorentzVector tempJet;
@@ -645,28 +650,28 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[3]],
                                     event.jetPF2PATE[event.jetIndex[3]]);
                  tempJet *= smearValue;
-                 return tempJet.Phi();
+                 return {tempJet.Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"fourthJetBDisc",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 3)
              {
-                 return event
-                     .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                         [event.jetIndex[3]];
+                 return {
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [event.jetIndex[3]]};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"fourthJetDeltaRLep",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() > 1)
              {
                  TLorentzVector tempJet;
@@ -676,90 +681,92 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                     event.jetPF2PATPz[event.jetIndex[1]],
                                     event.jetPF2PATE[event.jetIndex[1]]);
                  tempJet *= smearValue;
-                 return std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
-                                              event.zPairLeptons.first.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()),
-                                 Cuts::deltaR(event.zPairLeptons.second.Eta(),
-                                              event.zPairLeptons.second.Phi(),
-                                              tempJet.Eta(),
-                                              tempJet.Phi()));
+                 return {std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                               event.zPairLeptons.first.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()),
+                                  Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                               event.zPairLeptons.second.Phi(),
+                                               tempJet.Eta(),
+                                               tempJet.Phi()))};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"numbBJets",
-         [](const AnalysisEvent& event) -> float {
-             return event.bTagIndex.size();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.bTagIndex.size()};
          }},
         {"bTagDisc",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() > 0)
              {
-                 return event
-                     .jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                         [event.jetIndex[event.bTagIndex[0]]];
+                 return {
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [event.jetIndex[event.bTagIndex[0]]]};
              }
-             return -10;
+             return {};
          }},
         {"zLepton1Pt",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairLeptons.first.Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.first.Pt()};
          }},
         {"zLepton1Eta",
-         [](const AnalysisEvent& event) -> float {
-             return std::abs(event.zPairLeptons.first.Eta());
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {std::abs(event.zPairLeptons.first.Eta())};
          }},
         {"zLepton2Pt",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairLeptons.second.Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.second.Pt()};
          }},
         {"zLepton2Eta",
-         [](const AnalysisEvent& event) -> float {
-             return std::abs(event.zPairLeptons.second.Eta());
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {std::abs(event.zPairLeptons.second.Eta())};
          }},
         {"zLepton1RelIso",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairRelIso.first;
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairRelIso.first};
          }},
         {"zLepton2RelIso",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairRelIso.second;
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairRelIso.second};
          }},
         {"zLepton1Phi",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairLeptons.first.Phi();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.first.Phi()};
          }},
         {"zLepton2Phi",
-         [](const AnalysisEvent& event) -> float {
-             return event.zPairLeptons.second.Phi();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.second.Phi()};
          }},
         {"zPairMass",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second).M();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 (event.zPairLeptons.first + event.zPairLeptons.second).M()};
          }},
         {"zPairPt",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Pt()};
          }},
         {"zPairEta",
-         [](const AnalysisEvent& event) -> float {
-             return std::abs(
-                 (event.zPairLeptons.first + event.zPairLeptons.second).Eta());
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {std::abs(
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Eta())};
          }},
         {"zPairPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .Phi();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Phi()};
          }},
         {"wPairMass",
-         [](const AnalysisEvent& event) -> float {
-             return (event.wPairQuarks.first + event.wPairQuarks.second).M();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.wPairQuarks.first + event.wPairQuarks.second).M()};
          }},
         {"topMass",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() > 0)
              {
                  TLorentzVector tempBjet;
@@ -770,17 +777,17 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                      event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
                  tempBjet *= smearValue;
-                 return (tempBjet + event.wPairQuarks.first
-                         + event.wPairQuarks.second)
-                     .M();
+                 return {(tempBjet + event.wPairQuarks.first
+                          + event.wPairQuarks.second)
+                             .M()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"topPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() > 0)
              {
                  TLorentzVector tempBjet;
@@ -791,17 +798,17 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                      event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
                  tempBjet *= smearValue;
-                 return (tempBjet + event.wPairQuarks.first
-                         + event.wPairQuarks.second)
-                     .Pt();
+                 return {(tempBjet + event.wPairQuarks.first
+                          + event.wPairQuarks.second)
+                             .Pt()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"topEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() > 0)
              {
                  TLorentzVector tempBjet;
@@ -812,17 +819,17 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                      event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
                  tempBjet *= smearValue;
-                 return std::abs((tempBjet + event.wPairQuarks.first
-                                  + event.wPairQuarks.second)
-                                     .Eta());
+                 return {std::abs((tempBjet + event.wPairQuarks.first
+                                   + event.wPairQuarks.second)
+                                      .Eta())};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"topPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() > 0)
              {
                  TLorentzVector tempBjet;
@@ -833,124 +840,125 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                      event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
                  tempBjet *= smearValue;
-                 return (tempBjet + event.wPairQuarks.first
-                         + event.wPairQuarks.second)
-                     .Phi();
+                 return {(tempBjet + event.wPairQuarks.first
+                          + event.wPairQuarks.second)
+                             .Phi()};
              }
              else
              {
-                 return -10;
+                 return {};
              }
          }},
         {"lep1D0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATD0PV[event.electronIndexTight[0]]);
+                 return {event.elePF2PATD0PV[event.electronIndexTight[0]]};
              }
              else
              {
-                 return (event.muonPF2PATDBPV[event.muonIndexTight[0]]);
+                 return {event.muonPF2PATDBPV[event.muonIndexTight[0]]};
              }
          }},
         {"lep2D0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATD0PV[event.electronIndexTight[1]]);
+                 return {event.elePF2PATD0PV[event.electronIndexTight[1]]};
              }
              else
              {
-                 return (event.muonPF2PATDBPV[event.muonIndexTight[1]]);
+                 return {event.muonPF2PATDBPV[event.muonIndexTight[1]]};
              }
          }},
         {"lep1DBD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATTrackDBD0[event.electronIndexTight[0]]);
+                 return {event.elePF2PATTrackDBD0[event.electronIndexTight[0]]};
              }
              else
              {
-                 return (event.muonPF2PATTrackDBD0[event.muonIndexTight[0]]);
+                 return {event.muonPF2PATTrackDBD0[event.muonIndexTight[0]]};
              }
          }},
         {"lep2DBD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATTrackDBD0[event.electronIndexTight[1]]);
+                 return {event.elePF2PATTrackDBD0[event.electronIndexTight[1]]};
              }
              else
              {
-                 return (event.muonPF2PATTrackDBD0[event.muonIndexTight[1]]);
+                 return {event.muonPF2PATTrackDBD0[event.muonIndexTight[1]]};
              }
          }},
         {"lep1BeamSpotCorrectedD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATBeamSpotCorrectedTrackD0
-                             [event.electronIndexTight[0]]);
+                 return {event.elePF2PATBeamSpotCorrectedTrackD0
+                             [event.electronIndexTight[0]]};
              }
              else
              {
-                 return (event.muonPF2PATBeamSpotCorrectedD0
-                             [event.muonIndexTight[0]]);
+                 return {event.muonPF2PATBeamSpotCorrectedD0
+                             [event.muonIndexTight[0]]};
              }
          }},
         {"lep2BeamSpotCorrectedD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return (event.elePF2PATBeamSpotCorrectedTrackD0
-                             [event.electronIndexTight[1]]);
+                 return {event.elePF2PATBeamSpotCorrectedTrackD0
+                             [event.electronIndexTight[1]]};
              }
              else
              {
-                 return (event.muonPF2PATBeamSpotCorrectedD0
-                             [event.muonIndexTight[1]]);
+                 return {event.muonPF2PATBeamSpotCorrectedD0
+                             [event.muonIndexTight[1]]};
              }
          }},
         {"lep1InnerTrackD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return -10;
+                 return {};
              }
              else
              {
-                 return (
-                     event.muonPF2PATDBInnerTrackD0[event.muonIndexTight[0]]);
+                 return {
+                     event.muonPF2PATDBInnerTrackD0[event.muonIndexTight[0]]};
              }
          }},
         {"lep2InnerTrackD0",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.electronIndexTight.size() > 1)
              {
-                 return -10;
+                 return {};
              }
              else
              {
-                 return (
-                     event.muonPF2PATDBInnerTrackD0[event.muonIndexTight[1]]);
+                 return {
+                     event.muonPF2PATDBInnerTrackD0[event.muonIndexTight[1]]};
              }
          }},
         {"wTransverseMass",
-         [](const AnalysisEvent& event) -> float {
-             return std::sqrt(2 * event.wPairQuarks.first.Pt()
-                              * event.wPairQuarks.second.Pt()
-                              * (1
-                                 - std::cos(event.wPairQuarks.first.Phi()
-                                            - event.wPairQuarks.second.Phi())));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 std::sqrt(2 * event.wPairQuarks.first.Pt()
+                           * event.wPairQuarks.second.Pt()
+                           * (1
+                              - std::cos(event.wPairQuarks.first.Phi()
+                                         - event.wPairQuarks.second.Phi())))};
          }},
         {"jjDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempJet1;
              TLorentzVector tempJet2;
              if (event.jetIndex.size() < 2)
              {
-                 return -1.;
+                 return {};
              }
              float smearValue1 = event.jetSmearValue[event.jetIndex[0]];
              float smearValue2 = event.jetSmearValue[event.jetIndex[1]];
@@ -964,15 +972,15 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                  event.jetPF2PATE[event.jetIndex[1]]);
              tempJet1 *= smearValue1;
              tempJet2 *= smearValue2;
-             return tempJet1.DeltaR(tempJet2);
+             return {tempJet1.DeltaR(tempJet2)};
          }},
         {"jjDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempJet1;
              TLorentzVector tempJet2;
              if (event.jetIndex.size() < 2)
              {
-                 return -1.;
+                 return {};
              }
              float smearValue1 = event.jetSmearValue[event.jetIndex[0]];
              float smearValue2 = event.jetSmearValue[event.jetIndex[1]];
@@ -986,30 +994,31 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                                  event.jetPF2PATE[event.jetIndex[1]]);
              tempJet1 *= smearValue1;
              tempJet2 *= smearValue2;
-             return tempJet1.DeltaPhi(tempJet2);
+             return {tempJet1.DeltaPhi(tempJet2)};
          }},
         {"wwDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() < 3)
              {
-                 return -1.;
+                 return {};
              }
-             return event.wPairQuarks.first.DeltaR(event.wPairQuarks.second);
+             return {event.wPairQuarks.first.DeltaR(event.wPairQuarks.second)};
          }},
         {"wwDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.jetIndex.size() < 3)
              {
-                 return -1.;
+                 return {};
              }
-             return event.wPairQuarks.first.DeltaPhi(event.wPairQuarks.second);
+             return {
+                 event.wPairQuarks.first.DeltaPhi(event.wPairQuarks.second)};
          }},
         {"lbDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempJet1;
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              float smearValue =
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]];
@@ -1019,14 +1028,14 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return tempJet1.DeltaR(event.wLepton);
+             return {tempJet1.DeltaR(event.wLepton)};
          }},
         {"lbDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempJet1;
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              float smearValue =
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]];
@@ -1036,60 +1045,60 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return tempJet1.DeltaPhi(event.wLepton);
+             return {tempJet1.DeltaPhi(event.wLepton)};
          }},
         {"zLepDelR",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaR(event.zPairLeptons.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.first.DeltaR(event.zPairLeptons.second)};
          }},
         {"zLepDelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaPhi(event.zPairLeptons.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.first.DeltaPhi(event.zPairLeptons.second)};
          }},
         {"zLep1Quark1DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first.DeltaR(event.wPairQuarks.first));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.first.DeltaR(event.wPairQuarks.first)};
          }},
         {"zLep1Quark1DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaPhi(event.wPairQuarks.first));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.first.DeltaPhi(event.wPairQuarks.first)};
          }},
         {"zLep1Quark2DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first.DeltaR(event.wPairQuarks.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.first.DeltaR(event.wPairQuarks.second)};
          }},
         {"zLep1Quark2DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.first.DeltaPhi(event.wPairQuarks.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.first.DeltaPhi(event.wPairQuarks.second)};
          }},
         {"zLep2Quark1DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.second.DeltaR(event.wPairQuarks.first));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {event.zPairLeptons.second.DeltaR(event.wPairQuarks.first)};
          }},
         {"zLep2Quark1DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.second.DeltaPhi(event.wPairQuarks.first));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.second.DeltaPhi(event.wPairQuarks.first)};
          }},
         {"zLep2Quark2DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.second.DeltaR(event.wPairQuarks.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.second.DeltaR(event.wPairQuarks.second)};
          }},
         {"zLep2Quark2DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (
-                 event.zPairLeptons.second.DeltaPhi(event.wPairQuarks.second));
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 event.zPairLeptons.second.DeltaPhi(event.wPairQuarks.second)};
          }},
         {"zLep1BjetDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              TLorentzVector tempJet1;
              float smearValue{
@@ -1100,13 +1109,13 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return (event.zPairLeptons.first.DeltaR(tempJet1));
+             return {event.zPairLeptons.first.DeltaR(tempJet1)};
          }},
         {"zLep1BjetDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              TLorentzVector tempJet1;
              float smearValue{
@@ -1117,13 +1126,13 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return (event.zPairLeptons.first.DeltaPhi(tempJet1));
+             return {event.zPairLeptons.first.DeltaPhi(tempJet1)};
          }},
         {"zLep2BjetDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              TLorentzVector tempJet1;
              float smearValue{
@@ -1134,13 +1143,13 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return (event.zPairLeptons.second.DeltaR(tempJet1));
+             return {event.zPairLeptons.second.DeltaR(tempJet1)};
          }},
         {"zLep2BjetDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              if (event.bTagIndex.size() < 1)
              {
-                 return -10.;
+                 return {};
              }
              TLorentzVector tempJet1;
              float smearValue{
@@ -1151,18 +1160,20 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPz[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempJet1 *= smearValue;
-             return (event.zPairLeptons.second.DeltaPhi(tempJet1));
+             return {event.zPairLeptons.second.DeltaPhi(tempJet1)};
          }},
         {"lepHt",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Pt()};
          }},
         {"wQuarkHt",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {
+                 (event.zPairLeptons.first + event.zPairLeptons.second).Pt()};
          }},
         {"jetHt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              float jetHt{0.0};
              if (event.jetIndex.size() > 0)
              {
@@ -1180,10 +1191,10 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      jetHt += tempJet.Pt();
                  }
              }
-             return jetHt;
+             return {jetHt};
          }},
         {"totHt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              float totHt{0.0};
              totHt +=
                  (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
@@ -1203,10 +1214,10 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      totHt += tempJet.Pt();
                  }
              }
-             return totHt;
+             return {totHt};
          }},
         {"totHtOverPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              float totHt{0.0};
              totHt +=
                  (event.zPairLeptons.first + event.zPairLeptons.second).Pt();
@@ -1250,10 +1261,10 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  }
              }
 
-             return totHt / std::sqrt(totPx * totPx + totPy * totPy);
+             return {totHt / std::sqrt(totPx * totPx + totPy * totPy)};
          }},
         {"totPt",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              float totPx{0.0};
              float totPy{0.0};
              totPx +=
@@ -1277,10 +1288,10 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      totPy += tempJet.Py();
                  }
              }
-             return std::sqrt(totPx * totPx + totPy * totPy);
+             return {std::sqrt(totPx * totPx + totPy * totPy)};
          }},
         {"totEta",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totVec;
              totVec = event.zPairLeptons.first + event.zPairLeptons.second;
              if (event.jetIndex.size() > 0)
@@ -1298,10 +1309,10 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      tempJet *= smearValue;
                  }
              }
-             return std::abs(totVec.Eta());
+             return {std::abs(totVec.Eta())};
          }},
         {"totM",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector totVec;
              totVec = event.zPairLeptons.first + event.zPairLeptons.second;
              if (event.jetIndex.size() > 0)
@@ -1320,40 +1331,42 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                      totVec += tempJet;
                  }
              }
-             return totVec.M();
+             return {totVec.M()};
          }},
         {"wzDelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaR(event.wPairQuarks.first + event.wPairQuarks.second);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaR(event.wPairQuarks.first
+                                 + event.wPairQuarks.second)};
          }},
         {"wzDelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.first + event.wPairQuarks.second);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaPhi(event.wPairQuarks.first
+                                   + event.wPairQuarks.second)};
          }},
         {"zQuark1DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaR(event.wPairQuarks.first);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaR(event.wPairQuarks.first)};
          }},
         {"zQuark1DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.first);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaPhi(event.wPairQuarks.first)};
          }},
         {"zQuark2DelR",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaR(event.wPairQuarks.second);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaR(event.wPairQuarks.second)};
          }},
         {"zQuark2DelPhi",
-         [](const AnalysisEvent& event) -> float {
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.second);
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaPhi(event.wPairQuarks.second)};
          }},
         {"zTopDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1363,12 +1376,12 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaR(event.wPairQuarks.first + event.wPairQuarks.second
-                         + tempBjet);
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaR(event.wPairQuarks.first
+                                 + event.wPairQuarks.second + tempBjet)};
          }},
         {"zTopDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1378,12 +1391,12 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.first + event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.first + event.wPairQuarks.second
-                           + tempBjet);
+             return {(event.zPairLeptons.first + event.zPairLeptons.second)
+                         .DeltaPhi(event.wPairQuarks.first
+                                   + event.wPairQuarks.second + tempBjet)};
          }},
         {"zl1TopDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1393,12 +1406,12 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.first)
-                 .DeltaR(event.wPairQuarks.first + event.wPairQuarks.second
-                         + tempBjet);
+             return {(event.zPairLeptons.first)
+                         .DeltaR(event.wPairQuarks.first
+                                 + event.wPairQuarks.second + tempBjet)};
          }},
         {"zl1TopDelPhi",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1408,12 +1421,12 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.first)
-                 .DeltaPhi(event.wPairQuarks.first + event.wPairQuarks.second
-                           + tempBjet);
+             return {(event.zPairLeptons.first)
+                         .DeltaPhi(event.wPairQuarks.first
+                                   + event.wPairQuarks.second + tempBjet)};
          }},
         {"zl2TopDelR",
-         [](const AnalysisEvent& event) -> float {
+         [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1423,11 +1436,11 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.second)
-                 .DeltaR(event.wPairQuarks.first + event.wPairQuarks.second
-                         + tempBjet);
+             return {(event.zPairLeptons.second)
+                         .DeltaR(event.wPairQuarks.first
+                                 + event.wPairQuarks.second + tempBjet)};
          }},
-        {"zl2TopDelPhi", [](const AnalysisEvent& event) -> float {
+        {"zl2TopDelPhi", [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
                  event.jetSmearValue[event.jetIndex[event.bTagIndex[0]]]};
@@ -1437,9 +1450,9 @@ std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
                  event.jetPF2PATPhi[event.jetIndex[event.bTagIndex[0]]],
                  event.jetPF2PATE[event.jetIndex[event.bTagIndex[0]]]);
              tempBjet *= smearValue;
-             return (event.zPairLeptons.second)
-                 .DeltaPhi(event.wPairQuarks.first + event.wPairQuarks.second
-                           + tempBjet);
+             return {(event.zPairLeptons.second)
+                         .DeltaPhi(event.wPairQuarks.first
+                                   + event.wPairQuarks.second + tempBjet)};
          }}};
 }
 
@@ -1449,8 +1462,10 @@ void Plots::fillAllPlots(const AnalysisEvent& event, const double eventWeight)
     {
         if (plotPoint[i].fillPlot)
         {
-            plotPoint[i].plotHist->Fill((this->plotPoint[i].fillExp)(event),
-                                        eventWeight);
+            for (const auto& val : (this->plotPoint[i].fillExp)(event))
+            {
+                plotPoint[i].plotHist->Fill(val, eventWeight);
+            }
         }
     }
 }

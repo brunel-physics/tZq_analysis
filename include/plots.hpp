@@ -37,7 +37,8 @@ class Plots
     {
         return plotPoint;
     }
-    std::unordered_map<std::string, std::function<float(const AnalysisEvent&)>>
+    std::unordered_map<std::string,
+                       std::function<std::vector<float>(const AnalysisEvent&)>>
         getFncMap() const;
 };
 
@@ -46,7 +47,7 @@ struct plot
     std::string name;
     std::string title;
     TH1D* plotHist;
-    std::function<float(const AnalysisEvent&)> fillExp;
+    std::function<std::vector<float>(const AnalysisEvent&)> fillExp;
     std::string xAxisLabel;
     bool fillPlot;
 };
