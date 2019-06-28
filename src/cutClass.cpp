@@ -640,14 +640,10 @@ std::vector<int> Cuts::getTightEles(const AnalysisEvent& event) const
     {
         if (!event.elePF2PATIsGsf[i])
             continue;
-        const TLorentzVector tempVec{event.elePF2PATPX[i],
-                                     event.elePF2PATPY[i],
-                                     event.elePF2PATPZ[i],
-                                     event.elePF2PATE[i]};
 
-        if (electrons.size() < 1 && tempVec.Pt() <= tightElePtLeading_)
+        if (electrons.size() < 1 && event.elePF2PATPT[i] <= tightElePtLeading_)
             continue;
-        else if (electrons.size() >= 1 && tempVec.Pt() <= tightElePt_)
+        else if (electrons.size() >= 1 && event.elePF2PATPT[i] <= tightElePt_)
             continue;
 
         if (std::abs(event.elePF2PATSCEta[i]) > tightEleEta_)
@@ -690,14 +686,9 @@ std::vector<int> Cuts::getLooseEles(const AnalysisEvent& event) const
     std::vector<int> electrons;
     for (int i{0}; i < event.numElePF2PAT; i++)
     {
-        const TLorentzVector tempVec{event.elePF2PATPX[i],
-                                     event.elePF2PATPY[i],
-                                     event.elePF2PATPZ[i],
-                                     event.elePF2PATE[i]};
-
-        if (electrons.size() < 1 && tempVec.Pt() <= looseElePtLeading_)
+        if (electrons.size() < 1 && event.elePF2PATPT[i] <= looseElePtLeading_)
             continue;
-        else if (electrons.size() >= 1 && tempVec.Pt() <= looseElePt_)
+        else if (electrons.size() >= 1 && event.elePF2PATPT[i] <= looseElePt_)
             continue;
         if (std::abs(event.elePF2PATSCEta[i]) > tightEleEta_)
             continue;
