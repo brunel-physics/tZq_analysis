@@ -1,6 +1,0 @@
-datasets = "configs/2016/datasets/muEGData.txt";
-cuts = "configs/2016/cuts/eeCuts.txt";
-plots = "configs/plots/plotConf.cfg";
-outputFolder = "plots/2016/emu_data/";
-outputPostfix = "emu";
-channelName = "emu";

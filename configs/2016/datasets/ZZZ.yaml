@@ -1,0 +1,10 @@
+name: "ZZZ"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/ZZZ"
+total_events: 249237
+cross_section: 0.01398
+mc: true
+histogram: "VVV"
+colour: "#993399"
+label: "VVV"
+plot_type: "f"

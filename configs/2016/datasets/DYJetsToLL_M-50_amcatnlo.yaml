@@ -1,0 +1,10 @@
+name: "DYJetsToLL_M-50_amcatnlo"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_M-50_madgraph_ext2"
+total_events: 122055388
+cross_section: 5941.0
+mc: true
+histogram: "Zjets"
+colour: "#006699"
+label: "Z+jets"
+plot_type: "f"

@@ -1,6 +1,0 @@
-datasets = "configs/2016/datasets/ttbar_synch.txt";
-cuts = "configs/2016/cuts/twSynchCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2016/ttbar_synch/";
-outputPostfix = "ee";
-channelName = "ee";

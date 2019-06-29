@@ -1,0 +1,10 @@
+name: "WZjets"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/WZJets"
+total_events: 1930828
+cross_section: 5.26
+mc: true
+histogram: "VV"
+colour: "#ff9933"
+label: "VV"
+plot_type: "f"

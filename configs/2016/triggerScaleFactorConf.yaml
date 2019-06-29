@@ -1,0 +1,3 @@
+datasets:
+  - "configs/2016/datasets/ttbarInclusivePowerheg.yaml"
+  - "configs/2016/datasets/metRun2016.yaml"

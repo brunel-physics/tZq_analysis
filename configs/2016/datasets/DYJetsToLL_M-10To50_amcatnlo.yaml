@@ -1,0 +1,10 @@
+name: "DYJetsToLL_M-10To50_amcatnlo"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_M-10to50_amcatnlo"
+total_events: 106269624
+cross_section: 18810.0
+mc: true
+histogram: "Zjets"
+colour: "#006699"
+label: "Z+jets"
+plot_type: "f"

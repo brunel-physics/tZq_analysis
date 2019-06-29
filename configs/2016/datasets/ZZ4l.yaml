@@ -1,0 +1,10 @@
+name: "ZZ4l"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/ZZ4l"
+total_events: 10709784
+cross_section: 1.204
+mc: true
+histogram: "ZZ"
+colour: "#ff9933"
+label: "ZZ"
+plot_type: "f"

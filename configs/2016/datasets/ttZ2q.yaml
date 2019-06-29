@@ -1,0 +1,10 @@
+name: "ttZ2q"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/ttZ2q"
+total_events: 749400
+cross_section: 0.5297
+mc: true
+histogram: "ttV"
+colour: "#339933"
+label: "t#bar{t}V"
+plot_type: "f"

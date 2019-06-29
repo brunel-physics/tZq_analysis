@@ -1,0 +1,46 @@
+cuts: "configs/2016/cuts/SRCuts.yaml"
+plots: "configs/plots/plotDileptonConf.yaml"
+outputFolder: "plots/2016/mumu/"
+outputPostfix: "mumu"
+channelName: "mumu"
+datasets:
+# Z+jets
+  - "configs/2016/datasets/DYJetsToLL_M-50_amcatnlo.yaml"
+  - "configs/2016/datasets/DYJetsToLL_M-10To50_amcatnlo.yaml"
+# ttbar
+  - "configs/2016/datasets/ttbarInclusivePowerheg.yaml"
+# VV
+  - "configs/2016/datasets/WW2l2nu.yaml"
+  - "configs/2016/datasets/WW1l1nu2q.yaml"
+  - "configs/2016/datasets/WZ2l2q.yaml"
+  - "configs/2016/datasets/WZ1l1nu2q.yaml"
+  - "configs/2016/datasets/WZjets.yaml"
+  - "configs/2016/datasets/ZZ4l.yaml"
+  - "configs/2016/datasets/ZZ2l2q.yaml"
+  - "configs/2016/datasets/ZZ2l2nu.yaml"
+# Single top
+  - "configs/2016/datasets/tHq.yaml"
+  - "configs/2016/datasets/sChannel.yaml"
+  - "configs/2016/datasets/tChannel.yaml"
+  - "configs/2016/datasets/tbarChannel.yaml"
+  - "configs/2016/datasets/tWInclusive.yaml"
+  - "configs/2016/datasets/tbarWInclusive.yaml"
+  - "configs/2016/datasets/tWZ.yaml"
+# W+jets
+  - "configs/2016/datasets/wPlusJets.yaml"
+# ttV
+  - "configs/2016/datasets/ttWlnu.yaml"
+  - "configs/2016/datasets/ttW2q.yaml"
+  - "configs/2016/datasets/ttZ2q.yaml"
+  - "configs/2016/datasets/ttZ2l2nu.yaml"
+  - "configs/2016/datasets/ttHTobb.yaml"
+  - "configs/2016/datasets/ttHToNonbb.yaml"
+# VVV
+  - "configs/2016/datasets/WWW.yaml"
+  - "configs/2016/datasets/WWZ.yaml"
+  - "configs/2016/datasets/WZZ.yaml"
+  - "configs/2016/datasets/ZZZ.yaml"
+# tZq
+  - "configs/2016/datasets/tZq.yaml"
+# Data
+  - "configs/2016/datasets/mumuRun2016.yaml"

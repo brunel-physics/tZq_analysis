@@ -1,0 +1,16 @@
+name: "metRun2016"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/metRun2016B"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016C"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016D"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016E"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016F"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016G"
+    - "/scratch/data/tZqSkimsRun2016/metRun2016H"
+luminosity: 35860.066
+mc: false
+histogram: "data"
+label: "Data"
+plot_type: "p"
+colour: "#ffffff"
+trigger_flag: "eCt"

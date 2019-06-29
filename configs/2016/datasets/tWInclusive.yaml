@@ -1,0 +1,10 @@
+name: "tWInclusive"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tW_top_5f"
+total_events: 6952830
+cross_section: 35.85
+mc: true
+histogram: "SingleTop"
+colour: "#ff99cc"
+label: "Single Top"
+plot_type: "f"

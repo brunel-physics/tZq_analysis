@@ -1,6 +1,0 @@
-datasets = "configs/2016/datasets/ttbarInclusiveScaleSysts.txt";
-cuts = "configs/2016/cuts/ttbarCuts.txt";
-plots = "configs/plots/plotTtbarConf.cfg";
-outputFolder = "plots/2016/ttbarInclusiveScaleSysts/";
-outputPostfix = "ee";
-channelName = "ee";

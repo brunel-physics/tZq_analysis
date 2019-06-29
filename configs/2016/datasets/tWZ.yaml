@@ -1,0 +1,10 @@
+name: "tWZ"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tWZ_5f"
+total_events: 50000
+cross_section: 0.01104
+mc: true
+histogram: "SingleTop"
+colour: "#ff99cc"
+label: "Single Top"
+plot_type: "f"

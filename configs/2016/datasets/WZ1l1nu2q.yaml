@@ -1,0 +1,10 @@
+name: "WZ1l1nu2q"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/WZ1l1nu2q"
+total_events: 24221923
+cross_section: 10.73
+mc: true
+histogram: "VV"
+colour: "#ff9933"
+label: "VV"
+plot_type: "f"
