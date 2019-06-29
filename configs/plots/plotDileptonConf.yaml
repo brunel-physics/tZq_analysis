@@ -623,3 +623,43 @@ plots:
     fillExp: "totM"
     xAxisLabel: "mass_{total} (GeV/c^{2})"
     cutStage: 2
+  - title: "#eta of all jets"
+    name: "allJetEta"
+    xMin: -5.
+    xMax: 5.
+    nBins: 100
+    fillExp: "allJetEta"
+    xAxisLabel: "#eta"
+    cutStage: 0
+  - title: "#phi of all jets"
+    name: "allJetPhi"
+    xMin: -3.141592
+    xMax: 3.141592
+    nBins: 20
+    fillExp: "allJetPhi"
+    xAxisLabel: "#phi"
+    cutStage: 0
+  - title: "p_{T} of all jets"
+    name: "allJetPt"
+    xMin: 0.
+    xMax: 500.
+    nBins: 50
+    fillExp: "allJetPt"
+    xAxisLabel: "p_{T} (GeV/c)"
+    cutStage: 0
+  - title: "Min #Delta R with lepton"
+    name: "allJetDeltaRLep"
+    xMin: 0.
+    xMax: 0.4
+    nBins: 40
+    fillExp: "allJetDeltaRLep"
+    xAxisLabel: "#Delta R"
+    cutStage: 1
+  - title: "bTag Discriminator of all jets"
+    name: "allJetBDisc"
+    xMin: 0.
+    xMax: 1.
+    nBins: 50
+    fillExp: "allJetBDisc"
+    xAxisLabel: "bDisc"
+    cutStage: 1

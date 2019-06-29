@@ -1440,6 +1440,85 @@ std::unordered_map<std::string,
                          .DeltaR(event.wPairQuarks.first
                                  + event.wPairQuarks.second + tempBjet)};
          }},
+        {"allJetEta",
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             std::vector<float> etas;
+             for (const auto& i : event.jetIndex)
+             {
+                 float smearValue = event.jetSmearValue[i];
+                 TLorentzVector tempJet{event.jetPF2PATPx[i],
+                                        event.jetPF2PATPy[i],
+                                        event.jetPF2PATPz[i],
+                                        event.jetPF2PATE[i]};
+                 tempJet *= smearValue;
+                 etas.emplace_back(tempJet.Eta());
+             }
+             return etas;
+         }},
+        {"allJetPhi",
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             std::vector<float> phis;
+             for (const auto& i : event.jetIndex)
+             {
+                 float smearValue = event.jetSmearValue[i];
+                 TLorentzVector tempJet{event.jetPF2PATPx[i],
+                                        event.jetPF2PATPy[i],
+                                        event.jetPF2PATPz[i],
+                                        event.jetPF2PATE[i]};
+                 tempJet *= smearValue;
+                 phis.emplace_back(tempJet.Phi());
+             }
+             return phis;
+         }},
+        {"allJetPt",
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             std::vector<float> pts;
+             for (const auto& i : event.jetIndex)
+             {
+                 float smearValue = event.jetSmearValue[i];
+                 TLorentzVector tempJet{event.jetPF2PATPx[i],
+                                        event.jetPF2PATPy[i],
+                                        event.jetPF2PATPz[i],
+                                        event.jetPF2PATE[i]};
+                 tempJet *= smearValue;
+                 pts.emplace_back(tempJet.Pt());
+             }
+             return pts;
+         }},
+        {"allJetDeltaRLep",
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             std::vector<float> dRs;
+             for (const auto& i : event.jetIndex)
+             {
+                 float smearValue = event.jetSmearValue[i];
+                 TLorentzVector tempJet{event.jetPF2PATPx[i],
+                                        event.jetPF2PATPy[i],
+                                        event.jetPF2PATPz[i],
+                                        event.jetPF2PATE[i]};
+                 tempJet *= smearValue;
+                 dRs.emplace_back(
+                     std::min(Cuts::deltaR(event.zPairLeptons.first.Eta(),
+                                           event.zPairLeptons.first.Phi(),
+                                           tempJet.Eta(),
+                                           tempJet.Phi()),
+                              Cuts::deltaR(event.zPairLeptons.second.Eta(),
+                                           event.zPairLeptons.second.Phi(),
+                                           tempJet.Eta(),
+                                           tempJet.Phi())));
+             }
+             return dRs;
+         }},
+        {"allJetBDisc",
+         [](const AnalysisEvent& event) -> std::vector<float> {
+             std::vector<float> discs;
+             for (const auto& i : event.jetIndex)
+             {
+                 discs.emplace_back(
+                     event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                         [i]);
+             }
+             return discs;
+         }},
         {"zl2TopDelPhi", [](const AnalysisEvent& event) -> std::vector<float> {
              TLorentzVector tempBjet;
              float smearValue{
