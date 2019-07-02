@@ -413,7 +413,7 @@ void AnalysisAlgo::runMainAnalysis()
     bool datasetFilled{false};
 
     const std::string postLepSelSkimDir{
-        std::string{"/scratch/data/TopPhysics/postLepSelSkims"}
+        std::string{"/scratch2/data/TopPhysics/postLepSelSkims"}
         + (is2016_ ? "2016" : "2017") + "/"};
 
     // Begin to loop over all datasets
