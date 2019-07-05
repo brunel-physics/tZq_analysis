@@ -1997,7 +1997,8 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
     }
 
     // TODO: Should this be gen or reco level?
-    // I think reco because gen might not exist? (does not exist when smearing)
+    // I think reco because gen might not exist? (does not exist when
+    // smearing)
     const double ptRes{jet2017PtSimRes(event.jetPF2PATPtRaw[index],
                                        event.jetPF2PATEta[index],
                                        event.elePF2PATRhoIso[0])};
@@ -2034,9 +2035,9 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
         std::normal_distribution<> d(
             0, ptRes * std::sqrt(std::max(jerSF * jerSF - 1, 0.)));
 
-        // Like with the Rochester corrections, seed the random number generator
-        // with event (jet) properties so that each jet is smeared the same
-        // way every time it is processed
+        // Like with the Rochester corrections, seed the random number
+        // generator with event (jet) properties so that each jet is smeared
+        // the same way every time it is processed
         size_t seed{0};
         boost::hash_combine(seed, event.jetPF2PATPtRaw[index]);
         boost::hash_combine(seed, event.jetPF2PATEta[index]);
@@ -2568,7 +2569,8 @@ void Cuts::getBWeight(const AnalysisEvent& event,
     }
 }
 
-// Backup temporary method to do Btag Scale Factors whilst debugging is ongoing.
+// Backup temporary method to do Btag Scale Factors whilst debugging is
+// ongoing.
 // TODO: F1X TH1S
 
 double Cuts::getBSF(const int flavour, const int type, const double pt) const
