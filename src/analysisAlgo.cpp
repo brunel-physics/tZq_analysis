@@ -316,15 +316,16 @@ void AnalysisAlgo::setupSystematics()
     {
         // Make pileupReweighting stuff here
         dataPileupFile = new TFile{"pileup/2016/truePileupTest.root", "READ"};
-        dataPU = (TH1D*)(dataPileupFile->Get("pileup")->Clone());
+        dataPU = dynamic_cast<TH1D*>(dataPileupFile->Get("pileup")->Clone());
         mcPileupFile = new TFile{"pileup/2016/pileupMC.root", "READ"};
-        mcPU = (TH1D*)(mcPileupFile->Get("pileup")->Clone());
+        mcPU = dynamic_cast<TH1D*>(mcPileupFile->Get("pileup")->Clone());
 
         // Get systematic files too.
         systUpFile = new TFile{"pileup/2016/truePileupUp.root", "READ"};
-        pileupUpHist = (TH1D*)(systUpFile->Get("pileup")->Clone());
+        pileupUpHist = dynamic_cast<TH1D*>(systUpFile->Get("pileup")->Clone());
         systDownFile = new TFile{"pileup/2016/truePileupDown.root", "READ"};
-        pileupDownHist = (TH1D*)(systDownFile->Get("pileup")->Clone());
+        pileupDownHist =
+            dynamic_cast<TH1D*>(systDownFile->Get("pileup")->Clone());
     }
 
     puReweight = dynamic_cast<TH1D*>(dataPU->Clone());
