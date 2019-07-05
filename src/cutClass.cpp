@@ -128,12 +128,13 @@ Cuts::Cuts(const bool doPlots,
         h_muonHlt1 = dynamic_cast<TH2F*>(
             muonHltFile1->Get("IsoMu27_PtEtaBins/abseta_pt_ratio"));
 
-        // Tight ID
-        h_muonIDs1 = dynamic_cast<TH2D*>(
-            muonIDsFile1->Get("NUM_TightID_DEN_genTracks_pt_abseta"));
-        h_muonPFiso1 = dynamic_cast<TH2D*>(
-            muonIsoFile1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"));
-        std::cout << "Got 2017 muon SFs!\n" << std::endl;
+        // Hardcoded in 2017
+        // // Tight ID
+        // h_muonIDs1 = dynamic_cast<TH2D*>(
+        //     muonIDsFile1->Get("NUM_TightID_DEN_genTracks_pt_abseta"));
+        // h_muonPFiso1 = dynamic_cast<TH2D*>(
+        //     muonIsoFile1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta"));
+        // std::cout << "Got 2017 muon SFs!\n" << std::endl;
     }
     else
     {
@@ -189,22 +190,22 @@ Cuts::Cuts(const bool doPlots,
             "IsoMu24_OR_IsoTkMu24_PtEtaBins/abseta_pt_ratio"));
 
         // Tight ID
-        muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta");
-        muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta");
-        dynamic_cast<TH2F*>(
+        muonIDsFile1->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
+        muonIDsFile2->cd("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta"); // Tight ID
+        h_muonIDs1 = dynamic_cast<TH2F*>(
             muonIDsFile1->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
-                              "abseta_pt_ratio"))
-            ->Copy(*h_muonIDs1);
+                              "abseta_pt_ratio")); // Tight
+                                                   // ID
         h_muonIDs2 = dynamic_cast<TH2F*>(
             muonIDsFile2->Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta/"
-                              "abseta_pt_ratio"));
+                              "abseta_pt_ratio")); // Tight
+                                                   // ID
 
         // Tight Iso
         muonIsoFile1->cd("TightISO_TightID_pt_eta");
-        muonIsoFile2->cd("TightISO_TightID_pt_eta");
-        dynamic_cast<TH2F*>(
-            muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"))
-            ->Copy(*h_muonPFiso1);
+        muonIsoFile2->cd("TightISO_TightID_pt_eta"); // Tight Iso
+        h_muonPFiso1 = dynamic_cast<TH2F*>(
+            muonIsoFile1->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"));
         h_muonPFiso2 = dynamic_cast<TH2F*>(
             muonIsoFile2->Get("TightISO_TightID_pt_eta/abseta_pt_ratio"));
         std::cout << "Got 2016 muon SFs!\n" << std::endl;
