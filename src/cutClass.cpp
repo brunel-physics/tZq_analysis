@@ -1821,48 +1821,29 @@ double Cuts::muonSF(const double pt, const double eta, const int syst) const
 
         if (syst == 1)
         {
-            if (!is2016_)
-            {
-                muonIdSF += h_muonIDs1->GetBinError(binId1);
-                muonPFisoSF += h_muonPFiso1->GetBinError(binIso1);
-            }
-            else
-            {
-                muonIdSF += (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
-                             + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
-                                / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
-                            + 0.01; // Additional 1% uncert for ID and 0.5% for
-                                    // iso as recommended
-                muonPFisoSF +=
-                    (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
-                     + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
-                        / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
-                    + 0.005;
-            }
+            muonIdSF += (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
+                         + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                            / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                        + 0.01; // Additional 1% uncert for ID and 0.5% for
+                                // iso as recommended
+            muonPFisoSF += (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
+                            + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                               / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                           + 0.005;
         }
         else if (syst == 2)
         {
-            if (!is2016_)
-            {
-                muonIdSF -= h_muonIDs1->GetBinError(binId1);
-                muonPFisoSF -= h_muonPFiso1->GetBinError(binIso1);
-            }
-            else
-            {
-                muonIdSF -= (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
-                             + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
-                                / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
-                            - 0.01; // Additional 1% uncert for ID and 0.5% for
-                                    // iso as recommended
-                muonPFisoSF -=
-                    (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
-                     + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
-                        / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
-                    - 0.005;
-            }
+            muonIdSF -= (h_muonIDs1->GetBinError(binId1) * lumiRunsBCDEF_
+                         + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                            / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                        - 0.01; // Additional 1% uncert for ID and 0.5% for
+                                // iso as recommended
+            muonPFisoSF -= (h_muonPFiso1->GetBinError(binIso1) * lumiRunsBCDEF_
+                            + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
+                               / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
+                           - 0.005;
+            return muonIdSF * muonPFisoSF;
         }
-
-        return muonIdSF * muonPFisoSF;
     }
 }
 
