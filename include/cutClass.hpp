@@ -136,6 +136,8 @@ class Cuts
                                                  const int syst,
                                                  const bool initialRun) const;
     static double
+        jet2016PtSimRes(const double pt, const double eta, const double rho);
+    static double
         jet2017PtSimRes(const double pt, const double eta, const double rho);
     [[gnu::const]] static std::pair<double, double> jet2016SFs(const double eta);
     static std::pair<double, double> jet2017SFs(const double eta);
