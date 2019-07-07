@@ -1645,6 +1645,15 @@ double Cuts::getLeptonWeight(const AnalysisEvent& event, const int syst) const
                                event.zPairLeptons.second.Eta(),
                                syst);
     }
+    else if (numTightEle_ == 1 && numTightMu_ == 1)
+    {
+        leptonWeight *= eleSF(event.elePF2PATPT[event.electronIndexTight[0]],
+                              event.elePF2PATSCEta[event.electronIndexTight[0]],
+                              syst);
+        leptonWeight *= muonSF(event.muonPF2PATPt[event.muonIndexTight[0]],
+                               event.muonPF2PATEta[event.muonIndexTight[0]],
+                               syst);
+    }
     return leptonWeight;
 }
 
