@@ -434,6 +434,7 @@ std::vector<double> Cuts::getRochesterSFs(const AnalysisEvent& event) const
                 boost::hash_combine(seed, event.muonPF2PATPhi[*muonIt]);
                 boost::hash_combine(
                     seed, event.muonPF2PATTkLysWithMeasurements[*muonIt]);
+                boost::hash_combine(seed, event.eventNum);
 
                 std::mt19937 gen(seed);
 
@@ -2055,6 +2056,7 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
         boost::hash_combine(seed, event.jetPF2PATPtRaw[index]);
         boost::hash_combine(seed, event.jetPF2PATEta[index]);
         boost::hash_combine(seed, event.jetPF2PATPhi[index]);
+        boost::hash_combine(seed, event.eventNum);
         std::mt19937 gen(rand());
 
         newSmearValue = 1.0 + d(gen);
