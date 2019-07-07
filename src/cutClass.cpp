@@ -2419,7 +2419,6 @@ double
                                              + "out of range");
             }
         case 7:
-            return res(-1.066, 1.835, -0.03267, -1.24);
             switch (rhoBin)
             {
                 case 1: return res(-2.528, 1.591, -0.03475, -1.215);
@@ -2448,7 +2447,6 @@ double
                                              + "out of range");
             }
         case 9:
-            return res(-114.5, 114.1, 0.04377, -1.997);
             switch (rhoBin)
             {
                 case 1: return res(-85.96, 85.58, -0.04539, -1.996);
@@ -2478,7 +2476,6 @@ double
                                              + "out of range");
             }
         case 11:
-            return res(-11.14, 8.098, -0.06207, -1.683);
             switch (rhoBin)
             {
                 case 1: return res(-3.681, 1.906, -0.0582, -1.186);
