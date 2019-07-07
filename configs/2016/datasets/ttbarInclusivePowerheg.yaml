@@ -2,7 +2,7 @@ name: "ttbarInclusivePowerheg"
 locations:
     - "/scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg"
 total_events: 77081156
-cross_section: 831.76
+cross_section: 730.6
 mc: true
 histogram: "ttbar"
 colour: "#cc0000"
