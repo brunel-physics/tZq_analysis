@@ -2667,6 +2667,23 @@ void TriggerScaleFactors::savePlots()
 
     std::cout << "-----------------------------------------------------------"
               << std::endl;
+    std::cout << "Events passing lepton triggers, MET triggers, and lepton "
+                 "selection:\n"
+              << "ee: " << numberTriggeredDoubleElectrons[0] << " (MC) / "
+              << numberTriggeredDoubleElectrons[1] << " (Data)" << '\n'
+              << "μμ: " << numberTriggeredDoubleMuons[0] << " (MC) / "
+              << numberTriggeredDoubleMuons[1] << " (Data)" << '\n'
+              << "eμ: " << numberTriggeredMuonElectrons[0] << " (MC) / "
+              << numberTriggeredMuonElectrons[1] << " (Data)" << '\n';
+    std::cout
+        << "-----------------------------------------------------------\n";
+    std::cout << "Events passing MET triggers and lepton selection:\n"
+              << "ee: " << numberPassedElectrons[0] << " (MC) / "
+              << numberPassedElectrons[1] << " (Data)" << '\n'
+              << "μμ: " << numberPassedMuons[0] << " (MC) / "
+              << numberPassedMuons[1] << " (Data)" << '\n'
+              << "eμ: " << numberPassedMuonElectrons[0] << " (MC) / "
+              << numberPassedMuonElectrons[1] << " (Data)" << '\n';
     std::cout << "-----------------------------------------------------------"
               << std::endl;
     std::cout << "Double Electron data efficiency: "
