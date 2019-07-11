@@ -426,7 +426,7 @@ std::vector<double> Cuts::getRochesterSFs(const AnalysisEvent& event) const
                 // systematics. So we will seed the random number generator
                 // with a hash combining the properties of the muon (and make
                 // the hopefully safe assumption no two muons have EXACTLY
-                // the same properties
+                // the same properties within the same event)
                 size_t seed{0};
                 boost::hash_combine(seed, event.muonPF2PATCharge[*muonIt]);
                 boost::hash_combine(seed, event.muonPF2PATPt[*muonIt]);
