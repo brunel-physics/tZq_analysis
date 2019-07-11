@@ -534,13 +534,12 @@ void TriggerScaleFactors::runMainAnalysis()
             event.GetEntry(i);
 
             double pileupWeight = puReweight->GetBinContent(
-                    puReweight->GetXaxis()->FindBin(event.numVert));
+                puReweight->GetXaxis()->FindBin(event.numVert));
             double eventWeight = 1.0;
             if (dataset->isMC())
             {
                 eventWeight *= pileupWeight;
             }
-
 
             //      std::cout << __LINE__ << " : " << __FILE__ << std::endl;
 
@@ -557,11 +556,11 @@ void TriggerScaleFactors::runMainAnalysis()
                     continue;
                 }
             }
-
             if (!metFilters(event, dataset->isMC()))
             {
                 continue;
             }
+
             // If checking impact of jet and bjet cuts add this bool ...
             bool passJetSelection = true;
             if (jetCuts_)
@@ -965,14 +964,10 @@ std::vector<int>
     {
         if (!event.elePF2PATIsGsf[i])
             continue;
-        const TLorentzVector tempVec{event.elePF2PATPX[i],
-                                     event.elePF2PATPY[i],
-                                     event.elePF2PATPZ[i],
-                                     event.elePF2PATE[i]};
 
-        if (electrons.size() < 1 && tempVec.Pt() <= 38)
+        if (electrons.size() < 1 && event.elePF2PATPT[i] <= 38)
             continue;
-        else if (electrons.size() >= 1 && tempVec.Pt() <= 15)
+        else if (electrons.size() >= 1 && event.elePF2PATPT[i] <= 15)
             continue;
 
         if (std::abs(event.elePF2PATSCEta[i]) > 2.5)
@@ -1014,15 +1009,57 @@ std::vector<int>
     TriggerScaleFactors::getTightMuons(const AnalysisEvent& event) const
 {
     std::vector<int> muons;
-    for (int i{0}; i < event.numMuonPF2PAT; i++)
+    if (is2016_)
     {
-        if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATTightCutId[i]
-            && event.muonPF2PATPfIsoTight[i]
-            && std::abs(event.muonPF2PATEta[i]) <= 2.4)
+        for (int i{0}; i < event.numMuonPF2PAT; i++)
         {
-            if (event.muonPF2PATPt[i] >= (muons.empty() ? 29 : 20))
+            if (!event.muonPF2PATIsPFMuon[i])
+                continue;
+
+            if (muons.size() < 1 && event.muonPF2PATPt[i] <= 26)
+                continue;
+            else if (muons.size() >= 1 && event.muonPF2PATPt[i] <= 20)
+                continue;
+
+            if (std::abs(event.muonPF2PATEta[i]) >= 2.4)
+                continue;
+            if (event.muonPF2PATComRelIsodBeta[i] >= 0.15)
+                continue;
+
+            // Tight ID Cut
+            if (!event.muonPF2PATTrackID[i])
+                continue;
+            if (!event.muonPF2PATGlobalID[i])
+                continue;
+            if (event.muonPF2PATGlbTkNormChi2[i] >= 10.)
+                continue;
+            if (event.muonPF2PATMatchedStations[i] < 2)
+                continue; //
+            if (std::abs(event.muonPF2PATDBPV[i]) >= 0.2)
+                continue;
+            if (std::abs(event.muonPF2PATDZPV[i]) >= 0.5)
+                continue;
+            if (event.muonPF2PATMuonNHits[i] < 1)
+                continue;
+            if (event.muonPF2PATVldPixHits[i] < 1)
+                continue;
+            if (event.muonPF2PATTkLysWithMeasurements[i] <= 5)
+                continue;
+            muons.emplace_back(i);
+        }
+    }
+    else
+    {
+        for (int i{0}; i < event.numMuonPF2PAT; i++)
+        {
+            if (event.muonPF2PATIsPFMuon[i] && event.muonPF2PATTightCutId[i]
+                && event.muonPF2PATPfIsoTight[i]
+                && std::abs(event.muonPF2PATEta[i]) <= 2.4)
             {
-                muons.emplace_back(i);
+                if (event.muonPF2PATPt[i] >= (muons.empty() ? 26 : 29))
+                {
+                    muons.emplace_back(i);
+                }
             }
         }
     }
@@ -1421,8 +1458,8 @@ bool TriggerScaleFactors::metFilters(const AnalysisEvent& event,
     if (is2016_
         && (event.Flag_ecalLaserCorrFilter <= 0
             || event.Flag_chargedHadronTrackResolutionFilter <= 0
-            || event.Flag_muonBadTrackFilter <= 0 || event.Flag_badMuons <= 0
-            || event.Flag_duplicateMuons <= 0 || event.Flag_noBadMuons))
+            || event.Flag_muonBadTrackFilter <= 0
+            || (!isMC && event.Flag_noBadMuons <= 0)))
     {
         return false;
     }
