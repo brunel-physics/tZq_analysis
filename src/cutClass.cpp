@@ -1461,7 +1461,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
         {
             if (eTrig || eeTrig)
             { // If singleElectron or doubleEG trigger fires ...
-                twgt = 0.98715; // 0.97554 for data eff; 0.98715 for SF
+                twgt = 0.96917; // 0.97554 for data eff; 0.98715 for SF
                 if (syst == 1)
                 {
                     twgt += 0.01; // +-/ 0.00138 for eff; 0.00063 for SF
@@ -1483,7 +1483,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
                 // for post-HIP fix SF pre-HIP fix 0.98868 +/- 0.00013 and
                 // 0.99868 +/- 0.00017  for post-HIP fix
 
-                twgt = (0.98868 * lumiRunsBCDEF_ + 0.99868 * lumiRunsGH_)
+                twgt = (0.97679 * lumiRunsBCDEF_ + 0.98941 * lumiRunsGH_)
                        / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06);
 
                 if (syst == 1)
@@ -1501,7 +1501,7 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
           // triggers
             if (muEGTrig)
             {
-                twgt = 0.87661; // 0.87661 for eff; 0.99399 for SF
+                twgt = 0.98710;
                 if (syst == 1)
                 {
                     twgt += 0.02; // -0.01220/0.01339 for eff; 0.01018 for SF
