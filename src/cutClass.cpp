@@ -1830,6 +1830,8 @@ double Cuts::muonSF(const double pt, const double eta, const int syst) const
                             + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
                                / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
                            + 0.005;
+
+            return muonIdSF * muonPFisoSF;
         }
         else if (syst == 2)
         {
@@ -1842,6 +1844,10 @@ double Cuts::muonSF(const double pt, const double eta, const int syst) const
                             + h_muonIDs2->GetBinError(binId2) * lumiRunsGH_)
                                / (lumiRunsBCDEF_ + lumiRunsGH_ + 1.0e-06)
                            - 0.005;
+            return muonIdSF * muonPFisoSF;
+        }
+        else
+        {
             return muonIdSF * muonPFisoSF;
         }
     }
