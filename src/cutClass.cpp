@@ -2035,12 +2035,25 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
         jerSF -= jerSigma;
     }
 
-    // If there is no matching gen jet, gen jet pT is -999;
-    if (event.genJetPF2PATPT[index] != -999.0 && dR < (0.4 / 2.0)
-        && std::abs(dPt) < 3.0 * ptRes * event.jetPF2PATPtRaw[index])
+    std::optional<size_t> matchingGenIndex{std::nullopt};
+    for (size_t genIndex{0}; genIndex < event.NJETSMAX; ++genIndex)
+    {
+        const double dR{deltaR(event.genJetPF2PATEta[genIndex], event.genJetPF2PATPhi[genIndex], event.jetPF2PATEta[index], event.jetPF2PATPhi[index])};
+        const double dPt{event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[genIndex]};
+
+        if (event.genJetPF2PATPT[genIndex] > 0 && dR < (0.4 / 2.0)
+                && std::abs(dPt) < 3.0 * ptRes * event.jetPF2PATPtRaw[index])
+        {
+            matchingGenIndex = genIndex;
+            break;
+        }
+    }
+
+    if (matchingGenIndex.has_value())
     // If matching from GEN to RECO using dR<Rcone/2 and dPt < 3*sigma,
     // just scale
     {
+        const double dPt{event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[matchingGenIndex.value()]};
         newSmearValue =
             std::max(1. + (jerSF - 1.) * dPt / event.jetPF2PATPtRaw[index], 0.);
     }
