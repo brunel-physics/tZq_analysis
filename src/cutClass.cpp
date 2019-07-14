@@ -2005,21 +2005,16 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
     // TODO: Should this be gen or reco level?
     // I think reco because gen might not exist? (does not exist when
     // smearing)
-    const double ptRes{is2016_ ? jet2016PtSimRes(event.jetPF2PATPtRaw[index],
-                                                 event.jetPF2PATEta[index],
-                                                 event.elePF2PATRhoIso[0])
-                               : jet2017PtSimRes(event.jetPF2PATPtRaw[index],
-                                                 event.jetPF2PATEta[index],
-                                                 event.elePF2PATRhoIso[0])};
-
-    const auto dR{deltaR(event.genJetPF2PATEta[index],
-                         event.genJetPF2PATPhi[index],
-                         event.jetPF2PATEta[index],
-                         event.jetPF2PATPhi[index])};
-    const double dPt{event.jetPF2PATPtRaw[index] - event.genJetPF2PATPT[index]};
     auto [jerSF, jerSigma] =
         is2016_ ? jet2016SFs(std::abs(event.jetPF2PATEta[index]))
                 : jet2017SFs(std::abs(event.jetPF2PATEta[index]));
+
+    // 2016 still uses the old (wrong) smearing behaviour. This needs be fixed
+    // in future, but requires reprocessing of all 2016 samples to add rho iso
+    const double ptRes{is2016_ ? jerSigma
+                               : jet2017PtSimRes(event.jetPF2PATPtRaw[index],
+                                                 event.jetPF2PATEta[index],
+                                                 event.elePF2PATRhoIso[0])};
 
     if (syst == 16)
     {
