@@ -1,0 +1,13 @@
+name: "DYJetsToLL_Pt-100To250"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250"
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext1"
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext2"
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-100To250_ext5"
+total_events: 83686174
+cross_section: 84.014804
+mc: true
+histogram: "Zjets"
+colour: "#006699"
+label: "Z+jets"
+plot_type: "f"

@@ -1,0 +1,10 @@
+name: "tZq"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tZq_ll_4Flavour3Lepton/"
+total_events: 14509520
+cross_section: 0.0758
+mc: true
+histogram: "tZq"
+colour: "#999999"
+label: "tZq"
+plot_type: "f"

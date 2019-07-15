@@ -1,0 +1,10 @@
+name: "WW2l2nu"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/WW2l2nu"
+total_events: 1999000
+cross_section: 12.178
+mc: true
+histogram: "VV"
+colour: "#ff9933"
+label: "VV"
+plot_type: "f"

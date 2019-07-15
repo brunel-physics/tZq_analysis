@@ -1,1 +1,0 @@
-datasets = "configs/2016/datasets/triggerScaleFactorsDataPart2.txt";

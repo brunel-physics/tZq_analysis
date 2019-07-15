@@ -1,0 +1,10 @@
+name: "tChannel"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tChannel_4f"
+total_events: 67240808
+cross_section: 136.02
+mc: true
+histogram: "SingleTop"
+colour: "#ff99cc"
+label: "Single Top"
+plot_type: "f"

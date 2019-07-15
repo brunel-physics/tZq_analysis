@@ -1,6 +1,0 @@
-datasets = "configs/2016/datasets/tChannelScaleSysts.txt";
-cuts = "configs/2016/cuts/ZplusCuts.txt";
-plots = "configs/plots/plotDileptonConf.cfg";
-outputFolder = "plots/2016/tChannel/";
-outputPostfix = "ee";
-channelName = "ee";

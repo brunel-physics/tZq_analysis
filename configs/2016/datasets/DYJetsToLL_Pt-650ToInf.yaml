@@ -1,0 +1,12 @@
+name: "DYJetsToLL_Pt-650ToInf"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf"
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf_ext1"
+    - "/scratch/data/tZqSkimsRun2016/DYJetsToLL_Pt-650ToInf_ext2"
+total_events: 1627882
+cross_section: 0.040981055
+mc: true
+histogram: "Zjets"
+colour: "#006699"
+label: "Z+jets"
+plot_type: "f"
