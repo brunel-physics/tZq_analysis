@@ -2538,77 +2538,43 @@ double
 
 std::pair<double, double> Cuts::jet2016SFs(const double eta)
 {
-    // JER Scaling Factors and uncertainities for 2016
-    double jerSF{0.};
-    double jerSigma{0.};
+    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetResolution#JER_Uncertainty
+    constexpr std::array<double, 14> etaBinEdges{0,
+                                                 0.522,
+                                                 0.783,
+                                                 1.131,
+                                                 1.305,
+                                                 1.740,
+                                                 1.930,
+                                                 2.043,
+                                                 2.322,
+                                                 2.5,
+                                                 2.853,
+                                                 2.964,
+                                                 3.319,
+                                                 5.191};
 
-    if (eta <= 0.5)
+    switch (std::distance(
+        etaBinEdges.begin(),
+        std::upper_bound(etaBinEdges.begin(), etaBinEdges.end(), eta)))
     {
-        jerSF = 1.109;
-        jerSigma = 0.008;
+        case 1: return {1.1685, 0.0645};
+        case 2: return {1.1948, 0.0652};
+        case 3: return {1.1464, 0.0632};
+        case 4: return {1.1609, 0.1025};
+        case 5: return {1.1278, 0.0986};
+        case 6: return {1.1000, 0.1079};
+        case 7: return {1.1426, 0.1214};
+        case 8: return {1.1512, 0.1440};
+        case 9: return {1.2963, 0.2371};
+        case 10: return {1.3418, 0.2091};
+        case 11: return {1.7788, 0.2008};
+        case 12: return {1.1869, 0.1243};
+        case 13: return {1.1922, 0.1448};
+        default:
+            throw std::runtime_error("Eta " + std::to_string(eta)
+                                     + " out of range");
     }
-    else if (eta <= 0.8)
-    {
-        jerSF = 1.138;
-        jerSigma = 0.013;
-    }
-    else if (eta <= 1.1)
-    {
-        jerSF = 1.114;
-        jerSigma = 0.013;
-    }
-    else if (eta <= 1.3)
-    {
-        jerSF = 1.123;
-        jerSigma = 0.024;
-    }
-    else if (eta <= 1.7)
-    {
-        jerSF = 1.084;
-        jerSigma = 0.011;
-    }
-    else if (eta <= 1.9)
-    {
-        jerSF = 1.082;
-        jerSigma = 0.035;
-    }
-    else if (eta <= 2.1)
-    {
-        jerSF = 1.140;
-        jerSigma = 0.047;
-    }
-    else if (eta <= 2.3)
-    {
-        jerSF = 1.067;
-        jerSigma = 0.053;
-    }
-    else if (eta <= 2.5)
-    {
-        jerSF = 1.177;
-        jerSigma = 0.041;
-    }
-    else if (eta <= 2.8)
-    {
-        jerSF = 1.364;
-        jerSigma = 0.039;
-    }
-    else if (eta <= 3.0)
-    {
-        jerSF = 1.857;
-        jerSigma = 0.071;
-    }
-    else if (eta <= 3.2)
-    {
-        jerSF = 1.328;
-        jerSigma = 0.022;
-    }
-    else
-    {
-        jerSF = 1.160;
-        jerSigma = 0.029;
-    }
-
-    return std::make_pair(jerSF, jerSigma);
 }
 
 std::pair<double, double> Cuts::jet2017SFs(const double eta)
