@@ -13,6 +13,7 @@ bin/
 configs/2016/datasets/fileLists/*
 configs/2017/datasets/fileLists/*
 step*EventDump*.txt
+compile-commands.json
 *.png
 *.jpeg
 *.jpg
