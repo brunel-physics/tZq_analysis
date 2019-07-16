@@ -2125,19 +2125,19 @@ double
         rhoBinEdges.begin(),
         std::upper_bound(rhoBinEdges.begin(), rhoBinEdges.end(), rho))};
 
-    // https://raw.githubusercontent.com/cms-jet/JRDatabase/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt
+    // https://github.com/cms-jet/JRDatabase/blob/master/textFiles/Summer16_25nsV1_MC/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt
     switch (etaBin)
     {
         case 1:
             switch (rhoBin)
             {
-                case 1: return res(1.326, 0.4209, 0.02223, -0.6704);
-                case 2: return res(2.754, 0.4556, 0.02343, -0.6978);
-                case 3: return res(3.459, 0.5735, 0.02773, -0.7855);
-                case 4: return res(4.381, 0.6004, 0.02822, -0.7985);
-                case 5: return res(5.083, 0.6708, 0.0299, -0.8379);
-                case 6: return res(5.684, 0.7651, 0.03099, -0.8808);
-                case 7: return res(6.416, 0.7949, 0.03119, -0.8912);
+                case 1: return res(0.6172, 0.3908, 0.02003, -0.6407);
+                case 2: return res(1.775, 0.4231, 0.02199, -0.6701);
+                case 3: return res(2.457, 0.4626, 0.02416, -0.7045);
+                case 4: return res(2.996, 0.5242, 0.02689, -0.7508);
+                case 5: return res(3.623, 0.5591, 0.0288, -0.7747);
+                case 6: return res(4.167, 0.6365, 0.03045, -0.8179);
+                case 7: return res(4.795, 0.6819, 0.03145, -0.8408);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2145,13 +2145,13 @@ double
         case 2:
             switch (rhoBin)
             {
-                case 1: return res(1.63, 0.4299, 0.02621, -0.6872);
-                case 2: return res(2.978, 0.445, 0.02489, -0.6906);
-                case 3: return res(3.784, 0.5268, 0.02897, -0.7566);
-                case 4: return res(4.679, 0.5113, 0.02653, -0.7354);
-                case 5: return res(5.176, 0.6552, 0.03085, -0.8265);
-                case 6: return res(5.755, 0.7441, 0.03154, -0.8663);
-                case 7: return res(6.108, 0.9696, 0.03487, -0.9651);
+                case 1: return res(1.003, 0.4142, 0.02486, -0.6698);
+                case 2: return res(2.134, 0.3971, 0.02264, -0.6469);
+                case 3: return res(2.66, 0.4566, 0.02755, -0.7058);
+                case 4: return res(3.264, 0.4799, 0.02702, -0.7156);
+                case 5: return res(3.877, 0.5249, 0.02923, -0.7479);
+                case 6: return res(4.441, 0.581, 0.03045, -0.7804);
+                case 7: return res(4.742, 0.8003, 0.03613, -0.9062);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2159,13 +2159,13 @@ double
         case 3:
             switch (rhoBin)
             {
-                case 1: return res(1.68, 0.5266, 0.03404, -0.7518);
-                case 2: return res(2.897, 0.5706, 0.03444, -0.776);
-                case 3: return res(4.016, 0.5346, 0.03213, -0.7407);
-                case 4: return res(4.525, 0.6976, 0.03656, -0.8438);
-                case 5: return res(5.221, 0.7261, 0.03649, -0.8506);
-                case 6: return res(5.79, 0.8176, 0.03743, -0.8882);
-                case 7: return res(6.16, 0.9729, 0.03872, -0.944);
+                case 1: return res(1.423, 0.4736, 0.03233, -0.7093);
+                case 2: return res(2.249, 0.5041, 0.03355, -0.7316);
+                case 3: return res(2.961, 0.4889, 0.03129, -0.7091);
+                case 4: return res(3.4, 0.5757, 0.03541, -0.7742);
+                case 5: return res(3.884, 0.6457, 0.03731, -0.8146);
+                case 6: return res(4.433, 0.7524, 0.03962, -0.8672);
+                case 7: return res(4.681, 0.9075, 0.04182, -0.9304);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2173,13 +2173,13 @@ double
         case 4:
             switch (rhoBin)
             {
-                case 1: return res(0.000419, 0.8736, 0.04913, -0.9404);
-                case 2: return res(2.557, 0.895, 0.04999, -0.9467);
-                case 3: return res(3.673, 0.8923, 0.04901, -0.9325);
-                case 4: return res(4.229, 0.9951, 0.04967, -0.9681);
-                case 5: return res(5.281, 0.8996, 0.04745, -0.9163);
-                case 6: return res(5.494, 1.155, 0.04763, -0.9917);
-                case 7: return res(6.076, 1.201, 0.04572, -0.9883);
+                case 1: return res(-0.7275, 0.8099, 0.04885, -0.9097);
+                case 2: return res(1.829, 0.8156, 0.04991, -0.9145);
+                case 3: return res(2.72, 0.8454, 0.05036, -0.9215);
+                case 4: return res(3.07, 0.9201, 0.05067, -0.9439);
+                case 5: return res(3.991, 0.8715, 0.05041, -0.9151);
+                case 6: return res(4.001, 1.14, 0.05214, -0.9987);
+                case 7: return res(4.522, 1.22, 0.05122, -1);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2187,13 +2187,13 @@ double
         case 5:
             switch (rhoBin)
             {
-                case 1: return res(-1.414, 1.244, 0.04994, -1.075);
-                case 2: return res(-1.597, 1.652, 0.05269, -1.183);
-                case 3: return res(2.221, 1.601, 0.05218, -1.159);
-                case 4: return res(3.388, 1.641, 0.052, -1.158);
-                case 5: return res(3.612, 1.806, 0.05059, -1.176);
-                case 6: return res(4.056, 2.052, 0.05105, -1.216);
-                case 7: return res(4.801, 2.084, 0.0509, -1.214);
+                case 1: return res(-1.692, 1.192, 0.05049, -1.06);
+                case 2: return res(-1.804, 1.48, 0.05315, -1.145);
+                case 3: return res(1.673, 1.402, 0.0536, -1.116);
+                case 4: return res(2.906, 1.305, 0.05377, -1.076);
+                case 5: return res(2.766, 1.613, 0.05511, -1.137);
+                case 6: return res(3.409, 1.746, 0.05585, -1.143);
+                case 7: return res(3.086, 2.034, 0.05795, -1.181);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2201,13 +2201,13 @@ double
         case 6:
             switch (rhoBin)
             {
-                case 1: return res(1.61, 0.9907, 0.03322, -1.02);
-                case 2: return res(2.69, 1.091, 0.03223, -1.047);
-                case 3: return res(3.643, 1.099, -0.03194, -1.041);
-                case 4: return res(4.484, 1.165, -0.03245, -1.059);
-                case 5: return res(4.207, 1.639, -0.03454, -1.174);
-                case 6: return res(4.327, 2.035, -0.03705, -1.252);
-                case 7: return res(5.481, 1.633, -0.03043, -1.147);
+                case 1: return res(-0.8823, 1.092, 0.03599, -1.062);
+                case 2: return res(2.193, 0.9891, 0.03382, -1.012);
+                case 3: return res(2.9, 1.043, 0.03477, -1.019);
+                case 4: return res(2.371, 1.488, -0.04053, -1.145);
+                case 5: return res(3.75, 1.458, 0.04346, -1.122);
+                case 6: return res(3.722, 1.808, 0.04668, -1.177);
+                case 7: return res(4.836, 1.47, 0.03875, -1.047);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2215,13 +2215,13 @@ double
         case 7:
             switch (rhoBin)
             {
-                case 1: return res(1.559, 0.9881, 0.03327, -1.049);
-                case 2: return res(2.68, 1.09, 0.03451, -1.082);
-                case 3: return res(3.287, 1.174, -0.03028, -1.081);
-                case 4: return res(1.201, 2.258, -0.03686, -1.328);
-                case 5: return res(4.43, 1.506, -0.0303, -1.159);
-                case 6: return res(3.764, 2.223, -0.03254, -1.292);
-                case 7: return res(-2.398, 3.707, -0.03822, -1.471);
+                case 1: return res(1.184, 0.8944, 0.03233, -1.005);
+                case 2: return res(1.691, 1.124, 0.03736, -1.094);
+                case 3: return res(2.837, 1.077, 0.03437, -1.046);
+                case 4: return res(2.459, 1.589, -0.04007, -1.18);
+                case 5: return res(4.058, 1.369, -0.03922, -1.087);
+                case 6: return res(4.231, 1.679, 0.0432, -1.13);
+                case 7: return res(2.635, 2.648, 0.04929, -1.28);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2229,13 +2229,13 @@ double
         case 8:
             switch (rhoBin)
             {
-                case 1: return res(2.09, 0.9797, 0.03617, -1.081);
-                case 2: return res(3.084, 1.05, 0.03362, -1.086);
-                case 3: return res(3.629, 1.223, -0.03219, -1.124);
-                case 4: return res(3.502, 1.82, -0.03643, -1.275);
-                case 5: return res(4.365, 1.842, -0.03586, -1.269);
-                case 6: return res(-4.68, 4.826, -0.04103, -1.593);
-                case 7: return res(-10.83, 9.382, 0.04076, -1.763);
+                case 1: return res(0.3022, 1.127, 0.03826, -1.134);
+                case 2: return res(2.161, 1.217, 0.03826, -1.142);
+                case 3: return res(3.218, 1.21, 0.03662, -1.112);
+                case 4: return res(3.328, 1.638, 0.04398, -1.216);
+                case 5: return res(5.506, 1.173, 0.04403, -1.054);
+                case 6: return res(-2.444, 3.613, 0.05639, -1.437);
+                case 7: return res(2.217, 3.133, 0.05032, -1.338);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2243,13 +2243,13 @@ double
         case 9:
             switch (rhoBin)
             {
-                case 1: return res(3.242, 0.6347, 0.02605, -0.8968);
-                case 2: return res(4.013, 0.6718, 0.02075, -0.8975);
-                case 3: return res(4.4, 0.9787, 0.03119, -1.057);
-                case 4: return res(3.344, 2.175, -0.03798, -1.36);
-                case 5: return res(5.222, 1.538, -0.03324, -1.215);
-                case 6: return res(6.478, 1.265, -0.03065, -1.129);
-                case 7: return res(7.478, 0.9104, 0.02579, -0.9984);
+                case 1: return res(3.125, 0.6026, 0.02576, -0.8702);
+                case 2: return res(3.935, 0.6533, 0.02587, -0.889);
+                case 3: return res(4.198, 1.024, 0.03618, -1.069);
+                case 4: return res(2.948, 2.386, 0.04771, -1.382);
+                case 5: return res(4.415, 2.086, 0.04704, -1.294);
+                case 6: return res(-3.084, 4.156, 0.05366, -1.503);
+                case 7: return res(-6.144, 5.969, 0.05633, -1.602);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2257,13 +2257,13 @@ double
         case 10:
             switch (rhoBin)
             {
-                case 1: return res(4.203, 0.2793, -1.548e-07, -0.5072);
-                case 2: return res(4.928, 0.3196, 2.503e-06, -0.5816);
-                case 3: return res(5.886, 0.289, 1.33e-05, -0.5483);
-                case 4: return res(6.701, 0.2851, -2.711e-07, -0.5372);
-                case 5: return res(-27.09, 26.87, 0.05514, -1.969);
-                case 6: return res(8.635, 0.2324, 4.864e-06, -0.4692);
-                case 7: return res(9.489, 0.246, 4.687e-06, -0.4886);
+                case 1: return res(4.244, 0.2766, -1.86e-08, -0.5068);
+                case 2: return res(4.919, 0.3193, 5.463e-06, -0.58);
+                case 3: return res(5.909, 0.2752, 4.144e-06, -0.5272);
+                case 4: return res(-47.31, 47.18, 0.05853, -1.991);
+                case 5: return res(-46.49, 46.33, 0.05698, -1.989);
+                case 6: return res(8.651, 0.2522, 6.592e-06, -0.4835);
+                case 7: return res(7.716, 2.481, 0.0531, -1.455);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2271,13 +2271,13 @@ double
         case 11:
             switch (rhoBin)
             {
-                case 1: return res(4.503, 0.19, 1.377e-05, -0.2432);
-                case 2: return res(2.061, 2.266, 0.08264, -1.447);
-                case 3: return res(4.31, 1.701, 0.08442, -1.345);
-                case 4: return res(-29.25, 28.98, 0.08757, -1.975);
-                case 5: return res(-77.18, 77.02, 0.08418, -1.995);
-                case 6: return res(-64.74, 64.59, -0.07538, -1.993);
-                case 7: return res(9.169, 0.2222, -0.0001127, -0.3221);
+                case 1: return res(4.467, 0.1997, -3.491e-06, -0.2623);
+                case 2: return res(4.17, 0.928, 0.07702, -1.063);
+                case 3: return res(-0.04491, 3.67, 0.08704, -1.641);
+                case 4: return res(5.528, 1.286, 0.07962, -1.187);
+                case 5: return res(-78.36, 78.23, 0.08448, -1.996);
+                case 6: return res(7.559, 1.147, 0.07023, -1.134);
+                case 7: return res(-59.03, 59.03, -0.08184, -1.992);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2285,13 +2285,13 @@ double
         case 12:
             switch (rhoBin)
             {
-                case 1: return res(-36.11, 36.11, 0.139, -1.995);
-                case 2: return res(-26.44, 26.54, 0.1348, -1.988);
-                case 3: return res(0.00048, 3.328, 0.1321, -1.582);
-                case 4: return res(-53.02, 53.15, 0.1384, -1.996);
-                case 5: return res(7.095, 0.924, 0.14, -1.205);
-                case 6: return res(8.649, -5.749e-05, 0.1423, -1.535);
-                case 7: return res(-51.76, 51.92, 0.1369, -1.993);
+                case 1: return res(0.0002851, 3.01, 0.1382, -1.702);
+                case 2: return res(-33.01, 33.04, 0.1343, -1.991);
+                case 3: return res(-67.94, 67.8, 0.1342, -1.996);
+                case 4: return res(-47.81, 48, 0.1391, -1.996);
+                case 5: return res(7.162, 0.9211, 0.1395, -1.209);
+                case 6: return res(8.193, 0.1995, 2.822e-05, -0.132);
+                case 7: return res(8.133, 0.9983, 0.1349, -1.181);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2299,13 +2299,13 @@ double
         case 13:
             switch (rhoBin)
             {
-                case 1: return res(2.487, 0.3326, 0.09166, -0.7715);
-                case 2: return res(3.294, 0.2078, 0.01659, -0.2772);
-                case 3: return res(2.354, 1.954, 0.104, -1.581);
-                case 4: return res(3.699, 1.118, 0.0991, -1.299);
-                case 5: return res(0.0007428, 3.558, 0.1043, -1.735);
-                case 6: return res(5.17, 0.4303, 0.0831, -0.7349);
-                case 7: return res(5.726, 0.2505, 0.03962, -0.3676);
+                case 1: return res(2.511, 0.3167, 0.09085, -0.7407);
+                case 2: return res(3.297, 0.2091, 6.258e-05, -0.2755);
+                case 3: return res(1.85, 2.281, 0.1042, -1.635);
+                case 4: return res(3.869, 1.001, 0.09955, -1.266);
+                case 5: return res(-23.98, 24.11, 0.1057, -1.988);
+                case 6: return res(5.403, 0.2371, 1.5e-05, -0.3177);
+                case 7: return res(5.753, 0.2337, 0.0002982, -0.3108);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2344,19 +2344,19 @@ double
         rhoBinEdges.begin(),
         std::upper_bound(rhoBinEdges.begin(), rhoBinEdges.end(), rho))};
 
-    // https://github.com/cms-jet/JRDatabase/blob/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_PtResolution_AK4PF.txt
+    // https://github.com/cms-jet/JRDatabase/blob/master/textFiles/Fall17_V3_MC/Fall17_V3_MC_PtResolution_AK4PFchs.txt
     switch (etaBin)
     {
         case 1:
             switch (rhoBin)
             {
-                case 1: return res(0.2219, 0.6528, 0.03069, -0.8177);
-                case 2: return res(2.561, 0.6994, 0.03112, -0.8421);
-                case 3: return res(3.519, 0.7661, 0.03154, -0.8717);
-                case 4: return res(4.393, 0.7918, 0.03165, -0.882);
-                case 5: return res(5.158, 0.8365, 0.03186, -0.8984);
-                case 6: return res(5.771, 0.8938, 0.03207, -0.9182);
-                case 7: return res(6.315, 0.9692, 0.03227, -0.9414);
+                case 1: return res(-1.515, 0.5971, 0.03046, -0.7901);
+                case 2: return res(-0.7966, 0.6589, 0.03119, -0.8237);
+                case 3: return res(1.387, 0.6885, 0.03145, -0.8378);
+                case 4: return res(2.151, 0.7185, 0.03168, -0.8502);
+                case 5: return res(2.73, 0.7361, 0.03184, -0.8548);
+                case 6: return res(3.603, 0.7318, 0.03227, -0.855);
+                case 7: return res(3.897, 0.7882, 0.03282, -0.8746);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2364,13 +2364,13 @@ double
         case 2:
             switch (rhoBin)
             {
-                case 1: return res(1.52, 0.4603, 0.02756, -0.6952);
-                case 2: return res(2.975, 0.484, 0.02811, -0.7113);
-                case 3: return res(3.843, 0.5315, 0.02946, -0.7462);
-                case 4: return res(4.654, 0.5523, 0.02959, -0.7586);
-                case 5: return res(5.32, 0.604, 0.03038, -0.7884);
-                case 6: return res(5.932, 0.6271, 0.03077, -0.7997);
-                case 7: return res(6.416, 0.6823, 0.03098, -0.8249);
+                case 1: return res(-0.9395, 0.4556, 0.02738, -0.6909);
+                case 2: return res(1.339, 0.4621, 0.02785, -0.6965);
+                case 3: return res(1.597, 0.5254, 0.02952, -0.7407);
+                case 4: return res(2.527, 0.5042, 0.02842, -0.723);
+                case 5: return res(2.896, 0.5428, 0.03001, -0.7476);
+                case 6: return res(3.514, 0.5437, 0.03055, -0.7486);
+                case 7: return res(3.678, 0.6372, 0.03325, -0.8053);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2378,13 +2378,13 @@ double
         case 3:
             switch (rhoBin)
             {
-                case 1: return res(1.642, 0.4859, 0.03535, -0.7101);
-                case 2: return res(2.902, 0.5124, 0.03556, -0.7264);
-                case 3: return res(3.767, 0.5547, 0.03671, -0.7556);
-                case 4: return res(4.492, 0.6036, 0.03727, -0.7821);
-                case 5: return res(5.201, 0.6034, 0.03674, -0.7777);
-                case 6: return res(5.755, 0.6417, 0.03702, -0.7945);
-                case 7: return res(6.187, 0.7263, 0.03816, -0.8379);
+                case 1: return res(-0.8118, 0.491, 0.03583, -0.7149);
+                case 2: return res(1.289, 0.49, 0.03539, -0.7073);
+                case 3: return res(1.953, 0.5161, 0.03658, -0.7295);
+                case 4: return res(2.347, 0.5396, 0.03576, -0.7339);
+                case 5: return res(2.794, 0.5687, 0.03825, -0.7602);
+                case 6: return res(2.796, 0.7203, 0.04074, -0.8431);
+                case 7: return res(3.788, 0.6287, 0.04156, -0.7959);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2392,13 +2392,13 @@ double
         case 4:
             switch (rhoBin)
             {
-                case 1: return res(0.9151, 0.7297, 0.04994, -0.847);
-                case 2: return res(2.699, 0.7325, 0.04927, -0.8412);
-                case 3: return res(3.454, 0.8175, 0.05047, -0.8812);
-                case 4: return res(4.07, 0.9098, 0.05066, -0.9135);
-                case 5: return res(5.068, 0.8488, 0.05008, -0.8833);
-                case 6: return res(5.336, 1.033, 0.05161, -0.9531);
-                case 7: return res(6.068, 0.9915, 0.05083, -0.9302);
+                case 1: return res(0.6707, 0.5839, 0.04697, -0.752);
+                case 2: return res(1.395, 0.6702, 0.0496, -0.8152);
+                case 3: return res(2.43, 0.5712, 0.04572, -0.7345);
+                case 4: return res(2.439, 0.6623, 0.04496, -0.7771);
+                case 5: return res(3.353, 0.5924, 0.04617, -0.7384);
+                case 6: return res(3.465, 0.7579, 0.05328, -0.8435);
+                case 7: return res(1.982, 1.148, 0.05664, -0.9626);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2406,13 +2406,13 @@ double
         case 5:
             switch (rhoBin)
             {
-                case 1: return res(-3.251, 1.738, 0.05665, -1.203);
-                case 2: return res(-3.048, 2, 0.05759, -1.253);
-                case 3: return res(-2.064, 2.059, 0.05732, -1.254);
-                case 4: return res(0.8834, 2.116, 0.05735, -1.256);
-                case 5: return res(1.75, 2.379, 0.05828, -1.296);
-                case 6: return res(4.106, 1.934, 0.05572, -1.203);
-                case 7: return res(3.677, 2.399, 0.0572, -1.275);
+                case 1: return res(-1.469, 0.9562, 0.05101, -0.955);
+                case 2: return res(-1.377, 1.078, 0.05427, -1.003);
+                case 3: return res(1.501, 1.072, 0.05498, -1.001);
+                case 4: return res(1.53, 1.158, 0.05396, -1.021);
+                case 5: return res(1.621, 1.358, 0.0578, -1.078);
+                case 6: return res(3.163, 1.131, 0.05725, -0.9809);
+                case 7: return res(2.818, 1.326, 0.05893, -0.9977);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2420,13 +2420,13 @@ double
         case 6:
             switch (rhoBin)
             {
-                case 1: return res(-2.203, 1.393, -0.03217, -1.131);
-                case 2: return res(1.102, 1.409, -0.03321, -1.135);
-                case 3: return res(1.774, 1.624, -0.03351, -1.182);
-                case 4: return res(2.296, 1.838, -0.03475, -1.223);
-                case 5: return res(3.541, 1.826, -0.0341, -1.216);
-                case 6: return res(2.67, 2.452, -0.03659, -1.319);
-                case 7: return res(-0.3526, 2.993, 0.03736, -1.377);
+                case 1: return res(1.227, 0.8407, -0.0232, -0.9284);
+                case 2: return res(-1.339, 1.218, -0.03479, -1.076);
+                case 3: return res(-2.011, 1.435, -0.03565, -1.124);
+                case 4: return res(3.324, 0.8102, -0.02662, -0.8923);
+                case 5: return res(2.188, 1.365, -0.0375, -1.088);
+                case 6: return res(2.884, 1.306, 0.03685, -1.038);
+                case 7: return res(4.03, 1.141, 0.03059, -0.9262);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2434,13 +2434,13 @@ double
         case 7:
             switch (rhoBin)
             {
-                case 1: return res(-2.528, 1.591, -0.03475, -1.215);
-                case 2: return res(-1.362, 1.571, -0.03228, -1.192);
-                case 3: return res(-1.066, 1.835, -0.03267, -1.24);
-                case 4: return res(-0.9215, 2.166, -0.03427, -1.297);
-                case 5: return res(2.119, 2.071, -0.03182, -1.262);
-                case 6: return res(1.717, 2.571, 0.03417, -1.341);
-                case 7: return res(-3.694, 3.636, 0.03391, -1.447);
+                case 1: return res(-1.979, 1.193, -0.03497, -1.109);
+                case 2: return res(-2.528, 1.44, -0.03273, -1.143);
+                case 3: return res(1.95, 1.118, -0.03202, -1.054);
+                case 4: return res(2.377, 1.166, -0.03593, -1.061);
+                case 5: return res(3.122, 1.107, -0.0292, -1.005);
+                case 6: return res(-1.899, 1.944, 0.03736, -1.185);
+                case 7: return res(4.168, 1.452, 0.03836, -1.019);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2448,13 +2448,13 @@ double
         case 8:
             switch (rhoBin)
             {
-                case 1: return res(-4.688, 2.887, -0.0398, -1.453);
-                case 2: return res(-5.267, 3.392, -0.03859, -1.484);
-                case 3: return res(-7.486, 5.453, -0.04113, -1.636);
-                case 4: return res(-7.68, 5.674, -0.03997, -1.633);
-                case 5: return res(-8.179, 6.134, 0.03822, -1.642);
-                case 6: return res(-12.07, 9.833, 0.03918, -1.763);
-                case 7: return res(-21.68, 19.59, 0.04008, -1.893);
+                case 1: return res(1.947, 0.9639, -0.02799, -1.024);
+                case 2: return res(2.643, 0.9054, -0.02701, -0.9753);
+                case 3: return res(-3.209, 2.521, -0.04442, -1.385);
+                case 4: return res(-5.368, 3.81, -0.04587, -1.525);
+                case 5: return res(-2.344, 2.207, 0.03446, -1.265);
+                case 6: return res(-11.01, 8.354, 0.05639, -1.706);
+                case 7: return res(6.282, 1.064, 8.482e-06, -0.8687);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2462,28 +2462,27 @@ double
         case 9:
             switch (rhoBin)
             {
-                case 1: return res(-85.96, 85.58, -0.04539, -1.996);
-                case 2: return res(-92, 91.58, -0.04383, -1.996);
-                case 3: return res(-114.5, 114.1, 0.04377, -1.997);
-                case 4: return res(-127.4, 127, 0.04242, -1.997);
-                case 5: return res(-100.1, 99.54, 0.04101, -1.995);
-                case 6: return res(-171.2, 170.9, 0.04004, -1.998);
-                case 7: return res(-125, 124.5, 0.03718, -1.996);
+                case 1: return res(3.639, 0.6502, -0.01427, -0.8624);
+                case 2: return res(2.391, 1.635, -0.0378, -1.251);
+                case 3: return res(3.431, 1.985, 0.04609, -1.359);
+                case 4: return res(5.095, 0.8757, -0.02736, -0.9761);
+                case 5: return res(5.034, 1.479, -0.03479, -1.175);
+                case 6: return res(6.694, 1.325, 0.03374, -1.101);
+                case 7: return res(7.444, 1.137, 4.258e-05, -0.9531);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
             }
         case 10:
-            return res(-115.9, 115.5, 0.03881, -1.997);
             switch (rhoBin)
             {
-                case 1: return res(-80.86, 80.33, 0.04414, -1.994);
-                case 2: return res(-89.39, 88.88, 0.04186, -1.995);
-                case 3: return res(-115.9, 115.5, 0.03881, -1.997);
-                case 4: return res(-108.6, 108.2, 0.0389, -1.996);
-                case 5: return res(-135.7, 135.4, 0.03607, -1.997);
-                case 6: return res(-150.6, 150.3, -0.03642, -1.998);
-                case 7: return res(-137.8, 137.7, 0.03824, -1.998);
+                case 1: return res(6.114, 0.2385, 1.741e-05, -0.5054);
+                case 2: return res(6.931, 0.1964, 7.465e-06, -0.4335);
+                case 3: return res(7.858, 0.2435, 6.026e-07, -0.5235);
+                case 4: return res(8.713, 0.1314, 8.441e-06, -0.3028);
+                case 5: return res(9.413, 0.2792, 1.217e-06, -0.5729);
+                case 6: return res(10.51, 0.1659, 1.277e-06, -0.4276);
+                case 7: return res(11.77, 8.547e-07, 0.05169, -1.197);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2491,13 +2490,13 @@ double
         case 11:
             switch (rhoBin)
             {
-                case 1: return res(-3.681, 1.906, -0.0582, -1.186);
-                case 2: return res(-6.155, 3.845, 0.06349, -1.456);
-                case 3: return res(-11.14, 8.098, -0.06207, -1.683);
-                case 4: return res(-42.17, 40.57, -0.06272, -1.964);
-                case 5: return res(-73.19, 72.17, -0.06209, -1.987);
-                case 6: return res(-92.46, 91.64, -0.05969, -1.991);
-                case 7: return res(-38.08, 36.32, 0.06421, -1.949);
+                case 1: return res(6.048, 0.1992, -3.559e-06, -0.2953);
+                case 2: return res(6.867, 0.2036, 1.946e-05, -0.3068);
+                case 3: return res(8.198, 0.0001314, 0.08772, -1.252);
+                case 4: return res(8.756, 0.134, -0.07197, -0.2968);
+                case 5: return res(9.615, 0.0001533, -0.08793, -1.445);
+                case 6: return res(10.01, 0.1524, 3.815e-05, -0.2422);
+                case 7: return res(10.05, 0.1932, 0.0001734, -0.2739);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2505,13 +2504,13 @@ double
         case 12:
             switch (rhoBin)
             {
-                case 1: return res(-34.28, 33.8, 0.1526, -1.984);
-                case 2: return res(4.892, 0.3432, 0.0002247, -0.3053);
-                case 3: return res(-76.26, 75.99, 0.1548, -1.995);
-                case 4: return res(-90.46, 90.02, 0.1496, -1.995);
-                case 5: return res(-12.56, 10.87, 0.1495, -1.801);
-                case 6: return res(-23.44, 21.8, 0.1444, -1.913);
-                case 7: return res(7.064, 1.836, 0.1405, -1.217);
+                case 1: return res(-35.12, 35.21, 0.1466, -1.993);
+                case 2: return res(6.573, 0.2026, 6.573e-05, -0.1564);
+                case 3: return res(0.004144, 6.019, 0.1549, -1.854);
+                case 4: return res(8.341, 0.0001012, 0.1526, -1.689);
+                case 5: return res(9.115, 0.0002242, 0.1518, -1.362);
+                case 6: return res(9.86, -2.112e-05, 0.1438, -1.114);
+                case 7: return res(10.45, 0.0001536, 0.1398, -1.271);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
@@ -2519,13 +2518,13 @@ double
         case 13:
             switch (rhoBin)
             {
-                case 1: return res(-4.261, 4.085, 0.1075, -1.819);
-                case 2: return res(-15.95, 15.87, 0.1088, -1.978);
-                case 3: return res(3.137, 1.361, 0.1042, -1.42);
-                case 4: return res(-21.12, 21.25, 0.1075, -1.986);
-                case 5: return res(5.014, 0.2092, 5.362e-06, -0.2474);
-                case 6: return res(-29.77, 29.95, 0.1124, -1.992);
-                case 7: return res(5.756, 0.2217, 3.682e-05, -0.2657);
+                case 1: return res(-29.87, 29.84, 0.1045, -1.995);
+                case 2: return res(-23.2, 23.09, 0.1051, -1.987);
+                case 3: return res(4.337, 0.2253, 0.06986, -0.4215);
+                case 4: return res(4.088, 2.746, 0.1136, -1.959);
+                case 5: return res(5.624, 0.1291, 0.002663, -0.04825);
+                case 6: return res(6.152, 6.125e-05, 0.1128, -1.319);
+                case 7: return res(6.235, 0.1408, 0.0001266, -0.08163);
                 default:
                     throw std::runtime_error("Rho " + std::to_string(rho)
                                              + "out of range");
