@@ -4,7 +4,7 @@ locations:
 total_events: 30490034
 cross_section: 51.5
 mc: true
-histogram: "VG"
-colour: "#003300"
-label: "VG"
+histogram: "VV"
+colour: "#a65628"
+label: "VV"
 plot_type: "f"

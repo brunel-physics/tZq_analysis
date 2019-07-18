@@ -29,6 +29,8 @@ datasets:
   - "configs/2017/datasets/ZZ_2l2nu.yaml"
   - "configs/2017/datasets/ZZ_2l2q.yaml"
   - "configs/2017/datasets/ZZ_4l.yaml"
+  - "configs/2017/datasets/WG_lnug.yaml"
+  - "configs/2017/datasets/ZG_llg.yaml"
 # Single top
   - "configs/2017/datasets/tHq.yaml"
   - "configs/2017/datasets/t_s_channel.yaml"
@@ -51,9 +53,6 @@ datasets:
   - "configs/2017/datasets/WWZ.yaml"
   - "configs/2017/datasets/WZZ.yaml"
   - "configs/2017/datasets/ZZZ.yaml"
-# Other
-  - "configs/2017/datasets/WG_lnug.yaml"
-  - "configs/2017/datasets/ZG_llg.yaml"
 # tZq
   - "configs/2017/datasets/tZq.yaml"
 # Data
