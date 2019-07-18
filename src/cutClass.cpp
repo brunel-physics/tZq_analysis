@@ -1151,7 +1151,7 @@ std::pair<std::vector<int>, std::vector<double>>
             }
             else
             {
-                // Jet ID == tight (loose is deprecated)
+                // Jet ID == tightLepVeto (loose is deprecated)
                 // https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
                 if (std::abs(jetVec.Eta()) <= 2.7)
                 { // for cases where jet eta <= 2.7
@@ -1165,9 +1165,11 @@ std::pair<std::vector<int>, std::vector<double>>
                     {
                         jetId = false;
                     }
-                    if ((event.jetPF2PATChargedMultiplicity[i]
-                         + event.jetPF2PATNeutralMultiplicity[i])
-                        <= 1)
+                    if (event.jetPF2PATNConstituents[i] <= 1)
+                    {
+                        jetId = false;
+                    }
+                    if (event.jetPF2PATMuonFraction[i] >= 0.8)
                     {
                         jetId = false;
                     }
@@ -1181,6 +1183,10 @@ std::pair<std::vector<int>, std::vector<double>>
                             jetId = false;
                         }
                         if (event.jetPF2PATChargedMultiplicity[i] <= 0.0)
+                        {
+                            jetId = false;
+                        }
+                        if (event.jetPF2PATChargedEmEnergyFraction[i] >= 0.8)
                         {
                             jetId = false;
                         }
