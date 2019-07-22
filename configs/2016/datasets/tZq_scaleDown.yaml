@@ -1,0 +1,10 @@
+name: "tZq_scaleDown"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tZq_ll_4Flavour3Lepton_scaledown/"
+total_events: 6890240
+cross_section: 0.0758
+mc: true
+histogram: "tZq"
+colour: "#999999"
+label: "tZq"
+plot_type: "f"

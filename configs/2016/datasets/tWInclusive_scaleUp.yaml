@@ -1,0 +1,10 @@
+name: "tWInclusive_scaleUp"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tW_antitop_5f_scaleup"
+total_events: 1000000
+cross_section: 35.85
+mc: true
+histogram: "SingleTop"
+colour: "#ff99cc"
+label: "Single Top"
+plot_type: "f"

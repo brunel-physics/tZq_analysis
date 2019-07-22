@@ -1,0 +1,11 @@
+name: "ttbarInclusivePowerheg_isrUp"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrup_ext1"
+    - "/scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_isrup_ext2"
+total_events: 156469815
+cross_section: 730.6
+mc: true
+histogram: "ttbar"
+colour: "#cc0000"
+label: "t#bar{t}"
+plot_type: "f"

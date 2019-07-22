@@ -1,0 +1,11 @@
+name: "ttbarInclusivePowerheg_hdampUp"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampUP"
+    - "/scratch/data/tZqSkimsRun2016/ttbarInclusive_powerheg_hdampUP_ext1"
+total_events: 58858606
+cross_section: 730.6
+mc: true
+histogram: "ttbar"
+colour: "#cc0000"
+label: "t#bar{t}"
+plot_type: "f"

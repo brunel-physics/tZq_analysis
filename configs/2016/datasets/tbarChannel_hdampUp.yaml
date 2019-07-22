@@ -1,0 +1,10 @@
+name: "tbarChannel_hdampUp"
+locations:
+    - "/scratch/data/tZqSkimsRun2016/tbarChannel_4f_hdampup"
+total_events: 4000000
+cross_section: 80.95
+mc: true
+histogram: "SingleTop"
+colour: "#ff99cc"
+label: "Single Top"
+plot_type: "f"
