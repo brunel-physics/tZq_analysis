@@ -808,7 +808,7 @@ void AnalysisAlgo::runMainAnalysis()
                         (mvaTree[systIn]->GetName() + systNames[systIn])
                             .c_str());
                     mvaTree[systIn]->Branch(
-                        "eventWeight", &eventWeight, "eventWeight/F");
+                        "eventWeight", &eventWeight, "eventWeight/D");
                     mvaTree[systIn]->Branch(
                         "zLep1Index", &zLep1Index, "zLep1Index/I");
                     mvaTree[systIn]->Branch(

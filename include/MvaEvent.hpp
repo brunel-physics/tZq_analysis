@@ -29,7 +29,7 @@ class MvaEvent : public AnalysisEvent
     static constexpr size_t NMUONS{3};
 
     bool isMC;
-    Float_t eventWeight;
+    Double_t eventWeight;
     Int_t zLep1Index;
     Int_t zLep2Index;
     Int_t wQuark1Index;
