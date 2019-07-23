@@ -1,6 +1,7 @@
 #include "MvaEvent.hpp"
 #include "TLorentzVector.h"
 #include "TMVA/Timer.h"
+#include "TMVA/Config.h"
 #include "TTree.h"
 #include "config_parser.hpp"
 #include "makeMVAinputAlgo.hpp"
@@ -75,6 +76,8 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
 
 void MakeMvaInputs::runMainAnalysis()
 {
+    TMVA::gConfig().SetDrawProgressBar(true);
+
     std::map<std::string, std::string> listOfMCs = {
         {"ttHTobb", "ttH"},
         {"ttHToNonbb", "ttH"},
