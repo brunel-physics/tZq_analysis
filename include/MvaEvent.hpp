@@ -62,33 +62,6 @@ inline MvaEvent::MvaEvent(bool isMC,
                           bool is2016)
     : AnalysisEvent{isMC, tree, is2016}
 {
-    // if parameter tree is not specified (or zero), connect the file
-    // used to generate this class and read the Tree.
-    if (tree == nullptr)
-    {
-#ifdef SINGLE_TREE
-        // The following code should be used if you want this class to access
-        // a single tree instead of a chain
-        TFile* f{(TFile*)gROOT->GetListOfFiles()->FindObject(
-            "/data1/tW2012/mc/ttbarInclusive/MC_Ntuple_out_9_0_MJP_skim.root")};
-        if (!f || !f->IsOpen())
-        {
-            f = new TFile{"/data1/tW2012/mc/ttbarInclusive/"
-                          "MC_Ntuple_out_9_0_MJP_skim.root"};
-        }
-        f->GetObject("tree", tree);
-
-#else // SINGLE_TREE
-
-        // The following code should be used if you want this class to access a
-        // chain of trees.
-        TChain* chain{new TChain{"tree", ""}};
-        chain->Add("/data1/tW2012/mc/ttbarInclusive/"
-                   "MC_Ntuple_out_100_0_Gu6_skim.root/tree");
-        tree = chain;
-#endif // SINGLE_TREE
-    }
-
     fChain->SetBranchAddress("isMC", &isMC, &b_isMC);
     fChain->SetBranchAddress("eventWeight", &eventWeight, &b_eventWeight);
     fChain->SetBranchAddress("zLep1Index", &zLep1Index, &b_zLep1Index);

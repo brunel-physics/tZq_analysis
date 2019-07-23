@@ -198,10 +198,9 @@ void MakeMvaInputs::standardAnalysis(
         std::unordered_map<std::string, long double> nominalEvents{};
         for (const auto& syst : systs)
         {
-            const std::string systName{syst};
             auto outTreeSig{new TTree{
-                ("Ttree_" + treeNamePostfixSig + outSample + systName).c_str(),
-                ("Ttree_" + treeNamePostfixSig + outSample + systName)
+                ("Ttree_" + treeNamePostfixSig + outSample + syst).c_str(),
+                ("Ttree_" + treeNamePostfixSig + outSample + syst)
                     .c_str()}};
             TTree* outTreeSdBnd{};
             setupBranches(outTreeSig);
@@ -209,9 +208,9 @@ void MakeMvaInputs::standardAnalysis(
             if (useSidebandRegion)
             {
                 outTreeSdBnd = new TTree{
-                    ("Ttree_" + treeNamePostfixSB + outSample + systName)
+                    ("Ttree_" + treeNamePostfixSB + outSample + syst)
                         .c_str(),
-                    ("Ttree_" + treeNamePostfixSB + outSample + systName)
+                    ("Ttree_" + treeNamePostfixSB + outSample + syst)
                         .c_str()};
                 setupBranches(outTreeSdBnd);
             }
@@ -223,20 +222,20 @@ void MakeMvaInputs::standardAnalysis(
                     (inputDir + sample + channel + "mvaOut.root").c_str(),
                     "READ"}};
                 TTree* tree;
-                if (systName == "__met__plus" || systName == "__met__minus")
+                if (syst == "__met__plus" || syst == "__met__minus")
                 {
                     tree = dynamic_cast<TTree*>(inFile->Get("tree"));
                 }
                 else
                 {
                     tree = dynamic_cast<TTree*>(
-                        inFile->Get(("tree" + systName).c_str()));
+                        inFile->Get(("tree" + syst).c_str()));
                 }
 
                 //        TChain* tree;
-                //        if ( systName == "__met__plus" || systName ==
+                //        if ( syst == "__met__plus" || syst ==
                 //        "__met__minus" ) tree = new TChain("tree"); else
-                //        tree = new TChain(("tree"+systName).c_str());
+                //        tree = new TChain(("tree"+syst).c_str());
                 //        tree->Add((inputDir+sample+channel+"mvaOut.root").c_str());
                 const long long numberOfEvents{tree->GetEntries()};
                 auto event{new MvaEvent{true, tree, true}};
@@ -250,18 +249,18 @@ void MakeMvaInputs::standardAnalysis(
                     fillTree(outTreeSig,
                              outTreeSdBnd,
                              event,
-                             outSample + systName,
+                             outSample + syst,
                              channel,
                              false);
 
                     nEvents += event->eventWeight;
                 } // end event loop
 
-                if (systName.empty())
+                if (syst.empty())
                 {
                     nominalEvents.emplace(channel, nEvents);
                 }
-                std::cout << systFormat % channel % systName % nEvents
+                std::cout << systFormat % channel % syst % nEvents
                                  % (nEvents - nominalEvents[channel])
                                  % ((nEvents - nominalEvents[channel])
                                     / nominalEvents[channel])
