@@ -36,7 +36,6 @@ class MvaEvent : public AnalysisEvent
     Int_t wQuark2Index;
     Int_t jetInd[NJETS];
     Int_t bJetInd[NBJETS];
-    Float_t muonMomentumSF[NMUONS];
     Float_t jetSmearValue[NJETS];
 
     // End MVA tree specific
@@ -50,7 +49,6 @@ class MvaEvent : public AnalysisEvent
     TBranch* b_wQuark2Index; //!
     TBranch* b_jetInd; //!
     TBranch* b_bJetInd; //!
-    TBranch* b_muonMomentumSF; //!
     TBranch* b_jetSmearValue; //!
 
     MvaEvent(bool isMC = true,
@@ -99,8 +97,6 @@ inline MvaEvent::MvaEvent(bool isMC,
     fChain->SetBranchAddress("wQuark2Index", &wQuark2Index, &b_wQuark2Index);
     fChain->SetBranchAddress("jetInd", jetInd, &b_jetInd);
     fChain->SetBranchAddress("bJetInd", bJetInd, &b_bJetInd);
-    fChain->SetBranchAddress(
-        "muonMomentumSF", muonMomentumSF, &b_muonMomentumSF);
     fChain->SetBranchAddress("jetSmearValue", jetSmearValue, &b_jetSmearValue);
 }
 

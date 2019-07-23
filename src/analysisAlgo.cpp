@@ -763,9 +763,8 @@ void AnalysisAlgo::runMainAnalysis()
             int zLep2Index{-1};
             int wQuark1Index{-1};
             int wQuark2Index{-1};
-            std::vector<size_t> jetInd{}; // The index of the selected jets;
-            std::vector<size_t> bJetInd{}; // Index of selected b-jets;
-            std::vector<double> muonMomentumSF{};
+            int jetInd[15]; // The index of the selected jets;
+            int bJetInd[10]; // Index of selected b-jets;
             float jetSmearValue[15]{};
             int isMC{dataset->isMC()}; // isMC flag for debug purposes
             event.isMC_ = (dataset->isMC());
@@ -818,11 +817,11 @@ void AnalysisAlgo::runMainAnalysis()
                         "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
                     mvaTree[systIn]->Branch(
                         "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
-                    mvaTree[systIn]->Branch("jetInd", &jetInd);
-                    mvaTree[systIn]->Branch("muonMomentumSF", &muonMomentumSF);
+                    mvaTree[systIn]->Branch("jetInd", &jetInd, "jetInd[15]/I");
                     mvaTree[systIn]->Branch(
                         "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
-                    mvaTree[systIn]->Branch("bJetInd", &bJetInd);
+                    mvaTree[systIn]->Branch(
+                        "bJetInd", &bJetInd, "bJetInd[10]/I");
                     mvaTree[systIn]->Branch("isMC", &isMC, "isMC/I");
                     if (systIn > 0)
                     {
@@ -1167,11 +1166,8 @@ void AnalysisAlgo::runMainAnalysis()
                     // Do the Zpt reweighting here
                     if (makeMVATree)
                     {
-                        jetInd.clear();
-                        bJetInd.clear();
                         zLep1Index = event.zPairIndex.first;
                         zLep2Index = event.zPairIndex.second;
-                        muonMomentumSF = event.muonMomentumSF;
                         wQuark1Index = event.wPairIndex.first;
                         wQuark2Index = event.wPairIndex.second;
                         for (unsigned jetIndexIt{0}; jetIndexIt < 15;
@@ -1179,12 +1175,14 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             if (jetIndexIt < event.jetIndex.size())
                             {
-                                jetInd.emplace_back(event.jetIndex[jetIndexIt]);
+                                jetInd[jetIndexIt] =
+                                    event.jetIndex[jetIndexIt];
                                 jetSmearValue[jetIndexIt] =
                                     event.jetSmearValue[jetIndexIt];
                             }
                             else
                             {
+                                jetInd[jetIndexIt] = -1;
                                 jetSmearValue[jetIndexIt] = 0.0;
                             }
                         }
@@ -1192,7 +1190,11 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             if (bJetIt < event.bTagIndex.size())
                             {
-                                bJetInd.emplace_back(event.bTagIndex[bJetIt]);
+                                bJetInd[bJetIt] = event.bTagIndex[bJetIt];
+                            }
+                            else
+                            {
+                                bJetInd[bJetIt] = -1;
                             }
                         }
                         mvaTree[systInd]->Fill();
