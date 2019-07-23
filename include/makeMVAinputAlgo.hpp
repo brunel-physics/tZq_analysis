@@ -52,7 +52,7 @@ class MakeMvaInputs
     TLorentzVector getJetVec(const MvaEvent* tree,
                              const int index,
                              const float smearValue,
-                             TLorentzVector metVec,
+                             TLorentzVector& metVec,
                              const int syst,
                              const bool doMetSmear) const;
     TLorentzVector doUncMet(TLorentzVector met,

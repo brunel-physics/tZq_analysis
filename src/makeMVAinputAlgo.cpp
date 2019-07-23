@@ -583,7 +583,7 @@ std::pair<std::vector<int>, std::vector<TLorentzVector>>
 TLorentzVector MakeMvaInputs::getJetVec(const MvaEvent* tree,
                                         const int index,
                                         const float smearValue,
-                                        TLorentzVector metVec,
+                                        TLorentzVector& metVec,
                                         const int syst,
                                         const bool doMetSmear) const
 {
