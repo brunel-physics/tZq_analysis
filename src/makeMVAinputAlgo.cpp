@@ -1,12 +1,12 @@
-#include "makeMVAinputAlgo.hpp"
-
 #include "MvaEvent.hpp"
 #include "TLorentzVector.h"
 #include "TMVA/Timer.h"
 #include "TTree.h"
 #include "config_parser.hpp"
+#include "makeMVAinputAlgo.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/program_options.hpp>
 #include <limits>
@@ -175,6 +175,19 @@ void MakeMvaInputs::standardAnalysis(
         const std::string sample{mc.first};
         const std::string outSample{mc.second};
 
+        const auto longest_string{[](std::vector<std::string> v) {
+            return std::max_element(v.begin(),
+                                    v.end(),
+                                    [](std::string a, std::string b) {
+                                        return a.size() < b.size();
+                                    })
+                ->size();
+        }};
+        boost::format systFormat{
+            "%-" + (std::to_string(longest_string(channels))) + "s    %-"
+            + std::to_string(longest_string(systs))
+            + "s    %12.2f %+8.2f %+10.4f%%"};
+
         std::cout << "Doing " << sample << " : " << std::endl;
 
         auto outFile{new TFile{
@@ -182,6 +195,7 @@ void MakeMvaInputs::standardAnalysis(
             "RECREATE"}};
 
         // loop over systematics
+        std::unordered_map<std::string, long double> nominalEvents{};
         for (const auto& syst : systs)
         {
             const std::string systName{syst};
@@ -224,21 +238,13 @@ void MakeMvaInputs::standardAnalysis(
                 //        "__met__minus" ) tree = new TChain("tree"); else
                 //        tree = new TChain(("tree"+systName).c_str());
                 //        tree->Add((inputDir+sample+channel+"mvaOut.root").c_str());
-
-                std::cout << systName << " : " << tree->GetEntries()
-                          << std::endl;
+                const long long numberOfEvents{tree->GetEntries()};
                 auto event{new MvaEvent{true, tree, true}};
 
-                const long long numberOfEvents{tree->GetEntries()};
-                TMVA::Timer lEventTimer{
-                    boost::numeric_cast<int>(numberOfEvents),
-                    "Running over dataset ...",
-                    false};
-
                 // loop over events
+                long double nEvents{0};
                 for (long long i{0}; i < numberOfEvents; i++)
                 {
-                    lEventTimer.DrawProgressBar(i);
                     event->GetEntry(i);
 
                     fillTree(outTreeSig,
@@ -247,7 +253,20 @@ void MakeMvaInputs::standardAnalysis(
                              outSample + systName,
                              channel,
                              false);
+
+                    nEvents += event->eventWeight;
                 } // end event loop
+
+                if (systName.empty())
+                {
+                    nominalEvents.emplace(channel, nEvents);
+                }
+                std::cout << systFormat % channel % systName % nEvents
+                                 % (nEvents - nominalEvents[channel])
+                                 % ((nEvents - nominalEvents[channel])
+                                    / nominalEvents[channel])
+                          << std::endl;
+
                 inFile->Close();
             } // end channel loop
             outFile->cd();
