@@ -104,8 +104,12 @@ void MakeMvaInputs::runMainAnalysis()
         {"ttbarInclusivePowerheg", "TT"},
         {"tWZ", "TWZ"},
         {"wPlusJets", "Wjets"},
-        {"DYJetsToLL_M-10To50", "DYToLL_M10To50"},
-        {"DYJetsToLL_M-50", "DYToLL_M50"}};
+        {"DYJetsToLL_Pt-0To50", "DYJetsToLL_Pt-0To50"},
+        {"DYJetsToLL_Pt-50To100", "DYJetsToLL_Pt-50To100"},
+        {"DYJetsToLL_Pt-100To250", "DYJetsToLL_Pt-100To250"},
+        {"DYJetsToLL_Pt-250To400", "DYJetsToLL_Pt-250To400"},
+        {"DYJetsToLL_Pt-400To650", "DYJetsToLL_Pt-400To650"},
+        {"DYJetsToLL_Pt-650ToInf", "DYJetsToLL_Pt-650ToInf"}};
 
     const auto channels{[=]() -> std::vector<std::string> {
         if (ttbarControlRegion)
