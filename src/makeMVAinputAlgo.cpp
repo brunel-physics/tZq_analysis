@@ -444,20 +444,6 @@ void MakeMvaInputs::sameSignAnalysis(
     }
 }
 
-double MakeMvaInputs::deltaR(const float eta1,
-                             const float phi1,
-                             const float eta2,
-                             const float phi2) const
-{
-    const double dEta{eta1 - eta2};
-    double dPhi{phi1 - phi2};
-    while (std::abs(dPhi) > TMath::Pi())
-    {
-        dPhi += (dPhi > 0. ? -2 * TMath::Pi() : 2 * TMath::Pi());
-    }
-    return std::sqrt((dEta * dEta) + (dPhi * dPhi));
-}
-
 std::pair<TLorentzVector, TLorentzVector>
     MakeMvaInputs::sortOutLeptons(const MvaEvent* tree,
                                   const std::string& channel) const

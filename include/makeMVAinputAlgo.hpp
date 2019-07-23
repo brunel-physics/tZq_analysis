@@ -22,9 +22,6 @@ class MakeMvaInputs
     void runMainAnalysis();
 
     private:
-    // functions
-    // Simple deltaR function, because the reco namespace doesn't work or
-    // something
     void standardAnalysis(const std::map<std::string, std::string>& listOfMCs,
                           const std::vector<std::string>& systs,
                           const std::vector<std::string>& channels,
@@ -34,10 +31,6 @@ class MakeMvaInputs
     void sameSignAnalysis(const std::map<std::string, std::string>& listOfMCs,
                           const std::vector<std::string>& channels,
                           const bool useSidebandRegion);
-    double deltaR(const float eta1,
-                  const float phi1,
-                  const float eta2,
-                  const float phi2) const;
     std::pair<TLorentzVector, TLorentzVector>
         sortOutLeptons(const MvaEvent* tree, const std::string& channel) const;
     std::pair<TLorentzVector, TLorentzVector>
