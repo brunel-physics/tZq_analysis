@@ -78,7 +78,7 @@ void MakeMvaInputs::runMainAnalysis()
 {
     TMVA::gConfig().SetDrawProgressBar(true);
 
-    std::map<std::string, std::string> listOfMCs = {
+    static const std::map<std::string, std::string> listOfMCs = {
         {"ttHTobb", "ttH"},
         {"ttHToNonbb", "ttH"},
         {"WWW", "WWW"},
@@ -288,7 +288,7 @@ void MakeMvaInputs::standardAnalysis(
 void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                                  const bool useSidebandRegion)
 {
-    std::unordered_map<std::string, std::string> outChanToData = {
+    const std::unordered_map<std::string, std::string> outChanToData = {
         {"ee", "DataEG"}, {"mumu", "DataMu"}, {"emu", "MuonEG"}};
 
     std::string treeNamePostfixSig{""};
@@ -352,9 +352,9 @@ void MakeMvaInputs::sameSignAnalysis(
     const bool useSidebandRegion)
 {
     std::vector<std::string> outFakeChannels{"FakeEG", "FakeMu"};
-    std::unordered_map<std::string, std::string> outFakeChanToData{
+    const std::unordered_map<std::string, std::string> outFakeChanToData{
         {"FakeEG", "ee"}, {"FakeMu", "mumu"}};
-    std::unordered_map<std::string, std::string> chanMap{
+    const std::unordered_map<std::string, std::string> chanMap{
         {"ee", "eeRun2016"}, {"mumu", "mumuRun2016"}};
 
     std::string treeNamePostfixSig;
