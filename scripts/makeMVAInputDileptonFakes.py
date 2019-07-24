@@ -633,9 +633,45 @@ def main():
 ### list of MC where Z+jets sample is mass binned (madgraph)
 #    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50":"DYToLL_M50","DYJetsToLL_M-10To50":"DYToLL_M10To50"}
 ### list of MC where Z+jets sample is mass binned (amcatnlo)
-    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
+    # listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_M-50_amcatnlo":"DYToLL_M50_aMCatNLO","DYJetsToLL_M-10To50_amcatnlo":"DYToLL_M10To50_aMCatNLO"}
 ### list of MC where Z+jets sample is pt binned (amcatnlo)
 #    listOfMCs = {"ttHTobb" : "ttH", "ttHToNonbb" : "ttH", "WWW" : "WWW", "WWZ" : "WWZ", "WZZ" : "WZZ", "ZZZ" : "ZZZ", "WW1l1nu2q" : "WW", "WW2l2nu":"WW","ZZ4l":"ZZ","ZZ2l2nu":"ZZ","ZZ2l2q":"ZZ","WZjets":"WZ","WZ2l2q":"WZ","WZ1l1nu2q":"WZ","sChannel":"TsChan","tChannel":"TtChan","tbarChannel":"TbartChan","tWInclusive":"TtW","tbarWInclusive":"TbartW","tZq":"tZq","tHq":"THQ","ttWlnu":"TTW","ttW2q":"TTW","ttZ2l2nu":"TTZ","ttZ2q":"TTZ","ttbarInclusivePowerheg":"TT","tWZ":"TWZ","wPlusJets":"Wjets","DYJetsToLL_Pt-0To50":"DYToLL_PtBinned","DYJetsToLL_Pt-50To100":"DYToLL_PtBinned","DYJetsToLL_Pt-100To250":"DYToLL_PtBinned","DYJetsToLL_Pt-250To400":"DYToLL_PtBinned","DYJetsToLL_Pt-400To650":"DYToLL_PtBinned","DYJetsToLL_Pt-650ToInf":"DYToLL_PtBinned"}
+    listOfMCs = {
+        "ttHTobb": "TTHbb",
+        "ttHToNonbb": "TTHnonbb",
+        "WWW": "WWW",
+        "WWZ": "WWZ",
+        "WZZ": "WZZ",
+        "ZZZ": "ZZZ",
+        "WW1l1nu2q": "WW1l1nu2q",
+        "WW2l2nu": "WW2l2nu",
+        "ZZ4l": "ZZ4l",
+        "ZZ2l2nu": "ZZ2l2nu",
+        "ZZ2l2q": "ZZ2l2q",
+        "WZjets": "WZjets",
+        "WZ2l2q": "WZ2l2q",
+        "WZ1l1nu2q": "WZ1l1nu2q",
+        "sChannel": "TsChan",
+        "tChannel": "TtChan",
+        "tbarChannel": "TbartChan",
+        "tWInclusive": "TW",
+        "tbarWInclusive": "TbarW",
+        "tZq": "TZQ",
+        "tHq": "THQ",
+        "ttWlnu": "TTWlnu",
+        "ttW2q": "TTW2q",
+        "ttZ2l2nu": "TTZ2l2nu",
+        "ttZ2q": "TTZ2q",
+        "ttbarInclusivePowerheg": "TT",
+        "tWZ": "TWZ",
+        "wPlusJets": "Wjets",
+        "DYJetsToLL_Pt-0To50": "DYJetsLLPt-0To50",
+        "DYJetsToLL_Pt-50To100": "DYJetsLLPt-50To100",
+        "DYJetsToLL_Pt-100To250": "DYJetsLLPt-100To250",
+        "DYJetsToLL_Pt-250To400": "DYJetsLLPt-250To400",
+        "DYJetsToLL_Pt-400To650": "DYJetsLLPt-400To650",
+        "DYJetsToLL_Pt-650ToInf": "DYJetsLLPt-650ToInf",
+    }
 
     #Loop over opposite sign samples to create fake shape
     for outChan in outFakeChannels:
