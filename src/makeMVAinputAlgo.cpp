@@ -1,7 +1,7 @@
 #include "MvaEvent.hpp"
 #include "TLorentzVector.h"
-#include "TMVA/Timer.h"
 #include "TMVA/Config.h"
+#include "TMVA/Timer.h"
 #include "TTree.h"
 #include "config_parser.hpp"
 #include "makeMVAinputAlgo.hpp"
@@ -20,7 +20,8 @@ MakeMvaInputs::MakeMvaInputs()
     , oldMetFlag{false}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
-    , doMC{true}
+    , doMC{false}
+    , doSysts{false}
     , doData{false}
     , doFakes{false}
     , inputDir{"mvaTest/"}
@@ -48,6 +49,9 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
         po::bool_switch(&useSidebandRegion),
         "Make side band CR plots")(
         "data,D", po::bool_switch(&doData), "Run the data analysis")(
+        "systs,S",
+        po::bool_switch(&doSysts),
+        "Run dedicated systematic analysis")(
         "MC,M", po::bool_switch(&doMC), "Run MC analysis")(
         "fakes,F", po::bool_switch(&doFakes), "Run fakes analysis");
 
@@ -147,6 +151,32 @@ void MakeMvaInputs::runMainAnalysis()
     {
         standardAnalysis(listOfMCs, systs, channels, useSidebandRegion);
     }
+    if (doSysts)
+    {
+        standardAnalysis({{"tChannel_scaleUp", "TtChan__scaleUp"},
+                          {"tChannel_scaleDown", "TtChan__scaleDown"},
+                          {"tChannel_hdampUp", "TtChan__hdampUp"},
+                          {"tChannel_hdampDown", "TtChan__hdampDown"},
+                          {"tbarChannel_scaleUp", "TbartChan__scaleUp"},
+                          {"tbarChannel_scaleDown", "TbartChan__scaleDown"},
+                          {"tbarChannel_hdampUp", "TbartChan__hdampUp"},
+                          {"tbarChannel_hdampDown", "TbartChan__hdampDown"},
+                          {"ttbarInclusivePowerheg_hdampUp", "TT__hdampUp"},
+                          {"ttbarInclusivePowerheg_hdampDown", "TT__hdampDown"},
+                          {"ttbarInclusivePowerheg_fsrUp", "TT__fsrUp"},
+                          {"ttbarInclusivePowerheg_fsrDown", "TT__fsrDown"},
+                          {"ttbarInclusivePowerheg_isrUp", "TT__isrUp"},
+                          {"ttbarInclusivePowerheg_isrDown", "TT__isrDown"},
+                          {"tWInclusive_scaleUp", "TtW__scaleUp"},
+                          {"tWInclusive_scaleDown", "TtW__scaleDown"},
+                          {"tbarWInclusive_scaleUp", "TbartW__scaleUp"},
+                          {"tbarWInclusive_scaleDown", "TbartW__scaleDown"},
+                          {"tZq_scaleUp", "tZq__scaleUp"},
+                          {"tZq_scaleDown", "tZq__scaleDown"}},
+                         {""},
+                         channels,
+                         useSidebandRegion);
+    }
     if (doData)
     {
         dataAnalysis(channels, useSidebandRegion);
@@ -203,18 +233,15 @@ void MakeMvaInputs::standardAnalysis(
         {
             auto outTreeSig{new TTree{
                 ("Ttree_" + treeNamePostfixSig + outSample + syst).c_str(),
-                ("Ttree_" + treeNamePostfixSig + outSample + syst)
-                    .c_str()}};
+                ("Ttree_" + treeNamePostfixSig + outSample + syst).c_str()}};
             TTree* outTreeSdBnd{};
             setupBranches(outTreeSig);
 
             if (useSidebandRegion)
             {
                 outTreeSdBnd = new TTree{
-                    ("Ttree_" + treeNamePostfixSB + outSample + syst)
-                        .c_str(),
-                    ("Ttree_" + treeNamePostfixSB + outSample + syst)
-                        .c_str()};
+                    ("Ttree_" + treeNamePostfixSB + outSample + syst).c_str(),
+                    ("Ttree_" + treeNamePostfixSB + outSample + syst).c_str()};
                 setupBranches(outTreeSdBnd);
             }
 

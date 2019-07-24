@@ -70,6 +70,7 @@ class MakeMvaInputs
     bool ttbarControlRegion;
     bool useSidebandRegion;
     bool doMC;
+    bool doSysts;
     bool doData;
     bool doFakes;
     std::string inputDir;
