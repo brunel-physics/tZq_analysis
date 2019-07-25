@@ -7,7 +7,7 @@ locations:
     - "/scratch/data/tZqSkimsRun2016/metRun2016F"
     - "/scratch/data/tZqSkimsRun2016/metRun2016G"
     - "/scratch/data/tZqSkimsRun2016/metRun2016H"
-luminosity: 35860.066
+luminosity: 35792.978
 mc: false
 histogram: "data"
 label: "Data"

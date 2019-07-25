@@ -7,7 +7,7 @@ locations:
     - "/data0/data/TopPhysics/postTriggerSkims2016/eeRun2016F"
     - "/data0/data/TopPhysics/postTriggerSkims2016/eeRun2016G"
     - "/data0/data/TopPhysics/postTriggerSkims2016/eeRun2016H"
-luminosity: 35860.066
+luminosity: 35858.984
 mc: false
 histogram: "data"
 label: "Data"
