@@ -28,8 +28,9 @@ INCLUDE_PATH = 	-Iinclude  \
 		-isystem/scratch/shared/include \
 		-isystem$(shell root-config --incdir) \
 
+# Do NOT use -O3, it breaks MVA input creation
 CFLAGS = ${INCLUDE_PATH} -std=c++17 -MMD -MP -march=native \
-		 -mtune=native -pipe -O3 -fPIC -m64 -pthread
+		 -mtune=native -pipe -O2 -fPIC -m64 -pthread
 
 ifeq ($(CXX),g++)
   CFLAGS += -Wall -Wextra -Wpedantic -Wcast-align -Wcast-qual \
@@ -60,8 +61,8 @@ else
   CFLAGS += $(UNKNOWN_CXXFLAGS)
 endif
 
-LINK_LIBRARY_FLAGS = -shared -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
-LINK_EXECUTABLE_FLAGS = -g -O2 -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
+LINK_LIBRARY_FLAGS = -shared -rdynamic ${LIBRARY_PATH} ${LIBRARIES}
+LINK_EXECUTABLE_FLAGS = -rdynamic ${LIBRARY_PATH} ${LIBRARIES} \
 			-lTQZanalysisTools \
 			-Wl,-R/scratch/shared/lib,-Rlib,-R../lib,-R${PWD}/lib,-R/scratch/shared/sw/yaml-cpp/0.6.2/x86_64-slc6-gcc82-opt/lib,--enable-new-dtags
 

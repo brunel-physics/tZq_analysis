@@ -344,32 +344,31 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                           ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
             setupBranches(outTreeSdBnd);
         }
-        auto outFile{
-            new TFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
-                      "RECREATE"}};
-        auto dataChain{new TChain{"tree"}};
-        dataChain->Add(
+        TFile outFile{(outputDir + "histofile_" + outChan + ".root").c_str(),
+                      "RECREATE"};
+        TChain dataChain{"tree"};
+        dataChain.Add(
             (inputDir + channel + "Run2016" + channel + "mvaOut.root").c_str());
 
-        auto event{new MvaEvent{true, dataChain, true}};
-        const long long numberOfEvents{dataChain->GetEntries()};
+        MvaEvent event{false, &dataChain, true};
+        const long long numberOfEvents{dataChain.GetEntries()};
         TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
                                 false};
         for (long long i{0}; i < numberOfEvents; i++)
         {
             lEventTimer.DrawProgressBar(i);
-            event->GetEntry(i);
-            fillTree(outTreeSig, outTreeSdBnd, event, outChan, channel, false);
+            event.GetEntry(i);
+            fillTree(outTreeSig, outTreeSdBnd, &event, outChan, channel, false);
         }
-        outFile->cd();
-        outFile->Write();
+        outFile.cd();
+        outFile.Write();
         outTreeSig->FlushBaskets();
         if (useSidebandRegion)
         {
             outTreeSdBnd->FlushBaskets();
         }
-        outFile->Close();
+        outFile.Close();
     }
 }
 
@@ -398,19 +397,19 @@ void MakeMvaInputs::sameSignAnalysis(
         // Get same sign data
         const std::string chan{outFakeChanToData.at(outChan)};
 
-        auto dataChain{new TChain{"tree"}};
+        TChain dataChain{"tree"};
         // Get expected real SS events from MC
         for (const auto& mc : listOfMCs)
         {
             const std::string sample{mc.first};
 
             // std::cout << "Doing SS fakes " << sample << std::endl;
-            if (!dataChain->Add(
+            if (!dataChain.Add(
                     (inputDir + sample + chan + "invLepmvaOut.root").c_str()))
                 abort();
         }
 
-        if (!dataChain->AddFile(
+        if (!dataChain.AddFile(
                 (inputDir + chanMap.at(chan) + chan + "invLepmvaOut.root")
                     .c_str()))
             abort();
@@ -430,33 +429,17 @@ void MakeMvaInputs::sameSignAnalysis(
                           ("Ttree_" + treeNamePostfixSB + outChan).c_str()};
             setupBranches(outTreeSdBnd);
         }
-        auto event{new MvaEvent{true, dataChain, true}};
+        MvaEvent event{false, &dataChain, true};
 
-        const long long numberOfEvents{dataChain->GetEntries()};
+        const long long numberOfEvents{dataChain.GetEntries()};
         TMVA::Timer lEventTimer{boost::numeric_cast<int>(numberOfEvents),
                                 "Running over dataset ...",
                                 false};
         for (long long i{0}; i < numberOfEvents; i++)
         {
             lEventTimer.DrawProgressBar(i);
-            event->GetEntry(i);
-
-            if (event->isMC && chan == "mumu"
-                && (event->genMuonPF2PATPromptFinalState[event->zLep1Index] == 0
-                    || event->genMuonPF2PATPromptFinalState[event->zLep2Index]
-                           == 0))
-            {
-                continue;
-            }
-            if (event->isMC && chan == "ee"
-                && (event->genElePF2PATPromptFinalState[event->zLep1Index] == 0
-                    || event->genElePF2PATPromptFinalState[event->zLep2Index]
-                           == 0))
-            {
-                continue;
-            }
-
-            fillTree(outTreeSig, outTreeSdBnd, event, outChan, chan, true);
+            event.GetEntry(i);
+            fillTree(outTreeSig, outTreeSdBnd, &event, outChan, chan, true);
         } // end event loop
 
         outFile->cd();
@@ -467,7 +450,6 @@ void MakeMvaInputs::sameSignAnalysis(
             outTreeSdBnd->FlushBaskets();
         }
         outFile->Close();
-        delete dataChain;
     }
 }
 

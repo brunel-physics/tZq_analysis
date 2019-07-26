@@ -365,12 +365,6 @@ def fillTree(outTreeSig, outTreeSdBnd, varMap, tree, label, jetUnc, channel, is2
         tree.GetEntry(event)
 
         ## If same sign and non-prompt, continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "ee" and tree.genElePF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "mumu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "emu" and tree.genElePF2PATPromptFinalState[tree.zLep1Index] == 0 ) : continue
-        if ( tree.isMC == 1 and SameSignMC == True and channel == "emu" and tree.genMuonPF2PATPromptFinalState[tree.zLep2Index] == 0 ) : continue
 
 	##Save event number for debugging
 	varMap["eventNumber"][0] = tree.eventNum
@@ -688,16 +682,18 @@ def main():
         for chan in outFakeChanToData[outChan]:
             dataChain = TChain("tree")
             if is2016 :
-                 dataChain.Add(inputDir+chanMap[chan]+chan+"invLepmvaOut.root")
+                 print (inputDir+chanMap[chan]+chan+"invLepmvaOut.root")
+                 dataChain.AddFile(inputDir+chanMap[chan]+chan+"invLepmvaOut.root")
             else :
                 for run in ["C","D"]:
                     dataChain.Add(inputDir+chanMap[chan]+run+chan+"mvaOut.root")
 
    	    # Get expected real SS events from MC
             for sample in listOfMCs.keys():
-               print "Doing SS fakes " + sample + "\n",
+               # print "Doing SS fakes " + sample + "\n",
                sys.stdout.flush()
-               dataChain.Add(inputDir+sample+chan+"invLepmvaOut.root")
+               print (inputDir+sample+chan+"invLepmvaOut.root")
+               dataChain.AddFile(inputDir+sample+chan+"invLepmvaOut.root")
             try:
                fillTree(outTreeSig, outTreeSdBnd, inputVars, dataChain, outChan, 0, chan, is2016, True)
             except AttributeError:
