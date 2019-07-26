@@ -137,7 +137,7 @@ void Parser::parse_files(const std::vector<std::string> files,
                 "NPL",
                 "tree",
                 isMC ? root["total_events"].as<long long>() : 0,
-                "#000000",
+                "#003300",
                 "NPL",
                 "f",
                 isMC ? "" : root["trigger_flag"].as<std::string>());
