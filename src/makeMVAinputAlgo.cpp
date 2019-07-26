@@ -219,7 +219,7 @@ void MakeMvaInputs::standardAnalysis(
         boost::format systFormat{
             "%-" + (std::to_string(longest_string(channels))) + "s    %-"
             + std::to_string(longest_string(systs))
-            + "s    %12.2f %+8.2f %+10.4f%%"};
+            + "s    %12.2f %+8.2f %+10.2f%%"};
 
         std::cout << "Doing " << sample << " : " << std::endl;
 
@@ -292,8 +292,8 @@ void MakeMvaInputs::standardAnalysis(
                 }
                 std::cout << systFormat % channel % syst % nEvents
                                  % (nEvents - nominalEvents[channel])
-                                 % ((nEvents - nominalEvents[channel])
-                                    / nominalEvents[channel])
+                                 % (((nEvents - nominalEvents[channel])
+                                    / nominalEvents[channel]) * 100)
                           << std::endl;
 
                 inFile->Close();
