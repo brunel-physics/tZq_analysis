@@ -14,10 +14,10 @@
 #include <memory>
 
 MakeMvaInputs::MakeMvaInputs()
-    : jetUnc(JetCorrectionUncertainty(
-          "scaleFactors/2016/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt"))
-    , inputVars{}
+    : inputVars{}
     , oldMetFlag{false}
+    , is2016{false}
+    , era{}
     , ttbarControlRegion{false}
     , useSidebandRegion{false}
     , doMC{false}
@@ -40,6 +40,9 @@ void MakeMvaInputs::parseCommandLineArguements(const int argc, char* argv[])
     desc.add_options()("help,h", "Print this message.")(
         "met,m", po::bool_switch(&oldMetFlag), "Use old MET uncerts recipe")(
         "ttbar", po::bool_switch(&ttbarControlRegion), "Make ttbar CR stuff")(
+        "2016",
+        po::bool_switch(&is2016),
+        "Process 2016 data (default to 2017)")(
         "inputDir,i",
         po::value<std::string>(&inputDir),
         "Mva skims input directory")("outputDir,o",
@@ -82,42 +85,87 @@ void MakeMvaInputs::runMainAnalysis()
 {
     TMVA::gConfig().SetDrawProgressBar(true);
 
-    static const std::map<std::string, std::string> listOfMCs = {
-        {"ttHTobb", "TTHbb"},
-        {"ttHToNonbb", "TTHnonbb"},
-        {"WWW", "WWW"},
-        {"WWZ", "WWZ"},
-        {"WZZ", "WZZ"},
-        {"ZZZ", "ZZZ"},
-        {"WW1l1nu2q", "WW1l1nu2q"},
-        {"WW2l2nu", "WW2l2nu"},
-        {"ZZ4l", "ZZ4l"},
-        {"ZZ2l2nu", "ZZ2l2nu"},
-        {"ZZ2l2q", "ZZ2l2q"},
-        {"WZjets", "WZjets"},
-        {"WZ2l2q", "WZ2l2q"},
-        {"WZ1l1nu2q", "WZ1l1nu2q"},
-        {"sChannel", "TsChan"},
-        {"tChannel", "TtChan"},
-        {"tbarChannel", "TbartChan"},
-        {"tWInclusive", "TW"},
-        {"tbarWInclusive", "TbarW"},
-        {"tZq", "TZQ"},
-        {"tHq", "THQ"},
-        {"ttWlnu", "TTWlnu"},
-        {"ttW2q", "TTW2q"},
-        {"ttZ2l2nu", "TTZ2l2nu"},
-        {"ttZ2q", "TTZ2q"},
-        {"ttbarInclusivePowerheg", "TT"},
-        {"tWZ", "TWZ"},
-        {"wPlusJets", "Wjets"},
-        {"DYJetsToLL_Pt-0To50", "DYJetsLLPt-0To50"},
-        {"DYJetsToLL_Pt-50To100", "DYJetsLLPt-50To100"},
-        {"DYJetsToLL_Pt-100To250", "DYJetsLLPt-100To250"},
-        {"DYJetsToLL_Pt-250To400", "DYJetsLLPt-250To400"},
-        {"DYJetsToLL_Pt-400To650", "DYJetsLLPt-400To650"},
-        {"DYJetsToLL_Pt-650ToInf", "DYJetsLLPt-650ToInf"}};
+    era = is2016 ? "2016" : "2017";
 
+    const auto getListOfMCs{[this]() -> std::map<std::string, std::string> {
+        if (is2016)
+        { // 2016
+            return {{"ttHTobb", "TTHbb"},
+                    {"ttHToNonbb", "TTHnonbb"},
+                    {"WWW", "WWW"},
+                    {"WWZ", "WWZ"},
+                    {"WZZ", "WZZ"},
+                    {"ZZZ", "ZZZ"},
+                    {"WW1l1nu2q", "WW1l1nu2q"},
+                    {"WW2l2nu", "WW2l2nu"},
+                    {"ZZ4l", "ZZ4l"},
+                    {"ZZ2l2nu", "ZZ2l2nu"},
+                    {"ZZ2l2q", "ZZ2l2q"},
+                    {"WZjets", "WZ3l1nu"},
+                    {"WZ2l2q", "WZ2l2q"},
+                    {"WZ1l1nu2q", "WZ1l1nu2q"},
+                    {"sChannel", "TsChan"},
+                    {"tChannel", "TtChan"},
+                    {"tbarChannel", "TbartChan"},
+                    {"tWInclusive", "TW"},
+                    {"tbarWInclusive", "TbarW"},
+                    {"tZq", "TZQ"},
+                    {"tHq", "THQ"},
+                    {"ttWlnu", "TTWlnu"},
+                    {"ttW2q", "TTW2q"},
+                    {"ttZ2l2nu", "TTZ2l2nu"},
+                    {"ttZ2q", "TTZ2q"},
+                    {"ttbarInclusivePowerheg", "TT"},
+                    {"tWZ", "TWZ"},
+                    {"wPlusJets", "Wjets"},
+                    {"DYJetsToLL_Pt-0To50", "DYJetsLLPt-0To50"},
+                    {"DYJetsToLL_Pt-50To100", "DYJetsLLPt-50To100"},
+                    {"DYJetsToLL_Pt-100To250", "DYJetsLLPt-100To250"},
+                    {"DYJetsToLL_Pt-250To400", "DYJetsLLPt-250To400"},
+                    {"DYJetsToLL_Pt-400To650", "DYJetsLLPt-400To650"},
+                    {"DYJetsToLL_Pt-650ToInf", "DYJetsLLPt-650ToInf"}};
+        }
+        else
+        { // 2017
+            return {{"ttH_bb", "TTHbb"},
+                    {"ttH_nonbb", "TTHnonbb"},
+                    {"WWW", "WWW"},
+                    {"WWZ", "WWZ"},
+                    {"WZZ", "WZZ"},
+                    {"ZZZ", "ZZZ"},
+                    {"WW_1l1nu2q", "WW1l1nu2q"},
+                    {"WW_2l2nu", "WW2l2nu"},
+                    {"ZZ_4l", "ZZ4l"},
+                    {"ZZ_2l2nu", "ZZ2l2nu"},
+                    {"ZZ_2l2q", "ZZ2l2q"},
+                    {"WZ_3l1nu", "WZ3l3nu"},
+                    {"WZ_2l2q", "WZ2l2q"},
+                    {"WZ_1l1nu2q", "WZ1l1nu2q"},
+                    {"WG_lnug", "WG11nu1g"},
+                    {"ZG_llg", "ZG2l1g"},
+                    {"t_s_channel", "TsChan"},
+                    {"t_t_channel", "TtChan"},
+                    {"tbar_t_channel", "TbartChan"},
+                    {"tW", "TW"},
+                    {"tbarW", "TbarW"},
+                    {"tZq", "TZQ"},
+                    {"tHq", "THQ"},
+                    {"ttW_lnu", "TTWlnu"},
+                    {"ttW_2q", "TTW2q"},
+                    {"ttZ_2l2nu", "TTZ2l2nu"},
+                    {"ttZ_2q", "TTZ2q"},
+                    {"ttgamma", "TTG"},
+                    {"ttbar_2l2v", "TT2l2v"},
+                    {"ttbar_hadronic", "TTjets"},
+                    {"ttbar_semileptonic", "TT2l2q"},
+                    {"tWZ", "TWZ"},
+                    {"wPlusJets", "Wjets"},
+                    {"DYJetsToLL_M-10to50", "DYJetsToLLM-10to50"},
+                    {"DYJetsToLL_M-50", "DYJetsToLLM-50"}};
+        }
+    }};
+
+    static const auto listOfMCs = getListOfMCs();
     const auto channels{[=]() -> std::vector<std::string> {
         if (ttbarControlRegion)
         {
@@ -348,7 +396,8 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
                       "RECREATE"};
         TChain dataChain{"tree"};
         dataChain.Add(
-            (inputDir + channel + "Run2016" + channel + "mvaOut.root").c_str());
+            (inputDir + channel + "Run" + era + channel + "mvaOut.root")
+                .c_str());
 
         MvaEvent event{false, &dataChain, true};
         const long long numberOfEvents{dataChain.GetEntries()};
@@ -381,7 +430,7 @@ void MakeMvaInputs::sameSignAnalysis(
     const std::unordered_map<std::string, std::string> outFakeChanToData{
         {"FakeEG", "ee"}, {"FakeMu", "mumu"}};
     const std::unordered_map<std::string, std::string> chanMap{
-        {"ee", "eeRun2016"}, {"mumu", "mumuRun2016"}};
+        {"ee", "eeRun" + era}, {"mumu", "mumuRun" + era}};
 
     std::string treeNamePostfixSig;
     std::string treeNamePostfixSB;
@@ -588,6 +637,12 @@ TLorentzVector MakeMvaInputs::getJetVec(const MvaEvent* tree,
                          tree->jetPF2PATPz[index],
                          tree->jetPF2PATE[index]);
     returnJet *= smearValue;
+
+    const static JetCorrectionUncertainty jetUnc{
+        is2016 ? "scaleFactors/2016/"
+                 "Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt"
+               : "scaleFactors/2017/"
+                 "Fall17_17Nov2017_V32_MC_Uncertainty_AK4PFchs.txt"};
 
     if (syst == 16)
     {

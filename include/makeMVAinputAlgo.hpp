@@ -63,8 +63,6 @@ class MakeMvaInputs
 
     // variables?
 
-    JetCorrectionUncertainty jetUnc;
-
     std::unordered_map<std::string, float> inputVars;
     bool oldMetFlag;
     bool ttbarControlRegion;
@@ -73,8 +71,10 @@ class MakeMvaInputs
     bool doSysts;
     bool doData;
     bool doFakes;
+    bool is2016;
     std::string inputDir;
     std::string outputDir;
+    std::string era;
 };
 
 #endif
