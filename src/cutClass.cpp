@@ -1418,11 +1418,11 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
                 twgt = 0.93124;
                 if (syst == 1)
                 {
-                    twgt += 0.00239;
+                    twgt += 0.01;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00239;
+                    twgt -= 0.01;
                 }
             }
         }
@@ -1433,11 +1433,11 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
                 twgt = 0.96698;
                 if (syst == 1)
                 {
-                    twgt += 0.00022;
+                    twgt += 0.01;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00022;
+                    twgt -= 0.01;
                 }
             }
         }
@@ -1448,11 +1448,11 @@ bool Cuts::triggerCuts(const AnalysisEvent& event,
                 twgt = 0.94875;
                 if (syst == 1)
                 {
-                    twgt += 0.00425;
+                    twgt += 0.02;
                 }
                 else if (syst == 2)
                 {
-                    twgt -= 0.00425;
+                    twgt -= 0.02;
                 }
             }
         }
