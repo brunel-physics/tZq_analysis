@@ -1,6 +1,6 @@
 name: "tbarWInclusive"
 locations:
-    - "/scratch/data/tZqSkimsRun2016/tbarWInclusive"
+    - "/scratch/data/tZqSkimsRun2016/tW_antitop_5f"
 total_events: 6933094
 cross_section: 35.85
 mc: true
