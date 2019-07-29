@@ -916,10 +916,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     }
 
     // SFs for NPL lepton estimation normilisation
-    // mz20 mw 20, ee = 0.958391264995; mumu = 1.02492608673;
-    // mz20 mw 50, ee = 1.12750771638; mumu = 0.853155120216
-    // mz50 mw 50, ee = 1.2334461839; mumu = 0.997331838956
-    constexpr double SF_EE{0.926};
+    // mz20 mw 20, ee = 1.06773225071; mumu = 1.02492608673;
+    constexpr double SF_EE{1.068};
     constexpr double SF_MUMU{1.114};
 
     if (SameSignMC == true && channel == "ee")

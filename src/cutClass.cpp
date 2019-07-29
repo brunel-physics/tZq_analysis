@@ -574,9 +574,9 @@ bool Cuts::makeLeptonCuts(
         {
             if (is2016_)
             {
-                eeWeight = 0.926;
-                mumuWeight = 1.114;
-                emuWeight = 1.489;
+                eeWeight = 1.068;
+                mumuWeight = 1.005;
+                emuWeight = 1.517; // 1.51726604799
             }
             else
             {
