@@ -909,16 +909,16 @@ void AnalysisAlgo::runMainAnalysis()
                         {
                             generatorWeight =
                                 (sumPositiveWeights_)
-                                / (sumNegativeWeightsScaleUp_)
-                                * (event.weight_muF2muR2
+                                / (sumNegativeWeightsScaleDown_)
+                                * (event.weight_muF0p5muR0p5
                                    / std::abs(event.origWeightForNorm));
                         }
                         else if (systMask == 8192)
                         {
                             generatorWeight =
                                 (sumPositiveWeights_)
-                                / (sumNegativeWeightsScaleDown_)
-                                * (event.weight_muF0p5muR0p5
+                                / (sumNegativeWeightsScaleUp_)
+                                * (event.weight_muF2muR2
                                    / std::abs(event.origWeightForNorm));
                         }
                         else
