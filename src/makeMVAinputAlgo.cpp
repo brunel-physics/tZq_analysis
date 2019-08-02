@@ -118,12 +118,12 @@ void MakeMvaInputs::runMainAnalysis()
                     {"ttbarInclusivePowerheg", "TT"},
                     {"tWZ", "TWZ"},
                     {"wPlusJets", "Wjets"},
-                    {"DYJetsToLL_Pt-0To50", "DYJetsLLPt-0To50"},
-                    {"DYJetsToLL_Pt-50To100", "DYJetsLLPt-50To100"},
-                    {"DYJetsToLL_Pt-100To250", "DYJetsLLPt-100To250"},
-                    {"DYJetsToLL_Pt-250To400", "DYJetsLLPt-250To400"},
-                    {"DYJetsToLL_Pt-400To650", "DYJetsLLPt-400To650"},
-                    {"DYJetsToLL_Pt-650ToInf", "DYJetsLLPt-650ToInf"}};
+                    {"DYJetsToLL_Pt-0To50", "DYJetsLLPt0To50"},
+                    {"DYJetsToLL_Pt-50To100", "DYJetsLLPt50To100"},
+                    {"DYJetsToLL_Pt-100To250", "DYJetsLLPt100To250"},
+                    {"DYJetsToLL_Pt-250To400", "DYJetsLLPt250To400"},
+                    {"DYJetsToLL_Pt-400To650", "DYJetsLLPt400To650"},
+                    {"DYJetsToLL_Pt-650ToInf", "DYJetsLLPt650ToInf"}};
         }
         else
         { // 2017
@@ -160,8 +160,8 @@ void MakeMvaInputs::runMainAnalysis()
                     {"ttbar_semileptonic", "TT2l2q"},
                     {"tWZ", "TWZ"},
                     {"wPlusJets", "Wjets"},
-                    {"DYJetsToLL_M-10to50", "DYJetsToLLM-10to50"},
-                    {"DYJetsToLL_M-50", "DYJetsToLLM-50"}};
+                    {"DYJetsToLL_M-10to50", "DYJetsToLLM10to50"},
+                    {"DYJetsToLL_M-50", "DYJetsToLLM50"}};
         }
     }};
 
