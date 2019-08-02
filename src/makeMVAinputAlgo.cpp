@@ -732,6 +732,16 @@ void MakeMvaInputs::setupBranches(TTree* tree)
     tree->Branch("fourthJetPhi", &inputVars["fourthJetPhi"], "fourthJetPhi/F");
     tree->Branch(
         "fourthJetbTag", &inputVars["fourthJetbTag"], "fourthJetbTag/F");
+    tree->Branch("fifthJetPt", &inputVars["fifthJetPt"], "fifthJetPt/F");
+    tree->Branch("fifthJetEta", &inputVars["fifthJetEta"], "fifthJetEta/F");
+    tree->Branch("fifthJetPhi", &inputVars["fifthJetPhi"], "fifthJetPhi/F");
+    tree->Branch(
+        "fifthJetbTag", &inputVars["fifthJetbTag"], "fifthJetbTag/F");
+    tree->Branch("sixthJetPt", &inputVars["sixthJetPt"], "sixthJetPt/F");
+    tree->Branch("sixthJetEta", &inputVars["sixthJetEta"], "sixthJetEta/F");
+    tree->Branch("sixthJetPhi", &inputVars["sixthJetPhi"], "sixthJetPhi/F");
+    tree->Branch(
+        "sixthJetbTag", &inputVars["sixthJetbTag"], "sixthJetbTag/F");
     tree->Branch("nBjets", &inputVars["nBjets"], "nBjets/F");
     tree->Branch("bTagDisc", &inputVars["bTagDisc"], "bTagDisc/F");
     tree->Branch("lep1Pt", &inputVars["lep1Pt"], "lep1Pt/F");
@@ -1032,18 +1042,18 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("met") = metVec.Pt();
     inputVars.at("bTagDisc") = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
     inputVars.at("leadJetbTag") = tree->jetPF2PATBDiscriminator[jets[0]];
-    inputVars.at("secJetbTag") = NaN;
-    inputVars.at("secJetPt") = NaN;
-    inputVars.at("secJetEta") = NaN;
-    inputVars.at("secJetPhi") = NaN;
-    inputVars.at("thirdJetbTag") = NaN;
-    inputVars.at("thirdJetPt") = NaN;
-    inputVars.at("thirdJetEta") = NaN;
-    inputVars.at("thirdJetPhi") = NaN;
-    inputVars.at("fourthJetbTag") = NaN;
-    inputVars.at("fourthJetPt") = NaN;
-    inputVars.at("fourthJetEta") = NaN;
-    inputVars.at("fourthJetPhi") = NaN;
+    inputVars.at("secJetbTag") = 0;
+    inputVars.at("secJetPt") = 0;
+    inputVars.at("secJetEta") = 0;
+    inputVars.at("secJetPhi") = 0;
+    inputVars.at("thirdJetbTag") = 0;
+    inputVars.at("thirdJetPt") = 0;
+    inputVars.at("thirdJetEta") = 0;
+    inputVars.at("thirdJetPhi") = 0;
+    inputVars.at("fourthJetbTag") = 0;
+    inputVars.at("fourthJetPt") = 0;
+    inputVars.at("fourthJetEta") = 0;
+    inputVars.at("fourthJetPhi") = 0;
 
     if (jetVecs.size() > 1)
     {
@@ -1052,7 +1062,6 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars.at("secJetPhi") = jetVecs[1].Phi();
         inputVars.at("secJetbTag") = tree->jetPF2PATBDiscriminator[jets[1]];
     }
-
     if (jetVecs.size() > 2)
     {
         inputVars.at("thirdJetPt") = jetVecs[2].Pt();
@@ -1060,13 +1069,26 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars.at("thirdJetPhi") = jetVecs[2].Phi();
         inputVars.at("thirdJetbTag") = tree->jetPF2PATBDiscriminator[jets[2]];
     }
-
     if (jetVecs.size() > 3)
     {
         inputVars.at("fourthJetPt") = jetVecs[3].Pt();
         inputVars.at("fourthJetEta") = jetVecs[3].Eta();
         inputVars.at("fourthJetPhi") = jetVecs[3].Phi();
         inputVars.at("fourthJetbTag") = tree->jetPF2PATBDiscriminator[jets[3]];
+    }
+    if (jetVecs.size() > 4)
+    {
+        inputVars.at("fifthJetPt") = jetVecs[4].Pt();
+        inputVars.at("fifthJetEta") = jetVecs[4].Eta();
+        inputVars.at("fifthJetPhi") = jetVecs[4].Phi();
+        inputVars.at("fifthJetbTag") = tree->jetPF2PATBDiscriminator[jets[4]];
+    }
+    if (jetVecs.size() > 5)
+    {
+        inputVars.at("sixthJetPt") = jetVecs[5].Pt();
+        inputVars.at("sixthJetEta") = jetVecs[5].Eta();
+        inputVars.at("sixthJetPhi") = jetVecs[5].Phi();
+        inputVars.at("sixthJetbTag") = tree->jetPF2PATBDiscriminator[jets[5]];
     }
 
     const double topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
