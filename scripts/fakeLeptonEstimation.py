@@ -44,21 +44,21 @@ def main():
   oppSignDY_mumu = 0
 
 
-  if era == "2016":
-      infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnloeemvaOut.root")
-      infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnlomumumvaOut.root")
-      infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnloeeinvLepmvaOut.root")
-      infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50_amcatnlomumuinvLepmvaOut.root")
-  else:
-      infile_DY_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eemvaOut.root")
-      infile_DY_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumumvaOut.root")
-      infile_DY_SS_ee = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eeinvLepmvaOut.root")
-      infile_DY_SS_mumu = TFile.Open("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumuinvLepmvaOut.root")
+  tree_DY_ee = TChain("tree")
+  tree_DY_mumu = TChain("tree")
+  tree_DY_SS_ee = TChain("tree")
+  tree_DY_SS_mumu = TChain("tree")
 
-  tree_DY_ee = infile_DY_ee.Get("tree")
-  tree_DY_mumu = infile_DY_mumu.Get("tree")
-  tree_DY_SS_ee = infile_DY_SS_ee.Get("tree")
-  tree_DY_SS_mumu = infile_DY_SS_mumu.Get("tree")
+  if era == "2016":
+      tree_DY_ee.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_Pt-*eemvaOut.root")
+      tree_DY_mumu.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_Pt-*mumumvaOut.root")
+      tree_DY_SS_ee.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_Pt*eeinvLepmvaOut.root")
+      tree_DY_SS_mumu.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_Pt*mumuinvLepmvaOut.root")
+  else:
+      tree_DY_ee.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eemvaOut.root")
+      tree_DY_mumu.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumumvaOut.root")
+      tree_DY_SS_ee.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50eeinvLepmvaOut.root")
+      tree_DY_SS_mumu.Add("/scratch/data/TopPhysics/mvaDirs/skims/"+era+"/mz"+mzStr+"mw"+mwStr+"/DYJetsToLL_M-50mumuinvLepmvaOut.root")
 
   ## DY Histos
 
@@ -128,11 +128,6 @@ def main():
   DY_zMassOppSignHisto_ee.SaveAs("plots/fakeLeptons/DY/zMass_ee_OppSign.root")
   DY_zMassSameSignHisto_mumu.SaveAs("plots/fakeLeptons/DY/zMass_mumu_SameSign.root")
   DY_zMassOppSignHisto_mumu.SaveAs("plots/fakeLeptons/DY/zMass_mumu_OppSign.root")
-
-  infile_DY_SS_ee.Close()
-  infile_DY_SS_mumu.Close()
-  infile_DY_ee.Close()
-  infile_DY_mumu.Close()
 
 ##############
 ## With QCD MC
@@ -345,11 +340,11 @@ def main():
 ##############
 #Number of expected Same sign events with no fakes - DY mis-id stuff
   eff_ee = sameSignDY_ee/(sameSignDY_ee + oppSignDY_ee)
-  eff_mumu = sameSignDY_mumu/(sameSignDY_mumu + oppSignDY_mumu)
+  # eff_mumu = sameSignDY_mumu/(sameSignDY_mumu + oppSignDY_mumu)
 
   print "ee sameSignDY:oppSignDY = ", sameSignDY_ee, " : " , oppSignDY_ee
-  print "mumu sameSignDY:oppSignDY = ", sameSignDY_mumu, " : " , oppSignDY_mumu
-  print "Efficiency coefficient for calculating the number of expected same sign events with no fakes ee/mumu = ", eff_ee, "/", eff_mumu
+  # print "mumu sameSignDY:oppSignDY = ", sameSignDY_mumu, " : " , oppSignDY_mumu
+  print "Efficiency coefficient for calculating the number of expected same sign events with no fakes ee/mumu = ", eff_ee # , "/", eff_mumu
 
 if __name__ == "__main__":
     main()
