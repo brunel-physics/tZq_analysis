@@ -347,12 +347,12 @@ void MakeMvaInputs::standardAnalysis(
                 inFile->Close();
             } // end channel loop
             outFile->cd();
-            outTreeSig->FlushBaskets();
+            outTreeSig->Write();
             delete outTreeSig;
             delete outTreeSdBnd;
             if (useSidebandRegion)
             {
-                outTreeSdBnd->FlushBaskets();
+                outTreeSdBnd->Write();
             }
         } // end systematic loop
         outFile->Write();
@@ -412,10 +412,10 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
         }
         outFile.cd();
         outFile.Write();
-        outTreeSig->FlushBaskets();
+        outTreeSig->Write();
         if (useSidebandRegion)
         {
-            outTreeSdBnd->FlushBaskets();
+            outTreeSdBnd->Write();
         }
         outFile.Close();
     }
@@ -493,10 +493,10 @@ void MakeMvaInputs::sameSignAnalysis(
 
         outFile->cd();
         outFile->Write();
-        outTreeSig->FlushBaskets();
+        outTreeSig->Write();
         if (useSidebandRegion)
         {
-            outTreeSdBnd->FlushBaskets();
+            outTreeSdBnd->Write();
         }
         outFile->Close();
     }
