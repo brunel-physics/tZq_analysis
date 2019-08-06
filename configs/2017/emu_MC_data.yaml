@@ -31,6 +31,7 @@ datasets:
   - "configs/2017/datasets/tW.yaml"
   - "configs/2017/datasets/tbarW.yaml"
   - "configs/2017/datasets/tWZ.yaml"
+  - "configs/2017/datasets/ttgamma.yaml"
 # # W+jets
   - "configs/2017/datasets/wPlusJets.yaml"
 # # ttV

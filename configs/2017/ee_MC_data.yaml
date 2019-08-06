@@ -48,6 +48,7 @@ datasets:
   - "configs/2017/datasets/ttZ2q.yaml"
   - "configs/2017/datasets/ttH_bb.yaml"
   - "configs/2017/datasets/ttH_nonbb.yaml"
+  - "configs/2017/datasets/ttgamma.yaml"
 # VVV
   - "configs/2017/datasets/WWW.yaml"
   - "configs/2017/datasets/WWZ.yaml"
