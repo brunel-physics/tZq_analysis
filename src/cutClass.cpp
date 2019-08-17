@@ -574,15 +574,15 @@ bool Cuts::makeLeptonCuts(
         {
             if (is2016_)
             {
-                eeWeight = 1.068;
-                mumuWeight = 1.005;
-                emuWeight = 1.517; // 1.51726604799
+                eeWeight = 0.956296241886;
+                mumuWeight = 1.01737450337;
+                emuWeight = 1.07476479834;
             }
             else
             {
-                eeWeight = 1.188;
-                mumuWeight = 1.131;
-                emuWeight = 1.197;
+                eeWeight = 1.57352187847;
+                mumuWeight = 1.15322585438;
+                emuWeight = 1.08021397164;
             }
         }
         if (invZMassCut_ == 20. && invWMassCut_ == 50.)
