@@ -368,12 +368,12 @@ void MakeMvaInputs::standardAnalysis(
                 inFile->Close();
             } // end channel loop
             outFile->cd();
-            outTreeSig->Write();
-            delete outTreeSig;
-            delete outTreeSdBnd;
+            outTreeSig->SetDirectory(outFile);
+            outTreeSig->FlushBaskets();
             if (useSidebandRegion)
             {
-                outTreeSdBnd->Write();
+                outTreeSdBnd->SetDirectory(outFile);
+                outTreeSdBnd->FlushBaskets();
             }
         } // end systematic loop
         outFile->Write();
@@ -432,12 +432,14 @@ void MakeMvaInputs::dataAnalysis(const std::vector<std::string>& channels,
             fillTree(outTreeSig, outTreeSdBnd, &event, outChan, channel, false);
         }
         outFile.cd();
-        outFile.Write();
-        outTreeSig->Write();
+        outTreeSig->SetDirectory(&outFile);
+        outTreeSig->FlushBaskets();
         if (useSidebandRegion)
         {
-            outTreeSdBnd->Write();
+            outTreeSdBnd->SetDirectory(&outFile);
+            outTreeSdBnd->FlushBaskets();
         }
+        outFile.Write();
         outFile.Close();
     }
 }
@@ -513,12 +515,14 @@ void MakeMvaInputs::sameSignAnalysis(
         } // end event loop
 
         outFile->cd();
-        outFile->Write();
-        outTreeSig->Write();
+        outTreeSig->SetDirectory(outFile);
+        outTreeSig->FlushBaskets();
         if (useSidebandRegion)
         {
-            outTreeSdBnd->Write();
+            outTreeSdBnd->SetDirectory(outFile);
+            outTreeSdBnd->FlushBaskets();
         }
+        outFile->Write();
         outFile->Close();
     }
 }
