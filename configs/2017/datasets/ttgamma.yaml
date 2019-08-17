@@ -1,5 +1,6 @@
 name: "ttgamma"
 locations:
+    - "/scratch/data/tZqSkimsRun2017/ttgamma"
 total_events: 4642344
 cross_section: 0.5804
 mc: true

@@ -1,7 +1,8 @@
 name: "ttZ2q"
 locations:
     - "/scratch/data/tZqSkimsRun2017/ttZToqq/"
-total_events: 750000
+    - "/scratch/data/tZqSkimsRun2017/ttZToqq_ext/"
+total_events: 9690000
 cross_section: 0.5104
 mc: true
 histogram: "ttV"

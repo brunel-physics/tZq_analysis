@@ -1,6 +1,6 @@
 name: "tWZ"
 locations:
-    - "/scratch/data/tZqSkimsRun2017/tWz_tWll"
+    - "/scratch/data/tZqSkimsRun2017/tWZ"
 total_events: 986000
 cross_section: 0.01103
 mc: true
