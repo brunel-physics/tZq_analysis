@@ -2078,7 +2078,7 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
         boost::hash_combine(seed, event.jetPF2PATEta[index]);
         boost::hash_combine(seed, event.jetPF2PATPhi[index]);
         boost::hash_combine(seed, event.eventNum);
-        std::mt19937 gen(rand());
+        std::mt19937 gen(seed);
 
         newSmearValue = 1.0 + d(gen);
     }
