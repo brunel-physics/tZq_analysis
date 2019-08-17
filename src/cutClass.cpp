@@ -2007,8 +2007,10 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
     // TODO: Check this is correct
     // For now, just leave jets of too large/small pT, large rho, or large η
     // untouched
+    const double rho{is2016_ ? event.elePF2PATRhoIso[0]
+                             : event.fixedGridRhoFastjetAll};
     if (event.jetPF2PATPtRaw[index] < 15 || event.jetPF2PATPtRaw[index] > 3000
-        || event.elePF2PATRhoIso[0] > (is2016_ ? 40.9 : 42.52)
+        || rho > (is2016_ ? 40.9 : 42.52)
         || std::abs(event.jetPF2PATEta[index]) > 4.7)
     {
         returnJet.SetPxPyPzE(event.jetPF2PATPx[index],
@@ -2023,10 +2025,10 @@ std::pair<TLorentzVector, double> Cuts::getJetLVec(const AnalysisEvent& event,
     // smearing)
     const double ptRes{is2016_ ? jet2016PtSimRes(event.jetPF2PATPtRaw[index],
                                                  event.jetPF2PATEta[index],
-                                                 event.elePF2PATRhoIso[0])
+                                                 rho)
                                : jet2017PtSimRes(event.jetPF2PATPtRaw[index],
                                                  event.jetPF2PATEta[index],
-                                                 event.elePF2PATRhoIso[0])};
+                                                 rho)};
 
     auto [jerSF, jerSigma] =
         is2016_ ? jet2016SFs(std::abs(event.jetPF2PATEta[index]))

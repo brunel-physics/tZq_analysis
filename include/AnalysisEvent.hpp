@@ -266,6 +266,7 @@ class AnalysisEvent
     Float_t jetPF2PATMuonFractionCorr[NJETSMAX];
     Int_t jetPF2PATNeutralMultiplicity[NJETSMAX];
     Int_t jetPF2PATChargedMultiplicity[NJETSMAX];
+    Float_t fixedGridRhoFastjetAll;
 
     Double_t metPF2PATE;
     Double_t metPF2PATEt;
@@ -1033,6 +1034,7 @@ class AnalysisEvent
     TBranch* b_jetPF2PATMuonFractionCorr; //!
     TBranch* b_jetPF2PATNeutralMultiplicity; //!
     TBranch* b_jetPF2PATChargedMultiplicity; //!
+    TBranch* b_fixedGridRhoFastjetAll; //!
     TBranch* b_metPF2PATE; //!
     TBranch* b_metPF2PATEt; //!
     TBranch* b_metPF2PATEtRaw; //!
@@ -1870,6 +1872,10 @@ inline AnalysisEvent::AnalysisEvent(const bool isMC,
    fChain->SetBranchAddress("jetPF2PATMuonFractionCorr", jetPF2PATMuonFractionCorr, &b_jetPF2PATMuonFractionCorr);
    fChain->SetBranchAddress("jetPF2PATNeutralMultiplicity", jetPF2PATNeutralMultiplicity, &b_jetPF2PATNeutralMultiplicity);
    fChain->SetBranchAddress("jetPF2PATChargedMultiplicity", jetPF2PATChargedMultiplicity, &b_jetPF2PATChargedMultiplicity);
+   if (!is2016)
+   {
+       fChain->SetBranchAddress("fixedGridRhoFastjetAll", &fixedGridRhoFastjetAll, &b_fixedGridRhoFastjetAll);
+   }
    fChain->SetBranchAddress("metPF2PATE", &metPF2PATE, &b_metPF2PATE);
    fChain->SetBranchAddress("metPF2PATEt", &metPF2PATEt, &b_metPF2PATEt);
    fChain->SetBranchAddress("metPF2PATEtRaw", &metPF2PATEtRaw, &b_metPF2PATEtRaw);
