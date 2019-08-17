@@ -133,16 +133,16 @@ void MakeMvaInputs::runMainAnalysis()
                     {"WWZ", "WWZ"},
                     {"WZZ", "WZZ"},
                     {"ZZZ", "ZZZ"},
-                    {"WW_1l1nu2q", "WW1l1nu2q"},
+                    {"WW_lnu2q", "WW1l1nu2q"},
                     {"WW_2l2nu", "WW2l2nu"},
                     {"ZZ_4l", "ZZ4l"},
                     {"ZZ_2l2nu", "ZZ2l2nu"},
                     {"ZZ_2l2q", "ZZ2l2q"},
-                    {"WZ_3l1nu", "WZ3l3nu"},
+                    {"WZ_3lnu", "WZ3l3nu"},
                     {"WZ_2l2q", "WZ2l2q"},
-                    {"WZ_1l1nu2q", "WZ1l1nu2q"},
+                    {"WZ_lnu2q", "WZ1l1nu2q"},
                     {"WG_lnug", "WG11nu1g"},
-                    {"ZG_llg", "ZG2l1g"},
+                    {"ZG_lnug", "ZG2l1g"},
                     {"t_s_channel", "TsChan"},
                     {"t_t_channel", "TtChan"},
                     {"tbar_t_channel", "TbartChan"},
@@ -150,14 +150,14 @@ void MakeMvaInputs::runMainAnalysis()
                     {"tbarW", "TbarW"},
                     {"tZq", "TZQ"},
                     {"tHq", "THQ"},
-                    {"ttW_lnu", "TTWlnu"},
-                    {"ttW_2q", "TTW2q"},
-                    {"ttZ_2l2nu", "TTZ2l2nu"},
-                    {"ttZ_2q", "TTZ2q"},
+                    {"ttWTolnu", "TTWlnu"},
+                    {"ttW2q", "TTW2q"},
+                    {"ttZToll", "TTZ2l2nu"},
+                    {"ttZ2q", "TTZ2q"},
                     {"ttgamma", "TTG"},
                     {"ttbar_2l2v", "TT2l2v"},
                     {"ttbar_hadronic", "TTjets"},
-                    {"ttbar_semileptonic", "TT2l2q"},
+                    {"ttbar_semileptonic", "TT1l1v2q"},
                     {"tWZ", "TWZ"},
                     {"wPlusJets", "Wjets"},
                     {"DYJetsToLL_M-10to50", "DYJetsToLLM10to50"},
@@ -165,7 +165,43 @@ void MakeMvaInputs::runMainAnalysis()
         }
     }};
 
+    const auto getListOfSysts{[this]() -> std::map<std::string, std::string> {
+        if (is2016)
+        { // 2016
+            return {{"tChannel_scaleUp", "TtChan__scaleUp"},
+                    {"tChannel_scaleDown", "TtChan__scaleDown"},
+                    {"tChannel_hdampUp", "TtChan__hdampUp"},
+                    {"tChannel_hdampDown", "TtChan__hdampDown"},
+                    {"tbarChannel_scaleUp", "TbartChan__scaleUp"},
+                    {"tbarChannel_scaleDown", "TbartChan__scaleDown"},
+                    {"tbarChannel_hdampUp", "TbartChan__hdampUp"},
+                    {"tbarChannel_hdampDown", "TbartChan__hdampDown"},
+                    {"ttbarInclusivePowerheg_hdampUp", "TT__hdampUp"},
+                    {"ttbarInclusivePowerheg_hdampDown", "TT__hdampDown"},
+                    {"ttbarInclusivePowerheg_fsrUp", "TT__fsrUp"},
+                    {"ttbarInclusivePowerheg_fsrDown", "TT__fsrDown"},
+                    {"ttbarInclusivePowerheg_isrUp", "TT__isrUp"},
+                    {"ttbarInclusivePowerheg_isrDown", "TT__isrDown"},
+                    {"tWInclusive_scaleUp", "TW__scaleUp"},
+                    {"tWInclusive_scaleDown", "TW__scaleDown"},
+                    {"tbarWInclusive_scaleUp", "TbarW__scaleUp"},
+                    {"tbarWInclusive_scaleDown", "TbarW__scaleDown"},
+                    {"tZq_scaleUp", "TZQ__scaleUp"},
+                    {"tZq_scaleDown", "TZQ__scaleDown"}};
+        }
+        else
+        { // 2017
+            return {{"ttbar_2l2v_hdampUp", "TT2l2v__hdampUp"},
+                    {"ttbar_2l2v_hdampDown", "TT2l2v__hdampDown"},
+                    {"ttbar_semileptonic_hdampUp", "TT1l1v2q__hdampUp"},
+                    {"ttbar_semileptonic_hdampDown", "TT1l1v2q__hdampDown"},
+                    {"ttbar_semileptonic_hdampUp", "TTjets__hdampUp"},
+                    {"ttbar_semileptonic_hdampDown", "TTjets__hdampDown"}};
+        }
+    }};
+
     static const auto listOfMCs = getListOfMCs();
+    static const auto listOfSysts = getListOfSysts();
     const auto channels{[=]() -> std::vector<std::string> {
         if (ttbarControlRegion)
         {
@@ -177,23 +213,30 @@ void MakeMvaInputs::runMainAnalysis()
         }
     }()};
 
-    const std::vector<std::string> systs = {"",
-                                            "__trig__plus",
-                                            "__trig__minus",
-                                            "__jer__plus",
-                                            "__jer__minus",
-                                            "__jes__plus",
-                                            "__jes__minus",
-                                            "__pileup__plus",
-                                            "__pileup__minus",
-                                            "__bTag__plus",
-                                            "__bTag__minus",
-                                            "__met__plus",
-                                            "__met__minus",
-                                            "__pdf__plus",
-                                            "__pdf__minus",
-                                            "__ME__plus",
-                                            "__ME__minus"};
+    std::vector<std::string> systs = {"",
+                                      "__trig__plus",
+                                      "__trig__minus",
+                                      "__jer__plus",
+                                      "__jer__minus",
+                                      "__jes__plus",
+                                      "__jes__minus",
+                                      "__pileup__plus",
+                                      "__pileup__minus",
+                                      "__bTag__plus",
+                                      "__bTag__minus",
+                                      "__met__plus",
+                                      "__met__minus",
+                                      "__pdf__plus",
+                                      "__pdf__minus",
+                                      "__ME__plus",
+                                      "__ME__minus"};
+    if (!is2016)
+    {
+        systs.emplace_back("__isr__plus");
+        systs.emplace_back("__isr__minus");
+        systs.emplace_back("__fsr__plus");
+        systs.emplace_back("__fsr__minus");
+    }
 
     if (doMC)
     {
@@ -201,29 +244,7 @@ void MakeMvaInputs::runMainAnalysis()
     }
     if (doSysts)
     {
-        standardAnalysis({{"tChannel_scaleUp", "TtChan__scaleUp"},
-                          {"tChannel_scaleDown", "TtChan__scaleDown"},
-                          {"tChannel_hdampUp", "TtChan__hdampUp"},
-                          {"tChannel_hdampDown", "TtChan__hdampDown"},
-                          {"tbarChannel_scaleUp", "TbartChan__scaleUp"},
-                          {"tbarChannel_scaleDown", "TbartChan__scaleDown"},
-                          {"tbarChannel_hdampUp", "TbartChan__hdampUp"},
-                          {"tbarChannel_hdampDown", "TbartChan__hdampDown"},
-                          {"ttbarInclusivePowerheg_hdampUp", "TT__hdampUp"},
-                          {"ttbarInclusivePowerheg_hdampDown", "TT__hdampDown"},
-                          {"ttbarInclusivePowerheg_fsrUp", "TT__fsrUp"},
-                          {"ttbarInclusivePowerheg_fsrDown", "TT__fsrDown"},
-                          {"ttbarInclusivePowerheg_isrUp", "TT__isrUp"},
-                          {"ttbarInclusivePowerheg_isrDown", "TT__isrDown"},
-                          {"tWInclusive_scaleUp", "TW__scaleUp"},
-                          {"tWInclusive_scaleDown", "TW__scaleDown"},
-                          {"tbarWInclusive_scaleUp", "TbarW__scaleUp"},
-                          {"tbarWInclusive_scaleDown", "TbarW__scaleDown"},
-                          {"tZq_scaleUp", "TZQ__scaleUp"},
-                          {"tZq_scaleDown", "TZQ__scaleDown"}},
-                         {""},
-                         channels,
-                         useSidebandRegion);
+        standardAnalysis(listOfSysts, {""}, channels, useSidebandRegion);
     }
     if (doData)
     {
