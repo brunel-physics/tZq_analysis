@@ -1,0 +1,12 @@
+cuts: "configs/2017/cuts/SRCuts.yaml"
+plots: "configs/plots/plotDileptonConf.yaml"
+outputFolder: "plots/2017/syst/"
+outputPostfix: "syst"
+channelName: "syst"
+datasets:
+    - "configs/2017/datasets/ttbar_2l2v_hdampUp.yaml"
+    - "configs/2017/datasets/ttbar_2l2v_hdampDown.yaml"
+    - "configs/2017/datasets/ttbar_semileptonic_hdampUp.yaml"
+    - "configs/2017/datasets/ttbar_semileptonic_hdampDown.yaml"
+    - "configs/2017/datasets/ttbar_hadronic_hdampUp.yaml"
+    - "configs/2017/datasets/ttbar_hadronic_hdampDown.yaml"

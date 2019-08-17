@@ -1,0 +1,10 @@
+name: "ttbar_semileptonic_hdampDown"
+locations:
+    - "/scratch/data/tZqSkimsRun2017/ttbar_semileptonic_hdampDOWN/"
+total_events: 26849863
+cross_section: 365.34
+mc: true
+histogram: "ttbar"
+colour: "#cc0000"
+label: "t#bar{t}"
+plot_type: "f"
