@@ -6,7 +6,7 @@ import os
 import sys
 import subprocess 
 
-def sortOutLeptons(tree,channel):
+def sortOutLeptons(tree,channel,era):
     ###Returns two LorentzVectors containing the two z leptons. This will be VERY useful for making all of the plots.
     #Reads the position of the z leptons from variables stored at mvaTree making time, because I'm great and finally got around to doing it.
     zLep1,zLep2 = 0,0
@@ -16,8 +16,12 @@ def sortOutLeptons(tree,channel):
         zLep1 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep1Index],tree.elePF2PATGsfPy[tree.zLep1Index],tree.elePF2PATGsfPz[tree.zLep1Index],tree.elePF2PATGsfE[tree.zLep1Index])
         zLep2 = TLorentzVector(tree.elePF2PATGsfPx[tree.zLep2Index],tree.elePF2PATGsfPy[tree.zLep2Index],tree.elePF2PATGsfPz[tree.zLep2Index],tree.elePF2PATGsfE[tree.zLep2Index])
     if channel == "mumu":
-        zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
-        zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
+        if era == "2016":
+            zLep1 = TLorentzVector(tree.muonPF2PATPx[tree.zLep1Index],tree.muonPF2PATPy[tree.zLep1Index],tree.muonPF2PATPz[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
+            zLep2 = TLorentzVector(tree.muonPF2PATPx[tree.zLep2Index],tree.muonPF2PATPy[tree.zLep2Index],tree.muonPF2PATPz[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
+        else:
+            zLep1 = TLorentzVector(tree.muonPF2PATPX[tree.zLep1Index],tree.muonPF2PATPY[tree.zLep1Index],tree.muonPF2PATPZ[tree.zLep1Index],tree.muonPF2PATE[tree.zLep1Index])
+            zLep2 = TLorentzVector(tree.muonPF2PATPX[tree.zLep2Index],tree.muonPF2PATPY[tree.zLep2Index],tree.muonPF2PATPZ[tree.zLep2Index],tree.muonPF2PATE[tree.zLep2Index])
     return (zLep1,zLep2)
 
 def main():
@@ -73,7 +77,7 @@ def main():
     weight = 1
     if (weighted) : weight = tree_DY_SS_ee.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_ee,"ee")
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_ee,"ee",era)
     zMass = (zLep1+zLep2).M()
 
     if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY_ee += 1*weight
@@ -86,7 +90,7 @@ def main():
     weight = 1
     if (weighted) : weight = tree_DY_SS_mumu.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_mumu,"mumu")
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_SS_mumu,"mumu",era)
     zMass = (zLep1+zLep2).M()
 
     if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : sameSignDY_mumu += 1*weight
@@ -99,7 +103,7 @@ def main():
     weight = 1.0
     if (weighted) : weight = tree_DY_ee.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY_ee,"ee")
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_ee,"ee",era)
     zMass = (zLep1+zLep2).M()
 
     if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY_ee += 1.0*weight
@@ -112,7 +116,7 @@ def main():
     weight = 1.0
     if (weighted) : weight = tree_DY_mumu.eventWeight
 
-    (zLep1,zLep2) = sortOutLeptons(tree_DY_mumu,"mumu")
+    (zLep1,zLep2) = sortOutLeptons(tree_DY_mumu,"mumu",era)
     zMass = (zLep1+zLep2).M()
 
     if ( zMass < (zRefMass + zWindow) and zMass > (zRefMass - zWindow) ) : oppSignDY_mumu += 1.0*weight
