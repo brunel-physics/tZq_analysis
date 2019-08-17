@@ -1343,10 +1343,8 @@ std::vector<int> Cuts::makeBCuts(const AnalysisEvent& event,
         const TLorentzVector jetVec{
             getJetLVec(event, jets[i], syst, false).first};
         const float bDisc{
-            is2016_
-                ? event.jetPF2PATBDiscriminator[jets[i]]
-                : event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
-                      [jets[i]]};
+            event.jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[i]]};
 
         if (bDisc <= bDiscCut_)
         {

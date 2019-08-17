@@ -1040,8 +1040,8 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     inputVars.at("nJets") = boost::numeric_cast<float>(jets.size());
     inputVars.at("nBjets") = boost::numeric_cast<float>(bJets.size());
     inputVars.at("met") = metVec.Pt();
-    inputVars.at("bTagDisc") = tree->jetPF2PATBDiscriminator[jets[bJets[0]]];
-    inputVars.at("leadJetbTag") = tree->jetPF2PATBDiscriminator[jets[0]];
+    inputVars.at("bTagDisc") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[bJets[0]]];
+    inputVars.at("leadJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[0]];
     inputVars.at("secJetbTag") = 0;
     inputVars.at("secJetPt") = 0;
     inputVars.at("secJetEta") = 0;
@@ -1060,35 +1060,35 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars.at("secJetPt") = jetVecs[1].Pt();
         inputVars.at("secJetEta") = jetVecs[1].Eta();
         inputVars.at("secJetPhi") = jetVecs[1].Phi();
-        inputVars.at("secJetbTag") = tree->jetPF2PATBDiscriminator[jets[1]];
+        inputVars.at("secJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[1]];
     }
     if (jetVecs.size() > 2)
     {
         inputVars.at("thirdJetPt") = jetVecs[2].Pt();
         inputVars.at("thirdJetEta") = jetVecs[2].Eta();
         inputVars.at("thirdJetPhi") = jetVecs[2].Phi();
-        inputVars.at("thirdJetbTag") = tree->jetPF2PATBDiscriminator[jets[2]];
+        inputVars.at("thirdJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[2]];
     }
     if (jetVecs.size() > 3)
     {
         inputVars.at("fourthJetPt") = jetVecs[3].Pt();
         inputVars.at("fourthJetEta") = jetVecs[3].Eta();
         inputVars.at("fourthJetPhi") = jetVecs[3].Phi();
-        inputVars.at("fourthJetbTag") = tree->jetPF2PATBDiscriminator[jets[3]];
+        inputVars.at("fourthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[3]];
     }
     if (jetVecs.size() > 4)
     {
         inputVars.at("fifthJetPt") = jetVecs[4].Pt();
         inputVars.at("fifthJetEta") = jetVecs[4].Eta();
         inputVars.at("fifthJetPhi") = jetVecs[4].Phi();
-        inputVars.at("fifthJetbTag") = tree->jetPF2PATBDiscriminator[jets[4]];
+        inputVars.at("fifthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[4]];
     }
     if (jetVecs.size() > 5)
     {
         inputVars.at("sixthJetPt") = jetVecs[5].Pt();
         inputVars.at("sixthJetEta") = jetVecs[5].Eta();
         inputVars.at("sixthJetPhi") = jetVecs[5].Phi();
-        inputVars.at("sixthJetbTag") = tree->jetPF2PATBDiscriminator[jets[5]];
+        inputVars.at("sixthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[5]];
     }
 
     const double topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};

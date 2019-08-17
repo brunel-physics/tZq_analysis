@@ -233,7 +233,6 @@ class AnalysisEvent
     Float_t jetPF2PATSVDX[NJETSMAX];
     Float_t jetPF2PATSVDY[NJETSMAX];
     Float_t jetPF2PATSVDZ[NJETSMAX];
-    Float_t jetPF2PATBDiscriminator[NJETSMAX];
     Float_t jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsLJetTags[NJETSMAX];
     Float_t jetPF2PATpfCombinedCvsBJetTags[NJETSMAX];
@@ -1001,7 +1000,6 @@ class AnalysisEvent
     TBranch* b_jetPF2PATSVDX; //!
     TBranch* b_jetPF2PATSVDY; //!
     TBranch* b_jetPF2PATSVDZ; //!
-    TBranch* b_jetPF2PATBDiscriminator;
     TBranch* b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags; //!
     TBranch* b_jetPF2PATpfCombinedCvsLJetTags; //!
     TBranch* b_jetPF2PATpfCombinedCvsBJetTags; //!
@@ -1832,7 +1830,7 @@ inline AnalysisEvent::AnalysisEvent(const bool isMC,
    fChain->SetBranchAddress("jetPF2PATSVDZ", jetPF2PATSVDZ, &b_jetPF2PATSVDZ);
    if (is2016)
    {
-       fChain->SetBranchAddress("jetPF2PATBDiscriminator", jetPF2PATBDiscriminator, &b_jetPF2PATBDiscriminator);
+       fChain->SetBranchAddress("jetPF2PATBDiscriminator", jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags, &b_jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags);
    }
    else
    {
@@ -1876,6 +1874,7 @@ inline AnalysisEvent::AnalysisEvent(const bool isMC,
    {
        fChain->SetBranchAddress("fixedGridRhoFastjetAll", &fixedGridRhoFastjetAll, &b_fixedGridRhoFastjetAll);
    }
+   fChain->SetBranchAddress("jetPF2PATChargedMultiplicity", jetPF2PATChargedMultiplicity, &b_jetPF2PATChargedMultiplicity);
    fChain->SetBranchAddress("metPF2PATE", &metPF2PATE, &b_metPF2PATE);
    fChain->SetBranchAddress("metPF2PATEt", &metPF2PATEt, &b_metPF2PATEt);
    fChain->SetBranchAddress("metPF2PATEtRaw", &metPF2PATEtRaw, &b_metPF2PATEtRaw);
