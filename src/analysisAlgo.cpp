@@ -1170,20 +1170,18 @@ void AnalysisAlgo::runMainAnalysis()
                         zLep2Index = event.zPairIndex.second;
                         wQuark1Index = event.wPairIndex.first;
                         wQuark2Index = event.wPairIndex.second;
-                        for (unsigned jetIndexIt{0}; jetIndexIt < 15;
-                             jetIndexIt++)
+                        for (unsigned i{0}; i < 15; i++)
                         {
-                            if (jetIndexIt < event.jetIndex.size())
+                            if (i < event.jetIndex.size())
                             {
-                                jetInd[jetIndexIt] =
-                                    event.jetIndex[jetIndexIt];
-                                jetSmearValue[jetIndexIt] =
-                                    event.jetSmearValue[jetIndexIt];
+                                jetInd[i] = event.jetIndex[i];
+                                jetSmearValue[i] = 
+                                    event.jetSmearValue.at(jetInd[i]);
                             }
                             else
                             {
-                                jetInd[jetIndexIt] = -1;
-                                jetSmearValue[jetIndexIt] = 0.0;
+                                jetInd[i] = -1;
+                                jetSmearValue[i] = 0.0;
                             }
                         }
                         for (unsigned bJetIt{0}; bJetIt < 10; bJetIt++)
