@@ -113,32 +113,45 @@ class TriggerScaleFactors{
 	double numberSelectedDoubleMuonsTriggered[2];
 	double numberSelectedMuonElectronsTriggered[2]; // Double MuonEG
 
-        // Plots for turn on curve studies
+        // Plots for efficiency studies
 	TProfile* p_electron1_pT_MC;
 	TProfile* p_electron1_eta_MC;
 	TProfile* p_electron2_pT_MC;
 	TProfile* p_electron2_eta_MC;
-	TProfile* p_muon1_pT_MC;
-	TProfile* p_muon1_eta_MC;
-	TProfile* p_muon2_pT_MC;
-	TProfile* p_muon2_eta_MC;
-	TProfile* p_muonElectron1_pT_MC;
-	TProfile* p_muonElectron1_eta_MC;
-	TProfile* p_muonElectron2_pT_MC;
-	TProfile* p_muonElectron2_eta_MC;
-
 	TProfile* p_electron1_pT_data;
 	TProfile* p_electron1_eta_data;
 	TProfile* p_electron2_pT_data;
 	TProfile* p_electron2_eta_data;
+	TProfile* p_electron1_pT_SF;
+	TProfile* p_electron1_eta_SF;
+	TProfile* p_electron2_pT_SF;
+	TProfile* p_electron2_eta_SF;
+
+	TProfile* p_muon1_pT_MC;
+	TProfile* p_muon1_eta_MC;
+	TProfile* p_muon2_pT_MC;
+	TProfile* p_muon2_eta_MC;
 	TProfile* p_muon1_pT_data;
 	TProfile* p_muon1_eta_data;
 	TProfile* p_muon2_pT_data;
 	TProfile* p_muon2_eta_data;
+	TProfile* p_muon1_pT_SF;
+	TProfile* p_muon1_eta_SF;
+	TProfile* p_muon2_pT_SF;
+	TProfile* p_muon2_eta_SF; 
+
+	TProfile* p_muonElectron1_pT_MC;
+	TProfile* p_muonElectron1_eta_MC;
+	TProfile* p_muonElectron2_pT_MC;
+	TProfile* p_muonElectron2_eta_MC;
 	TProfile* p_muonElectron1_pT_data;
 	TProfile* p_muonElectron1_eta_data;
 	TProfile* p_muonElectron2_pT_data;
 	TProfile* p_muonElectron2_eta_data;
+	TProfile* p_muonElectron1_pT_SF;
+	TProfile* p_muonElectron1_eta_SF;
+	TProfile* p_muonElectron2_pT_SF;
+	TProfile* p_muonElectron2_eta_SF; 
 
 	// Plots used to make SFs
 	TProfile2D* p_electrons_pT_MC;
@@ -154,6 +167,13 @@ class TriggerScaleFactors{
 	TProfile2D* p_muons_eta_data;
 	TProfile2D* p_muonElectrons_pT_data;
 	TProfile2D* p_muonElectrons_eta_data;
+
+	TProfile2D* p_electrons_pT_SF;
+	TProfile2D* p_electrons_eta_SF;
+	TProfile2D* p_muons_pT_SF;
+	TProfile2D* p_muons_eta_SF;
+	TProfile2D* p_muonElectrons_pT_SF;
+	TProfile2D* p_muonElectrons_eta_SF;
 
         TFile* muonHltFile1;
         TFile* muonHltFile2;
