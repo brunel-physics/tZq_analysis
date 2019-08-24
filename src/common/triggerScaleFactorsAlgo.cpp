@@ -687,33 +687,44 @@ void TriggerScaleFactors::runMainAnalysis(){
 	numberSelectedDoubleMuonsTriggered[0] += triggerDoubleMuon*eventWeight*SF;
 	numberSelectedMuonElectronsTriggered[0] += triggerMuonElectron*eventWeight;
 
+        double lep1_pT  = event->zPairLeptons.first.Pt();
+        double lep1_eta = event->zPairLeptons.first.Eta();
+        double lep2_pT  = event->zPairLeptons.second.Pt();
+        double lep2_eta = event->zPairLeptons.second.Eta();
+
+        if ( lep1_pT >= 299. ) lep1_pT = 295.0;
+        if ( lep2_pT >= 299. ) lep2_pT = 295.0;
+
+        if ( lep1_eta >= 2.5 ) lep1_eta = 2.4;
+        if ( lep2_eta >= 2.5 ) lep2_eta = 2.4;
+
 	//Histos bit
         if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  p_electron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_pT_MC->Fill( lep1_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_eta_MC->Fill( lep1_eta, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_pT_MC->Fill( lep2_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_eta_MC->Fill( lep2_eta, triggerMetDoubleEG/triggerMetElectronSelection );
 
-	  p_electrons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electrons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_pT_MC->Fill( lep1_pT, lep2_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_eta_MC->Fill( lep1_eta, lep2_eta, triggerMetDoubleEG/triggerMetElectronSelection );
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
-          p_muon1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
-          if ( event->zPairLeptons.first.Pt() > 30. ) p_muon1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
-          p_muon2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
-          if ( event->zPairLeptons.second.Pt() > 30. ) p_muon2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          p_muon1_pT_MC->Fill( lep1_pT, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          if ( lep1_pT > 30. ) p_muon1_eta_MC->Fill( lep1_eta, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          p_muon2_pT_MC->Fill( lep2_pT, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+          if ( lep2_pT > 30. ) p_muon2_eta_MC->Fill( lep2_eta, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
 
-	  p_muons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
-	  p_muons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+	  p_muons_pT_MC->Fill( lep1_pT, lep2_pT, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
+	  p_muons_eta_MC->Fill( lep1_eta, lep2_eta, triggerMetDoubleMuon*SF/triggerMetMuonSelection );
         }
         if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  p_muonElectron1_pT_MC->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron1_eta_MC->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron2_pT_MC->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron2_eta_MC->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_pT_MC->Fill( lep1_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_eta_MC->Fill( lep1_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_pT_MC->Fill( lep2_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_eta_MC->Fill( lep2_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
 
-	  p_muonElectrons_pT_MC->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectrons_eta_MC->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_pT_MC->Fill( lep1_pT, lep2_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_MC->Fill( lep1_eta, lep2_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
       else { // Else is data
@@ -727,33 +738,38 @@ void TriggerScaleFactors::runMainAnalysis(){
 
 	// NB No systematic stuff required for data
 
+        double lep1_pT  = event->zPairLeptons.first.Pt();
+        double lep1_eta = event->zPairLeptons.first.Eta();
+        double lep2_pT  = event->zPairLeptons.second.Pt();
+        double lep2_eta = event->zPairLeptons.second.Eta();
+
 	//Histos bit
         if ( triggerMetElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  p_electron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_pT_data->Fill( lep1_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron1_eta_data->Fill( lep1_eta, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_pT_data->Fill( lep2_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electron2_eta_data->Fill( lep2_eta, triggerMetDoubleEG/triggerMetElectronSelection );
 
-	  p_electrons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleEG/triggerMetElectronSelection );
-	  p_electrons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_pT_data->Fill( lep1_pT, lep2_pT, triggerMetDoubleEG/triggerMetElectronSelection );
+	  p_electrons_eta_data->Fill( lep1_eta, lep2_eta, triggerMetDoubleEG/triggerMetElectronSelection );
         }
         if ( triggerMetMuonSelection > 0 ) { //If passed event selection, then will want to add to denominator
-          p_muon1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          if ( event->zPairLeptons.first.Pt() > 30. ) p_muon1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          p_muon2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection);
-          if ( event->zPairLeptons.second.Pt() > 30. ) p_muon2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon1_pT_data->Fill( lep1_pT, triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon1_eta_data->Fill( lep1_eta, triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon2_pT_data->Fill( lep2_pT, triggerMetDoubleMuon/triggerMetMuonSelection);
+          p_muon2_eta_data->Fill( lep2_eta, triggerMetDoubleMuon/triggerMetMuonSelection);
 
-	  p_muons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetDoubleMuon/triggerMetMuonSelection );
-	  p_muons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetDoubleMuon/triggerMetMuonSelection );
+	  p_muons_pT_data->Fill( lep1_pT, lep2_pT, triggerMetDoubleMuon/triggerMetMuonSelection );
+	  p_muons_eta_data->Fill( lep1_eta, lep2_eta, triggerMetDoubleMuon/triggerMetMuonSelection );
         }
         if ( triggerMetMuonElectronSelection > 0 ) { //If passed event selection, then will want to add to denominator
-	  p_muonElectron1_pT_data->Fill( event->zPairLeptons.first.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron1_eta_data->Fill( event->zPairLeptons.first.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron2_pT_data->Fill( event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectron2_eta_data->Fill( event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_pT_data->Fill( lep1_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron1_eta_data->Fill( lep1_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_pT_data->Fill( lep2_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectron2_eta_data->Fill( lep2_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
 
-	  p_muonElectrons_pT_data->Fill( event->zPairLeptons.first.Pt(), event->zPairLeptons.second.Pt(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
-	  p_muonElectrons_eta_data->Fill( event->zPairLeptons.first.Eta(), event->zPairLeptons.second.Eta(), triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_pT_data->Fill( lep1_pT, lep2_pT, triggerMetMuonElectron/triggerMetMuonElectronSelection );
+	  p_muonElectrons_eta_data->Fill( lep1_eta, lep2_eta, triggerMetMuonElectron/triggerMetMuonElectronSelection );
         }
       }
 
