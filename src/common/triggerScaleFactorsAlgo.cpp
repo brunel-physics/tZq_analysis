@@ -31,10 +31,15 @@
 //Double_t etaBins[] = { -2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4 };
 //Int_t numeta_bins = {13};
 
-Double_t ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
-Int_t numPt_bins{6};
-Double_t etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
-Int_t numeta_bins{4};
+//Double_t ptBins[]{ 15, 20, 25, 30, 40, 120, 200 };
+//Int_t numPt_bins{6};
+//Double_t etaBins[]{ -2.4, -1.2, 0.0, 1.2, 2.4 };
+//Int_t numeta_bins{4};
+
+Double_t ptBins[]{ 0, 15, 20, 25, 35, 60, 80, 100, 200, 300 };
+Int_t numPt_bins{9};
+Double_t etaBins[]{ -2.5, -1.5, -0.8, 0.8, 1.5, 2.5 };
+Int_t numeta_bins{5};
 
 TriggerScaleFactors::TriggerScaleFactors():
 
@@ -81,12 +86,7 @@ TriggerScaleFactors::TriggerScaleFactors():
   p_electron1_eta_data = new TProfile("electron1_eta_data", "; #eta; Efficiency", numeta_bins, etaBins);
   p_electron2_pT_data = new TProfile( "electron2_pT_data",  "; p_{T} (GeV); Efficiency", numPt_bins, ptBins);
   p_electron2_eta_data = new TProfile("electron2_eta_data", "; #eta; Efficiency", numeta_bins, etaBins);
-/*
-  p_electron1_pT_SF = new TProfile( "electron1_pT_SF",   "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_electron1_eta_SF = new TProfile("electron1_eta_SF", "; #eta; SF", numPt_bins, ptBins);
-  p_electron2_pT_SF = new TProfile( "electron2_pT_SF",   "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_electron2_eta_SF = new TProfile("electron2_eta_SF", "; #eta; SF", numPt_bins, ptBins);
-*/
+
   // mumu histos
 
   p_muon1_pT_MC = new TProfile( "muon1_pT_MC", "; p_{T} (GeV); Efficiency", numPt_bins, ptBins);
@@ -98,12 +98,7 @@ TriggerScaleFactors::TriggerScaleFactors():
   p_muon1_eta_data = new TProfile("muon1_eta_data","; #eta; Efficiency", numeta_bins, etaBins);
   p_muon2_pT_data = new TProfile( "muon2_pT_data", "; p_{T} (GeV); Efficiency", numPt_bins, ptBins);
   p_muon2_eta_data = new TProfile("muon2_eta_data","; #eta; Efficiency", numeta_bins, etaBins);
-/*
-  p_muon1_pT_SF = new TProfile( "muon1_pT_SF", "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_muon1_eta_SF = new TProfile("muon1_eta_SF","; #eta; SF", numeta_bins, etaBins);
-  p_muon2_pT_SF = new TProfile( "muon2_pT_SF", "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_muon2_eta_SF = new TProfile("muon2_eta_SF","; #eta; SF", numeta_bins, etaBins);
-*/
+
   // emu histos
 
   p_muonElectron1_pT_MC = new TProfile( "muonElectron1_pT_MC", "; p_{T} (GeV); Efficiency", numPt_bins, ptBins);
@@ -115,12 +110,7 @@ TriggerScaleFactors::TriggerScaleFactors():
   p_muonElectron1_eta_data = new TProfile("muonElectron1_eta_data","; #eta; Efficiency", numeta_bins, etaBins);
   p_muonElectron2_pT_data = new TProfile( "muonElectron2_pT_data", "; p_{T} (GeV); Efficiency", numPt_bins, ptBins);
   p_muonElectron2_eta_data = new TProfile("muonElectron2_eta_data","; #eta; Efficiency", numeta_bins, etaBins);
-/*
-  p_muonElectron1_pT_SF = new TProfile( "muonElectron1_pT_SF", "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_muonElectron1_eta_SF = new TProfile("muonElectron1_eta_SF","; #eta; SF", numeta_bins, etaBins);
-  p_muonElectron2_pT_SF = new TProfile( "muonElectron2_pT_SF", "; p_{T} (GeV); SF", numPt_bins, ptBins);
-  p_muonElectron2_eta_SF = new TProfile("muonElectron2_eta_SF","; #eta; SF", numeta_bins, etaBins);
-*/
+
   // 2D histos
 
   p_electrons_pT_MC      = new TProfile2D("p_electrons_pT_MC",";p_{T,1} (GeV); p_{T,2} (GeV)", numPt_bins, ptBins, numPt_bins, ptBins);
@@ -136,14 +126,7 @@ TriggerScaleFactors::TriggerScaleFactors():
   p_muons_eta_data         = new TProfile2D("p_muons_eta_data",";#eta_{1}; #eta_{2}", numeta_bins, etaBins, numeta_bins, etaBins);
   p_muonElectrons_pT_data  = new TProfile2D("p_muonElectrons_pT_data",";p_{T,e} (GeV); p_{T,#mu} (GeV)", numPt_bins, ptBins, numPt_bins, ptBins);
   p_muonElectrons_eta_data = new TProfile2D("p_muonElectrons_eta_data",";#eta_{e}; #eta_{#mu}", numeta_bins, etaBins, numeta_bins, etaBins);
-/*
-  p_electrons_pT_SF      = new TProfile2D("p_electrons_pT_SF",";p_{T,1} (GeV); p_{T,2} (GeV)", numPt_bins, ptBins, numPt_bins, ptBins);
-  p_electrons_eta_SF     = new TProfile2D("p_electrons_eta_SF",";#eta_{1}; #eta_{2}", numeta_bins, etaBins, numeta_bins, etaBins);
-  p_muons_pT_SF          = new TProfile2D("p_muons_pT_SF",";p_{T,1} (GeV); p_{T,2} (GeV)", numPt_bins, ptBins, numPt_bins, ptBins);
-  p_muons_eta_SF         = new TProfile2D("p_muons_eta_SF",";#eta_{1}; #eta_{2}", numeta_bins, etaBins, numeta_bins, etaBins);
-  p_muonElectrons_pT_SF  = new TProfile2D("p_muonElectrons_pT_SF",";p_{T,e} (GeV); p_{T,#mu} (GeV)", numPt_bins, ptBins, numPt_bins, ptBins);
-  p_muonElectrons_eta_SF = new TProfile2D("p_muonElectrons_eta_SF",";#eta_{e}; #eta_{#mu}", numeta_bins, etaBins, numeta_bins, etaBins);
-*/
+
   muonHltFile1 = new TFile{"scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunBtoF.root"}; //RunsB-F - pre-HIP fix
   muonHltFile2 = new TFile{"scaleFactors/2016/HLT_Mu24_EfficienciesAndSF_RunGtoH.root"}; //RunsB-F - post-HIP fix
   muonHltFile1->cd("IsoMu24_OR_IsoTkMu24_PtEtaBins"); // Single Muon HLT SF
@@ -974,10 +957,10 @@ bool TriggerScaleFactors::passDileptonSelection( AnalysisEvent *event, int nElec
 	TLorentzVector lepton2 = TLorentzVector(event->muonPF2PATPX[muons[j]],event->muonPF2PATPY[muons[j]],event->muonPF2PATPZ[muons[j]],event->muonPF2PATE[muons[j]]);
 	float candidateMass = (lepton1 + lepton2).M();
 	if ( std::abs( (lepton1 + lepton2).Pt() ) > std::abs(pT) ){
-        	event->zPairLeptons.first = lepton1.Pt() > lepton2.Pt()?lepton1:lepton2;
-        	event->zPairIndex.first = lepton1.Pt() > lepton2.Pt() ? electrons[i]:muons[j];
-        	event->zPairLeptons.second = lepton1.Pt() > lepton2.Pt()?lepton2:lepton1;
-        	event->zPairIndex.second = lepton1.Pt() > lepton2.Pt() ? muons[j]:electrons[i];
+        	event->zPairLeptons.first = lepton1;
+        	event->zPairIndex.first = electrons[i];
+        	event->zPairLeptons.second = lepton2;
+        	event->zPairIndex.second = muons[j];
 		invMass = candidateMass;
 		pT = (lepton1 + lepton2).Pt();
 		}
@@ -1804,7 +1787,7 @@ Warning in <TProfile::Divide>: Cannot preserve during the division of profiles t
   TH2D* p_muonElectrons_pT_SF_denom = p_muonElectrons_pT_MC->ProjectionXY();
   p_muonElectrons_pT_SF->Divide(p_muonElectrons_pT_SF_denom);
 
-  p_muonElectrons_eta_SF = p_muonElectrons_eta_data->ProjectionXY("p_muonElectrons_pT_SF");
+  p_muonElectrons_eta_SF = p_muonElectrons_eta_data->ProjectionXY("p_muonElectrons_eta_SF");
   TH2D* p_muonElectrons_eta_SF_denom = p_muonElectrons_eta_MC->ProjectionXY();
   p_muonElectrons_eta_SF->Divide(p_muonElectrons_eta_SF_denom);
 
