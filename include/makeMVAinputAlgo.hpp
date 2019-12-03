@@ -34,9 +34,12 @@ class MakeMvaInputs
     std::pair<TLorentzVector, TLorentzVector>
         sortOutLeptons(const MvaEvent* tree, const std::string& channel) const;
     std::pair<TLorentzVector, TLorentzVector>
-        sortOutHadronicW(const MvaEvent* tree) const;
-    std::pair<std::vector<int>, std::vector<TLorentzVector>>
-        getJets(const MvaEvent* tree, const int syst, TLorentzVector met) const;
+        sortOutHadronicW(const MvaEvent* tree,
+                         const int syst,
+                         TLorentzVector met,
+                         const std::vector<int>& jets) const;
+        std::pair<std::vector<int>, std::vector<TLorentzVector>> getJets(
+            const MvaEvent* tree, const int syst, TLorentzVector met) const;
     std::pair<std::vector<int>, std::vector<TLorentzVector>>
         getBjets(const MvaEvent* tree,
                  const int syst,

@@ -362,7 +362,8 @@ void MakeMvaInputs::standardAnalysis(
                 std::cout << systFormat % channel % syst % nEvents
                                  % (nEvents - nominalEvents[channel])
                                  % (((nEvents - nominalEvents[channel])
-                                    / nominalEvents[channel]) * 100)
+                                     / nominalEvents[channel])
+                                    * 100)
                           << std::endl;
 
                 inFile->Close();
@@ -534,59 +535,85 @@ std::pair<TLorentzVector, TLorentzVector>
     TLorentzVector zLep1;
     TLorentzVector zLep2;
 
-    const int zlep1Index{tree->zLep1Index};
-    const int zlep2Index{tree->zLep2Index};
+    const int zl1Index{tree->zLep1Index};
+    const int zl2Index{tree->zLep2Index};
 
     if (channel == "ee")
     {
-        zLep1.SetPxPyPzE(tree->elePF2PATPX[zlep1Index],
-                         tree->elePF2PATPY[zlep1Index],
-                         tree->elePF2PATPZ[zlep1Index],
-                         tree->elePF2PATE[zlep1Index]);
-        zLep2.SetPxPyPzE(tree->elePF2PATPX[zlep2Index],
-                         tree->elePF2PATPY[zlep2Index],
-                         tree->elePF2PATPZ[zlep2Index],
-                         tree->elePF2PATE[zlep2Index]);
+        zLep1.SetPxPyPzE(tree->elePF2PATPX[zl1Index],
+                         tree->elePF2PATPY[zl1Index],
+                         tree->elePF2PATPZ[zl1Index],
+                         tree->elePF2PATE[zl1Index]);
+        zLep2.SetPxPyPzE(tree->elePF2PATPX[zl2Index],
+                         tree->elePF2PATPY[zl2Index],
+                         tree->elePF2PATPZ[zl2Index],
+                         tree->elePF2PATE[zl2Index]);
     }
-    if (channel == "mumu")
+    else if (channel == "mumu")
     {
-        zLep1.SetPxPyPzE(tree->muonPF2PATPX[zlep1Index],
-                         tree->muonPF2PATPY[zlep1Index],
-                         tree->muonPF2PATPZ[zlep1Index],
-                         tree->muonPF2PATE[zlep1Index]);
-        zLep2.SetPxPyPzE(tree->muonPF2PATPX[zlep2Index],
-                         tree->muonPF2PATPY[zlep2Index],
-                         tree->muonPF2PATPZ[zlep2Index],
-                         tree->muonPF2PATE[zlep2Index]);
+        zLep1.SetPxPyPzE(tree->muonPF2PATPX[zl1Index],
+                         tree->muonPF2PATPY[zl1Index],
+                         tree->muonPF2PATPZ[zl1Index],
+                         tree->muonPF2PATE[zl1Index]);
+        zLep2.SetPxPyPzE(tree->muonPF2PATPX[zl2Index],
+                         tree->muonPF2PATPY[zl2Index],
+                         tree->muonPF2PATPZ[zl2Index],
+                         tree->muonPF2PATE[zl2Index]);
+
+        zLep1 *= tree->muonMomentumSF[0];
+        zLep2 *= tree->muonMomentumSF[1];
     }
-    if (channel == "emu")
+    else if (channel == "emu")
     {
-        zLep1.SetPxPyPzE(tree->elePF2PATPX[zlep1Index],
-                         tree->elePF2PATPY[zlep1Index],
-                         tree->elePF2PATPZ[zlep1Index],
-                         tree->elePF2PATE[zlep1Index]);
-        zLep2.SetPxPyPzE(tree->muonPF2PATPX[zlep2Index],
-                         tree->muonPF2PATPY[zlep2Index],
-                         tree->muonPF2PATPZ[zlep2Index],
-                         tree->muonPF2PATE[zlep2Index]);
+        if (tree->muonLeads)
+        {
+            zLep1.SetPxPyPzE(tree->muonPF2PATPX[zl1Index],
+                    tree->muonPF2PATPY[zl1Index],
+                    tree->muonPF2PATPZ[zl1Index],
+                    tree->muonPF2PATE[zl1Index]);
+            zLep2.SetPxPyPzE(tree->elePF2PATPX[zl2Index],
+                    tree->elePF2PATPY[zl2Index],
+                    tree->elePF2PATPZ[zl2Index],
+                    tree->elePF2PATE[zl2Index]);
+
+            zLep1 *= tree->muonMomentumSF[0];
+        }
+        else
+        {
+            zLep1.SetPxPyPzE(tree->elePF2PATPX[zl1Index],
+                    tree->elePF2PATPY[zl1Index],
+                    tree->elePF2PATPZ[zl1Index],
+                    tree->elePF2PATE[zl1Index]);
+            zLep2.SetPxPyPzE(tree->muonPF2PATPX[zl2Index],
+                    tree->muonPF2PATPY[zl2Index],
+                    tree->muonPF2PATPZ[zl2Index],
+                    tree->muonPF2PATE[zl2Index]);
+
+            zLep2 *= tree->muonMomentumSF[0];
+        }
     }
 
     return {zLep1, zLep2};
 }
 
 std::pair<TLorentzVector, TLorentzVector>
-    MakeMvaInputs::sortOutHadronicW(const MvaEvent* tree) const
+    MakeMvaInputs::sortOutHadronicW(const MvaEvent* tree,
+                                    const int syst,
+                                    TLorentzVector met,
+                                    const std::vector<int>& jets) const
 {
-    TLorentzVector wQuark1;
-    TLorentzVector wQuark2;
-    wQuark1.SetPxPyPzE(tree->jetPF2PATPx[tree->wQuark1Index],
-                       tree->jetPF2PATPy[tree->wQuark1Index],
-                       tree->jetPF2PATPz[tree->wQuark1Index],
-                       tree->jetPF2PATE[tree->wQuark1Index]);
-    wQuark2.SetPxPyPzE(tree->jetPF2PATPx[tree->wQuark2Index],
-                       tree->jetPF2PATPy[tree->wQuark2Index],
-                       tree->jetPF2PATPz[tree->wQuark2Index],
-                       tree->jetPF2PATE[tree->wQuark2Index]);
+    const auto wQuark1{getJetVec(tree,
+                                 jets.at(tree->wQuark1Index),
+                                 tree->jetSmearValue[tree->wQuark1Index],
+                                 met,
+                                 syst,
+                                 false)};
+    const auto wQuark2{getJetVec(tree,
+                                 jets.at(tree->wQuark2Index),
+                                 tree->jetSmearValue[tree->wQuark2Index],
+                                 met,
+                                 syst,
+                                 false)};
 
     return {wQuark1, wQuark2};
 }
@@ -725,138 +752,144 @@ TLorentzVector
 
 void MakeMvaInputs::setupBranches(TTree* tree)
 {
-    tree->Branch("EvtWeight", &inputVars["eventWeight"], "EvtWeight/F");
-    tree->Branch("EvtNumber", &inputVars["eventNumber"], "EvtNumber/F");
-    tree->Branch("mTW", &inputVars["mTW"], "mTW/F");
-    tree->Branch("wQuark1Pt", &inputVars["wQuark1Pt"], "wQuark1Pt/F");
-    tree->Branch("wQuark1Eta", &inputVars["wQuark1Eta"], "wQuark1Eta/F");
-    tree->Branch("wQuark1Phi", &inputVars["wQuark1Phi"], "wQuark1Phi/F");
-    tree->Branch("wQuark2Pt", &inputVars["wQuark2Pt"], "wQuark2Pt/F");
-    tree->Branch("wQuark2Eta", &inputVars["wQuark2Eta"], "wQuark2Eta/F");
-    tree->Branch("wQuark2Phi", &inputVars["wQuark2Phi"], "wQuark2Phi/F");
-    tree->Branch("wPairMass", &inputVars["wPairMass"], "wPairMass/F");
-    tree->Branch("wPairPt", &inputVars["wPairPt"], "wPairPt/F");
-    tree->Branch("wPairEta", &inputVars["wPairEta"], "wPairEta/F");
-    tree->Branch("wPairPhi", &inputVars["wPairPhi"], "wPairPhi/F");
-    tree->Branch("met", &inputVars["met"], "met/F");
-    tree->Branch("nJets", &inputVars["nJets"], "nJets/F");
-    tree->Branch("leadJetPt", &inputVars["leadJetPt"], "leadJetPt/F");
-    tree->Branch("leadJetEta", &inputVars["leadJetEta"], "leadJetEta/F");
-    tree->Branch("leadJetPhi", &inputVars["leadJetPhi"], "leadJetPhi/F");
-    tree->Branch("leadJetbTag", &inputVars["leadJetbTag"], "leadJetbTag/F");
-    tree->Branch("secJetPt", &inputVars["secJetPt"], "secJetPt/F");
-    tree->Branch("secJetEta", &inputVars["secJetEta"], "secJetEta/F");
-    tree->Branch("secJetPhi", &inputVars["secJetPhi"], "secJetPhi/F");
-    tree->Branch("secJetbTag", &inputVars["secJetbTag"], "secJetbTag/F");
-    tree->Branch("thirdJetPt", &inputVars["thirdJetPt"], "thirdJetPt/F");
-    tree->Branch("thirdJetEta", &inputVars["thirdJetEta"], "thirdJetEta/F");
-    tree->Branch("thirdJetPhi", &inputVars["thirdJetPhi"], "thirdJetPhi/F");
-    tree->Branch("thirdJetbTag", &inputVars["thirdJetbTag"], "thirdJetbTag/F");
-    tree->Branch("fourthJetPt", &inputVars["fourthJetPt"], "fourthJetPt/F");
-    tree->Branch("fourthJetEta", &inputVars["fourthJetEta"], "fourthJetEta/F");
-    tree->Branch("fourthJetPhi", &inputVars["fourthJetPhi"], "fourthJetPhi/F");
-    tree->Branch(
-        "fourthJetbTag", &inputVars["fourthJetbTag"], "fourthJetbTag/F");
-    tree->Branch("fifthJetPt", &inputVars["fifthJetPt"], "fifthJetPt/F");
-    tree->Branch("fifthJetEta", &inputVars["fifthJetEta"], "fifthJetEta/F");
-    tree->Branch("fifthJetPhi", &inputVars["fifthJetPhi"], "fifthJetPhi/F");
-    tree->Branch(
-        "fifthJetbTag", &inputVars["fifthJetbTag"], "fifthJetbTag/F");
-    tree->Branch("sixthJetPt", &inputVars["sixthJetPt"], "sixthJetPt/F");
-    tree->Branch("sixthJetEta", &inputVars["sixthJetEta"], "sixthJetEta/F");
-    tree->Branch("sixthJetPhi", &inputVars["sixthJetPhi"], "sixthJetPhi/F");
-    tree->Branch(
-        "sixthJetbTag", &inputVars["sixthJetbTag"], "sixthJetbTag/F");
-    tree->Branch("nBjets", &inputVars["nBjets"], "nBjets/F");
-    tree->Branch("bTagDisc", &inputVars["bTagDisc"], "bTagDisc/F");
-    tree->Branch("lep1Pt", &inputVars["lep1Pt"], "lep1Pt/F");
-    tree->Branch("lep1Eta", &inputVars["lep1Eta"], "lep1Eta/F");
-    tree->Branch("lep1Phi", &inputVars["lep1Phi"], "lep1Phi/F");
-    tree->Branch("lep1RelIso", &inputVars["lep1RelIso"], "lep1RelIso/F");
-    tree->Branch("lep1D0", &inputVars["lep1D0"], "lep1D0/F");
-    tree->Branch("lep2Pt", &inputVars["lep2Pt"], "lep2Pt/F");
-    tree->Branch("lep2Eta", &inputVars["lep2Eta"], "lep2Eta/F");
-    tree->Branch("lep2Phi", &inputVars["lep2Phi"], "lep2Phi/F");
-    tree->Branch("lep2RelIso", &inputVars["lep2RelIso"], "lep2RelIso/F");
-    tree->Branch("lep2D0", &inputVars["lep2D0"], "lep2D0/F");
-    tree->Branch("lepMass", &inputVars["lepMass"], "lepMass/F");
-    tree->Branch("lepPt", &inputVars["lepPt"], "lepPt/F");
-    tree->Branch("lepEta", &inputVars["lepEta"], "lepEta/F");
-    tree->Branch("lepPhi", &inputVars["lepPhi"], "lepPhi/F");
-    tree->Branch("zMass", &inputVars["zMass"], "zMass/F");
-    tree->Branch("zPt", &inputVars["zPt"], "zPt/F");
-    tree->Branch("zEta", &inputVars["zEta"], "zEta/F");
-    tree->Branch("zPhi", &inputVars["zPhi"], "zPhi/F");
-    tree->Branch("topMass", &inputVars["topMass"], "topMass/F");
-    tree->Branch("topPt", &inputVars["topPt"], "topPt/F");
-    tree->Branch("topEta", &inputVars["topEta"], "topEta/F");
-    tree->Branch("topPhi", &inputVars["topPhi"], "topPhi/F");
-    tree->Branch("jjdelR", &inputVars["j1j2delR"], "jjdelR/F");
-    tree->Branch("jjdelPhi", &inputVars["j1j2delPhi"], "jjdelPhi/F");
-    tree->Branch("wwdelR", &inputVars["w1w2delR"], "wwdelR/F");
-    tree->Branch("wwdelPhi", &inputVars["w1w2delPhi"], "wwdelPhi/F");
-    tree->Branch("zLepdelR", &inputVars["zLepdelR"], "zLepdelR/F");
-    tree->Branch("zLepdelPhi", &inputVars["zLepdelPhi"], "zLepdelPhi/F");
-    tree->Branch(
-        "zl1Quark1DelR", &inputVars["zl1Quark1DelR"], "zl1Quark1DelR/F");
-    tree->Branch(
-        "zl1Quark1DelPhi", &inputVars["zl1Quark1DelPhi"], "zl1Quark1DelPhi/F");
-    tree->Branch(
-        "zl1Quark2DelR", &inputVars["zl1Quark2DelR"], "zl1Quark2DelR/F");
-    tree->Branch(
-        "zl1Quark2DelPhi", &inputVars["zl1Quark2DelPhi"], "zl1Quark2DelPhi/F");
-    tree->Branch(
-        "zl2Quark1DelR", &inputVars["zl2Quark1DelR"], "zl2Quark1DelR/F");
-    tree->Branch(
-        "zl2Quark1DelPhi", &inputVars["zl2Quark1DelPhi"], "zl2Quark1DelPhi/F");
-    tree->Branch(
-        "zl2Quark2DelR", &inputVars["zl2Quark2DelR"], "zl2Quark2DelR/F");
-    tree->Branch(
-        "zl2Quark2DelPhi", &inputVars["zl2Quark2DelPhi"], "zl2Quark2DelPhi/F");
-    tree->Branch("zlb1DelR", &inputVars["zlb1DelR"], "zlb1DelR/F");
-    tree->Branch("zlb1DelPhi", &inputVars["zlb1DelPhi"], "zlb1DelPhi/F");
-    tree->Branch("zlb2DelR", &inputVars["zlb2DelR"], "zlb2DelR/F");
-    tree->Branch("zlb2DelPhi", &inputVars["zlb2DelPhi"], "zlb2DelPhi/F");
-    tree->Branch("lepHt", &inputVars["lepHt"], "lepHt/F");
-    tree->Branch("wQuarkHt", &inputVars["wQuarkHt"], "wQuarkHt/F");
-    tree->Branch("totPt", &inputVars["totPt"], "totPt/F");
-    tree->Branch("totEta", &inputVars["totEta"], "totEta/F");
-    tree->Branch("totPhi", &inputVars["totPhi"], "totPhi/F");
-    tree->Branch("totPtVec", &inputVars["totPtVec"], "totPtVec/F");
-    tree->Branch("totVecM", &inputVars["totVecM"], "totVecM/F");
     tree->Branch("Channel", &inputVars["chan"], "Channel/F");
-    tree->Branch("totPt2Jet", &inputVars["totPt2Jet"], "totPt2Jet/F");
-    tree->Branch("wzdelR", &inputVars["wZdelR"], "wzdelR/F");
-    tree->Branch("wzdelPhi", &inputVars["wZdelPhi"], "wzdelPhi/F");
-    tree->Branch("zQuark1DelR", &inputVars["zQuark1DelR"], "zQuark1DelR/F");
-    tree->Branch(
-        "zQuark1DelPhi", &inputVars["zQuark1DelPhi"], "zQuark1DelPhi/F");
-    tree->Branch("zQuark2DelR", &inputVars["zQuark2DelR"], "zQuark2DelR/F");
-    tree->Branch(
-        "zQuark2DelPhi", &inputVars["zQuark2DelPhi"], "zQuark2DelPhi/F");
-    tree->Branch("zTopDelR", &inputVars["zTopDelR"], "zTopDelR/F");
-    tree->Branch("zTopDelPhi", &inputVars["zTopDelPhi"], "zTopDelPhi/F");
-    tree->Branch("zl1TopDelR", &inputVars["zl1TopDelR"], "zl1TopDelR/F");
-    tree->Branch("zl1TopDelPhi", &inputVars["zl1TopDelPhi"], "zl1TopDelPhi/F");
-    tree->Branch("zl2TopDelR", &inputVars["zl2TopDelR"], "zl2TopDelR/F");
-    tree->Branch("zl2TopDelPhi", &inputVars["zl2TopDelPhi"], "zl2TopDelPhi/F");
-    tree->Branch("wTopDelR", &inputVars["wTopDelR"], "wTopDelR/F");
-    tree->Branch("wTopDelPhi", &inputVars["wTopDelPhi"], "wTopDelPhi/F");
-    tree->Branch("w1TopDelR", &inputVars["w1TopDelR"], "w1TopDelR/F");
-    tree->Branch("w1TopDelPhi", &inputVars["w1TopDelPhi"], "w1TopDelPhi/F");
-    tree->Branch("w2TopDelR", &inputVars["w2TopDelR"], "w2TopDelR/F");
-    tree->Branch("w2TopDelPhi", &inputVars["w2TopDelPhi"], "w2TopDelPhi/F");
-    tree->Branch("zjminR", &inputVars["minZJetR"], "zjminR/F");
-    tree->Branch("zjminPhi", &inputVars["minZJetPhi"], "zjminPhi/F");
-    tree->Branch("totHt", &inputVars["totHt"], "totHt/F");
-    tree->Branch("jetHt", &inputVars["jetHt"], "jetHt/F");
-    tree->Branch("jetMass", &inputVars["jetMass"], "jetMass/F");
-    tree->Branch("jetPt", &inputVars["jetPt"], "jetPt/F");
-    tree->Branch("jetEta", &inputVars["jetEta"], "jetEta/F");
-    tree->Branch("jetPhi", &inputVars["jetPhi"], "jetPhi/F");
-    tree->Branch("jetMass3", &inputVars["jetMass3"], "jetMass3/F");
-    tree->Branch("totHtOverPt", &inputVars["totHtOverPt"], "totHtOverPt/F");
+    tree->Branch("EvtNumber", &inputVars["eventNumber"], "EvtNumber/F");
+    tree->Branch("EvtWeight", &inputVars["eventWeight"], "EvtWeight/F");
+    tree->Branch("bEta", &inputVars["bEta"], "bEta/F");
+    tree->Branch("bPhi", &inputVars["bPhi"], "bPhi/F");
+    tree->Branch("bPt", &inputVars["bPt"], "bPt/F");
+    tree->Branch("bbTag", &inputVars["bbTag"], "bbTag/F");
     tree->Branch("chi2", &inputVars["chi2"], "chi2/F");
+    tree->Branch("j1Eta", &inputVars["j1Eta"], "j1Eta/F");
+    tree->Branch("j1Phi", &inputVars["j1Phi"], "j1Phi/F");
+    tree->Branch("j1Pt", &inputVars["j1Pt"], "j1Pt/F");
+    tree->Branch("j1bDelR", &inputVars["j1bDelR"], "j1bDelR/F");
+    tree->Branch("j1bTag", &inputVars["j1bTag"], "j1bTag/F");
+    tree->Branch("j1j2DelR", &inputVars["j1j2DelR"], "j1j2DelR/F");
+    tree->Branch("j1j3DelR", &inputVars["j1j3DelR"], "j1j3DelR/F");
+    tree->Branch("j1j4DelR", &inputVars["j1j4DelR"], "j1j4DelR/F");
+    tree->Branch("j1l1DelR", &inputVars["j1l1DelR"], "j1l1DelR/F");
+    tree->Branch("j1l2DelR", &inputVars["j1l2DelR"], "j1l2DelR/F");
+    tree->Branch("j1tDelR", &inputVars["j1tDelR"], "j1tDelR/F");
+    tree->Branch("j1wDelR", &inputVars["j1wDelR"], "j1wDelR/F");
+    tree->Branch("j1wj1DelR", &inputVars["j1wj1DelR"], "j1wj1DelR/F");
+    tree->Branch("j1wj2DelR", &inputVars["j1wj2DelR"], "j1wj2DelR/F");
+    tree->Branch("j1zDelR", &inputVars["j1zDelR"], "j1zDelR/F");
+    tree->Branch("j2Eta", &inputVars["j2Eta"], "j2Eta/F");
+    tree->Branch("j2Phi", &inputVars["j2Phi"], "j2Phi/F");
+    tree->Branch("j2Pt", &inputVars["j2Pt"], "j2Pt/F");
+    tree->Branch("j2bDelR", &inputVars["j2bDelR"], "j2bDelR/F");
+    tree->Branch("j2bTag", &inputVars["j2bTag"], "j2bTag/F");
+    tree->Branch("j2j3DelR", &inputVars["j2j3DelR"], "j2j3DelR/F");
+    tree->Branch("j2j4DelR", &inputVars["j2j4DelR"], "j2j4DelR/F");
+    tree->Branch("j2l1DelR", &inputVars["j2l1DelR"], "j2l1DelR/F");
+    tree->Branch("j2l2DelR", &inputVars["j2l2DelR"], "j2l2DelR/F");
+    tree->Branch("j2tDelR", &inputVars["j2tDelR"], "j2tDelR/F");
+    tree->Branch("j2wDelR", &inputVars["j2wDelR"], "j2wDelR/F");
+    tree->Branch("j2wj1DelR", &inputVars["j2wj1DelR"], "j2wj1DelR/F");
+    tree->Branch("j2wj2DelR", &inputVars["j2wj2DelR"], "j2wj2DelR/F");
+    tree->Branch("j2zDelR", &inputVars["j2zDelR"], "j2zDelR/F");
+    tree->Branch("j3Eta", &inputVars["j3Eta"], "j3Eta/F");
+    tree->Branch("j3Phi", &inputVars["j3Phi"], "j3Phi/F");
+    tree->Branch("j3Pt", &inputVars["j3Pt"], "j3Pt/F");
+    tree->Branch("j3bDelR", &inputVars["j3bDelR"], "j3bDelR/F");
+    tree->Branch("j3bTag", &inputVars["j3bTag"], "j3bTag/F");
+    tree->Branch("j3j4DelR", &inputVars["j3j4DelR"], "j3j4DelR/F");
+    tree->Branch("j3l1DelR", &inputVars["j3l1DelR"], "j3l1DelR/F");
+    tree->Branch("j3l2DelR", &inputVars["j3l2DelR"], "j3l2DelR/F");
+    tree->Branch("j3tDelR", &inputVars["j3tDelR"], "j3tDelR/F");
+    tree->Branch("j3wDelR", &inputVars["j3wDelR"], "j3wDelR/F");
+    tree->Branch("j3wj1DelR", &inputVars["j3wj1DelR"], "j3wj1DelR/F");
+    tree->Branch("j3wj2DelR", &inputVars["j3wj2DelR"], "j3wj2DelR/F");
+    tree->Branch("j3zDelR", &inputVars["j3zDelR"], "j3zDelR/F");
+    tree->Branch("j4Eta", &inputVars["j4Eta"], "j4Eta/F");
+    tree->Branch("j4Phi", &inputVars["j4Phi"], "j4Phi/F");
+    tree->Branch("j4Pt", &inputVars["j4Pt"], "j4Pt/F");
+    tree->Branch("j4bDelR", &inputVars["j4bDelR"], "j4bDelR/F");
+    tree->Branch("j4bTag", &inputVars["j4bTag"], "j4bTag/F");
+    tree->Branch("j4l1DelR", &inputVars["j4l1DelR"], "j4l1DelR/F");
+    tree->Branch("j4l2DelR", &inputVars["j4l2DelR"], "j4l2DelR/F");
+    tree->Branch("j4tDelR", &inputVars["j4tDelR"], "j4tDelR/F");
+    tree->Branch("j4wDelR", &inputVars["j4wDelR"], "j4wDelR/F");
+    tree->Branch("j4wj1DelR", &inputVars["j4wj1DelR"], "j4wj1DelR/F");
+    tree->Branch("j4wj2DelR", &inputVars["j4wj2DelR"], "j4wj2DelR/F");
+    tree->Branch("j4zDelR", &inputVars["j4zDelR"], "j4zDelR/F");
+    tree->Branch("j5Eta", &inputVars["j5Eta"], "j5Eta/F");
+    tree->Branch("j5Phi", &inputVars["j5Phi"], "j5Phi/F");
+    tree->Branch("j5Pt", &inputVars["j5Pt"], "j5Pt/F");
+    tree->Branch("j5bTag", &inputVars["j5bTag"], "j5bTag/F");
+    tree->Branch("j6Eta", &inputVars["j6Eta"], "j6Eta/F");
+    tree->Branch("j6Phi", &inputVars["j6Phi"], "j6Phi/F");
+    tree->Branch("j6Pt", &inputVars["j6Pt"], "j6Pt/F");
+    tree->Branch("j6bTag", &inputVars["j6bTag"], "j6bTag/F");
+    tree->Branch("jetMass", &inputVars["jetMass"], "jetMass/F");
+    tree->Branch("jetMass3", &inputVars["jetMass3"], "jetMass3/F");
+    tree->Branch("jetMt", &inputVars["jetMt"], "jetMt/F");
+    tree->Branch("jetPt", &inputVars["jetPt"], "jetPt/F");
+    tree->Branch("l1D0", &inputVars["l1D0"], "l1D0/F");
+    tree->Branch("l1Eta", &inputVars["l1Eta"], "l1Eta/F");
+    tree->Branch("l1Phi", &inputVars["l1Phi"], "l1Phi/F");
+    tree->Branch("l1Pt", &inputVars["l1Pt"], "l1Pt/F");
+    tree->Branch("l1RelIso", &inputVars["l1RelIso"], "l1RelIso/F");
+    tree->Branch("l1bDelR", &inputVars["l1bDelR"], "l1bDelR/F");
+    tree->Branch("l1tDelR", &inputVars["l1tDelR"], "l1tDelR/F");
+    tree->Branch("l1wj1DelR", &inputVars["l1wj1DelR"], "l1wj1DelR/F");
+    tree->Branch("l1wj2DelR", &inputVars["l1wj2DelR"], "l1wj2DelR/F");
+    tree->Branch("l2D0", &inputVars["l2D0"], "l2D0/F");
+    tree->Branch("l2DelR", &inputVars["l2DelR"], "l2DelR/F");
+    tree->Branch("l2Eta", &inputVars["l2Eta"], "l2Eta/F");
+    tree->Branch("l2Phi", &inputVars["l2Phi"], "l2Phi/F");
+    tree->Branch("l2Pt", &inputVars["l2Pt"], "l2Pt/F");
+    tree->Branch("l2RelIso", &inputVars["l2RelIso"], "l2RelIso/F");
+    tree->Branch("l2bDelR", &inputVars["l2bDelR"], "l2bDelR/F");
+    tree->Branch("l2tDelR", &inputVars["l2tDelR"], "l2tDelR/F");
+    tree->Branch("l2wj1DelR", &inputVars["l2wj1DelR"], "l2wj1DelR/F");
+    tree->Branch("l2wj2DelR", &inputVars["l2wj2DelR"], "l2wj2DelR/F");
+    tree->Branch("met", &inputVars["met"], "met/F");
+    tree->Branch("nBjets", &inputVars["nBjets"], "nBjets/F");
+    tree->Branch("nJets", &inputVars["nJets"], "nJets/F");
+    tree->Branch("tEta", &inputVars["tEta"], "tEta/F");
+    tree->Branch("tMass", &inputVars["tMass"], "tMass/F");
+    tree->Branch("tMt", &inputVars["tMt"], "tMt/F");
+    tree->Branch("tPhi", &inputVars["tPhi"], "tPhi/F");
+    tree->Branch("tPt", &inputVars["tPt"], "tPt/F");
+    tree->Branch("tbDelR", &inputVars["tbDelR"], "tbDelR/F");
+    tree->Branch("totMass", &inputVars["totMass"], "toMass/F");
+    tree->Branch("totMt", &inputVars["totMt"], "totMt/F");
+    tree->Branch("totPt", &inputVars["totPt"], "totPt/F");
+    tree->Branch("wEta", &inputVars["wEta"], "wEta/F");
+    tree->Branch("wMass", &inputVars["wMass"], "wMass/F");
+    tree->Branch("wMt", &inputVars["wMt"], "wMt/F");
+    tree->Branch("wPhi", &inputVars["wPhi"], "wPhi/F");
+    tree->Branch("wPt", &inputVars["wPt"], "wPt/F");
+    tree->Branch("wbDelR", &inputVars["wbDelR"], "wbDelR/F");
+    tree->Branch("wj1DelR", &inputVars["wj1DelR"], "wj1DelR/F");
+    tree->Branch("wj1Eta", &inputVars["wj1Eta"], "wj1Eta/F");
+    tree->Branch("wj1Phi", &inputVars["wj1Phi"], "wj1Phi/F");
+    tree->Branch("wj1Pt", &inputVars["wj1Pt"], "wj1Pt/F");
+    tree->Branch("wj1bDelR", &inputVars["wj1bDelR"], "wj1bDelR/F");
+    tree->Branch("wj1tDelR", &inputVars["wj1tDelR"], "wj1tDelR/F");
+    tree->Branch("wj2DelR", &inputVars["wj2DelR"], "wj2DelR/F");
+    tree->Branch("wj2Eta", &inputVars["wj2Eta"], "wj2Eta/F");
+    tree->Branch("wj2Phi", &inputVars["wj2Phi"], "wj2Phi/F");
+    tree->Branch("wj2Pt", &inputVars["wj2Pt"], "wj2Pt/F");
+    tree->Branch("wj2bDelR", &inputVars["wj2bDelR"], "wj2bDelR/F");
+    tree->Branch("wj2tDelR", &inputVars["wj2tDelR"], "wj2tDelR/F");
+    tree->Branch("wtDelR", &inputVars["wtDelR"], "wtDelR/F");
+    tree->Branch("wwDelR", &inputVars["w1w2DelR"], "wwDelR/F");
+    tree->Branch("wzDelR", &inputVars["wZDelR"], "wzDelR/F");
+    tree->Branch("zEta", &inputVars["zEta"], "zEta/F");
+    tree->Branch("zMass", &inputVars["zMass"], "zMass/F");
+    tree->Branch("zMt", &inputVars["zMt"], "zMt/F");
+    tree->Branch("zPhi", &inputVars["zPhi"], "zPhi/F");
+    tree->Branch("zPt", &inputVars["zPt"], "zPt/F");
+    tree->Branch("zbDelR", &inputVars["zbDelR"], "zbDelR/F");
+    tree->Branch("zjMaxR", &inputVars["zjMaxR"], "zjMaxR/F");
+    tree->Branch("zjMinR", &inputVars["zjMinR"], "zjMinR/F");
+    tree->Branch("ztDelR", &inputVars["ztDelR"], "ztDelR/F");
+    tree->Branch("zwj1DelR", &inputVars["zwj1DelR"], "zwj1DelR/F");
+    tree->Branch("zwj2DelR", &inputVars["zwj2DelR"], "zwj2DelR/F");
+    tree->Branch("zzDelR", &inputVars["zzDelR"], "zzDelR/F");
 }
 
 void MakeMvaInputs::fillTree(TTree* outTreeSig,
@@ -939,7 +972,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     const std::vector<TLorentzVector> bJetVecs{bJetPair.second};
 
     const std::pair<TLorentzVector, TLorentzVector> wQuarkPair{
-        sortOutHadronicW(tree)};
+        sortOutHadronicW(tree, syst, metVec, jets)};
     const TLorentzVector wQuark1{wQuarkPair.first};
     const TLorentzVector wQuark2{wQuarkPair.second};
 
@@ -968,268 +1001,241 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
         inputVars.at("eventWeight") = tree->eventWeight;
     }
 
-    inputVars.at("leadJetPt") = jetVecs[0].Pt();
-    inputVars.at("leadJetEta") = jetVecs[0].Eta();
-    inputVars.at("leadJetPhi") = jetVecs[0].Phi();
+    inputVars.at("j1Pt") = jetVecs[0].Pt();
+    inputVars.at("j1Eta") = jetVecs[0].Eta();
+    inputVars.at("j1Phi") = jetVecs[0].Phi();
 
-    float totPx{0.0};
-    float totPy{0.0};
+    inputVars.at("l1Pt") = zLep1.Pt();
+    inputVars.at("l1Eta") = zLep1.Eta();
+    inputVars.at("l1Phi") = zLep1.Phi();
+    inputVars.at("l2Pt") = zLep2.Pt();
+    inputVars.at("l2Eta") = zLep2.Eta();
+    inputVars.at("l2Phi") = zLep2.Phi();
 
-    totPx += zLep1.Px() + zLep2.Px();
-    totPy += zLep1.Py() + zLep2.Py();
-    inputVars.at("lep1Pt") = zLep1.Pt();
-    inputVars.at("lep1Eta") = zLep1.Eta();
-    inputVars.at("lep1Phi") = zLep1.Phi();
-    inputVars.at("lep2Pt") = zLep2.Pt();
-    inputVars.at("lep2Eta") = zLep2.Eta();
-    inputVars.at("lep2Phi") = zLep2.Phi();
+    const TLorentzVector zVec{zLep1 + zLep2};
+    inputVars.at("zMass") = zVec.M();
+    // if (abs(zVec.M() - 91.1876) > 100)
+    // {
+    //     std::cout << tree->muonLeads << '\t' << zVec.M() << std::endl;;
+    // }
+    inputVars.at("zPt") = zVec.Pt();
+    inputVars.at("zEta") = zVec.Eta();
+    inputVars.at("zPhi") = zVec.Phi();
+    inputVars.at("zMt") = zVec.Mt();
+
+    const TLorentzVector wVec{wQuark1 + wQuark2};
+    const double wMass{(wQuark1 + wQuark2).M()};
+    inputVars.at("wMass") = wMass;
+    inputVars.at("wPt") = wVec.Pt();
+    inputVars.at("wEta") = wVec.Eta();
+    inputVars.at("wPhi") = wVec.Phi();
+
+    const TLorentzVector tVec{bJetVecs[0] + wVec};
+    const double topMass{tVec.M()};
+    inputVars.at("tMass") = topMass;
+    inputVars.at("tMt") = tVec.Mt();
+    inputVars.at("tPt") = tVec.Pt();
+    inputVars.at("tEta") = tVec.Eta();
+    inputVars.at("tPhi") = tVec.Phi();
 
     if (channel == "ee")
     {
-        inputVars.at("lep1RelIso") =
+        inputVars.at("l1RelIso") =
             tree->elePF2PATComRelIsoRho[tree->zLep1Index];
-        inputVars.at("lep1D0") = tree->elePF2PATD0PV[tree->zLep1Index];
-        inputVars.at("lep2RelIso") =
+        inputVars.at("l1D0") = tree->elePF2PATD0PV[tree->zLep1Index];
+        inputVars.at("l2RelIso") =
             tree->elePF2PATComRelIsoRho[tree->zLep2Index];
-        inputVars.at("lep2D0") = tree->elePF2PATD0PV[tree->zLep2Index];
+        inputVars.at("l2D0") = tree->elePF2PATD0PV[tree->zLep2Index];
     }
     if (channel == "mumu")
     {
-        inputVars.at("lep1RelIso") =
+        inputVars.at("l1RelIso") =
             tree->muonPF2PATComRelIsodBeta[tree->zLep1Index];
-        inputVars.at("lep1D0") = tree->muonPF2PATDBPV[tree->zLep1Index];
-        inputVars.at("lep2RelIso") =
+        inputVars.at("l1D0") = tree->muonPF2PATDBPV[tree->zLep1Index];
+        inputVars.at("l2RelIso") =
             tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
-        inputVars.at("lep2D0") = tree->muonPF2PATDBPV[tree->zLep2Index];
+        inputVars.at("l2D0") = tree->muonPF2PATDBPV[tree->zLep2Index];
     }
     if (channel == "emu")
     {
-        inputVars.at("lep1RelIso") =
+        inputVars.at("l1RelIso") =
             tree->elePF2PATComRelIsoRho[tree->zLep1Index];
-        inputVars.at("lep1D0") = tree->elePF2PATD0PV[tree->zLep1Index];
-        inputVars.at("lep2RelIso") =
+        inputVars.at("l1D0") = tree->elePF2PATD0PV[tree->zLep1Index];
+        inputVars.at("l2RelIso") =
             tree->muonPF2PATComRelIsodBeta[tree->zLep2Index];
-        inputVars.at("lep2D0") = tree->muonPF2PATDBPV[tree->zLep2Index];
+        inputVars.at("l2D0") = tree->muonPF2PATDBPV[tree->zLep2Index];
     }
 
-    inputVars.at("lepMass") = (zLep1 + zLep2).M();
-    inputVars.at("lepPt") = std::sqrt(totPx * totPx + totPy * totPy);
-    inputVars.at("lepEta") = (zLep1 + zLep2).Eta();
-    inputVars.at("lepPhi") = (zLep1 + zLep2).Phi();
-    inputVars.at("wQuark1Pt") = wQuark1.Pt();
-    inputVars.at("wQuark1Eta") = wQuark1.Eta();
-    inputVars.at("wQuark1Phi") = wQuark1.Phi();
-    inputVars.at("wQuark2Pt") = wQuark2.Pt();
-    inputVars.at("wQuark2Eta") = wQuark2.Eta();
-    inputVars.at("wQuark2Phi") = wQuark2.Phi();
+    inputVars.at("wj1Pt") = wQuark1.Pt();
+    inputVars.at("wj1Eta") = wQuark1.Eta();
+    inputVars.at("wj1Phi") = wQuark1.Phi();
+    inputVars.at("wj2Pt") = wQuark2.Pt();
+    inputVars.at("wj2Eta") = wQuark2.Eta();
+    inputVars.at("wj2Phi") = wQuark2.Phi();
 
-    const double wPairMass{(wQuark1 + wQuark2).M()};
-    inputVars.at("wPairMass") = wPairMass;
-    inputVars.at("wPairPt") = (wQuark1 + wQuark2).Pt();
-    inputVars.at("wPairEta") = (wQuark1 + wQuark2).Eta();
-    inputVars.at("wPairPhi") = (wQuark1 + wQuark2).Phi();
-    totPx += jetVecs[0].Px();
-    totPy += jetVecs[0].Py();
-
-    if (jetVecs.size() > 1)
-    {
-        totPx += jetVecs[1].Px();
-        totPy += jetVecs[1].Py();
-    }
-    inputVars.at("totPt2Jet") = std::sqrt(totPx * totPx + totPy * totPy);
-
-    for (unsigned i{2}; i != jetVecs.size(); i++)
-    {
-        totPx += jetVecs[i].Px();
-        totPy += jetVecs[i].Py();
-    }
-
-    inputVars.at("totPt") = std::sqrt(totPx * totPx + totPy * totPy);
-    TLorentzVector totVec{zLep1 + zLep2};
-
+    TLorentzVector totVec{zVec};
     for (const auto& jetVec : jetVecs)
     {
         totVec += jetVec;
     }
 
-    inputVars.at("totEta") = totVec.Eta();
-    inputVars.at("totEta") = totVec.Phi();
-    inputVars.at("totPtVec") = totVec.Pt();
-    inputVars.at("totVecM") = totVec.M();
-    inputVars.at("mTW") =
-        std::sqrt(2 * tree->jetPF2PATPt[tree->wQuark1Index]
-                  * tree->jetPF2PATPt[tree->wQuark2Index]
-                  * (1
-                     - cos(tree->jetPF2PATPhi[tree->wQuark1Index]
-                           - tree->jetPF2PATPhi[tree->wQuark2Index])));
+    inputVars.at("totPt") = totVec.Pt();
+    inputVars.at("totMass") = totVec.M();
+    inputVars.at("totMt") = totVec.Mt();
+    inputVars.at("wMt") = wVec.Mt();
     inputVars.at("nJets") = boost::numeric_cast<float>(jets.size());
     inputVars.at("nBjets") = boost::numeric_cast<float>(bJets.size());
-    inputVars.at("met") = metVec.Pt();
-    inputVars.at("bTagDisc") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[bJets[0]]];
-    inputVars.at("leadJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[0]];
-    inputVars.at("secJetbTag") = 0;
-    inputVars.at("secJetPt") = 0;
-    inputVars.at("secJetEta") = 0;
-    inputVars.at("secJetPhi") = 0;
-    inputVars.at("thirdJetbTag") = 0;
-    inputVars.at("thirdJetPt") = 0;
-    inputVars.at("thirdJetEta") = 0;
-    inputVars.at("thirdJetPhi") = 0;
-    inputVars.at("fourthJetbTag") = 0;
-    inputVars.at("fourthJetPt") = 0;
-    inputVars.at("fourthJetEta") = 0;
-    inputVars.at("fourthJetPhi") = 0;
+    inputVars.at("met") = metVec.Et();
+
+    inputVars.at("bbTag") =
+        tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+            [jets[bJets[0]]];
+    inputVars.at("bPt") = bJetVecs[0].Pt();
+    inputVars.at("bEta") = bJetVecs[0].Eta();
+    inputVars.at("bPhi") = bJetVecs[0].Phi();
+
+    inputVars.at("j1bTag") =
+        tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[0]];
+    inputVars.at("j2bTag") = 0;
+    inputVars.at("j2Pt") = 0;
+    inputVars.at("j2Eta") = 0;
+    inputVars.at("j2Phi") = 0;
+    inputVars.at("j3bTag") = 0;
+    inputVars.at("j3Pt") = 0;
+    inputVars.at("j3Eta") = 0;
+    inputVars.at("j3Phi") = 0;
+    inputVars.at("j4bTag") = 0;
+    inputVars.at("j4Pt") = 0;
+    inputVars.at("j4Eta") = 0;
+    inputVars.at("j4Phi") = 0;
 
     if (jetVecs.size() > 1)
     {
-        inputVars.at("secJetPt") = jetVecs[1].Pt();
-        inputVars.at("secJetEta") = jetVecs[1].Eta();
-        inputVars.at("secJetPhi") = jetVecs[1].Phi();
-        inputVars.at("secJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[1]];
+        inputVars.at("j2Pt") = jetVecs[1].Pt();
+        inputVars.at("j2Eta") = jetVecs[1].Eta();
+        inputVars.at("j2Phi") = jetVecs[1].Phi();
+        inputVars.at("j2bTag") =
+            tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[1]];
     }
     if (jetVecs.size() > 2)
     {
-        inputVars.at("thirdJetPt") = jetVecs[2].Pt();
-        inputVars.at("thirdJetEta") = jetVecs[2].Eta();
-        inputVars.at("thirdJetPhi") = jetVecs[2].Phi();
-        inputVars.at("thirdJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[2]];
+        inputVars.at("j3Pt") = jetVecs[2].Pt();
+        inputVars.at("j3Eta") = jetVecs[2].Eta();
+        inputVars.at("j3Phi") = jetVecs[2].Phi();
+        inputVars.at("j3bTag") =
+            tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[2]];
     }
     if (jetVecs.size() > 3)
     {
-        inputVars.at("fourthJetPt") = jetVecs[3].Pt();
-        inputVars.at("fourthJetEta") = jetVecs[3].Eta();
-        inputVars.at("fourthJetPhi") = jetVecs[3].Phi();
-        inputVars.at("fourthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[3]];
+        inputVars.at("j4Pt") = jetVecs[3].Pt();
+        inputVars.at("j4Eta") = jetVecs[3].Eta();
+        inputVars.at("j4Phi") = jetVecs[3].Phi();
+        inputVars.at("j4bTag") =
+            tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[3]];
     }
     if (jetVecs.size() > 4)
     {
-        inputVars.at("fifthJetPt") = jetVecs[4].Pt();
-        inputVars.at("fifthJetEta") = jetVecs[4].Eta();
-        inputVars.at("fifthJetPhi") = jetVecs[4].Phi();
-        inputVars.at("fifthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[4]];
+        inputVars.at("j5Pt") = jetVecs[4].Pt();
+        inputVars.at("j5Eta") = jetVecs[4].Eta();
+        inputVars.at("j5Phi") = jetVecs[4].Phi();
+        inputVars.at("j5bTag") =
+            tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[4]];
     }
     if (jetVecs.size() > 5)
     {
-        inputVars.at("sixthJetPt") = jetVecs[5].Pt();
-        inputVars.at("sixthJetEta") = jetVecs[5].Eta();
-        inputVars.at("sixthJetPhi") = jetVecs[5].Phi();
-        inputVars.at("sixthJetbTag") = tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags[jets[5]];
+        inputVars.at("j6Pt") = jetVecs[5].Pt();
+        inputVars.at("j6Eta") = jetVecs[5].Eta();
+        inputVars.at("j6Phi") = jetVecs[5].Phi();
+        inputVars.at("j6bTag") =
+            tree->jetPF2PATpfCombinedInclusiveSecondaryVertexV2BJetTags
+                [jets[5]];
     }
 
-    const double topMass{(bJetVecs[0] + wQuark1 + wQuark2).M()};
-    inputVars.at("topMass") = topMass;
-    inputVars.at("topPt") = (bJetVecs[0] + wQuark1 + wQuark2).Pt();
-    inputVars.at("topEta") = (bJetVecs[0] + wQuark1 + wQuark2).Eta();
-    inputVars.at("topPhi") = (bJetVecs[0] + wQuark1 + wQuark2).Phi();
-    inputVars.at("wZdelR") = (zLep2 + zLep1).DeltaR(wQuark1 + wQuark2);
-    inputVars.at("wZdelPhi") = (zLep2 + zLep1).DeltaPhi(wQuark1 + wQuark2);
+    inputVars.at("wZDelR") = zVec.DeltaR(wVec);
 
-    inputVars.at("zQuark1DelR") = (zLep2 + zLep1).DeltaR(wQuark1);
-    inputVars.at("zQuark1DelPhi") = (zLep2 + zLep1).DeltaPhi(wQuark1);
-    inputVars.at("zQuark2DelR") = (zLep2 + zLep1).DeltaR(wQuark2);
-    inputVars.at("zQuark2DelPhi") = (zLep2 + zLep1).DeltaPhi(wQuark2);
+    inputVars.at("zwj1DelR") = zVec.DeltaR(wQuark1);
+    inputVars.at("zwj2DelR") = zVec.DeltaR(wQuark2);
 
-    inputVars.at("zTopDelR") =
-        (zLep2 + zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("zTopDelPhi") =
-        (zLep2 + zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("zl1TopDelR") =
-        (zLep1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("zl1TopDelPhi") =
-        (zLep1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("zl2TopDelR") =
-        (zLep2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("zl2TopDelPhi") =
-        (zLep2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+    inputVars.at("ztDelR") = zVec.DeltaR(tVec);
+    inputVars.at("l1tDelR") = zLep1.DeltaR(tVec);
+    inputVars.at("l2tDelR") = zLep2.DeltaR(tVec);
 
-    inputVars.at("wTopDelR") =
-        (wQuark1 + wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("wTopDelPhi") =
-        (wQuark1 + wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("w1TopDelR") =
-        (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("w1TopDelR") =
-        (wQuark1).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("w1TopDelPhi") =
-        (wQuark1).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("w2TopDelR") =
-        (wQuark2).DeltaR(bJetVecs[0] + wQuark1 + wQuark2);
-    inputVars.at("w2TopDelPhi") =
-        (wQuark2).DeltaPhi(bJetVecs[0] + wQuark1 + wQuark2);
+    inputVars.at("wtDelR") = wVec.DeltaR(tVec);
+    inputVars.at("wj1tDelR") = wQuark1.DeltaR(tVec);
+    inputVars.at("wj1tDelR") = wQuark1.DeltaPhi(tVec);
+    inputVars.at("wj2tDelR") = wQuark2.DeltaR(tVec);
 
-    inputVars.at("j1j2delR") = NaN;
-    inputVars.at("j1j2delPhi") = NaN;
+    inputVars.at("wtDelR") = wVec.DeltaR(tVec);
 
-    if (jetVecs.size() > 1)
+    inputVars.at("zbDelR") = zVec.DeltaR(bJetVecs[0]);
+    inputVars.at("tbDelR") = tVec.DeltaR(bJetVecs[0]);
+    inputVars.at("wbDelR") = wVec.DeltaR(bJetVecs[0]);
+    inputVars.at("wj1bDelR") = wQuark1.DeltaR(bJetVecs[0]);
+    inputVars.at("wj2bDelR") = wQuark2.DeltaR(bJetVecs[0]);
+    inputVars.at("l1bDelR") = zLep1.DeltaR(bJetVecs[0]);
+    inputVars.at("l2bDelR") = zLep2.DeltaR(bJetVecs[0]);
+
+    for (unsigned i{0}; i < 4; i++)
     {
-        inputVars.at("j1j2delR") = jetVecs[0].DeltaR(jetVecs[1]);
-        inputVars.at("j1j2delPhi") = jetVecs[0].DeltaPhi(jetVecs[1]);
+        for (unsigned j{i + 1}; j < 4; j++)
+        {
+            inputVars.at("j" + std::to_string(i + 1) + "j"
+                         + std::to_string(j + 1) + "DelR") =
+                jetVecs.at(i).DeltaR(jetVecs.at(j));
+        }
+        inputVars.at("j" + std::to_string(i + 1) + "bDelR") =
+            jetVecs.at(i).DeltaR(bJetVecs.at(0));
+        inputVars.at("j" + std::to_string(i + 1) + "tDelR") =
+            jetVecs.at(i).DeltaR(tVec);
+
+        inputVars.at("j" + std::to_string(i + 1) + "l1DelR") =
+            jetVecs.at(i).DeltaR(zLep1);
+        inputVars.at("j" + std::to_string(i + 1) + "l2DelR") =
+            jetVecs.at(i).DeltaR(zLep2);
+        inputVars.at("j" + std::to_string(i + 1) + "zDelR") =
+            jetVecs.at(i).DeltaR(zVec);
+
+        inputVars.at("j" + std::to_string(i + 1) + "wj1DelR") =
+            jetVecs.at(i).DeltaR(wQuark1);
+        inputVars.at("j" + std::to_string(i + 1) + "wj2DelR") =
+            jetVecs.at(i).DeltaR(wQuark2);
+        inputVars.at("j" + std::to_string(i + 1) + "wDelR") =
+            jetVecs.at(i).DeltaR(wVec);
     }
 
-    inputVars.at("w1w2delR") = (wQuark1).DeltaR(wQuark2);
-    inputVars.at("w1w2delPhi") = (wQuark1).DeltaPhi(wQuark2);
-    inputVars.at("zLepdelR") = (zLep1).DeltaR(zLep2);
-    inputVars.at("zLepdelPhi") = (zLep1).DeltaPhi(zLep2);
-    inputVars.at("zl1Quark1DelR") = (zLep1).DeltaR(wQuark1);
-    inputVars.at("zl1Quark1DelPhi") = (zLep1).DeltaPhi(wQuark1);
-    inputVars.at("zl1Quark2DelR") = (zLep1).DeltaR(wQuark2);
-    inputVars.at("zl1Quark2DelPhi") = (zLep1).DeltaPhi(wQuark2);
-    inputVars.at("zl2Quark1DelR") = (zLep2).DeltaR(wQuark1);
-    inputVars.at("zl2Quark1DelPhi") = (zLep2).DeltaPhi(wQuark1);
-    inputVars.at("zl2Quark2DelR") = (zLep2).DeltaR(wQuark2);
-    inputVars.at("zl2Quark2DelPhi") = (zLep2).DeltaPhi(wQuark2);
+    inputVars.at("w1w2DelR") = wQuark1.DeltaR(wQuark2);
+    inputVars.at("zzDelR") = zLep1.DeltaR(zLep2);
+    inputVars.at("l1wj1DelR") = zLep1.DeltaR(wQuark1);
+    inputVars.at("l1wj2DelR") = zLep1.DeltaR(wQuark2);
+    inputVars.at("l2wj1DelR") = zLep2.DeltaR(wQuark1);
+    inputVars.at("l2wj2DelR") = zLep2.DeltaR(wQuark2);
 
-    float jetHt{0.};
     TLorentzVector jetVector;
-    inputVars.at("minZJetR") = std::numeric_limits<double>::infinity();
-    inputVars.at("minZJetPhi") = std::numeric_limits<double>::infinity();
+    inputVars.at("zjMinR") = std::numeric_limits<float>::infinity();
+    inputVars.at("zjMaxR") = -std::numeric_limits<float>::infinity();
 
     for (const auto& jetVec : jetVecs)
     {
-        jetHt += jetVec.Pt();
         jetVector += jetVec;
-        if (jetVec.DeltaR(zLep2 + zLep1) < inputVars.at("minZJetR"))
+        if (jetVec.DeltaR(zVec) < inputVars.at("zjMinR"))
         {
-            inputVars.at("minZJetR") = jetVec.DeltaR(zLep2 + zLep1);
+            inputVars.at("zjMinR") = jetVec.DeltaR(zVec);
         }
-        if (jetVec.DeltaPhi(zLep2 + zLep1) < inputVars.at("minZJetPhi"))
+        if (jetVec.DeltaR(zVec) > inputVars.at("zjMaxR"))
         {
-            inputVars.at("minZJetPhi") = jetVec.DeltaPhi(zLep2 + zLep1);
+            inputVars.at("zjMaxR") = jetVec.DeltaR(zVec);
         }
     }
 
-    inputVars.at("zlb1DelR") = zLep1.DeltaR(bJetVecs[0]);
-    inputVars.at("zlb1DelPhi") = zLep1.DeltaPhi(bJetVecs[0]);
-    inputVars.at("zlb2DelR") = zLep2.DeltaR(bJetVecs[0]);
-    inputVars.at("zlb2DelPhi") = zLep2.DeltaPhi(bJetVecs[0]);
-
-    const double lepHt{zLep1.Pt() + zLep2.Pt()};
-
-    inputVars.at("lepHt") = lepHt;
-    inputVars.at("jetHt") = jetHt;
     inputVars.at("jetMass") = jetVector.M();
+    inputVars.at("jetMt") = jetVector.Mt();
     inputVars.at("jetPt") = jetVector.Pt();
-    inputVars.at("jetEta") = jetVector.Eta();
-    inputVars.at("jetPhi") = jetVector.Phi();
 
-    if (channel != "emu")
-    {
-        inputVars.at("jetMass3") = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M();
-    }
-    else
-    {
-        inputVars.at("jetMass3") = (jetVecs[0] + jetVecs[1]).M();
-    }
-
-    inputVars.at("wQuarkHt") = wQuark1.Pt() + wQuark2.Pt();
-
-    inputVars.at("totHt") = lepHt + jetHt;
-    inputVars.at("totHtOverPt") =
-        inputVars.at("totHt") / std::sqrt(totPx * totPx + totPy * totPy);
-    inputVars.at("zMass") = (zLep1 + zLep2).M();
-    inputVars.at("zPt") = (zLep2 + zLep1).Pt();
-    inputVars.at("zEta") = (zLep2 + zLep1).Eta();
-    inputVars.at("zPhi") = (zLep2 + zLep1).Phi();
+    inputVars.at("jetMass3") = (jetVecs[0] + jetVecs[1] + jetVecs[2]).M();
 
     constexpr double W_MASS{80.385};
     constexpr double TOP_MASS{173.1};
@@ -1238,7 +1244,7 @@ void MakeMvaInputs::fillTree(TTree* outTreeSig,
     constexpr double W_SIGMA{8};
     constexpr double TOP_SIGMA{30};
 
-    const double wChi2Term{(wPairMass - W_MASS) / W_SIGMA};
+    const double wChi2Term{(wMass - W_MASS) / W_SIGMA};
     const double topChi2Term{(topMass - TOP_MASS) / TOP_SIGMA};
     inputVars.at("chi2") = std::pow(wChi2Term, 2) + std::pow(topChi2Term, 2);
 

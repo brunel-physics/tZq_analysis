@@ -26,12 +26,14 @@ class MvaEvent : public AnalysisEvent
     public:
     static constexpr size_t NJETS{15};
     static constexpr size_t NBJETS{10};
-    static constexpr size_t NMUONS{3};
+    static constexpr size_t NMUONS{2};
 
     bool isMC;
     Double_t eventWeight;
+    Float_t muonMomentumSF[NMUONS];
     Int_t zLep1Index;
     Int_t zLep2Index;
+    bool muonLeads;
     Int_t wQuark1Index;
     Int_t wQuark2Index;
     Int_t jetInd[NJETS];
@@ -43,8 +45,10 @@ class MvaEvent : public AnalysisEvent
     // List of branches
     TBranch* b_isMC;
     TBranch* b_eventWeight; //!
+    TBranch* b_muonMomentumSF; //!
     TBranch* b_zLep1Index; //!
     TBranch* b_zLep2Index; //!
+    TBranch* b_muonLeads; //!
     TBranch* b_wQuark1Index; //!
     TBranch* b_wQuark2Index; //!
     TBranch* b_jetInd; //!
@@ -64,8 +68,11 @@ inline MvaEvent::MvaEvent(bool isMC,
 {
     fChain->SetBranchAddress("isMC", &isMC, &b_isMC);
     fChain->SetBranchAddress("eventWeight", &eventWeight, &b_eventWeight);
+    fChain->SetBranchAddress("muonMomentumSF", &muonMomentumSF,
+                             &b_muonMomentumSF);
     fChain->SetBranchAddress("zLep1Index", &zLep1Index, &b_zLep1Index);
     fChain->SetBranchAddress("zLep2Index", &zLep2Index, &b_zLep2Index);
+    fChain->SetBranchAddress("muonLeads", &muonLeads, &b_muonLeads);
     fChain->SetBranchAddress("wQuark1Index", &wQuark1Index, &b_wQuark1Index);
     fChain->SetBranchAddress("wQuark2Index", &wQuark2Index, &b_wQuark2Index);
     fChain->SetBranchAddress("jetInd", jetInd, &b_jetInd);

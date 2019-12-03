@@ -840,6 +840,8 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
 
     if (electrons.size() == 2)
     {
+        event.muonLeads = false;
+
         if (!invertLepCut_)
         {
             if (event.elePF2PATCharge[electrons[0]]
@@ -896,6 +898,8 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
 
     else if (muons.size() == 2)
     {
+        event.muonLeads = true;
+
         if (!invertLepCut_)
         {
             if (event.muonPF2PATCharge[muons[0]]
@@ -969,11 +973,33 @@ bool Cuts::getDileptonZCand(AnalysisEvent& event,
                                event.muonPF2PATPY[muons[0]],
                                event.muonPF2PATPZ[muons[0]],
                                event.muonPF2PATE[muons[0]]};
-
         lepton2 *= event.muonMomentumSF.at(0);
 
-        event.zPairLeptons.first = lepton1;
-        event.zPairLeptons.second = lepton2;
+        if (lepton1.Pt() >= lepton2.Pt())  // electron leads
+        {
+            event.muonLeads = false;
+
+            event.zPairLeptons.first = lepton1;
+            event.zPairIndex.first = electrons[0];
+            event.zPairRelIso.first = event.elePF2PATComRelIsoRho[electrons[0]];
+
+            event.zPairLeptons.second = lepton2;
+            event.zPairIndex.second = muons[0];
+            event.zPairRelIso.second = event.muonPF2PATComRelIsodBeta[muons[0]];
+        }
+        else
+        {
+            event.muonLeads = true;
+
+            event.zPairLeptons.first = lepton2;
+            event.zPairIndex.first = muons[0];
+            event.zPairRelIso.first = event.muonPF2PATComRelIsodBeta[muons[0]];
+
+            event.zPairLeptons.second = lepton1;
+            event.zPairIndex.second = electrons[0];
+            event.zPairRelIso.second = event.elePF2PATComRelIsoRho[electrons[0]];
+        }
+
         return true;
     }
     else
@@ -1026,11 +1052,11 @@ double Cuts::getWbosonQuarksCand(AnalysisEvent& event,
                     event.wPairQuarks.first =
                         jetVec1.Pt() > jetVec2.Pt() ? jetVec1 : jetVec2;
                     event.wPairIndex.first =
-                        jetVec1.Pt() > jetVec2.Pt() ? jets[k] : jets[l];
+                        jetVec1.Pt() > jetVec2.Pt() ? k : l;
                     event.wPairQuarks.second =
                         jetVec1.Pt() > jetVec2.Pt() ? jetVec2 : jetVec1;
                     event.wPairIndex.second =
-                        jetVec1.Pt() > jetVec2.Pt() ? jets[l] : jets[k];
+                        jetVec1.Pt() > jetVec2.Pt() ? l : k;
                     closestWmass = invWbosonMass;
                 }
             }
@@ -1580,8 +1606,7 @@ bool Cuts::metFilters(const AnalysisEvent& event) const
     if (event.Flag_HBHENoiseFilter <= 0 || event.Flag_HBHENoiseIsoFilter <= 0
         || event.Flag_globalTightHalo2016Filter <= 0
         || event.Flag_EcalDeadCellTriggerPrimitiveFilter <= 0
-        || event.Flag_goodVertices <= 0
-        || (!isMC_ && event.Flag_eeBadScFilter <= 0))
+        || event.Flag_goodVertices <= 0)
     {
         return false;
     }

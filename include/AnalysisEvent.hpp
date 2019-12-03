@@ -1551,6 +1551,7 @@ class AnalysisEvent
     std::pair<TLorentzVector, TLorentzVector> zPairLeptons;
     std::pair<float, float> zPairRelIso;
     std::pair<int, int> zPairIndex;
+    bool muonLeads{};
 
     std::pair<TLorentzVector, TLorentzVector> wPairQuarks;
     std::pair<int, int> wPairIndex;

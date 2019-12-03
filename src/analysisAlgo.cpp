@@ -763,9 +763,11 @@ void AnalysisAlgo::runMainAnalysis()
             int zLep2Index{-1};
             int wQuark1Index{-1};
             int wQuark2Index{-1};
+            int muonLeads{};
             int jetInd[15]; // The index of the selected jets;
             int bJetInd[10]; // Index of selected b-jets;
             float jetSmearValue[15]{};
+            float muonMomentumSF[2]{};
             int isMC{dataset->isMC()}; // isMC flag for debug purposes
             event.isMC_ = (dataset->isMC());
             // Now add in the branches:
@@ -814,12 +816,16 @@ void AnalysisAlgo::runMainAnalysis()
                     mvaTree[systIn]->Branch(
                         "zLep2Index", &zLep2Index, "zLep2Index/I");
                     mvaTree[systIn]->Branch(
+                        "muonLeads", &muonLeads, "muonLeads/I");
+                    mvaTree[systIn]->Branch(
                         "wQuark1Index", &wQuark1Index, "wQuark1Index/I");
                     mvaTree[systIn]->Branch(
                         "wQuark2Index", &wQuark2Index, "wQuark2Index/I");
                     mvaTree[systIn]->Branch("jetInd", &jetInd, "jetInd[15]/I");
                     mvaTree[systIn]->Branch(
                         "jetSmearValue", &jetSmearValue, "jetSmearValue[15]/F");
+                    mvaTree[systIn]->Branch(
+                        "muonMomentumSF", &muonMomentumSF, "muonMomentumSF[2]/F");
                     mvaTree[systIn]->Branch(
                         "bJetInd", &bJetInd, "bJetInd[10]/I");
                     mvaTree[systIn]->Branch("isMC", &isMC, "isMC/I");
@@ -1170,6 +1176,7 @@ void AnalysisAlgo::runMainAnalysis()
                         zLep2Index = event.zPairIndex.second;
                         wQuark1Index = event.wPairIndex.first;
                         wQuark2Index = event.wPairIndex.second;
+                        muonLeads = event.muonLeads;
                         for (unsigned i{0}; i < 15; i++)
                         {
                             if (i < event.jetIndex.size())
@@ -1194,6 +1201,10 @@ void AnalysisAlgo::runMainAnalysis()
                             {
                                 bJetInd[bJetIt] = -1;
                             }
+                        }
+                        for (size_t i{0}; i < event.muonMomentumSF.size(); ++i)
+                        {
+                            muonMomentumSF[i] = event.muonMomentumSF[i];
                         }
                         mvaTree[systInd]->Fill();
                     }
